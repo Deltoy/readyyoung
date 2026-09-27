@@ -6140,6 +6140,9 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     var MEMBER_TITLES = { '문준': '물류관리자', '순주': '팀장', '유현': '약사', '새희': '약사', '지수': '약사', '진성': '관리약사', '하은': '관리약사' };
     function memberTitle(n) {   // 정해 둔 직함 먼저, 없으면 근무표의 팀(중국어 · 일본어). 앱 이름이 짧으면 근무표 이름 끝이 같은 사람 한 명일 때만
       if (!n) return ''; if (MEMBER_TITLES[n]) return MEMBER_TITLES[n];
+      var tt = (typeof SD !== 'undefined' && SD.data && SD.data.titles) || {}, tk = Object.keys(tt);   // 0927 근무표 부서(약사·중국어·일본어) 자동
+      if (tt[n]) return tt[n];
+      var tk2 = tk.filter(function (k) { return k.length > n.length && k.slice(-n.length) === n; }); if (tk2.length === 1) return tt[tk2[0]];
       var st = (typeof SD !== 'undefined' && SD.data && SD.data.staff) || [], hit = st.filter(function (x) { return x.name === n; });
       if (!hit.length) hit = st.filter(function (x) { return x.name.length > n.length && x.name.slice(-n.length) === n; });
       return hit.length === 1 ? (hit[0].team === 'jp' ? '일본어' : hit[0].team === 'cn' ? '중국어' : '') : '';
