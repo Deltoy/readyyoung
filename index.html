@@ -6137,7 +6137,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     }
 
     /* 0926 이름 뒤 직함 (이름 목록 · 위쪽 "OO 님" 자리) */
-    var MEMBER_TITLES = {};   /* 공개 페이지에는 직원 이름·직함을 두지 않는다 (근무표 팀 이름으로 대신) */
+    var MEMBER_TITLES = { '문준': '물류관리자', '순주': '팀장', '유현': '약사', '새희': '약사', '지수': '약사', '진성': '관리약사', '하은': '관리약사' };
     function memberTitle(n) {   // 정해 둔 직함 먼저, 없으면 근무표의 팀(중국어 · 일본어). 앱 이름이 짧으면 근무표 이름 끝이 같은 사람 한 명일 때만
       if (!n) return ''; if (MEMBER_TITLES[n]) return MEMBER_TITLES[n];
       var st = (typeof SD !== 'undefined' && SD.data && SD.data.staff) || [], hit = st.filter(function (x) { return x.name === n; });

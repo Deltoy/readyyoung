@@ -9,7 +9,6 @@ must(/<head>/, '<head>'); must(/<title>[^<]*<\/title>/, '<title>');
 html = html
   .replace(/[ \t]*<link rel="(?:apple-touch-icon|icon)"[^>]*lh3\.googleusercontent\.com[^>]*>\n?/g, '')   // 구글 드라이브 아이콘 → 이 사이트 아이콘
   .replace(/<title>[^<]*<\/title>/, '<title>성수 레디영 물류센터</title>')
-  .replace(/var MEMBER_TITLES = \{[^}]*\};/, 'var MEMBER_TITLES = {};   /* 공개 페이지에는 직원 이름·직함을 두지 않는다 (근무표 팀 이름으로 대신) */')
   .replace('<head>', () => '<head>\n  <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" href="icon-192.png">\n  <script>' + shim + '</script>');
 const tmp = path.join(dir, 'index.html.tmp'); fs.writeFileSync(tmp, html); fs.renameSync(tmp, path.join(dir, 'index.html'));
 console.log('index.html 만들었어요', Buffer.byteLength(html), 'bytes ←', SRC);
