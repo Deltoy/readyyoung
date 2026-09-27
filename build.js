@@ -9,6 +9,6 @@ must(/<head>/, '<head>'); must(/<title>[^<]*<\/title>/, '<title>');
 html = html
   .replace(/[ \t]*<link rel="(?:apple-touch-icon|icon)"[^>]*lh3\.googleusercontent\.com[^>]*>\n?/g, '')   // 구글 드라이브 아이콘 → 이 사이트 아이콘
   .replace(/<title>[^<]*<\/title>/, '<title>성수 레디영 물류센터</title>')
-  .replace('<head>', () => '<head>\n  <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" type="image/png" href="icon-192.png">\n  <script>' + shim + '</script>');
+  .replace('<head>', () => '<head>\n  <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">\n  <script>' + shim + '</script>');
 const tmp = path.join(dir, 'index.html.tmp'); fs.writeFileSync(tmp, html); fs.renameSync(tmp, path.join(dir, 'index.html'));
 console.log('index.html 만들었어요', Buffer.byteLength(html), 'bytes ←', SRC);
