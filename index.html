@@ -5,6 +5,19 @@
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
 (function () {
+  /* 0927 이름을 고르면 주소에 ?me=이름 을 붙인다 → 그 상태로 '홈 화면에 추가'하면 열 때마다 내 이름으로 (직원별 전용 앱) */
+  try {
+    var set0 = Storage.prototype.setItem;
+    Storage.prototype.setItem = function (k, v) {
+      set0.apply(this, arguments);
+      if (k === 's_selected_member' && v && this === window.localStorage) {
+        var q = new URLSearchParams(location.search);
+        if (q.get('me') !== String(v)) { q.set('me', String(v)); q.delete('k'); history.replaceState(null, '', location.pathname + '?' + q.toString() + location.hash); }
+      }
+    };
+  } catch (e) {}
+})();
+(function () {
   if (window.google && window.google.script) return;   /* Apps Script 안에서 열렸거나 테스트 목이 있으면 그대로 */
   var API = 'https://script.google.com/macros/s/AKfycbwvMFIQhV_N1TEso50QSVN7vdMCRXmOUPXDep8p7pKQs1bHvIye7LXbUDANLhzn3pDo/exec';
   var KEY = 'ry_pages_k', q = new URLSearchParams(location.search), k = q.get('k') || '';
