@@ -2940,39 +2940,6 @@ html.ry-closed:not(#q):not(#w):not(#e) body:not(#r) .ry25-mark{background:#33415
 html.ry-closed:not(#q):not(#w):not(#e) body:not(#r) .ry25-mark .ry-logo{opacity:.55}
 @media (prefers-reduced-motion:reduce){html.ry-open:not(#q):not(#w):not(#e) body:not(#r) .ry25-mark{animation:none;box-shadow:0 0 0 5px rgba(21,94,239,.15),0 0 18px 4px rgba(91,155,255,.45)!important}}
 /* 0926 달력 칸 */
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg{display:flex;flex-direction:column;gap:6px;margin:4px 0 8px}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-row{display:grid;grid-template-columns:minmax(120px,150px) minmax(0,1fr) 150px;align-items:center;gap:12px;font-size:13px}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-who{display:flex;align-items:center;gap:8px;min-width:0}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-who b{font-weight:700!important;color:#111827;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-row.me .sdg-who b{color:#155EEF}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-cells{display:grid;grid-template-columns:repeat(31,minmax(0,1fr));gap:2px}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-cells i{display:block;height:18px;border-radius:4px;background:#f3f4f6;box-shadow:inset 0 0 0 1px #e5e7eb}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-cells i.c-o{background:transparent;box-shadow:inset 0 0 0 1px #eef0f3}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-cells i.c-w{background:#e5e7eb;box-shadow:none}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-cells i.c-a{background:#155EEF;box-shadow:none}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-cells i.c-p{background:#F79009;box-shadow:none}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-cells i.dim{opacity:.4}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-cells i.now{box-shadow:inset 0 0 0 1.5px #111827}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-head .sdg-cells i{height:auto;background:none;box-shadow:none;font-style:normal;font-size:10px;color:#9ca3af;text-align:center;line-height:14px;outline:0}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-head .sdg-cells i.now{color:#fff;background:#111827;border-radius:999px;font-weight:700;box-shadow:none}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-v{color:#6b7280;white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-v b{color:#111827;font-weight:700!important}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-v em{font-style:normal;display:inline-block;min-width:40px;margin-left:8px;padding:1px 6px;border-radius:999px;background:#eff4ff;color:#155EEF;font-weight:600;text-align:center}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:#6b7280;margin:0 0 8px}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-legend span{display:inline-flex;align-items:center;gap:5px}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-legend i.c-a{background:#155EEF}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-legend i.c-p{background:#F79009}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-legend i.c-w{background:#e5e7eb}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-legend i.c-o{box-shadow:inset 0 0 0 1.5px #c4c9d1}
-@media(max-width:720px){ html:not(#q):not(#w):not(#e) body:not(#r) .sdg-row{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'who v' 'cells cells';row-gap:4px} html:not(#q):not(#w):not(#e) body:not(#r) .sdg-who{grid-area:who} html:not(#q):not(#w):not(#e) body:not(#r) .sdg-v{grid-area:v} html:not(#q):not(#w):not(#e) body:not(#r) .sdg-cells{grid-area:cells} html:not(#q):not(#w):not(#e) body:not(#r) .sdg-head{grid-template-areas:'cells cells'} html:not(#q):not(#w):not(#e) body:not(#r) .sdg-head>span:not(.sdg-cells){display:none} html:not(#q):not(#w):not(#e) body:not(#r) .sdg-cells i{height:16px} }
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-who b.sdg-n{display:inline-flex;align-items:baseline;gap:5px;padding:2px 8px;border-radius:8px;overflow:visible}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-n small{font-size:10.5px;font-weight:600;opacity:.85}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-n.am{background:#eff4ff;color:#1849a9!important}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-n.pm{background:#fff4e5;color:#b54708!important}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-n.off{background:transparent;color:#9ca3af!important;font-weight:500!important}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdg-legend b.sdg-n{font-size:11px;padding:1px 6px;border-radius:6px;font-weight:700}
-@media(min-width:721px){ html:not(#q):not(#w):not(#e) body:not(#r) .sdg-row{grid-template-columns:minmax(170px,200px) minmax(0,1fr) 150px} }
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-cnt{display:grid;grid-template-columns:auto minmax(56px,90px) minmax(0,1fr) auto;align-items:center;gap:10px;padding:6px 2px;font-size:13px}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-cnt b{font-weight:700!important;color:#111827;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-cnt.me b{color:#155EEF}
@@ -3059,6 +3026,113 @@ html:not(#q):not(#w):not(#e) body:not(#r) .sd-dept.lg{background:#EFF4FF;color:#
 }
 @media(max-width:374px){ html:not(#q):not(#w):not(#e) body:not(#r) .sd-bar{gap:8px} html:not(#q):not(#w):not(#e) body:not(#r) .sd-line{column-gap:10px} }
 @media(max-width:340px){ html:not(#q):not(#w):not(#e) body:not(#r) .sd-bar .sd-ic{display:none} }
+/* 0928 세트 담당 — 폰(<=720px): 하루 = 카드 한 장, 칸 4개(오전·오후 x 중국어·일본어)는 크게 눌러 바텀시트에서 고르기 */
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tile,html:not(#q):not(#w):not(#e) body:not(#r) .sd-tl,html:not(#q):not(#w):not(#e) body:not(#r) .sd-mn{display:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tr.sd-fl{animation:sdfl 1.6s ease}
+@keyframes sdfl{0%,40%{box-shadow:0 0 0 3px #155EEF}100%{box-shadow:0 0 0 3px rgba(21,94,239,0)}}
+@media(max-width:720px){
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl-wrap{overflow:visible;border:0;border-radius:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl{display:block;min-width:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl thead{display:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tbody{display:flex;flex-direction:column;gap:8px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px;padding:10px;border:1px solid #EDEEF0;border-radius:16px;background:#fff;scroll-margin-top:8px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tr.today{background:#F5F8FF;border:1.5px solid #155EEF}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl-wrap.plan tr{border-style:dashed;border-color:#D0D5DD;background:#FCFCFD}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tbody th,html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl td{display:flex;padding:0!important;border:0;white-space:normal}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tbody th{grid-column:1/-1;align-items:center;flex-wrap:wrap;gap:4px 6px;font-size:14.5px;min-height:24px;padding:0 2px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tbody th .sd-tag,html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tbody th .sd-st{margin-left:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl td[colspan]{grid-column:1/-1}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tr.nil{grid-template-columns:auto minmax(0,1fr);align-items:center;padding:8px 12px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tr.nil th{grid-column:auto}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tr.nil td[colspan]{grid-column:auto;justify-content:flex-end}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-td{position:relative;flex-direction:column;justify-content:center;gap:2px;min-height:54px;padding:7px 28px 7px 11px!important;border-radius:12px;background:#F7F8FA!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tr.today .sd-td{background:#fff!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl-wrap.plan .sd-td{background:#fff!important;border:1px dashed #D0D5DD!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tl{display:flex;align-items:center;gap:3px;font-size:11.5px;font-weight:600;color:#6b7280;line-height:1.2}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tl .sd-lock{margin:0;width:11px!important;height:11px!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-td .sd-cell{flex-wrap:wrap;gap:3px 5px;min-width:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-td .sd-n,html:not(#q):not(#w):not(#e) body:not(#r) .sd-td .sd-none{font-size:15.5px;font-weight:700;color:#111827;overflow-wrap:anywhere}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-td .sd-none{font-weight:500;color:#9ca3af;font-size:14px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-td .sd-n.me{color:#155EEF}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-td .sd-chg{margin-left:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-td.lk{background:#F2F4F7!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tr.today .sd-td.lk{background:#EEF2F8!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-td .sd-sel{display:none!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-mn{display:inline}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tile{display:flex!important;position:absolute;inset:0;width:100%!important;height:100%!important;min-height:0!important;margin:0!important;padding:0 6px 0 0!important;border:0!important;border-radius:12px!important;background:transparent!important;color:#9ca3af!important;align-items:center;justify-content:flex-end;cursor:pointer;-webkit-tap-highlight-color:transparent}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tile:active{background:rgba(16,24,40,.06)!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-tile .ry-i{width:18px;height:18px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-td:has(.sd-sel:disabled){opacity:.5}
+}
+
+html:not(#q):not(#w):not(#e) body:not(#r) #sdPkDim{z-index:74!important}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdPk{z-index:75!important;max-height:78vh}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-pk h5{margin:8px 4px 2px;font-size:12px;font-weight:600;color:#6b7280}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-pk-i{display:flex!important;align-items:center;gap:10px;width:100%!important;min-height:50px!important;margin:0!important;padding:0 12px!important;border:0!important;border-radius:12px!important;background:transparent!important;text-align:left;font-size:15.5px!important;color:#111827!important;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-pk-i:active{background:#F3F4F6!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-pk-i b{flex:1 1 auto;min-width:0;font-weight:600!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-pk-i small{flex:none;font-size:12.5px;color:#6b7280;font-variant-numeric:tabular-nums}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-pk-i.on{background:#EFF4FF!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-pk-i.on b{color:#155EEF}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-pk-i .ry-i{flex:none;width:18px;height:18px;color:#155EEF}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-pk-i.clr{margin-top:6px!important;box-shadow:inset 0 1px 0 #F2F4F7;border-radius:0 0 12px 12px!important;color:#b42318!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-pk-none{margin:0;padding:10px 12px;font-size:13.5px;color:#9ca3af}
+
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:2px 0 8px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-seg{display:inline-flex;flex:none;padding:3px;gap:2px;border-radius:12px;background:#F2F4F7}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-seg button{min-height:44px!important;min-width:76px;margin:0!important;padding:0 14px!important;border:0!important;border-radius:10px!important;background:transparent!important;color:#6b7280!important;font-size:14px!important;font-weight:600!important;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-seg button[aria-pressed="true"]{background:#fff!important;color:#111827!important;box-shadow:0 1px 2px rgba(16,24,40,.14)}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-lg{flex:1 1 150px;display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;font-size:12px;color:#6b7280;min-width:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-lg span{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-dot.cn,html:not(#q):not(#w):not(#e) body:not(#r) .sdc-p.cn::before{background:#E5484D}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-dot.jp,html:not(#q):not(#w):not(#e) body:not(#r) .sdc-p.jp::before{background:#475467}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-k{font-style:normal;font-size:11px;font-weight:600;padding:1px 5px;border-radius:4px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-k.am,html:not(#q):not(#w):not(#e) body:not(#r) .sdc-p.am{background:#EFF4FF;color:#1849a9}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-k.pm,html:not(#q):not(#w):not(#e) body:not(#r) .sdc-p.pm{background:#FFF4E5;color:#b54708}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-k.plan{background:transparent;border:1px dashed #98A2B3;color:#6b7280}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-who{display:inline-flex!important;align-items:center;gap:6px;min-height:44px!important;margin:0 0 6px!important;padding:0 12px!important;border:0!important;border-radius:999px!important;background:#111827!important;color:#fff!important;font-size:13px!important;font-weight:600!important;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-who .ry-i{width:15px;height:15px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;margin:0 0 6px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-w{font-size:11px;font-weight:600!important;color:#9ca3af;text-align:center;padding:0 0 2px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-w.sat{color:#6172F3}html:not(#q):not(#w):not(#e) body:not(#r) .sdc-w.sun{color:#E5484D}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-d{display:flex!important;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:1px;min-width:0;min-height:48px!important;margin:0!important;padding:3px 2px 4px!important;border:1px solid transparent!important;border-radius:8px!important;background:#F7F8FA!important;color:#111827!important;font:inherit;text-align:left;overflow:hidden}
+html:not(#q):not(#w):not(#e) body:not(#r) button.sdc-d{cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) button.sdc-d:active{filter:brightness(.96)}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-d.pre{background:transparent!important;min-height:26px!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-d.pre .sdc-n{color:#c4c8cf}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-d.plan{background:#fff!important;border:1px dashed #D0D5DD!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-d.plan .sdc-p{opacity:.7}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-d.now{background:#fff!important;border:1.5px solid #155EEF!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-d.now .sdc-n{color:#fff;background:#155EEF;border-radius:999px;align-self:flex-start;padding:0 5px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-d.hit{box-shadow:inset 0 0 0 2px #111827}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-n{font-size:11px;font-weight:700;color:#374151;line-height:14px;padding-left:2px;font-variant-numeric:tabular-nums}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-p{display:flex;align-items:center;gap:2px;min-width:0;padding:0 2px;border-radius:4px;font-style:normal;font-size:10.5px;font-weight:600;line-height:14px;white-space:nowrap;overflow:hidden}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-p::before{content:'';flex:none;width:5px;height:5px;border-radius:50%}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-p span{overflow:hidden;text-overflow:ellipsis}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-p.me{box-shadow:inset 0 0 0 1px currentColor}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-p.hit{background:#111827;color:#fff}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-l{display:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdp{display:flex;flex-direction:column;gap:4px;margin:0 0 6px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdp-r{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"t n p" "b b v";align-items:center;gap:5px 8px;width:100%!important;min-height:44px!important;margin:0!important;padding:8px 10px!important;border:0!important;border-radius:12px!important;background:#F7F8FA!important;color:#111827!important;font:inherit;text-align:left;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdp-r>.sd-team{grid-area:t;height:20px;font-size:11px;padding:0 6px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdp-n{grid-area:n;display:flex;align-items:center;gap:6px;min-width:0;font-size:14.5px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdp-n b{font-weight:700!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdp-r.me .sdp-n b{color:#155EEF}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdp-c{flex:none;font-size:11px;font-weight:600;padding:1px 6px;border-radius:6px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdp-c.am{background:#EFF4FF;color:#1849a9}html:not(#q):not(#w):not(#e) body:not(#r) .sdp-c.pm{background:#FFF4E5;color:#b54708}html:not(#q):not(#w):not(#e) body:not(#r) .sdp-c.off{color:#9ca3af}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdp-pct{grid-area:p;font-size:14px;font-weight:700;color:#155EEF;font-variant-numeric:tabular-nums}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdp-bar{grid-area:b;height:6px;border-radius:999px;background:#E4E7EC;overflow:hidden}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdp-bar i{display:block;height:100%;border-radius:inherit;background:#155EEF}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdp-v{grid-area:v;font-size:12px;color:#6b7280;white-space:nowrap;font-variant-numeric:tabular-nums}
+@media(min-width:721px){
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc{gap:4px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-d{min-height:78px!important;padding:5px 5px 6px!important;gap:2px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-n{font-size:12px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-p{font-size:12px;line-height:18px;padding:0 5px;gap:4px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-s{display:none}html:not(#q):not(#w):not(#e) body:not(#r) .sdc-l{display:inline}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdp{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px 12px}
+}
 </style>
 <style id="ry25-notice">
 /* ═══ 0925 공지 보관함 ═══ */
@@ -9650,6 +9724,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     function sdOpenWeek() {
       document.getElementById('sdDim').classList.add('on');
       document.getElementById('sdSheet').classList.add('on');
+      SD.goToday = true;
       sdRenderSheet();
       sdLoad(false);
     }
@@ -9661,18 +9736,23 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       var cur = d[slot][team] || '', sp = sdIsSp(d, slot, team), real = cur ? (sdTeamOf(cur) || team) : team;
       var cross = cur && real !== team ? '<span class="sd-team ' + real + '">' + sdTeamLabel(real) + '</span>' : '';
       var chg = (sp ? SD_CHG : '') + (slot === 'pm' && sdC12(d, team) ? SD_C12 : '');
-      if (!admin) return '<td><span class="sd-cell">' + cross + (cur ? '<span class="sd-n' + (cur === currentSelectedMember ? ' me' : '') + '">' + escapeHtml(cur) + '</span>' : '<em class="sd-none">' + (sp ? '비움' : '후보 없음') + '</em>') + chg + '</span></td>';
+      /* 0928 폰 카드: 칸 이름표 + 자물쇠(확정·지난날), 이름은 크게. 문준은 칸 전체가 눌리는 버튼 → 바텀시트 (저장은 아래 select 그대로 sdSetManual) */
+      var lab = (slot === 'am' ? '오전' : '오후') + ' ' + sdTeamLabel(team), lk = !d.plan && (d[slot + 'Locked'] || (SD.data.today && d.date < SD.data.today));
+      var td = '<td class="sd-td' + (lk ? ' lk' : '') + '"><span class="sd-tl">' + lab + (lk ? SD_LOCK : '') + '</span>';
+      var nm = cur ? '<span class="sd-n' + (cur === currentSelectedMember ? ' me' : '') + (admin ? ' sd-mn' : '') + '">' + escapeHtml(cur) + '</span>' : '<em class="sd-none' + (admin ? ' sd-mn' : '') + '">' + (sp ? '비움' : admin ? '선택' : '후보 없음') + '</em>';
+      if (!admin) return td + '<span class="sd-cell">' + cross + nm + chg + '</span></td>';
       var cands = ((slot === 'am' ? d.amCands : d.pmCands) || {})[team] || [];
       var others = (SD.data.staff || []).filter(function (x) { return cands.indexOf(x.name) === -1 && !(x.join && d.date < x.join) && !(x.leave && d.date > x.leave); });
       var known = cands.indexOf(cur) !== -1 || others.some(function (x) { return x.name === cur; });
       var opt = function (n, label, isSp) { return '<option value="' + escapeHtml(n) + '"' + (isSp ? ' data-sp="1"' : '') + (n === cur ? ' selected' : '') + '>' + escapeHtml(label) + '</option>'; };
-      var h = '<td><span class="sd-cell"><select class="sd-sel" aria-label="' + escapeHtml(d.date + ' ' + (slot === 'am' ? '오전' : '오후') + ' ' + sdTeamLabel(team)) + '" data-date="' + escapeHtml(d.date) + '" data-slot="' + slot + '" data-team="' + team + '" onchange="sdSetManual(this)">'
+      var h = td + '<span class="sd-cell"><select class="sd-sel" aria-label="' + escapeHtml(d.date + ' ' + lab) + '" data-date="' + escapeHtml(d.date) + '" data-slot="' + slot + '" data-team="' + team + '" onchange="sdSetManual(this)">'
         + (cur || sp ? '' : '<option value="" selected>선택</option>')
         + (cur && !known ? opt(cur, cur, true) : '')
         + '<optgroup label="근무표 후보">' + (cands.length ? cands.map(function (n) { return opt(n, n, false); }).join('') : '<option value="" disabled>후보 없음</option>') + '</optgroup>'
         + '<optgroup label="그 외 직원 (특이 케이스)">' + others.map(function (x) { return opt(x.name, x.name + (x.team !== team ? ' · ' + sdTeamLabel(x.team) : '') + (x.excl ? ' (제외 대상)' : ''), true); }).join('') + '</optgroup>'
         + '<option value="__empty__"' + (!cur && sp ? ' selected' : '') + '>비움 (아무도 없음)</option>'
-        + '</select>' + cross + chg + '</span></td>';
+        + '</select>' + nm + cross + chg + '</span>'
+        + '<button type="button" class="sd-tile" aria-label="' + escapeHtml(sdMD(d.date) + ' ' + lab + ' 담당 ' + (cur || '없음') + ' · 바꾸기') + '" onclick="sdPick(this)">' + RYI.chevright + '</button></td>';
       return h;
     }
     function sdRenderSheet() {
@@ -9689,6 +9769,11 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       h += sdGridHtml(d);
       h += '<p class="ry25-rf-note">' + escapeHtml('확정된 날(자물쇠)은 근무표가 바뀌어도 그대로예요. 오늘 오후만 12:00 근무표로 한 번 더 확인해요. 다음 주는 예정이라 근무표가 바뀌면 달라지고, 그날 09:35에 확정돼요. 횟수는 자동 배정을 시작한 날(' + String(d.startDate || '') + ')부터 셉니다.' + (d.fetchedAt ? ' 근무표 ' + d.fetchedAt + ' 기준.' : '')) + (admin ? ' 칸을 눌러 바꿀 수 있어요. 근무표에 없는 사람은 \'그 외 직원\'에서 고르면 \'변경\' 표시가 붙어요. 다음 주 칸도 미리 바꿀 수 있고, 바꾼 칸은 그대로 유지돼요.' : '') + '</p>';
       box.innerHTML = h;
+      if (SD.goToday) {   /* 0928 폰: 창을 열면 오늘 카드로 */
+        SD.goToday = false;
+        var tt = box.querySelector('tr.today');
+        if (tt && window.matchMedia && matchMedia('(max-width:720px)').matches) tt.scrollIntoView({ block: 'start' });
+      }
     }
     function sdMD(ds) { var m = String(ds).match(/^\d{4}-(\d{2})-(\d{2})$/); return m ? (+m[1]) + '/' + (+m[2]) : String(ds); }
     /* 0927 주간 표 한 개 (plan = 다음 주 예정: 점선 · 흐린 글자 · '예정' 칩, 근무표가 아직 없으면 '근무표 아직 없음') */
@@ -9696,35 +9781,77 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       return '<div class="sd-tbl-wrap' + (plan ? ' plan' : '') + '"><table class="sd-tbl"><thead><tr><th>날짜</th><th colspan="2">오전 (중국어 · 일본어)</th><th colspan="2">오후 (중국어 · 일본어)</th></tr></thead><tbody>'
         + days.map(function (x) {
           var label = escapeHtml(sdMD(x.date)) + ' (' + (SD_DOW[parseInt(x.dow, 10)] || '') + ')', none = x.noRecord || (plan && x.noSched);
-          return '<tr class="' + (x.isToday ? 'today' : plan ? 'plan' : '') + '"><th scope="row">' + label + (x.isToday ? '<span class="sd-tag now">오늘</span>' : '') + (none ? '' : plan ? '<span class="sd-st plan" title="근무표로 미리 계산 · 그날 09:35에 확정">예정</span>' : sdSt(x.confirmed)) + '</th>'
+          return '<tr data-date="' + escapeHtml(x.date) + '" class="' + (x.isToday ? 'today' : plan ? 'plan' : '') + (none || x.noRecord ? ' nil' : '') + '"><th scope="row">' + label + (x.isToday ? '<span class="sd-tag now">오늘</span>' : '') + (none ? '' : plan ? '<span class="sd-st plan" title="근무표로 미리 계산 · 그날 09:35에 확정">예정</span>' : sdSt(x.confirmed)) + '</th>'
             + (x.noRecord ? '<td colspan="4"><em class="sd-none">기록 없음 · 자동 배정 시작 전</em></td>'
               : plan && x.noSched ? '<td colspan="4"><em class="sd-none">근무표 아직 없음</em></td>'
               : sdSeatCell(x, 'am', 'cn', admin) + sdSeatCell(x, 'am', 'jp', admin) + sdSeatCell(x, 'pm', 'cn', admin) + sdSeatCell(x, 'pm', 'jp', admin)) + '</tr>';
         }).join('') + '</tbody></table></div>';
     }
-    /* 0926 이번 달 달력 칸: 칸 하나 = 하루 · 파랑 오전 담당 · 주황 오후 담당 · 회색 근무 · 빈칸 쉼 */
+    /* 0928 이번 달 담당 — [달력] 월~일 7칸, 칸마다 오전·오후 담당 이름(점 = 중국어·일본어), 날을 누르면 그날 카드로
+                          [사람별] 담당 ÷ 근무일 막대, 사람을 누르면 달력에 그 사람 담당일 표시. 데이터는 getSetDuty 의 monthGrid 그대로 */
     function sdGridHtml(d) {
       var g = d.monthGrid;
       if (!g || !g.people || !g.people.length) return '<h4 class="sd-h">이번 달 담당</h4><div class="lt-empty-s">이번 달 근무 정보가 아직 없어요</div>';
       var m = String(g.month).match(/-(\d{2})$/), mon = m ? (+m[1]) + '월' : '이번 달';
-      var nm = { a: '오전 담당', p: '오후 담당', w: '근무', '.': '쉼' };
-      var head = '<div class="sdg-row sdg-head"><span></span><span class="sdg-cells">';
-      for (var k = 0; k < g.days; k++) { var dw = (g.firstDow + k) % 7; head += '<i class="' + (dw === 0 ? 'sun' : dw === 6 ? 'sat' : '') + (k === g.uptoIdx ? ' now' : '') + '">' + ((k + 1) % 5 === 0 || k === 0 || k === g.uptoIdx ? k + 1 : '') + '</i>'; }
-      head += '</span><span></span></div>';
-      var rows = g.people.map(function (p) {
-        var cells = '';
-        for (var k = 0; k < g.days; k++) {
-          var c = p.cells.charAt(k) || '.', dim = k < g.startIdx || k > g.uptoIdx;
-          cells += '<i class="c-' + (c === '.' ? 'o' : c) + (dim ? ' dim' : '') + (k === g.uptoIdx ? ' now' : '') + '" title="' + (k + 1) + '일 ' + nm[c] + (k > g.uptoIdx && (c === 'a' || c === 'p') ? ' (예정)' : '') + '"></i>';
-        }
-        var pct = p.work ? Math.round(p.duty / p.work * 100) : 0;
-        return '<div class="sdg-row' + (p.name === currentSelectedMember ? ' me' : '') + '"><span class="sdg-who"><span class="sd-team ' + (p.team === 'jp' ? 'jp' : 'cn') + '">' + (p.team === 'jp' ? '일본어' : '중국어') + '</span><b class="sdg-n ' + (p.now || 'off') + '">' + escapeHtml(p.name) + '<small>' + (p.now === 'am' ? '오늘 오전' : p.now === 'pm' ? '오늘 오후' : '오늘 쉼') + '</small></b></span>'
-          + '<span class="sdg-cells" role="img" aria-label="' + escapeHtml(p.name) + ' 근무 ' + p.work + '일 중 ' + p.duty + '회 담당">' + cells + '</span>'
-          + '<span class="sdg-v"><b>' + p.duty + '</b>회 / 근무 ' + p.work + '일<em>' + (p.work ? pct + '%' : '–') + '</em></span></div>';
-      }).join('');
-      return '<h4 class="sd-h">' + mon + ' 담당 <small>' + escapeHtml(String(d.countsThrough || '')) + '까지 · 근무일 대비 몇 번 했는지</small></h4>'
-        + '<div class="sdg-legend"><span><b class="sdg-n am">이름</b>오늘 오전 근무</span><span><b class="sdg-n pm">이름</b>오늘 오후 근무</span><span><i class="c-a"></i>오전 담당</span><span><i class="c-p"></i>오후 담당</span><span><i class="c-w"></i>근무</span><span><i class="c-o"></i>쉼</span><span><i class="c-a" style="opacity:.4"></i>흐린 칸 예정 담당</span></div>'
-        + '<div class="sdg">' + head + rows + '</div>';
+      return '<h4 class="sd-h">' + mon + ' 담당 <small>' + escapeHtml(String(d.countsThrough || '')) + '까지 · 근무일 대비 몇 번 했는지</small></h4><div id="sdGrid">' + sdGridBody() + '</div>';
+    }
+    function sdGv(v, who) {
+      SD.gv = v;
+      if (who !== undefined) SD.gp = who;
+      var el = document.getElementById('sdGrid');
+      if (!el || !SD.data) return;
+      el.innerHTML = sdGridBody();
+      if (who) el.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }
+    function sdCalGo(ds) {
+      var tr = document.querySelector('#sdBody tr[data-date="' + ds + '"]');
+      if (!tr) return;
+      tr.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      tr.classList.remove('sd-fl'); void tr.offsetWidth; tr.classList.add('sd-fl');
+    }
+    function sdGridBody() {
+      var d = SD.data, g = d.monthGrid, cal = SD.gv !== 'ppl', me = currentSelectedMember;
+      var seg = '<div class="sdc-seg" role="group" aria-label="보기"><button type="button" aria-pressed="' + cal + '" onclick="sdGv(\'cal\')">달력</button><button type="button" aria-pressed="' + !cal + '" onclick="sdGv(\'ppl\')">사람별</button></div>';
+      var tm = function (p) { return p.team === 'jp' ? 'jp' : 'cn'; };
+      if (!cal) {
+        var rt = function (p) { return p.work ? p.duty / p.work : -1; };
+        var ps = g.people.slice().sort(function (a, b) { return rt(b) - rt(a) || b.duty - a.duty || (a.name < b.name ? -1 : 1); });
+        return '<div class="sdc-bar">' + seg + '<div class="sdc-lg"><span>담당 비율 높은 순 · 누르면 달력에 표시</span></div></div><div class="sdp">' + ps.map(function (p) {
+          var pct = p.work ? Math.round(p.duty / p.work * 100) : 0;
+          return '<button type="button" class="sdp-r' + (p.name === me ? ' me' : '') + '" data-n="' + escapeHtml(p.name) + '" onclick="sdGv(\'cal\', this.dataset.n)" aria-label="' + escapeHtml(p.name + ' 근무 ' + p.work + '일 중 ' + p.duty + '회 담당 · 달력에서 보기') + '">'
+            + '<span class="sd-team ' + tm(p) + '">' + sdTeamLabel(tm(p)) + '</span>'
+            + '<span class="sdp-n"><b>' + escapeHtml(p.name) + '</b><i class="sdp-c ' + (p.now || 'off') + '">' + (p.now === 'am' ? '오늘 오전' : p.now === 'pm' ? '오늘 오후' : '오늘 쉼') + '</i></span>'
+            + '<span class="sdp-pct">' + (p.work ? pct + '%' : '–') + '</span>'
+            + '<span class="sdp-bar"><i style="width:' + Math.min(100, pct) + '%"></i></span>'
+            + '<span class="sdp-v">' + p.duty + '회 / 근무 ' + p.work + '일</span></button>';
+        }).join('') + '</div>';
+      }
+      var ti = String(d.today || '').slice(0, 7) === g.month ? parseInt(String(d.today).slice(8, 10), 10) - 1 : -1;
+      var card = {}; (d.days || []).forEach(function (x) { card[x.date] = 1; });
+      var sn = {}, seen = {};   /* 폰은 이름 두 글자(정예선 → 예선), 겹치면 전체 이름 */
+      g.people.forEach(function (p) { var t = /^[가-힣]{3}$/.test(p.name) ? p.name.slice(1) : p.name; sn[p.name] = t; seen[t] = (seen[t] || 0) + 1; });
+      g.people.forEach(function (p) { if (seen[sn[p.name]] > 1) sn[p.name] = p.name; });
+      var pill = function (p, s) { return '<i class="sdc-p ' + s + ' ' + tm(p) + (p.name === SD.gp ? ' hit' : p.name === me ? ' me' : '') + '"><span class="sdc-s">' + escapeHtml(sn[p.name]) + '</span><span class="sdc-l">' + escapeHtml(p.name) + '</span></i>'; };
+      var byTeam = function (a, b) { return (a.team === 'jp') - (b.team === 'jp'); };
+      var nms = function (a) { return a.map(function (p) { return p.name; }).join('·') || '없음'; };
+      var h = '', anyPlan = false, hits = 0, lead = (g.firstDow + 6) % 7;
+      ['월', '화', '수', '목', '금', '토', '일'].forEach(function (w, i) { h += '<b class="sdc-w' + (i === 5 ? ' sat' : i === 6 ? ' sun' : '') + '">' + w + '</b>'; });
+      for (var i = 0; i < lead; i++) h += '<span></span>';
+      for (var k = 0; k < g.days; k++) {
+        var ds = g.month + '-' + (k < 9 ? '0' : '') + (k + 1), am = [], pm = [];
+        g.people.forEach(function (p) { var c = p.cells.charAt(k); if (c === 'a') am.push(p); else if (c === 'p') pm.push(p); });
+        am.sort(byTeam); pm.sort(byTeam);
+        var plan = k > g.uptoIdx && k !== ti, hit = SD.gp && am.concat(pm).some(function (p) { return p.name === SD.gp; });
+        if (plan && am.length + pm.length) anyPlan = true;
+        if (hit) hits++;
+        var cls = 'sdc-d' + (k === ti ? ' now' : plan ? ' plan' : k < g.startIdx ? ' pre' : '') + (hit ? ' hit' : '');
+        var inner = '<span class="sdc-n">' + (k + 1) + '</span>' + am.map(function (p) { return pill(p, 'am'); }).join('') + pm.map(function (p) { return pill(p, 'pm'); }).join('');
+        h += card[ds] ? '<button type="button" class="' + cls + '" data-d="' + ds + '" onclick="sdCalGo(this.dataset.d)" aria-label="' + escapeHtml((k + 1) + '일' + (plan ? ' 예정' : '') + ' 오전 ' + nms(am) + ', 오후 ' + nms(pm) + ' · 그날 카드로') + '">' + inner + '</button>' : '<div class="' + cls + '">' + inner + '</div>';
+      }
+      var lg = '<div class="sdc-lg"><span><i class="sdc-dot cn"></i>중국어</span><span><i class="sdc-dot jp"></i>일본어</span><span><i class="sdc-k am">오전</i><i class="sdc-k pm">오후</i></span>' + (anyPlan ? '<span><i class="sdc-k plan">점선</i>예정</span>' : '') + '</div>';
+      return '<div class="sdc-bar">' + seg + lg + '</div>'
+        + (SD.gp ? '<button type="button" class="sdc-who" onclick="sdGv(\'cal\', \'\')">' + escapeHtml(SD.gp) + ' 담당일 ' + hits + '일 표시 중' + RYI.x + '</button>' : '')
+        + '<div class="sdc">' + h + '</div>';
     }
     function sdSetManual(sel) {
       if (currentSelectedMember !== PF_ADMIN) return;
@@ -9741,6 +9868,43 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         })
         .withFailureHandler(function (err) { sel.disabled = false; alert('담당 변경 오류: ' + (err && err.message ? err.message : err)); })
         .setSetDutyManual(sel.dataset.date, sel.dataset.slot, sel.dataset.team, name, currentSelectedMember, special);
+    }
+    /* 0928 폰 담당 고르기: 칸의 select 목록을 그대로 바텀시트로 보여 주고, 고르면 select 값을 바꿔 sdSetManual(select) — 저장 경로는 예전과 같음 */
+    function sdPick(btn) {
+      var sel = btn.parentNode.querySelector('select.sd-sel');
+      if (!sel || sel.disabled || currentSelectedMember !== PF_ADMIN) return;
+      SD.pkSel = sel;
+      var cnt = {}, g = SD.data && SD.data.monthGrid, cur = sel.value, top = '', mid = '', tail = '';
+      ((g && g.people) || []).forEach(function (p) { cnt[p.name] = p.duty; });
+      var ds = sel.dataset.date, slot = sel.dataset.slot === 'am' ? '오전' : '오후';
+      var item = function (o, cls, label) {
+        var on = o.value === cur;
+        return '<button type="button" class="sd-pk-i' + (cls ? ' ' + cls : '') + (on ? ' on' : '') + '" data-v="' + escapeHtml(o.value) + '" onclick="sdPkSet(this.dataset.v)"' + (on ? ' aria-current="true"' : '') + '><b>' + escapeHtml(label || o.textContent) + '</b>'
+          + (cnt[o.value] != null ? '<small>이번 달 ' + cnt[o.value] + '회</small>' : '') + (on ? RYI.check : '') + '</button>';
+      };
+      [].forEach.call(sel.children, function (c) {
+        if (c.tagName === 'OPTGROUP') {
+          var os = [].filter.call(c.children, function (o) { return o.value && !o.disabled; });
+          mid += '<h5>' + (c.label.indexOf('근무표') === 0 ? '근무표 ' + slot + ' 출근' : '그 외 직원') + '</h5>' + (os.length ? os.map(function (o) { return item(o); }).join('') : '<p class="sd-pk-none">근무표에 이 시간 출근자가 없어요</p>');
+        } else if (c.value === '__empty__') tail = item(c, 'clr', '비우기 (아무도 없음)');
+        else if (c.value) top = item(c);
+      });
+      document.getElementById('sdPkT').textContent = sdMD(ds) + ' (' + (SD_DOW[new Date(ds + 'T00:00:00').getDay()] || '') + ') ' + slot + ' ' + sdTeamLabel(sel.dataset.team);
+      document.getElementById('sdPkBody').innerHTML = top + mid + tail;
+      document.getElementById('sdPkDim').classList.add('on');
+      var pk = document.getElementById('sdPk');
+      pk.classList.add('on'); pk.scrollTop = 0;
+    }
+    function sdPkClose() {
+      document.getElementById('sdPkDim').classList.remove('on');
+      document.getElementById('sdPk').classList.remove('on');
+    }
+    function sdPkSet(v) {
+      var sel = SD.pkSel;
+      sdPkClose();
+      if (!sel || !sel.isConnected || v === sel.value) return;
+      sel.value = v;
+      sdSetManual(sel);
     }
     function sdReread(btn) {
       if (currentSelectedMember !== PF_ADMIN || typeof google === 'undefined' || !google.script || !google.script.run) return;
@@ -10292,6 +10456,11 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 <div class="ava-sheet sd-sheet" id="sdSheet" role="dialog" aria-label="세트·인플루언서 담당 이번 주 · 다음 주">
   <div class="ava-head"><b class="ry-info-title">세트·인플루언서 담당</b><button type="button" onclick="sdCloseWeek()">닫기</button></div>
   <div id="sdBody" class="sd-body"></div>
+</div>
+<div class="ava-dim" id="sdPkDim" onclick="sdPkClose()"></div>
+<div class="ava-sheet sd-pk" id="sdPk" role="dialog" aria-label="담당 고르기">
+  <div class="ava-head"><b class="ry-info-title" id="sdPkT">담당 고르기</b><button type="button" onclick="sdPkClose()">닫기</button></div>
+  <div id="sdPkBody"></div>
 </div>
 
 <div class="ava-dim" id="pfaDim" onclick="pfaClose()"></div>
