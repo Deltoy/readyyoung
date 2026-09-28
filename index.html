@@ -8488,7 +8488,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           if (!v) return;
           if (_dataVer === null) { _dataVer = v; return; }      // 처음엔 기준만 잡는다
           if (v !== _dataVer) {
-            _dataVer = v; setTimeout(function () { ryCatLoad(true); }, 4000);
+            _dataVer = v;
             setSyncBadge('changed');
             loadAllData(false, true);                           // 바뀐 경우에만 목록 갱신
           }
@@ -8536,7 +8536,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     try { RY_CAT = JSON.parse(localStorage.getItem(RY_CAT_KEY) || 'null'); } catch (e) {}
     function ryCatLoad(force) {
       if (_catLoading || typeof google === 'undefined' || !google.script || !google.script.run) return;
-      if (!force && RY_CAT && RY_CAT.items && Date.now() - (RY_CAT.t || 0) < 10 * 60000 && (_dataVer === null || RY_CAT.v === _dataVer)) return;
+      if (RY_CAT && RY_CAT.items && Date.now() - (RY_CAT.t || 0) < (force ? 60000 : 5 * 60000)) return;   // 5분 안이면 그대로 (강제여도 1분 안엔 안 받음)
       _catLoading = true;
       google.script.run
         .withSuccessHandler(function (r) {
@@ -8564,9 +8564,17 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       var toks = String(query).toLowerCase().split(/\s+/).filter(Boolean).map(ryAliasOf);   // 띄어 쓴 낱말마다 (영어면 한글 이름도) 모두 들어 있으면
       var hit = function (k) { if (k.indexOf(q) !== -1) return true; return toks.every(function (vs) { return vs.some(function (v) { return v && k.indexOf(v.replace(/\s+/g, '')) !== -1; }); }); };
       for (var i = 0; i < RY_CAT.items.length && out.length < 40; i++) { var it = RY_CAT.items[i]; if (hit(String(it._k || ''))) out.push(it); }
-      return out;
+      /* 폰 목록은 최대 5분 전 것 → 지금 화면이 아는 상태 · 사진을 덮어씀 (방금 요청·승인·입고한 것도 바로 맞게) */
+      var live = {}, put = function (arr, st) { (arr || []).forEach(function (x) { if (x && x.rowNumber) live[x.rowNumber] = { st: st, x: x }; }); };
+      put(cachedHistoryItems, 'DONE'); put(cachedInboundItems, 'INBOUND'); put(cachedOrderItems, 'ORDER'); put(cachedReviewItems, 'REVIEW');
+      return out.map(function (it) {
+        var l = live[it.rowNumber]; if (!l) return it;
+        var sold = /품절/.test(String(l.x.note || '')) && (l.st === 'ORDER' || l.st === 'REVIEW');
+        return Object.assign({}, it, { status: sold ? 'SOLDOUT' : l.st, imgUrl: l.x.imgUrl || it.imgUrl, note: l.x.note != null ? l.x.note : it.note, targetQty: l.x.targetQty || it.targetQty, requester: l.x.requester || it.requester });
+      });
     }
-    setTimeout(function () { ryCatLoad(false); }, 2500);
+    /* 0928 서버 부담 줄이기: 목록은 검색창을 누를 때만 받는다 (앱 열 때 · 시트가 바뀔 때마다 모든 폰이 받던 것 제거) */
+    document.addEventListener('focusin', function (e) { if (e.target && e.target.id === 'globalSearchInput') ryCatLoad(false); });
     function executeServerSearch(query) {
       const views = ['reviewView', 'orderView', 'soldOutView', 'inboundView', 'delayedView', 'historyView', 'stockCheckView', 'rankingView', 'reorderView', 'leadView', 'rejAView', 'noticeView'];
       views.forEach(v => {
@@ -8598,7 +8606,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           renderSearchResults(mapped);
           if (mapped.length) ry25RememberSoon(query);
       };
-      if (localHit) { onResults(localHit); ryCatLoad(false); return; }   // 폰 안 목록으로 즉시
+      if (localHit) { onResults(localHit); return; }   // 폰 안 목록으로 즉시
       google.script.run
         .withSuccessHandler(onResults)
         .withFailureHandler(function(err) {
