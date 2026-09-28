@@ -4035,17 +4035,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 
   </div>
 
-  <!-- 0925: 오늘 내가 요청한 품목 요약 바 (모드 B — 누르는 즉시 요청 · 바구니 없음) -->
-  <div id="ry25Bar" class="ry25-bar" role="status" aria-live="polite" aria-hidden="true">
-    <div class="ry25-bar-in">
-      <span class="ry25-bar-ic"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg></span>
-      <div class="ry25-bar-t">
-        <b>오늘 내가 요청한 품목 <em id="ry25BarN">0</em>개 · 총 <em id="ry25BarM">0</em>개</b>
-        <small id="ry25BarLast"></small>
-      </div>
-      <button type="button" class="ry25-bar-btn" onclick="ry25OpenMyRequests()">요청 목록<span class="ry25-bar-btn-x"> 보기</span><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
-    </div>
-  </div>
+  <!-- 0928: 오늘 내가 요청한 품목 요약 바는 뺌 (1차 검토 · 최종 발주에서 보이므로). ry25RenderBar 는 바가 없으면 아무것도 안 함 -->
 
   <script>
 
