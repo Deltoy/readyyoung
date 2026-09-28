@@ -2710,6 +2710,55 @@ html:not(#q):not(#w):not(#e) body:not(#r) .pfa-rv{border:1px solid #EDEEF0;borde
 html:not(#q):not(#w):not(#e) body:not(#r) .pfa-rv-h{display:flex;align-items:center;justify-content:space-between;gap:8px}
 html:not(#q):not(#w):not(#e) body:not(#r) .pfa-rv-h b{font-size:14.5px;font-weight:700;color:#111827;min-width:0;word-break:keep-all}
 html:not(#q):not(#w):not(#e) body:not(#r) .pfa-skip{min-height:44px!important;padding:0 12px!important;border-radius:12px!important;border:1px solid #d1d5db!important;background:#fff!important;color:#374151!important;font-size:13px!important;flex:none}
+/* 0928 15일 판매량 엑셀 */
+html:not(#q):not(#w):not(#e) body:not(#r) #s15Entry[hidden]{display:none!important}
+html:not(#q):not(#w):not(#e) body:not(#r) #s15Entry.due small{color:#b45309!important}
+html:not(#q):not(#w):not(#e) body:not(#r) #toolMoreBtn.s15-due{position:relative}
+html:not(#q):not(#w):not(#e) body:not(#r) #toolMoreBtn.s15-due::after{content:"";position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%;background:#F59E0B;box-shadow:0 0 0 2px #fff}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-pick{position:relative;display:flex!important;align-items:center;justify-content:center;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-pick input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-pick.sub{background:#fff!important;color:#111827!important;border:1px solid #d1d5db!important;box-shadow:none!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-body{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-save{position:sticky;bottom:0;margin-top:12px;width:100%}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-save:disabled{opacity:.5}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-msg{padding:12px 14px;border-radius:14px;background:#FEF3F2;color:#b42318;font-size:14px;line-height:1.5}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-how{margin:0;padding:12px 14px 12px 32px;border-radius:14px;background:#F9FAFB;border:1px solid #EDEEF0;font-size:14px;color:#374151;line-height:1.6;display:flex;flex-direction:column;gap:4px}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-last{margin:0;font-size:13px;color:#6b7280}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-last b{color:#b45309}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-sum>div{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:64px;border-radius:14px;background:#F7F8FA}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-sum b{font-size:22px;font-weight:700;color:#111827;font-variant-numeric:tabular-nums;line-height:1.1}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-sum small{font-size:12px;color:#6b7280}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-sum .warn{background:#FFFBEB}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-sum .warn b{color:#b45309}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-file{margin:0;font-size:12.5px;color:#6b7280;overflow-wrap:anywhere}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-sec{border:1px solid #EDEEF0;border-radius:16px;background:#fff}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-sec>summary{list-style:none;display:flex;flex-direction:column;justify-content:center;gap:1px;min-height:52px;padding:6px 14px;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-sec>summary::-webkit-details-marker{display:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-sec>summary b{font-size:15px;font-weight:700;color:#111827}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-sec>summary em{font-style:normal;color:#155EEF;margin-left:2px}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-sec>summary small{font-size:12px;color:#6b7280}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-list{list-style:none;margin:0;padding:0 8px 8px;display:flex;flex-direction:column;gap:6px}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-it{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px 10px;padding:10px 10px 10px 12px;border-radius:12px;background:#F7F8FA}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-nm{min-width:0;display:flex;flex-direction:column;gap:2px}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-nm>b{font-size:14.5px;font-weight:700;color:#111827;word-break:keep-all;overflow-wrap:anywhere;line-height:1.35}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-x{font-size:12.5px;color:#6b7280;overflow-wrap:anywhere;line-height:1.4}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-x b{color:#111827}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-v{display:inline-flex;align-items:center;gap:4px;font-variant-numeric:tabular-nums;white-space:nowrap}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-v s{color:#9ca3af;font-size:13px}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-v .ry-i{width:14px;height:14px;color:#9ca3af}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-v b{font-size:17px;font-weight:700;color:#155EEF}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-it.auto{grid-template-columns:minmax(0,1fr) auto auto}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-acts{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-b{flex:1 1 0;min-height:44px!important;padding:0 10px!important;border-radius:12px!important;border:1px solid #d1d5db!important;background:#fff!important;color:#374151!important;font-size:13.5px!important;font-weight:600!important;white-space:nowrap}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-b.pri{background:#155EEF!important;border-color:#155EEF!important;color:#fff!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-l{min-height:44px!important;padding:0 8px!important;border:0!important;background:transparent!important;color:#6b7280!important;font-size:12.5px!important;text-decoration:underline;white-space:nowrap}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-find{grid-column:1/-1;display:flex;flex-direction:column;gap:6px}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-find input{width:100%;min-height:44px;border:1px solid #d1d5db;border-radius:12px;padding:0 12px;font-size:15px;box-sizing:border-box;background:#fff}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-opts{display:flex;flex-direction:column;gap:4px}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-opt{display:flex!important;align-items:center;justify-content:space-between;gap:10px;min-height:44px!important;padding:6px 12px!important;border-radius:12px!important;border:1px solid #EDEEF0!important;background:#fff!important;text-align:left;font-size:13.5px!important;color:#111827!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-opt span{min-width:0;overflow-wrap:anywhere}
+html:not(#q):not(#w):not(#e) body:not(#r) .s15-opt b{flex:none;color:#155EEF;font-variant-numeric:tabular-nums}
 html:not(#q):not(#w):not(#e) body:not(#r) #pfaRun{width:100%;min-height:48px!important;border-radius:14px!important;background:#155EEF!important;color:#fff!important;border:0!important;font-weight:700!important}
 html:not(#q):not(#w):not(#e) body:not(#r) #pfAutoEntry[hidden]{display:none!important}
 html:not(#q):not(#w):not(#e) body:not(#r) #pfAutoEntry .ry-i{color:#6b7280;margin-right:4px}
@@ -3369,6 +3418,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
             <button type="button" role="menuitem" onclick="closeToolMore(); openDuplicates()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>중복 정리<small>이름이 겹치는 상품 찾기</small></button>
             <button type="button" role="menuitem" onclick="closeToolMore(); ntOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>공지 보관함<small>카톡 공지 모아보기 · 증정품 변경 한눈에</small></button>
             <button type="button" role="menuitem" id="pfAutoEntry" hidden onclick="closeToolMore(); pfaOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6"/><circle cx="9" cy="9" r="2"/><path d="m3 17 4-4 3 3"/><circle cx="17.5" cy="17.5" r="3.5"/><path d="m22 22-1.9-1.9"/></svg>사진 자동 채우기<small>사진 없는 상품을 인터넷 사진으로 (문준 전용)</small></button>
+            <button type="button" role="menuitem" id="s15Entry" hidden onclick="closeToolMore(); s15Open()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M8 13h2"/><path d="M14 13h2"/><path d="M8 17h2"/><path d="M14 17h2"/></svg>15일 판매량 엑셀<small>판매량 통계 엑셀로 한 번에</small></button>
             <button type="button" role="menuitem" onclick="closeToolMore(); openStale()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="m7.5 4.27 9 5.15"/></svg>창고 정리<small>한 달 넘게 주문 안 한 상품 정리</small></button>
             <button type="button" role="menuitem" data-url="https://pallang-0258.github.io/seongsu/viewer.html" onclick="closeToolMore(); window.open(this.dataset.url, '_blank', 'noopener')"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/></svg>근무표<small>약국 근무표 보기 (새 창)</small></button>
           </div>
@@ -9245,7 +9295,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 
     /* 자동 채우기 (문준만 · 서버에서도 막는다) */
     var PFA = { applied: [], review: [], seen: [], remaining: 0, running: false, sel: {}, dirty: false };
-    function pfSyncAdmin() { var b = document.getElementById('pfAutoEntry'); if (b) b.hidden = (currentSelectedMember !== PF_ADMIN); }
+    function pfSyncAdmin() { var b = document.getElementById('pfAutoEntry'); if (b) b.hidden = (currentSelectedMember !== PF_ADMIN); var s = document.getElementById('s15Entry'); if (s) s.hidden = (currentSelectedMember !== PF_ADMIN); setTimeout(function () { try { s15Dot(); s15InfoLoad(false); } catch (e) {} }, 0); }
     function pfaOpen() {
       if (currentSelectedMember !== PF_ADMIN) { showToast('사진 자동 채우기는 ' + PF_ADMIN + ' 프로필에서만 쓸 수 있어요'); return; }
       document.getElementById('pfaDim').classList.add('on');
@@ -9608,6 +9658,200 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       RY_SAT[row] = !RY_SAT[row];
       try { renderInboundList(cachedInboundItems); renderDelayedList(); } catch (e) {}
       showToast(RY_SAT[row] ? '입고일을 지난 토요일로 기록해요' : '입고일은 오늘로 기록해요', 1600);
+    }
+
+    /* ===== 0928 15일 판매량 엑셀 — 판매량 통계(상품별통계.xlsx)를 올리면 앱 상품과 이름으로 맞춰 M열에 한꺼번에 (문준 전용) ===== */
+    var S15 = { info: null, groups: [], xs: [], busy: false, file: '', open: {} };   /* open: 펼친 묶음 기억 (다시 그려도 그대로) */
+    var S15_XLSX = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    function s15Clean(s) { return String(s || '').split(/\n|\s-\s|-\s*\d+\/\d+|보관분/)[0].toLowerCase().replace(/(\d+)\s*(매|개|정|포|병|캡슐)입/g, '$1$2'); }
+    function s15Base(s) { return s15Clean(s).replace(/\([^)]*\)?|\[[^\]]*\]/g, '').replace(/[^0-9a-z가-힣]/g, ''); }
+    function s15Nums(s) { return (s15Clean(s).match(/\d+(?:\.\d+)?\s*(?:ml|mg|g|kg|l|매|개|정|포|병|캡슐|c|t|ea|p)?/g) || []).map(function (x) { return x.replace(/\s/g, ''); }); }
+    function s15Key(s) { return s15Clean(s).replace(/\s+/g, ''); }
+    function s15Bg(s) { var m = {}, n = 0; for (var i = 0; i < s.length - 1; i++) { var b = s.substr(i, 2); m[b] = (m[b] || 0) + 1; n++; } return { m: m, n: n }; }
+    /* 이름 닮음(글자 두 개씩 겹침) + 앞부분 포함 + 용량 숫자: 단위가 같은데 숫자가 다르면(100ml ↔ 500ml) 크게 깎는다 */
+    function s15Score(a, b) {
+      var s;
+      if (a.base === b.base) s = 1;
+      else if (s15Pre(a.base, b.base) || s15Pre(b.base, a.base)) s = .9;
+      else { var n = 0, k; for (k in a.bg.m) n += Math.min(a.bg.m[k], b.bg.m[k] || 0); s = (a.bg.n + b.bg.n) ? 2 * n / (a.bg.n + b.bg.n) : 0; }
+      if (a.nums.length && b.nums.length) {
+        var hit = a.nums.some(function (x) { return b.nums.indexOf(x) !== -1; });
+        var clash = a.nums.some(function (x) { var u = x.replace(/[\d.]/g, ''); return u && b.nums.some(function (y) { return y !== x && y.replace(/[\d.]/g, '') === u; }); });
+        if (clash && !hit) s -= .35; else if (hit) s += .05;
+      }
+      return Math.min(1, s);
+    }
+    /* 앞부분 포함: 짧은 쪽이 60% 이상일 때만 ('휴족시간' ≠ '휴족시간 지압자극 쿨링시트'), 숫자 중간에서 끊기면 제외 ('…로션1' ≠ '…로션100ml') */
+    function s15Pre(l, sh) { return sh.length >= 3 && l.length > sh.length && sh.length >= l.length * .6 && l.indexOf(sh) === 0 && !(/\d/.test(sh.slice(-1)) && /\d/.test(l.charAt(sh.length))); }
+    function s15Prep(name) { var b = s15Base(name); return { base: b, bg: s15Bg(b), nums: s15Nums(name) }; }
+    /* 엑셀 → [{n, q}] : 머리줄(첫 10줄 안)에서 '상품명' · '판매수량' 열을 찾는다. 같은 이름은 더한다 */
+    function s15ParseRows(rows) {
+      var hi = -1, nc = -1, qc = -1;
+      for (var i = 0; i < Math.min(10, rows.length) && hi < 0; i++) {
+        var r = rows[i].map(function (x) { return String(x).replace(/\s/g, ''); });
+        nc = r.findIndex(function (h) { return /상품명|품명|상품이름/.test(h); }); if (nc < 0) nc = r.findIndex(function (h) { return /상품|이름/.test(h); });
+        qc = r.findIndex(function (h) { return /판매수량/.test(h); }); if (qc < 0) qc = r.findIndex(function (h) { return /수량/.test(h) && !/비율/.test(h); });
+        if (nc >= 0 && qc >= 0) hi = i;
+      }
+      if (hi < 0) return null;
+      var by = {};
+      rows.slice(hi + 1).forEach(function (r) {
+        var n = String(r[nc] == null ? '' : r[nc]).trim(), q = Number(String(r[qc] == null ? '' : r[qc]).replace(/[^0-9.\-]/g, ''));
+        if (!n || !isFinite(q)) return;
+        by[n] = (by[n] || 0) + q;
+      });
+      return Object.keys(by).map(function (n) { var p = s15Prep(n); p.n = n; p.q = Math.round(by[n]); return p; });
+    }
+    /* 앱 상품을 이름별로 묶고(같은 상품 여러 줄은 같은 숫자) 엑셀과 맞춘다 */
+    function s15Match(xs, links) {
+      var byName = {}, byKey = {}, groups = {};
+      xs.forEach(function (x) { byName[x.n] = x; var k = s15Key(x.n); byKey[k] = byKey[k] ? 'dup' : x; });   /* 괄호(맛·성분)까지 똑같은 이름은 바로 */
+      [[cachedReviewItems, 1], [cachedOrderItems, 1], [cachedInboundItems, 1], [cachedStockCheckItems, 1], [cachedHistoryItems, 0]].forEach(function (p) {
+        (p[0] || []).forEach(function (it) {
+          if (!it || !it.rowNumber || !it.name) return;
+          var k = s15Key(it.name); if (!k) return;
+          var g = groups[k] || (groups[k] = { key: k, name: String(it.name).split('\n')[0].split(/\s-\s/)[0].trim(), rows: [], cur: it.sales15, active: false });
+          if (g.rows.indexOf(it.rowNumber) === -1) g.rows.push(it.rowNumber);
+          if (p[1]) g.active = true;
+        });
+      });
+      return Object.keys(groups).map(function (k) {
+        var g = groups[k], ln = links[k];
+        if (ln === '-') { g.st = 'skip'; return g; }
+        if (ln && byName[ln]) { g.x = byName[ln]; g.st = 'auto'; g.linked = true; return g; }
+        if (byKey[k] && byKey[k] !== 'dup') { g.x = byKey[k]; g.st = 'auto'; return g; }
+        var a = s15Prep(g.name), best = null, bs = 0, sec = 0;
+        xs.forEach(function (x) { var s = s15Score(a, x); if (s > bs) { sec = bs; bs = s; best = x; } else if (s > sec) sec = s; });
+        g.x = best; g.score = bs;
+        g.st = bs >= .9 && bs - sec >= .05 ? 'auto' : bs >= .6 ? 'check' : 'none';
+        return g;
+      }).filter(function (g) { return g.active || g.st === 'auto'; });   /* 끝난 상품(내역만)은 확실히 맞을 때만 */
+    }
+    function s15LoadLib(cb) {
+      if (window.XLSX) return cb();
+      var s = document.createElement('script'); s.src = S15_XLSX;
+      s.onload = function () { cb(); }; s.onerror = function () { cb('lib'); };
+      document.head.appendChild(s);
+    }
+    function s15Open() {
+      if (currentSelectedMember !== PF_ADMIN) { showToast('15일 판매량 엑셀은 ' + PF_ADMIN + ' 프로필에서만 쓸 수 있어요'); return; }
+      document.getElementById('s15Dim').classList.add('on');
+      document.getElementById('s15Sheet').classList.add('on');
+      s15Render();
+      s15LoadLib(function () {});
+      s15InfoLoad(true);
+    }
+    function s15Close() {
+      document.getElementById('s15Dim').classList.remove('on');
+      document.getElementById('s15Sheet').classList.remove('on');
+    }
+    function s15InfoLoad(force) {
+      if (currentSelectedMember !== PF_ADMIN || typeof google === 'undefined' || !google.script || !google.script.run || typeof google.script.run.getSales15Info !== 'function') return;
+      if (S15.info && !force) return s15Dot();
+      google.script.run.withSuccessHandler(function (r) { if (r && r.success) { S15.info = r; s15Dot(); if (!S15.groups.length) s15Render(); } }).withFailureHandler(function () {}).getSales15Info();
+    }
+    function s15Days() { var l = S15.info && S15.info.last; if (!l) return null; var d = new Date(l + 'T00:00:00'), t = new Date(); t.setHours(0, 0, 0, 0); return Math.round((t - d) / 864e5); }
+    function s15Dot() {
+      var b = document.getElementById('s15Entry'), due = currentSelectedMember === PF_ADMIN && S15.info && (s15Days() == null || s15Days() >= 7);
+      if (b) { b.hidden = currentSelectedMember !== PF_ADMIN; var sm = b.querySelector('small'); if (sm && S15.info) sm.textContent = S15.info.last ? '마지막 ' + S15.info.last.slice(5).replace('-', '/') + (due ? ' · ' + s15Days() + '일 지났어요' : '') : '판매량 통계 엑셀로 한 번에'; b.classList.toggle('due', !!due); }
+      var m = document.getElementById('toolMoreBtn'); if (m) m.classList.toggle('s15-due', !!due);
+    }
+    function s15Pick(inp) {
+      var f = inp.files && inp.files[0]; inp.value = '';
+      if (!f) return;
+      S15.file = f.name; S15.busy = 'read'; s15Render();
+      s15LoadLib(function (err) {
+        if (err) { S15.busy = false; s15Render('엑셀 읽기 도구를 못 불러왔어요. 인터넷 연결을 확인해 주세요.'); return; }
+        var rd = new FileReader();
+        rd.onload = function () {
+          try {
+            var wb = XLSX.read(new Uint8Array(rd.result), { type: 'array' });
+            var xs = s15ParseRows(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: '' }));
+            S15.busy = false;
+            if (!xs || !xs.length) { s15Render('이 파일에서 "판매 상품명" · "판매수량" 열을 못 찾았어요. 판매량 통계 › 상품별 통계 엑셀을 올려 주세요.'); return; }
+            S15.xs = xs; S15.open = {};
+            S15.groups = s15Match(xs, (S15.info && S15.info.links) || {});
+            s15Render();
+          } catch (e) { S15.busy = false; s15Render('엑셀을 읽지 못했어요 (' + (e && e.message || e) + ')'); }
+        };
+        rd.readAsArrayBuffer(f);
+      });
+    }
+    function s15G(k) { return S15.groups.filter(function (g) { return g.key === k; })[0]; }
+    function s15Set(k, st, xn) {
+      var g = s15G(k); if (!g) return;
+      if (st === 'ok') { g.st = 'auto'; g.pick = true; }
+      else if (st === 'skip') { g.st = 'skip'; g.pick = true; }
+      else if (st === 'x') { var x = S15.xs.filter(function (y) { return y.n === xn; })[0]; if (x) { g.x = x; g.st = 'auto'; g.pick = true; } }
+      else if (st === 'wrong') { g.st = 'none'; g.pick = true; g.unlink = true; g.find = true; }
+      else if (st === 'find') { g.find = !g.find; }
+      s15Render();
+    }
+    function s15Find(k, q) {
+      var g = s15G(k), box = document.getElementById('s15f-' + k.replace(/[^0-9a-z가-힣]/g, '_'));
+      if (!g || !box) return;
+      var a = s15Prep(q || g.name), top = S15.xs.map(function (x) { return [s15Score(a, x), x]; }).sort(function (p, r) { return r[0] - p[0]; }).slice(0, 5);
+      box.innerHTML = top.map(function (p) { return '<button type="button" class="s15-opt" data-k="' + escapeHtml(k) + '" data-x="' + escapeHtml(p[1].n) + '" onclick="s15Set(this.dataset.k,\'x\',this.dataset.x)"><span>' + escapeHtml(p[1].n) + '</span><b>' + p[1].q + '개</b></button>'; }).join('');
+    }
+    function s15Row(g) {
+      var id = g.key.replace(/[^0-9a-z가-힣]/g, '_'), k = escapeHtml(g.key), cur = (g.cur === '' || g.cur == null || g.cur === '-') ? '–' : escapeHtml(String(g.cur));
+      var btn = function (st, t, cls) { return '<button type="button" class="' + (cls || 's15-b') + '" data-k="' + k + '" onclick="s15Set(this.dataset.k,\'' + st + '\')">' + t + '</button>'; };
+      var h = '<li class="s15-it ' + g.st + '"><div class="s15-nm"><b>' + escapeHtml(g.name) + '</b>';
+      if (g.st === 'auto') h += '<span class="s15-x">' + escapeHtml(g.x.n) + '</span></div><div class="s15-v"><s>' + cur + '</s>' + RYI.arrowright + '<b>' + g.x.q + '</b></div>' + btn('wrong', '틀려요', 's15-l');
+      else if (g.st === 'check') h += '<span class="s15-x">엑셀: ' + escapeHtml(g.x.n) + ' · <b>' + g.x.q + '개</b></span></div><div class="s15-acts">' + btn('ok', '맞아요', 's15-b pri') + btn('find', '다른 상품') + btn('skip', '건너뛰기') + '</div>';
+      else if (g.st === 'none') h += '<span class="s15-x">엑셀에서 못 찾았어요 · 지금 ' + cur + '</span></div><div class="s15-acts">' + btn('find', '찾아서 연결', 's15-b pri') + btn('skip', '매주 건너뛰기') + '</div>';
+      else h += '<span class="s15-x">매주 건너뛰어요</span></div>' + btn('wrong', '다시 맞추기', 's15-l');
+      if (g.find && g.st !== 'auto' && g.st !== 'skip') h += '<div class="s15-find"><input type="search" placeholder="엑셀 상품명 검색" aria-label="엑셀 상품명 검색" data-k="' + k + '" oninput="s15Find(this.dataset.k, this.value)"><div id="s15f-' + id + '" class="s15-opts"></div></div>';
+      return h + '</li>';
+    }
+    function s15Render(msg) {
+      var body = document.getElementById('s15Body'), save = document.getElementById('s15Save'), pick = document.getElementById('s15PickL');
+      if (!body) return;
+      var gs = S15.groups, n = function (st) { return gs.filter(function (g) { return g.st === st; }); };
+      var auto = n('auto'), chk = n('check'), none = n('none'), skip = n('skip');
+      var chg = auto.filter(function (g) { return String(g.cur) !== String(g.x.q); });
+      pick.querySelector('span').textContent = S15.busy === 'read' ? '읽는 중…' : gs.length ? '다른 엑셀 고르기' : '엑셀 파일 고르기';
+      pick.classList.toggle('sub', !!gs.length);
+      save.hidden = !gs.length;
+      save.disabled = !!S15.busy || !auto.length;
+      save.textContent = S15.busy === 'save' ? '저장하는 중…' : auto.length ? auto.length + '개 상품 저장하기' + (chk.length ? ' (확인 ' + chk.length + '개는 빼고)' : '') : '저장할 상품이 없어요';
+      if (msg) { body.innerHTML = '<div class="s15-msg">' + escapeHtml(msg) + '</div>'; return; }
+      if (!gs.length) {
+        var l = S15.info && S15.info.last;
+        body.innerHTML = '<ol class="s15-how"><li><b>판매량 통계 › 상품별 통계</b>에서 최근 15일로 엑셀 받기</li><li>여기서 파일 고르기 → 앱 상품과 이름으로 맞춰요</li><li>확인할 것만 보고 <b>저장</b> · 한 번 연결하면 다음 주부터 자동</li></ol>'
+          + '<p class="s15-last">' + (l ? '마지막으로 넣은 날 ' + escapeHtml(l) + (s15Days() >= 7 ? ' · <b>' + s15Days() + '일 지났어요</b>' : '') : '아직 넣은 적 없어요') + '</p>';
+        return;
+      }
+      var sum = '<div class="s15-sum"><div><b>' + auto.length + '</b><small>맞췄어요</small></div><div class="' + (chk.length ? 'warn' : '') + '"><b>' + chk.length + '</b><small>확인해 주세요</small></div><div><b>' + none.length + '</b><small>못 찾았어요</small></div></div>'
+        + '<p class="s15-file">' + escapeHtml(S15.file) + ' · 엑셀 상품 ' + S15.xs.length.toLocaleString() + '개 · 바뀌는 숫자 ' + chg.length + '개</p>';
+      var sec = function (title, sub, arr, open) { if (S15.open[title] != null) open = S15.open[title]; return arr.length ? '<details class="s15-sec" data-s="' + title + '"' + (open ? ' open' : '') + ' ontoggle="S15.open[this.dataset.s] = this.open"><summary><b>' + title + ' <em>' + arr.length + '</em></b><small>' + sub + '</small></summary><ul class="s15-list">' + arr.map(s15Row).join('') + '</ul></details>' : ''; };
+      body.innerHTML = sum + sec('확인해 주세요', '이름이 조금 달라요 · 맞으면 "맞아요"', chk, true) + sec('못 찾았어요', '엑셀 이름으로 찾아 연결하면 다음 주부터 자동', none, !chk.length)
+        + sec('맞췄어요', '예전 숫자 → 새 숫자 · 틀린 건 "틀려요"', auto, false) + sec('건너뛰는 상품', '매주 건너뛰어요', skip, false);
+      gs.forEach(function (g) { if (g.find && (g.st === 'check' || g.st === 'none')) s15Find(g.key, ''); });
+    }
+    function s15Save() {
+      if (S15.busy) return;
+      var list = [], links = {}, cnt = 0;
+      S15.groups.forEach(function (g) {
+        if (g.st === 'auto') { cnt++; g.rows.forEach(function (r) { list.push({ row: r, value: g.x.q }); }); if (g.pick) links[g.key] = g.x.n; }
+        else if (g.st === 'skip' && g.pick) links[g.key] = '-';
+        else if (g.unlink) links[g.key] = null;
+      });
+      S15.busy = 'save'; s15Render();
+      google.script.run
+        .withSuccessHandler(function (r) {
+          S15.busy = false;
+          if (!r || !r.success) { s15Render(); showToast((r && r.message) || '저장하지 못했어요', 2600); return; }
+          S15.info = S15.info || { links: {} };
+          Object.keys(links).forEach(function (k) { if (links[k] === null) delete S15.info.links[k]; else S15.info.links[k] = links[k]; });
+          S15.info.last = sdLocalDate(new Date());
+          S15.groups = []; S15.xs = [];
+          s15Render(); s15Dot();
+          showToast(cnt + '개 상품 15일 판매량을 바꿨어요' + (r.skipped ? ' · 시트 수식 칸 ' + r.skipped + '개는 그대로' : ''), 2600);
+          loadAllData(true, true, true);
+        })
+        .withFailureHandler(function (e) { S15.busy = false; s15Render(); showToast('저장하지 못했어요: ' + (e && e.message || e), 2600); })
+        .updateSales15Batch(list, links);
     }
 
     /* ===== 0925 세트 · 인플루언서 담당 — 서버 getSetDuty (근무표 앱을 읽어 자동 배정) · 문준만 칸 변경 ===== */
@@ -10480,6 +10724,15 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
   <div class="ava-sub">사진 없는 상품을 인터넷에서 찾아, 이름의 맛 · 용량까지 똑같은 사진만 자동으로 넣어요.</div>
   <button type="button" class="np-save" id="pfaRun" onclick="pfaRun()">20개 자동 채우기</button>
   <div id="pfaBody" class="pfa-body"></div>
+</div>
+
+<div class="ava-dim" id="s15Dim" onclick="s15Close()"></div>
+<div class="ava-sheet" id="s15Sheet" role="dialog" aria-label="15일 판매량 엑셀">
+  <div class="ava-head"><b class="ry-info-title">15일 판매량 엑셀</b><button type="button" onclick="s15Close()">닫기</button></div>
+  <div class="ava-sub">판매량 통계 엑셀을 올리면 앱 상품의 15일 판매 숫자를 한꺼번에 바꿔요. 매주 한 번이면 돼요.</div>
+  <label class="np-save s15-pick" id="s15PickL"><input type="file" accept=".xlsx,.xls,.csv" onchange="s15Pick(this)"><span>엑셀 파일 고르기</span></label>
+  <div id="s15Body" class="s15-body"></div>
+  <button type="button" class="np-save s15-save" id="s15Save" hidden onclick="s15Save()">저장하기</button>
 </div>
 
 <div class="ava-dim" id="drDim" onclick="closeDelayReason()"></div>
