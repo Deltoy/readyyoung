@@ -3031,6 +3031,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .sd-more{padding:2px 6px 12px 0;displa
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-more .sd-today{margin-top:0}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-more .sd-week{align-self:flex-start}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-chg{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:999px;background:#FFFBEB;border:1px solid #FDE68A;color:#b45309;font-size:11px;font-weight:600;white-space:nowrap;margin-left:4px;cursor:help}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-chg.sd-by{background:#EFF4FF;border-color:#C7D7FE;color:#155EEF;cursor:default}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-cell{display:inline-flex;align-items:center;gap:6px}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-cell .sd-team{height:20px;font-size:11px;padding:0 6px}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-live{margin:0;display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-size:12.5px;color:#6b7280}
@@ -9907,13 +9908,17 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         + '<p class="sd-live">' + (SD.data.lockedToday ? '<span class="sd-st ok">' + SD_LOCK + '오전·오후 09:35 확정</span>' : '<span class="sd-st">오전·오후 09:35 확정 예정</span>') + (any12 ? SD_C12.replace('12:00 변경', '오후 12:00 변경') : '') + '</p>';
     }
     function sdTeamLabel(t) { return t === 'jp' ? '일본어' : '중국어'; }
+    /* 0928 바꾼 사람 표시: 칸별 '순주 변경' (서버 day.by). 근무표와 다르게 지정한 칸이면 설명에 함께 */
+    function sdBy(d, slot, team) { return (d && d.by && d.by[slot] && d.by[slot][team]) || ''; }
+    function sdByChip(by, sp) { return by ? '<span class="sd-chg sd-by" title="' + escapeHtml((sp ? '근무표와 다르게 지정 · ' : '') + by + ' 님이 바꿨어요') + '">' + escapeHtml(by) + ' 변경</span>' : sp ? SD_CHG : ''; }
+    function sdCanEdit() { return /^(관리약사|팀장|물류관리자)$/.test(memberTitle(currentSelectedMember)); }   /* 0928 세트 담당 변경 = 관리약사 · 팀장 · 물류관리자 (서버 sdCanEdit_ 도 같은 규칙) */
     function sdSeatTeam(d, slot, team) { return (d && d.seat && d.seat[slot] && d.seat[slot][team]) || team; }   /* 0928 9/29부터 오전 두 번째 칸(jp)도 중국어 */
     function sdTeamOf(n) { var s = (SD.data && SD.data.staff) || []; for (var i = 0; i < s.length; i++) if (s[i].name === n) return s[i].team; return ''; }
     function sdIsSp(d, slot, team) { return !!(d && d.special && d.special[slot] && d.special[slot][team]); }
-    function sdName(n, team, sp, c12) {
+    function sdName(n, team, sp, c12, by) {
       var me = n && n === currentSelectedMember, real = (n && sdTeamOf(n)) || team;   /* 다른 팀 사람이면 본인 팀 표시 */
       return '<span class="sd-seat' + (me ? ' me' : '') + '"><span class="sd-team ' + real + '">' + sdTeamLabel(real) + '</span>'
-        + (n ? '<b>' + escapeHtml(n) + '</b>' : '<em>' + (sp ? '비움' : '후보 없음') + '</em>') + (sp ? SD_CHG : '') + (c12 ? SD_C12 : '') + '</span>';
+        + (n ? '<b>' + escapeHtml(n) + '</b>' : '<em>' + (sp ? '비움' : '후보 없음') + '</em>') + sdByChip(by, sp) + (c12 ? SD_C12 : '') + '</span>';
     }
     function sdIsOpen() { try { return localStorage.getItem(SD_OPEN_KEY) === '1'; } catch (e) { return false; } }
     function sdApplyOpen(open) {
@@ -9950,9 +9955,9 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     function sdLineSlot(t, slot, withSt, lead) {
       var lk = slot === 'am' ? t.amLocked : t.pmLocked;
       return '<span class="sd-ln-g' + sdNowCls(slot) + '">' + (lead ? sdSt(lk) : '') + '<span class="sd-ln-s">' + (slot === 'am' ? '오전' : '오후') + '</span>' + (withSt ? sdSt(lk) : '') + ['cn', 'jp'].map(function (tm) {
-        var n = t[slot][tm], sp = sdIsSp(t, slot, tm), c12 = slot === 'pm' && sdC12(t, tm);
+        var n = t[slot][tm], sp = sdIsSp(t, slot, tm), c12 = slot === 'pm' && sdC12(t, tm), by = sdBy(t, slot, tm);
         return (n ? '<span class="sd-ln-n' + (n === currentSelectedMember ? ' me' : '') + '">' + escapeHtml(n) + '</span>' : '<span class="sd-ln-e">' + (sp ? '비움' : '없음') + '</span>')
-          + (sp ? '<i class="sd-dot" title="근무표와 다르게 지정" aria-label="변경"></i>' : '') + (c12 ? '<i class="sd-dot" title="12:00 변경" aria-label="12:00 변경"></i>' : '');
+          + (sp || by ? '<i class="sd-dot" title="' + escapeHtml(by ? by + ' 님이 바꿨어요' : '근무표와 다르게 지정') + '" aria-label="' + escapeHtml(by ? by + ' 변경' : '변경') + '"></i>' : '') + (c12 ? '<i class="sd-dot" title="12:00 변경" aria-label="12:00 변경"></i>' : '');
       }).join('<span class="sd-ln-sep">·</span>') + '</span>';
     }
     function sdRenderCard() {
@@ -9963,8 +9968,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (SD.err) { box.innerHTML = '<div class="sd-msg">근무표를 불러오지 못했어요 (근무표 앱 확인) <button type="button" class="sd-retry" onclick="sdLoad(true)">다시 시도</button></div>'; if (line) line.innerHTML = '<span class="sd-ln-msg">근무표를 못 불러왔어요</span>'; if (mine) mine.hidden = true; return; }
       var t = sdToday();
       if (!t) { box.innerHTML = '<div class="sd-row sd-sk" aria-busy="true"><i></i><i></i><i></i></div><div class="sd-row sd-sk"><i></i><i></i><i></i></div>'; if (line) line.innerHTML = '<span class="sd-ln-msg">불러오는 중…</span>'; if (mine) mine.hidden = true; return; }
-      box.innerHTML = '<div class="sd-row sd-row2' + sdNowCls('am') + '"><span class="sd-slot2"><span class="sd-slot">오전</span>' + sdSt(t.amLocked) + '</span><span class="sd-seats">' + sdName(t.am.cn, 'cn', sdIsSp(t, 'am', 'cn')) + sdName(t.am.jp, sdSeatTeam(t, 'am', 'jp'), sdIsSp(t, 'am', 'jp')) + '</span></div>'
-        + '<div class="sd-row sd-row2' + sdNowCls('pm') + '"><span class="sd-slot2"><span class="sd-slot">오후</span>' + sdSt(t.pmLocked) + '</span><span class="sd-seats">' + sdName(t.pm.cn, 'cn', sdIsSp(t, 'pm', 'cn'), sdC12(t, 'cn')) + sdName(t.pm.jp, 'jp', sdIsSp(t, 'pm', 'jp'), sdC12(t, 'jp')) + '</span></div>' + sdLiveHint() + sdCofRender();
+      box.innerHTML = '<div class="sd-row sd-row2' + sdNowCls('am') + '"><span class="sd-slot2"><span class="sd-slot">오전</span>' + sdSt(t.amLocked) + '</span><span class="sd-seats">' + sdName(t.am.cn, 'cn', sdIsSp(t, 'am', 'cn'), false, sdBy(t, 'am', 'cn')) + sdName(t.am.jp, sdSeatTeam(t, 'am', 'jp'), sdIsSp(t, 'am', 'jp'), false, sdBy(t, 'am', 'jp')) + '</span></div>'
+        + '<div class="sd-row sd-row2' + sdNowCls('pm') + '"><span class="sd-slot2"><span class="sd-slot">오후</span>' + sdSt(t.pmLocked) + '</span><span class="sd-seats">' + sdName(t.pm.cn, 'cn', sdIsSp(t, 'pm', 'cn'), sdC12(t, 'cn'), sdBy(t, 'pm', 'cn')) + sdName(t.pm.jp, 'jp', sdIsSp(t, 'pm', 'jp'), sdC12(t, 'jp'), sdBy(t, 'pm', 'jp')) + '</span></div>' + sdLiveHint() + sdCofRender();
       var same = !!t.amLocked === !!t.pmLocked;   /* 오늘은 오전 · 오후가 함께 확정되므로 상태 칩 하나 */
       var greet = sdGreeting();
       if (line) line.innerHTML = greet ? '<span class="sd-greet">' + greet.split('|').map(function (x) { return '<b>' + escapeHtml(x) + '</b>'; }).join('') + '</span>' : sdLineSlot(t, 'am', !same, same) + sdLineSlot(t, 'pm', !same);
@@ -9985,7 +9990,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     function sdSeatCell(d, slot, team, admin) {
       var stm = sdSeatTeam(d, slot, team), cur = d[slot][team] || '', sp = sdIsSp(d, slot, team), real = cur ? (sdTeamOf(cur) || stm) : stm;
       var cross = cur && real !== stm ? '<span class="sd-team ' + real + '">' + sdTeamLabel(real) + '</span>' : '';
-      var chg = (sp ? SD_CHG : '') + (slot === 'pm' && sdC12(d, team) ? SD_C12 : '');
+      var chg = sdByChip(sdBy(d, slot, team), sp) + (slot === 'pm' && sdC12(d, team) ? SD_C12 : '');
       /* 0928 폰 카드: 칸 이름표 + 자물쇠(확정·지난날), 이름은 크게. 문준은 칸 전체가 눌리는 버튼 → 바텀시트 (저장은 아래 select 그대로 sdSetManual) */
       var lab = (slot === 'am' ? '오전' : '오후') + ' ' + sdTeamLabel(stm) + (stm !== team ? ' 2' : ''), lk = !d.plan && (d[slot + 'Locked'] || (SD.data.today && d.date < SD.data.today));
       var td = '<td class="sd-td' + (lk ? ' lk' : '') + '"><span class="sd-tl">' + lab + (lk ? SD_LOCK : '') + '</span>';
@@ -10011,7 +10016,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       sdFit();
       if (SD.err) { box.innerHTML = '<div class="sd-msg">' + (SD.err === 'old' ? '서버 파일(Code.gs)을 새 버전으로 교체 · 배포한 뒤에 쓸 수 있어요.' : '근무표를 불러오지 못했어요 (근무표 앱 확인) <button type="button" class="sd-retry" onclick="sdLoad(true)">다시 시도</button>') + '</div>'; return; }
       if (!SD.data) { box.innerHTML = '<div class="sd-row sd-sk" aria-busy="true"><i></i><i></i><i></i></div><div class="sd-row sd-sk"><i></i><i></i><i></i></div><div class="sd-row sd-sk"><i></i><i></i><i></i></div>'; return; }
-      var admin = currentSelectedMember === PF_ADMIN, d = SD.data;
+      var admin = sdCanEdit(), d = SD.data;
       var r2 = d.days.some(function (x) { return x.seat; });
       var h = '<p class="sd-rule">' + (r2 ? '배정 기준 (9/29부터): 오전(10시) 출근 — 중국어가 일본어보다 많으면 중국어 2명, 같거나 적으면 중국어 1 + 일본어 1 · 오후(13시) 출근 중국어 1 + 일본어 1 · 이틀 연속 없음 (모자라면 다른 팀 오전 근무자를 섞고, 그래도 없으면 주 2~3일 근무자가 연속) · 그 주 2~3일 나오는 사람 먼저 · 이번 달 적게 한 사람 우선'
           : '배정 기준: 근무표 오전(10시)·오후(13시) 출근자 중 중국어 1 + 일본어 1, 이번 달 적게 한 사람 우선') + '</p>' + (admin ? sdGapHint(d) : '') + sdLiveHint()
@@ -10121,7 +10126,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         + '<div class="sdc">' + h + '</div>';
     }
     function sdSetManual(sel) {
-      if (currentSelectedMember !== PF_ADMIN) return;
+      if (!sdCanEdit()) return;
       var v = sel.value;
       if (!v) return;
       var o = sel.options[sel.selectedIndex], empty = v === '__empty__', name = empty ? '' : v, special = !empty && !!(o && o.getAttribute('data-sp') === '1');
@@ -10139,7 +10144,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     /* 0928 폰 담당 고르기: 칸의 select 목록을 그대로 바텀시트로 보여 주고, 고르면 select 값을 바꿔 sdSetManual(select) — 저장 경로는 예전과 같음 */
     function sdPick(btn) {
       var sel = btn.parentNode.querySelector('select.sd-sel');
-      if (!sel || sel.disabled || currentSelectedMember !== PF_ADMIN) return;
+      if (!sel || sel.disabled || !sdCanEdit()) return;
       SD.pkSel = sel;
       var cnt = {}, g = SD.data && SD.data.monthGrid, cur = sel.value, top = '', mid = '', tail = '';
       ((g && g.people) || []).forEach(function (p) { cnt[p.name] = p.duty; });
@@ -10182,7 +10187,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       sdSetManual(sel);
     }
     function sdReread(btn) {
-      if (currentSelectedMember !== PF_ADMIN || typeof google === 'undefined' || !google.script || !google.script.run) return;
+      if (!sdCanEdit() || typeof google === 'undefined' || !google.script || !google.script.run) return;
       btn.disabled = true;
       google.script.run
         .withSuccessHandler(function (res) {
