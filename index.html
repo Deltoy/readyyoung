@@ -10013,7 +10013,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (!SD.data) { box.innerHTML = '<div class="sd-row sd-sk" aria-busy="true"><i></i><i></i><i></i></div><div class="sd-row sd-sk"><i></i><i></i><i></i></div><div class="sd-row sd-sk"><i></i><i></i><i></i></div>'; return; }
       var admin = currentSelectedMember === PF_ADMIN, d = SD.data;
       var r2 = d.days.some(function (x) { return x.seat; });
-      var h = '<p class="sd-rule">' + (r2 ? '배정 기준 (9/29부터): 오전(10시) 출근 — 중국어가 일본어보다 많으면 중국어 2명, 같거나 적으면 중국어 1 + 일본어 1 · 오후(13시) 출근 중국어 1 + 일본어 1 · 이틀 연속 없음 (모자라면 다른 팀 오전 근무자를 섞어요) · 그 주 2~3일 나오는 사람 먼저 · 이번 달 적게 한 사람 우선'
+      var h = '<p class="sd-rule">' + (r2 ? '배정 기준 (9/29부터): 오전(10시) 출근 — 중국어가 일본어보다 많으면 중국어 2명, 같거나 적으면 중국어 1 + 일본어 1 · 오후(13시) 출근 중국어 1 + 일본어 1 · 이틀 연속 없음 (모자라면 다른 팀 오전 근무자를 섞고, 그래도 없으면 주 2~3일 근무자가 연속) · 그 주 2~3일 나오는 사람 먼저 · 이번 달 적게 한 사람 우선'
           : '배정 기준: 근무표 오전(10시)·오후(13시) 출근자 중 중국어 1 + 일본어 1, 이번 달 적게 한 사람 우선') + '</p>' + (admin ? sdGapHint(d) : '') + sdLiveHint()
         + (admin ? '<button type="button" class="sd-reread" onclick="sdReread(this)">' + RYI.refresh + '근무표 다시 읽기</button>' : '')
         + '<h4 class="sd-h">이번 주</h4>' + sdTblHtml(d.days.slice(0, 7), false, admin);
