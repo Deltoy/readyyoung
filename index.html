@@ -2957,7 +2957,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .sd-bar .sd-ic .ry-i{width:16px;height
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-bt{flex:none;font-size:13px;font-weight:700!important;color:#111827;white-space:nowrap}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-bt-l{display:none}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-line{flex:1 1 auto;min-width:0;display:flex;flex-wrap:wrap;align-items:center;column-gap:12px;row-gap:2px;font-size:13px;color:#111827;line-height:1.35}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-ln-g{display:inline-flex;align-items:center;gap:3px;white-space:nowrap;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-ln-g{display:inline-flex;flex-wrap:wrap;align-items:center;gap:0 3px;min-width:0;max-width:100%}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-ln-g>*{white-space:nowrap}   /* 0928 이름은 자르지 않고 이름 사이에서 줄바꿈 */
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-ln-s{color:#6b7280;margin-right:3px}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-ln-n.me{color:#155EEF;font-weight:700}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-ln-e{color:#9ca3af}
@@ -3015,7 +3016,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .sd-dept.ph{background:#ECFDF3;color:#
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-dept.cn{background:#FEF2F2;color:#b42318}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-dept.jp{background:#F3F4F6;color:#374151}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-dept.lg{background:#EFF4FF;color:#155EEF}
-@media(max-width:430px){ html:not(#q):not(#w):not(#e) body:not(#r) .sd-cof .sd-cof-l{display:none} html:not(#q):not(#w):not(#e) body:not(#r) .sd-cof{padding:0 7px;gap:3px;height:24px;font-size:12px}
+@media(max-width:430px){ html:not(#q):not(#w):not(#e) body:not(#r) .sd-cof .sd-cof-l{display:none} html:not(#q):not(#w):not(#e) body:not(#r) .sd-cof{padding:0 7px;gap:3px;height:24px;font-size:12px} }
+@media(max-width:600px){
   html:not(#q):not(#w):not(#e) body:not(#r) #sdCard[data-open="0"] .sd-bar{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;grid-template-areas:"ic bt ln tog" "ic cf ln tog";column-gap:8px;row-gap:2px;padding:4px 0}
   html:not(#q):not(#w):not(#e) body:not(#r) #sdCard[data-open="0"] .sd-ic{grid-area:ic;align-self:center}
   html:not(#q):not(#w):not(#e) body:not(#r) #sdCard[data-open="0"] .sd-bt{grid-area:bt;align-self:end}
@@ -3025,7 +3027,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .sd-dept.lg{background:#EFF4FF;color:#
   html:not(#q):not(#w):not(#e) body:not(#r) #sdCard[data-open="0"] #sdCoffee[hidden]+.sd-tog{grid-area:tog}
 }
 @media(max-width:374px){ html:not(#q):not(#w):not(#e) body:not(#r) .sd-bar{gap:8px} html:not(#q):not(#w):not(#e) body:not(#r) .sd-line{column-gap:10px} }
-@media(max-width:340px){ html:not(#q):not(#w):not(#e) body:not(#r) .sd-bar .sd-ic{display:none} }
+@media(max-width:374px){ html:not(#q):not(#w):not(#e) body:not(#r) .sd-bar .sd-ic{display:none} html:not(#q):not(#w):not(#e) body:not(#r) .sd-line .sd-st.ok{font-size:0;gap:0;padding:0 5px} }   /* 0928 좁은 폰: 아이콘 빼고 확정은 자물쇠만 → 이름 한 줄 */
 /* 0928 세트 담당 — 창 너비 1000px 미만(폰·폴드): 하루 = 카드 한 장 (JS sdFit 가 #sdBody 에 sd-cards · 600px 미만 sd-narrow), 칸 4개(오전·오후 x 중국어·일본어)는 크게 눌러 바텀시트에서 고르기 */
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-tile,html:not(#q):not(#w):not(#e) body:not(#r) .sd-tl,html:not(#q):not(#w):not(#e) body:not(#r) .sd-mn{display:none}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tr.sd-fl{animation:sdfl 1.6s ease}
