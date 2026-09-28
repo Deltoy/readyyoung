@@ -2996,6 +2996,9 @@ html:not(#q):not(#w):not(#e) body:not(#r) .sd-cnt-v{color:#6b7280;white-space:no
 @media(max-width:420px){ html:not(#q):not(#w):not(#e) body:not(#r) .sd-cnt{grid-template-columns:auto minmax(0,1fr) auto} html:not(#q):not(#w):not(#e) body:not(#r) .sd-cnt .lt-bar{display:none} html:not(#q):not(#w):not(#e) body:not(#r) .sd-head>b{flex-basis:calc(100% - 50px)} html:not(#q):not(#w):not(#e) body:not(#r) .sd-week{margin-left:auto} }
 @media(min-width:700px),(orientation:landscape) and (max-height:480px) and (min-width:640px){ html:not(#q):not(#w):not(#e) body:not(#r) #sdSheet{width:min(1040px,94vw)!important;max-width:1040px!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important} html:not(#q):not(#w):not(#e) body:not(#r) #sdSheet:not(.on){display:none!important} }
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-rule{margin:0;padding:10px 12px;border-radius:12px;background:#F9FAFB;border:1px solid #EDEEF0;font-size:13px;color:#374151;line-height:1.5}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-gap{margin:0;padding:10px 12px;border-radius:12px;background:#FFFBEB;border:1px solid #FDE68A;font-size:13px;color:#92400e;line-height:1.5;display:flex;flex-direction:column;gap:2px}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-gap b{font-weight:700!important;color:#b45309}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-gap small{font-size:12px;color:#a16207}
 
 /* 0925 접히는 세트 담당 카드 · 특이 지정 표시 */
 html:not(#q):not(#w):not(#e) body:not(#r) #sdCard.sd-card{padding:0 4px 0 12px!important}
@@ -9904,6 +9907,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         + '<p class="sd-live">' + (SD.data.lockedToday ? '<span class="sd-st ok">' + SD_LOCK + '오전·오후 09:35 확정</span>' : '<span class="sd-st">오전·오후 09:35 확정 예정</span>') + (any12 ? SD_C12.replace('12:00 변경', '오후 12:00 변경') : '') + '</p>';
     }
     function sdTeamLabel(t) { return t === 'jp' ? '일본어' : '중국어'; }
+    function sdSeatTeam(d, slot, team) { return (d && d.seat && d.seat[slot] && d.seat[slot][team]) || team; }   /* 0928 9/29부터 오전 두 번째 칸(jp)도 중국어 */
     function sdTeamOf(n) { var s = (SD.data && SD.data.staff) || []; for (var i = 0; i < s.length; i++) if (s[i].name === n) return s[i].team; return ''; }
     function sdIsSp(d, slot, team) { return !!(d && d.special && d.special[slot] && d.special[slot][team]); }
     function sdName(n, team, sp, c12) {
@@ -9959,7 +9963,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (SD.err) { box.innerHTML = '<div class="sd-msg">근무표를 불러오지 못했어요 (근무표 앱 확인) <button type="button" class="sd-retry" onclick="sdLoad(true)">다시 시도</button></div>'; if (line) line.innerHTML = '<span class="sd-ln-msg">근무표를 못 불러왔어요</span>'; if (mine) mine.hidden = true; return; }
       var t = sdToday();
       if (!t) { box.innerHTML = '<div class="sd-row sd-sk" aria-busy="true"><i></i><i></i><i></i></div><div class="sd-row sd-sk"><i></i><i></i><i></i></div>'; if (line) line.innerHTML = '<span class="sd-ln-msg">불러오는 중…</span>'; if (mine) mine.hidden = true; return; }
-      box.innerHTML = '<div class="sd-row sd-row2' + sdNowCls('am') + '"><span class="sd-slot2"><span class="sd-slot">오전</span>' + sdSt(t.amLocked) + '</span><span class="sd-seats">' + sdName(t.am.cn, 'cn', sdIsSp(t, 'am', 'cn')) + sdName(t.am.jp, 'jp', sdIsSp(t, 'am', 'jp')) + '</span></div>'
+      box.innerHTML = '<div class="sd-row sd-row2' + sdNowCls('am') + '"><span class="sd-slot2"><span class="sd-slot">오전</span>' + sdSt(t.amLocked) + '</span><span class="sd-seats">' + sdName(t.am.cn, 'cn', sdIsSp(t, 'am', 'cn')) + sdName(t.am.jp, sdSeatTeam(t, 'am', 'jp'), sdIsSp(t, 'am', 'jp')) + '</span></div>'
         + '<div class="sd-row sd-row2' + sdNowCls('pm') + '"><span class="sd-slot2"><span class="sd-slot">오후</span>' + sdSt(t.pmLocked) + '</span><span class="sd-seats">' + sdName(t.pm.cn, 'cn', sdIsSp(t, 'pm', 'cn'), sdC12(t, 'cn')) + sdName(t.pm.jp, 'jp', sdIsSp(t, 'pm', 'jp'), sdC12(t, 'jp')) + '</span></div>' + sdLiveHint() + sdCofRender();
       var same = !!t.amLocked === !!t.pmLocked;   /* 오늘은 오전 · 오후가 함께 확정되므로 상태 칩 하나 */
       var greet = sdGreeting();
@@ -9979,23 +9983,23 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       document.getElementById('sdSheet').classList.remove('on');
     }
     function sdSeatCell(d, slot, team, admin) {
-      var cur = d[slot][team] || '', sp = sdIsSp(d, slot, team), real = cur ? (sdTeamOf(cur) || team) : team;
-      var cross = cur && real !== team ? '<span class="sd-team ' + real + '">' + sdTeamLabel(real) + '</span>' : '';
+      var stm = sdSeatTeam(d, slot, team), cur = d[slot][team] || '', sp = sdIsSp(d, slot, team), real = cur ? (sdTeamOf(cur) || stm) : stm;
+      var cross = cur && real !== stm ? '<span class="sd-team ' + real + '">' + sdTeamLabel(real) + '</span>' : '';
       var chg = (sp ? SD_CHG : '') + (slot === 'pm' && sdC12(d, team) ? SD_C12 : '');
       /* 0928 폰 카드: 칸 이름표 + 자물쇠(확정·지난날), 이름은 크게. 문준은 칸 전체가 눌리는 버튼 → 바텀시트 (저장은 아래 select 그대로 sdSetManual) */
-      var lab = (slot === 'am' ? '오전' : '오후') + ' ' + sdTeamLabel(team), lk = !d.plan && (d[slot + 'Locked'] || (SD.data.today && d.date < SD.data.today));
+      var lab = (slot === 'am' ? '오전' : '오후') + ' ' + sdTeamLabel(stm) + (stm !== team ? ' 2' : ''), lk = !d.plan && (d[slot + 'Locked'] || (SD.data.today && d.date < SD.data.today));
       var td = '<td class="sd-td' + (lk ? ' lk' : '') + '"><span class="sd-tl">' + lab + (lk ? SD_LOCK : '') + '</span>';
       var nm = cur ? '<span class="sd-n' + (cur === currentSelectedMember ? ' me' : '') + (admin ? ' sd-mn' : '') + '">' + escapeHtml(cur) + '</span>' : '<em class="sd-none' + (admin ? ' sd-mn' : '') + '">' + (sp ? '비움' : admin ? '선택' : '후보 없음') + '</em>';
       if (!admin) return td + '<span class="sd-cell">' + cross + nm + chg + '</span></td>';
       var cands = ((slot === 'am' ? d.amCands : d.pmCands) || {})[team] || [];
-      var others = (SD.data.staff || []).filter(function (x) { return cands.indexOf(x.name) === -1 && !(x.join && d.date < x.join) && !(x.leave && d.date > x.leave); });
+      var others = (SD.data.staff || []).filter(function (x) { return cands.indexOf(x.name) === -1 && !x.excl && !(x.join && d.date < x.join) && !(x.leave && d.date > x.leave); });   /* 0928 제외 대상(조순주 등)은 목록에서 아예 뺌 */
       var known = cands.indexOf(cur) !== -1 || others.some(function (x) { return x.name === cur; });
       var opt = function (n, label, isSp) { return '<option value="' + escapeHtml(n) + '"' + (isSp ? ' data-sp="1"' : '') + (n === cur ? ' selected' : '') + '>' + escapeHtml(label) + '</option>'; };
-      var h = td + '<span class="sd-cell"><select class="sd-sel" aria-label="' + escapeHtml(d.date + ' ' + lab) + '" data-date="' + escapeHtml(d.date) + '" data-slot="' + slot + '" data-team="' + team + '" onchange="sdSetManual(this)">'
+      var h = td + '<span class="sd-cell"><select class="sd-sel" aria-label="' + escapeHtml(d.date + ' ' + lab) + '" data-date="' + escapeHtml(d.date) + '" data-slot="' + slot + '" data-team="' + team + '" data-lab="' + escapeHtml(lab.replace(/^오[전후] /, '')) + '" onchange="sdSetManual(this)">'
         + (cur || sp ? '' : '<option value="" selected>선택</option>')
         + (cur && !known ? opt(cur, cur, true) : '')
         + '<optgroup label="근무표 후보">' + (cands.length ? cands.map(function (n) { return opt(n, n, false); }).join('') : '<option value="" disabled>후보 없음</option>') + '</optgroup>'
-        + '<optgroup label="그 외 직원 (특이 케이스)">' + others.map(function (x) { return opt(x.name, x.name + (x.team !== team ? ' · ' + sdTeamLabel(x.team) : '') + (x.excl ? ' (제외 대상)' : ''), true); }).join('') + '</optgroup>'
+        + '<optgroup label="그 외 직원 (특이 케이스)">' + others.map(function (x) { return opt(x.name, x.name + (x.team !== stm ? ' · ' + sdTeamLabel(x.team) : '') + (x.excl ? ' (제외 대상)' : ''), true); }).join('') + '</optgroup>'
         + '<option value="__empty__"' + (!cur && sp ? ' selected' : '') + '>비움 (아무도 없음)</option>'
         + '</select>' + nm + cross + chg + '</span>'
         + '<button type="button" class="sd-tile" aria-label="' + escapeHtml(sdMD(d.date) + ' ' + lab + ' 담당 ' + (cur || '없음') + ' · 바꾸기') + '" onclick="sdPick(this)">' + RYI.chevright + '</button></td>';
@@ -10008,7 +10012,9 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (SD.err) { box.innerHTML = '<div class="sd-msg">' + (SD.err === 'old' ? '서버 파일(Code.gs)을 새 버전으로 교체 · 배포한 뒤에 쓸 수 있어요.' : '근무표를 불러오지 못했어요 (근무표 앱 확인) <button type="button" class="sd-retry" onclick="sdLoad(true)">다시 시도</button>') + '</div>'; return; }
       if (!SD.data) { box.innerHTML = '<div class="sd-row sd-sk" aria-busy="true"><i></i><i></i><i></i></div><div class="sd-row sd-sk"><i></i><i></i><i></i></div><div class="sd-row sd-sk"><i></i><i></i><i></i></div>'; return; }
       var admin = currentSelectedMember === PF_ADMIN, d = SD.data;
-      var h = '<p class="sd-rule">배정 기준: 근무표 오전(10시)·오후(13시) 출근자 중 중국어 1 + 일본어 1, 이번 달 적게 한 사람 우선</p>' + sdLiveHint()
+      var r2 = d.days.some(function (x) { return x.seat; });
+      var h = '<p class="sd-rule">' + (r2 ? '배정 기준 (9/29부터): 오전(10시) 출근 중국어 2명 · 오후(13시) 출근 중국어 1 + 일본어 1 · 이틀 연속 없음 · 그 주 2~3일 나오는 사람 먼저 · 이번 달 적게 한 사람 우선'
+          : '배정 기준: 근무표 오전(10시)·오후(13시) 출근자 중 중국어 1 + 일본어 1, 이번 달 적게 한 사람 우선') + '</p>' + (admin ? sdGapHint(d) : '') + sdLiveHint()
         + (admin ? '<button type="button" class="sd-reread" onclick="sdReread(this)">' + RYI.refresh + '근무표 다시 읽기</button>' : '')
         + '<h4 class="sd-h">이번 주</h4>' + sdTblHtml(d.days.slice(0, 7), false, admin);
       var nx = d.days.slice(7);   /* 0927 다음 주: 근무표로 미리 계산한 예정 (그날 09:35 확정) */
@@ -10022,10 +10028,23 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         if (tt && box.classList.contains('sd-cards')) tt.scrollIntoView({ block: 'start' });
       }
     }
+    /* 0928 근무표에 사람이 없어 비는 칸 (오늘부터, 근무표 있는 날만, 일부러 비운 칸 제외) → 팀장님께 임시 배정 요청 */
+    function sdGapHint(d) {
+      var g = [];
+      d.days.forEach(function (x) {
+        if (x.date < d.today || x.noRecord || x.noSched) return;
+        [['am', 'cn'], ['am', 'jp'], ['pm', 'cn'], ['pm', 'jp']].forEach(function (p) {
+          if (x[p[0]][p[1]] || sdIsSp(x, p[0], p[1])) return;
+          var st = sdSeatTeam(x, p[0], p[1]);
+          g.push(sdMD(x.date) + ' ' + (p[0] === 'am' ? '오전' : '오후') + ' ' + sdTeamLabel(st) + (st !== p[1] ? ' 2' : ''));
+        });
+      });
+      return g.length ? '<p class="sd-gap"><b>근무표에 사람이 없어 비는 칸 ' + g.length + '개</b>' + escapeHtml(g.join(' · ')) + '<small>팀장님께 임시 배정을 부탁하거나, 칸을 눌러 그 외 직원으로 채워요</small></p>' : '';
+    }
     function sdMD(ds) { var m = String(ds).match(/^\d{4}-(\d{2})-(\d{2})$/); return m ? (+m[1]) + '/' + (+m[2]) : String(ds); }
     /* 0927 주간 표 한 개 (plan = 다음 주 예정: 점선 · 흐린 글자 · '예정' 칩, 근무표가 아직 없으면 '근무표 아직 없음') */
     function sdTblHtml(days, plan, admin) {
-      return '<div class="sd-tbl-wrap' + (plan ? ' plan' : '') + '"><table class="sd-tbl"><thead><tr><th>날짜</th><th colspan="2">오전 (중국어 · 일본어)</th><th colspan="2">오후 (중국어 · 일본어)</th></tr></thead><tbody>'
+      return '<div class="sd-tbl-wrap' + (plan ? ' plan' : '') + '"><table class="sd-tbl"><thead><tr><th>날짜</th><th colspan="2">' + (days.some(function (x) { return x.seat; }) ? (days.every(function (x) { return x.seat || x.noRecord || x.noSched; }) ? '오전 (중국어 2명)' : '오전 (중국어 · 중국어/일본어)') : '오전 (중국어 · 일본어)') + '</th><th colspan="2">오후 (중국어 · 일본어)</th></tr></thead><tbody>'
         + days.map(function (x) {
           var label = escapeHtml(sdMD(x.date)) + ' (' + (SD_DOW[parseInt(x.dow, 10)] || '') + ')', none = x.noRecord || (plan && x.noSched);
           return '<tr data-date="' + escapeHtml(x.date) + '" class="' + (x.isToday ? 'today' : plan ? 'plan' : '') + (none || x.noRecord ? ' nil' : '') + '"><th scope="row">' + label + (x.isToday ? '<span class="sd-tag now">오늘</span>' : '') + (none ? '' : plan ? '<span class="sd-st plan" title="근무표로 미리 계산 · 그날 09:35에 확정">예정</span>' : sdSt(x.confirmed)) + '</th>'
@@ -10136,7 +10155,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         } else if (c.value === '__empty__') tail = item(c, 'clr', '비우기 (아무도 없음)');
         else if (c.value) top = item(c);
       });
-      document.getElementById('sdPkT').textContent = sdMD(ds) + ' (' + (SD_DOW[new Date(ds + 'T00:00:00').getDay()] || '') + ') ' + slot + ' ' + sdTeamLabel(sel.dataset.team);
+      document.getElementById('sdPkT').textContent = sdMD(ds) + ' (' + (SD_DOW[new Date(ds + 'T00:00:00').getDay()] || '') + ') ' + slot + ' ' + (sel.dataset.lab || sdTeamLabel(sel.dataset.team));
       document.getElementById('sdPkBody').innerHTML = top + mid + tail;
       document.getElementById('sdPkDim').classList.add('on');
       var pk = document.getElementById('sdPk');
