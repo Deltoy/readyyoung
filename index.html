@@ -2945,7 +2945,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .sd-cnt b{font-weight:700!important;co
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-cnt.me b{color:#155EEF}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-cnt-v{color:#6b7280;white-space:nowrap;font-variant-numeric:tabular-nums}
 @media(max-width:420px){ html:not(#q):not(#w):not(#e) body:not(#r) .sd-cnt{grid-template-columns:auto minmax(0,1fr) auto} html:not(#q):not(#w):not(#e) body:not(#r) .sd-cnt .lt-bar{display:none} html:not(#q):not(#w):not(#e) body:not(#r) .sd-head>b{flex-basis:calc(100% - 50px)} html:not(#q):not(#w):not(#e) body:not(#r) .sd-week{margin-left:auto} }
-@media(min-width:900px),(orientation:landscape) and (max-height:480px) and (min-width:640px){ html:not(#q):not(#w):not(#e) body:not(#r) #sdSheet{width:min(980px,94vw)!important;max-width:980px!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important} html:not(#q):not(#w):not(#e) body:not(#r) #sdSheet:not(.on){display:none!important} }
+@media(min-width:700px),(orientation:landscape) and (max-height:480px) and (min-width:640px){ html:not(#q):not(#w):not(#e) body:not(#r) #sdSheet{width:min(1040px,94vw)!important;max-width:1040px!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important} html:not(#q):not(#w):not(#e) body:not(#r) #sdSheet:not(.on){display:none!important} }
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-rule{margin:0;padding:10px 12px;border-radius:12px;background:#F9FAFB;border:1px solid #EDEEF0;font-size:13px;color:#374151;line-height:1.5}
 
 /* 0925 접히는 세트 담당 카드 · 특이 지정 표시 */
@@ -3026,44 +3026,42 @@ html:not(#q):not(#w):not(#e) body:not(#r) .sd-dept.lg{background:#EFF4FF;color:#
 }
 @media(max-width:374px){ html:not(#q):not(#w):not(#e) body:not(#r) .sd-bar{gap:8px} html:not(#q):not(#w):not(#e) body:not(#r) .sd-line{column-gap:10px} }
 @media(max-width:340px){ html:not(#q):not(#w):not(#e) body:not(#r) .sd-bar .sd-ic{display:none} }
-/* 0928 세트 담당 — 폰(<=720px): 하루 = 카드 한 장, 칸 4개(오전·오후 x 중국어·일본어)는 크게 눌러 바텀시트에서 고르기 */
+/* 0928 세트 담당 — 창 너비 1000px 미만(폰·폴드): 하루 = 카드 한 장 (JS sdFit 가 #sdBody 에 sd-cards · 600px 미만 sd-narrow), 칸 4개(오전·오후 x 중국어·일본어)는 크게 눌러 바텀시트에서 고르기 */
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-tile,html:not(#q):not(#w):not(#e) body:not(#r) .sd-tl,html:not(#q):not(#w):not(#e) body:not(#r) .sd-mn{display:none}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tr.sd-fl{animation:sdfl 1.6s ease}
 @keyframes sdfl{0%,40%{box-shadow:0 0 0 3px #155EEF}100%{box-shadow:0 0 0 3px rgba(21,94,239,0)}}
-@media(max-width:720px){
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl-wrap{overflow:visible;border:0;border-radius:0}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl{display:block;min-width:0}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl thead{display:none}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tbody{display:flex;flex-direction:column;gap:8px}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px;padding:10px;border:1px solid #EDEEF0;border-radius:16px;background:#fff;scroll-margin-top:8px}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tr.today{background:#F5F8FF;border:1.5px solid #155EEF}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl-wrap.plan tr{border-style:dashed;border-color:#D0D5DD;background:#FCFCFD}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tbody th,html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl td{display:flex;padding:0!important;border:0;white-space:normal}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tbody th{grid-column:1/-1;align-items:center;flex-wrap:wrap;gap:4px 6px;font-size:14.5px;min-height:24px;padding:0 2px}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tbody th .sd-tag,html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tbody th .sd-st{margin-left:0}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl td[colspan]{grid-column:1/-1}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tr.nil{grid-template-columns:auto minmax(0,1fr);align-items:center;padding:8px 12px}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tr.nil th{grid-column:auto}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tr.nil td[colspan]{grid-column:auto;justify-content:flex-end}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-td{position:relative;flex-direction:column;justify-content:center;gap:2px;min-height:54px;padding:7px 28px 7px 11px!important;border-radius:12px;background:#F7F8FA!important}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tr.today .sd-td{background:#fff!important}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl-wrap.plan .sd-td{background:#fff!important;border:1px dashed #D0D5DD!important}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tl{display:flex;align-items:center;gap:3px;font-size:11.5px;font-weight:600;color:#6b7280;line-height:1.2}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tl .sd-lock{margin:0;width:11px!important;height:11px!important}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-td .sd-cell{flex-wrap:wrap;gap:3px 5px;min-width:0}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-td .sd-n,html:not(#q):not(#w):not(#e) body:not(#r) .sd-td .sd-none{font-size:15.5px;font-weight:700;color:#111827;overflow-wrap:anywhere}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-td .sd-none{font-weight:500;color:#9ca3af;font-size:14px}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-td .sd-n.me{color:#155EEF}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-td .sd-chg{margin-left:0}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-td.lk{background:#F2F4F7!important}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tbl tr.today .sd-td.lk{background:#EEF2F8!important}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-td .sd-sel{display:none!important}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-mn{display:inline}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tile{display:flex!important;position:absolute;inset:0;width:100%!important;height:100%!important;min-height:0!important;margin:0!important;padding:0 6px 0 0!important;border:0!important;border-radius:12px!important;background:transparent!important;color:#9ca3af!important;align-items:center;justify-content:flex-end;cursor:pointer;-webkit-tap-highlight-color:transparent}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tile:active{background:rgba(16,24,40,.06)!important}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-tile .ry-i{width:18px;height:18px}
-html:not(#q):not(#w):not(#e) body:not(#r) .sd-td:has(.sd-sel:disabled){opacity:.5}
-}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tbl-wrap{overflow:visible;border:0;border-radius:0}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tbl{display:block;min-width:0}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tbl thead{display:none}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tbl tbody{display:flex;flex-direction:column;gap:8px}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tbl tr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px;padding:10px;border:1px solid #EDEEF0;border-radius:16px;background:#fff;scroll-margin-top:8px}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tbl tr.today{background:#F5F8FF;border:1.5px solid #155EEF}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tbl-wrap.plan tr{border-style:dashed;border-color:#D0D5DD;background:#FCFCFD}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tbl tbody th,html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tbl td{display:flex;padding:0!important;border:0;white-space:normal}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tbl tbody th{grid-column:1/-1;align-items:center;flex-wrap:wrap;gap:4px 6px;font-size:14.5px;min-height:24px;padding:0 2px}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tbl tbody th .sd-tag,html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tbl tbody th .sd-st{margin-left:0}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tbl td[colspan]{grid-column:1/-1}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tbl tr.nil{grid-template-columns:auto minmax(0,1fr);align-items:center;padding:8px 12px}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tbl tr.nil th{grid-column:auto}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tbl tr.nil td[colspan]{grid-column:auto;justify-content:flex-end}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tbl .sd-td{position:relative;flex-direction:column;justify-content:center;gap:2px;min-height:54px;padding:7px 28px 7px 11px!important;border-radius:12px;background:#F7F8FA!important}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tbl tr.today .sd-td{background:#fff!important}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tbl-wrap.plan .sd-td{background:#fff!important;border:1px dashed #D0D5DD!important}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tl{display:flex;align-items:center;gap:3px;font-size:11.5px;font-weight:600;color:#6b7280;line-height:1.2}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tl .sd-lock{margin:0;width:11px!important;height:11px!important}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-td .sd-cell{flex-wrap:wrap;gap:3px 5px;min-width:0}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-td .sd-n,html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-td .sd-none{font-size:15.5px;font-weight:700;color:#111827;overflow-wrap:anywhere}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-td .sd-none{font-weight:500;color:#9ca3af;font-size:14px}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-td .sd-n.me{color:#155EEF}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-td .sd-chg{margin-left:0}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-td.lk{background:#F2F4F7!important}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tbl tr.today .sd-td.lk{background:#EEF2F8!important}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-td .sd-sel{display:none!important}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-mn{display:inline}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tile{display:flex!important;position:absolute;inset:0;width:100%!important;height:100%!important;min-height:0!important;margin:0!important;padding:0 6px 0 0!important;border:0!important;border-radius:12px!important;background:transparent!important;color:#9ca3af!important;align-items:center;justify-content:flex-end;cursor:pointer;-webkit-tap-highlight-color:transparent}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tile:active{background:rgba(16,24,40,.06)!important}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-tile .ry-i{width:18px;height:18px}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards .sd-td:has(.sd-sel:disabled){opacity:.5}
 
 html:not(#q):not(#w):not(#e) body:not(#r) #sdPkDim{z-index:74!important}
 html:not(#q):not(#w):not(#e) body:not(#r) #sdPk{z-index:75!important;max-height:78vh}
@@ -3125,14 +3123,16 @@ html:not(#q):not(#w):not(#e) body:not(#r) .sdp-pct{grid-area:p;font-size:14px;fo
 html:not(#q):not(#w):not(#e) body:not(#r) .sdp-bar{grid-area:b;height:6px;border-radius:999px;background:#E4E7EC;overflow:hidden}
 html:not(#q):not(#w):not(#e) body:not(#r) .sdp-bar i{display:block;height:100%;border-radius:inherit;background:#155EEF}
 html:not(#q):not(#w):not(#e) body:not(#r) .sdp-v{grid-area:v;font-size:12px;color:#6b7280;white-space:nowrap;font-variant-numeric:tabular-nums}
-@media(min-width:721px){
-html:not(#q):not(#w):not(#e) body:not(#r) .sdc{gap:4px}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdc-d{min-height:78px!important;padding:5px 5px 6px!important;gap:2px}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdc-n{font-size:12px}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdc-p{font-size:12px;line-height:18px;padding:0 5px;gap:4px}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdc-s{display:none}html:not(#q):not(#w):not(#e) body:not(#r) .sdc-l{display:inline}
-html:not(#q):not(#w):not(#e) body:not(#r) .sdp{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px 12px}
-}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody:not(.sd-narrow) .sdc{gap:4px}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody:not(.sd-narrow) .sdc-d{min-height:78px!important;padding:5px 5px 6px!important;gap:2px}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody:not(.sd-narrow) .sdc-d.pre{min-height:30px!important}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody:not(.sd-narrow) .sdc-n{font-size:12px}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody:not(.sd-narrow) .sdc-p{font-size:12px;line-height:18px;padding:0 5px;gap:4px}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody:not(.sd-narrow) .sdc-s{display:none}html:not(#q):not(#w):not(#e) body:not(#r) #sdBody:not(.sd-narrow) .sdc-l{display:inline}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody:not(.sd-narrow) .sdp{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px 12px}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards:not(.sd-narrow) .sd-tbl tbody{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards:not(.sd-narrow) .sd-tbl tbody tr:last-child:nth-child(odd){grid-column:1/-1}
+html:not(#q):not(#w):not(#e) body:not(#r) #sdBody.sd-cards:not(.sd-narrow) .sd-tbl tbody tr:last-child:nth-child(odd):not(.nil){grid-template-columns:repeat(4,minmax(0,1fr))}
 </style>
 <style id="ry25-notice">
 /* ═══ 0925 공지 보관함 ═══ */
@@ -9758,6 +9758,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     function sdRenderSheet() {
       var box = document.getElementById('sdBody');
       if (!box || !document.getElementById('sdSheet').classList.contains('on')) return;
+      sdFit();
       if (SD.err) { box.innerHTML = '<div class="sd-msg">' + (SD.err === 'old' ? '서버 파일(Code.gs)을 새 버전으로 교체 · 배포한 뒤에 쓸 수 있어요.' : '근무표를 불러오지 못했어요 (근무표 앱 확인) <button type="button" class="sd-retry" onclick="sdLoad(true)">다시 시도</button>') + '</div>'; return; }
       if (!SD.data) { box.innerHTML = '<div class="sd-row sd-sk" aria-busy="true"><i></i><i></i><i></i></div><div class="sd-row sd-sk"><i></i><i></i><i></i></div><div class="sd-row sd-sk"><i></i><i></i><i></i></div>'; return; }
       var admin = currentSelectedMember === PF_ADMIN, d = SD.data;
@@ -9772,7 +9773,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (SD.goToday) {   /* 0928 폰: 창을 열면 오늘 카드로 */
         SD.goToday = false;
         var tt = box.querySelector('tr.today');
-        if (tt && window.matchMedia && matchMedia('(max-width:720px)').matches) tt.scrollIntoView({ block: 'start' });
+        if (tt && box.classList.contains('sd-cards')) tt.scrollIntoView({ block: 'start' });
       }
     }
     function sdMD(ds) { var m = String(ds).match(/^\d{4}-(\d{2})-(\d{2})$/); return m ? (+m[1]) + '/' + (+m[2]) : String(ds); }
@@ -9895,6 +9896,14 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       var pk = document.getElementById('sdPk');
       pk.classList.add('on'); pk.scrollTop = 0;
     }
+    /* 0928 표가 안 들어가는 창(1000px 미만)이면 카드, 600px 미만이면 한 줄 카드 · 달력 짧은 이름 — 화면이 아니라 창 너비로 판단 (폴드 펼침 대응) */
+    function sdFit() {
+      var sh = document.getElementById('sdSheet'), b = document.getElementById('sdBody');
+      if (!sh || !b || !sh.classList.contains('on')) return;
+      b.classList.toggle('sd-cards', sh.clientWidth < 1000);
+      b.classList.toggle('sd-narrow', b.clientWidth < 600);
+    }
+    window.addEventListener('resize', sdFit);
     function sdPkClose() {
       document.getElementById('sdPkDim').classList.remove('on');
       document.getElementById('sdPk').classList.remove('on');
