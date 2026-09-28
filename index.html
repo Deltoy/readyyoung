@@ -8682,11 +8682,11 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 
     function optimisticAddToReview(rowNumber, src, n) {
       if (!src || cachedReviewItems.some(it => it.rowNumber === rowNumber)) return;
-      const tag = '[요청자:' + currentSelectedMember + ']';
+      /* 0928 요청자는 요청자 배지로만 보여 줌 — 특이사항에 '[요청자:이름]' 을 붙이지 않는다 (붙이면 메모 고칠 때 시트에 저장돼 계속 나옴) */
       const baseNote = String(src.note || '').replace(/\[요청자:[^\]]*\]/g, '').replace(/\[검수요청[^\]]*\]/g, '').replace(/\[발주승인\]/g, '').trim();
       cachedReviewItems.unshift({
         rowNumber: rowNumber, name: src.name, imgUrl: src.imgUrl || '', targetQty: String(n), unit: '개',
-        boxUnit: src.boxUnit || '', note: baseNote ? (tag + ' ' + baseNote) : tag,
+        boxUnit: src.boxUnit || '', note: baseNote,
         sales15: src.sales15 || '-', requester: currentSelectedMember, isCheckRequested: false, checkRequester: ''
       });
       renderAllViews();
