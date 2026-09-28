@@ -3275,8 +3275,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
   html:not(#q):not(#w):not(#e) body:not(#r) .ry25-mark{display:none!important}
   html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title .ry25-thi{width:32px;height:32px}
 }
-/* 아주 좁은 폰(≤374): 주문 수량칸은 숫자 위 · 단위 아래로 쌓아 세 자리도 안 잘리게 */
-@media(max-width:374px){
+/* 폰·작은 태블릿(<720, 주문칸 92px): 주문 수량칸은 숫자 위 · 단위 아래로 쌓아 세·네 자리도 안 잘리게 (0928 374→719) */
+@media(max-width:719px){
   html:not(#q):not(#w):not(#e) body:not(#r) .ry-oc-qty .ry25-qtybox{flex-direction:column;gap:6px;width:100%}
   html:not(#q):not(#w):not(#e) body:not(#r) .ry-oc-qty .ry25-qtybox>input[id^="m-qty-"]{padding:0 4px!important;font-size:17px!important}
   html:not(#q):not(#w):not(#e) body:not(#r) .ry-oc-qty .ry25-qtybox>button[id^="m-unit-btn-"]{position:static!important;width:100%!important;border-radius:10px!important}
