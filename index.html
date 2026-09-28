@@ -10013,7 +10013,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (!SD.data) { box.innerHTML = '<div class="sd-row sd-sk" aria-busy="true"><i></i><i></i><i></i></div><div class="sd-row sd-sk"><i></i><i></i><i></i></div><div class="sd-row sd-sk"><i></i><i></i><i></i></div>'; return; }
       var admin = currentSelectedMember === PF_ADMIN, d = SD.data;
       var r2 = d.days.some(function (x) { return x.seat; });
-      var h = '<p class="sd-rule">' + (r2 ? '배정 기준 (9/29부터): 오전(10시) 출근 중국어 2명 · 오후(13시) 출근 중국어 1 + 일본어 1 · 이틀 연속 없음 (오전 중국어가 모자라면 오전 일본어 근무자를 섞어요) · 그 주 2~3일 나오는 사람 먼저 · 이번 달 적게 한 사람 우선'
+      var h = '<p class="sd-rule">' + (r2 ? '배정 기준 (9/29부터): 오전(10시) 출근 — 중국어가 일본어보다 많으면 중국어 2명, 같거나 적으면 중국어 1 + 일본어 1 · 오후(13시) 출근 중국어 1 + 일본어 1 · 이틀 연속 없음 (모자라면 다른 팀 오전 근무자를 섞어요) · 그 주 2~3일 나오는 사람 먼저 · 이번 달 적게 한 사람 우선'
           : '배정 기준: 근무표 오전(10시)·오후(13시) 출근자 중 중국어 1 + 일본어 1, 이번 달 적게 한 사람 우선') + '</p>' + (admin ? sdGapHint(d) : '') + sdLiveHint()
         + (admin ? '<button type="button" class="sd-reread" onclick="sdReread(this)">' + RYI.refresh + '근무표 다시 읽기</button>' : '')
         + '<h4 class="sd-h">이번 주</h4>' + sdTblHtml(d.days.slice(0, 7), false, admin);
@@ -10045,7 +10045,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     function sdMD(ds) { var m = String(ds).match(/^\d{4}-(\d{2})-(\d{2})$/); return m ? (+m[1]) + '/' + (+m[2]) : String(ds); }
     /* 0927 주간 표 한 개 (plan = 다음 주 예정: 점선 · 흐린 글자 · '예정' 칩, 근무표가 아직 없으면 '근무표 아직 없음') */
     function sdTblHtml(days, plan, admin) {
-      return '<div class="sd-tbl-wrap' + (plan ? ' plan' : '') + '"><table class="sd-tbl"><thead><tr><th>날짜</th><th colspan="2">' + (days.some(function (x) { return x.seat; }) ? (days.every(function (x) { return x.seat || x.noRecord || x.noSched; }) ? '오전 (중국어 2명)' : '오전 (중국어 · 중국어/일본어)') : '오전 (중국어 · 일본어)') + '</th><th colspan="2">오후 (중국어 · 일본어)</th></tr></thead><tbody>'
+      return '<div class="sd-tbl-wrap' + (plan ? ' plan' : '') + '"><table class="sd-tbl"><thead><tr><th>날짜</th><th colspan="2">' + (days.some(function (x) { return x.seat; }) ? '오전 (중국어 · 중국어 또는 일본어)' : '오전 (중국어 · 일본어)') + '</th><th colspan="2">오후 (중국어 · 일본어)</th></tr></thead><tbody>'
         + days.map(function (x) {
           var label = escapeHtml(sdMD(x.date)) + ' (' + (SD_DOW[parseInt(x.dow, 10)] || '') + ')', none = x.noRecord || (plan && x.noSched);
           return '<tr data-date="' + escapeHtml(x.date) + '" class="' + (x.isToday ? 'today' : plan ? 'plan' : '') + (none || x.noRecord ? ' nil' : '') + '"><th scope="row">' + label + (x.isToday ? '<span class="sd-tag now">오늘</span>' : '') + (none ? '' : plan ? '<span class="sd-st plan" title="근무표로 미리 계산 · 그날 09:35에 확정">예정</span>' : sdSt(x.confirmed)) + '</th>'
