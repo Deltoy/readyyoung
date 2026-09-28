@@ -2711,6 +2711,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .pfa-rv{border:1px solid #EDEEF0;borde
 html:not(#q):not(#w):not(#e) body:not(#r) .pfa-rv-h{display:flex;align-items:center;justify-content:space-between;gap:8px}
 html:not(#q):not(#w):not(#e) body:not(#r) .pfa-rv-h b{font-size:14.5px;font-weight:700;color:#111827;min-width:0;word-break:keep-all}
 html:not(#q):not(#w):not(#e) body:not(#r) .pfa-skip{min-height:44px!important;padding:0 12px!important;border-radius:12px!important;border:1px solid #d1d5db!important;background:#fff!important;color:#374151!important;font-size:13px!important;flex:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .st-note{margin:8px 4px 0;font-size:12.5px;color:#6b7280;line-height:1.5}
 /* 0928 15일 판매량 엑셀 */
 html:not(#q):not(#w):not(#e) body:not(#r) #s15Entry[hidden]{display:none!important}
 html:not(#q):not(#w):not(#e) body:not(#r) #s15Entry.due small{color:#b45309!important}
@@ -4681,6 +4682,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         chips.hidden = false;
         list = ST.range === 'all' ? L.todo.filter(function (it) { return it.days >= 0; }) : L.todo.filter(function (it) { return stRange(it) === ST.range; });
         var noneFoot = ST.range === 'all' && cnt.none ? '<button type="button" class="st-foot" data-k="none" onclick="stSetRange(this.dataset.k)">주문 기록이 없는 상품 ' + cnt.none + '개는 따로 모아뒀어요 · 보기</button>' : '';
+        var hn = ST.data && ST.data.hiddenNew;   /* 0928 새로 등록 · 주문 기록 없는 상품은 처음 본 날부터 한 달 숨김 */
+        if (hn) noneFoot += '<p class="st-note">새로 등록했거나 주문 기록이 없는 상품 ' + hn + '개는 한 달 동안 여기 안 보여요 · 그동안 주문이 없으면 그때 나와요</p>';
       } else { chips.hidden = true; chips.innerHTML = ''; list = ST.seg === 'doing' ? L.doing : L.done; var noneFoot = ''; }
       var body = document.getElementById('stBody');
       if (!list.length) {
