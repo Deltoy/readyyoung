@@ -3258,6 +3258,61 @@ html:not(#q):not(#w):not(#e) body:not(#r) .nt-swap>.ry-i{color:#9ca3af}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-tl-inline{display:flex;gap:8px;flex-wrap:wrap}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-sheet .nt-raw{width:100%;min-height:150px;border:1px solid #d1d5db;border-radius:14px;padding:12px;font-size:15px;line-height:1.5;box-sizing:border-box;resize:vertical}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
+/* 0928 공지 사진 · 참석/불참 · 댓글 */
+html:not(#q):not(#w):not(#e) body:not(#r) .ntp-grid{display:grid;gap:6px;grid-template-columns:repeat(3,minmax(0,1fr))}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntp-grid.n1{grid-template-columns:minmax(0,1fr)}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntp-grid.n2,html:not(#q):not(#w):not(#e) body:not(#r) .ntp-grid.n4{grid-template-columns:repeat(2,minmax(0,1fr))}   /* 4장 = 2x2, 5장 = 마지막 사진이 두 칸 (빈칸 없게) */
+html:not(#q):not(#w):not(#e) body:not(#r) .ntp-grid.n5 .ntp:last-child{grid-column:span 2;aspect-ratio:auto}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntp{display:block;border-radius:14px;overflow:hidden;background:#F3F4F6;aspect-ratio:4/3}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntp-grid.n1 .ntp{aspect-ratio:auto;max-height:420px}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntp img{width:100%;height:100%;object-fit:cover;display:block}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntp-grid.n1 .ntp img{object-fit:contain;max-height:420px}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntr{display:flex;flex-direction:column;gap:8px;padding-top:10px;border-top:1px solid #EDEEF0}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntr-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntr-b{min-height:48px!important;border-radius:14px!important;border:1px solid #d1d5db!important;background:#fff!important;color:#374151!important;font-size:15px!important;font-weight:600!important;display:inline-flex!important;align-items:center;justify-content:center;gap:6px}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntr-b b{font-variant-numeric:tabular-nums;font-weight:700!important;color:#6b7280}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntr-b .ry-i{width:16px;height:16px}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntr-b.yes.on{background:#155EEF!important;border-color:#155EEF!important;color:#fff!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntr-b.no.on{background:#374151!important;border-color:#374151!important;color:#fff!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntr-b.on b{color:#fff}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntr-n{margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font-size:13px;color:#374151;line-height:1.5}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntr-n span{font-size:11.5px;font-weight:700;border-radius:999px;padding:1px 8px}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntr-n span.yes{background:#EFF4FF;color:#155EEF}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntr-n span.no{background:#F3F4F6;color:#6b7280}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntr-n i{font-style:normal}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntr-n i.me{color:#155EEF;font-weight:700}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntr-hint{font-size:12px;color:#9ca3af}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntc{display:flex;flex-direction:column;gap:8px;padding-top:10px;border-top:1px solid #EDEEF0}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntc-h{display:flex;align-items:center;gap:6px;font-size:13px;color:#6b7280}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntc-h .ry-i{width:15px;height:15px}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntc-h b{color:#111827}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntc-more{align-self:flex-start;min-height:44px!important;padding:0 4px!important;border:0!important;background:transparent!important;color:#155EEF!important;font-size:13px!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntc-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntc-list li{padding:8px 12px;border-radius:14px;background:#F7F8FA;display:flex;flex-direction:column;gap:2px}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntc-m{display:flex;align-items:center;gap:8px;min-height:24px}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntc-m b{font-size:13px;font-weight:700;color:#111827}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntc-m span{font-size:11.5px;color:#9ca3af}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntc-del{margin-left:auto;min-height:32px!important;padding:0 6px!important;border:0!important;background:transparent!important;color:#9ca3af!important;font-size:12px!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntc-list p{margin:0;font-size:14px;color:#374151;line-height:1.5;white-space:pre-line;overflow-wrap:anywhere}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntc-f{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntc-f input{min-width:0;min-height:44px;border:1px solid #d1d5db;border-radius:12px;padding:0 12px;font-size:16px;box-sizing:border-box;background:#fff}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntc-f input:disabled{background:#F9FAFB}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntc-f button{min-height:44px!important;padding:0 16px!important;border-radius:12px!important;border:0!important;background:#155EEF!important;color:#fff!important;font-size:14px!important;font-weight:600!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntc-f button:disabled{opacity:.4}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntp-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;margin:0 0 10px}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntp-t{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;background:#F3F4F6;display:grid;place-items:center;font-size:12px;color:#6b7280}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntp-t img{width:100%;height:100%;object-fit:cover}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntp-t button{position:absolute;top:4px;right:4px;width:32px;height:32px;min-height:32px!important;border-radius:50%!important;border:0!important;background:rgba(17,24,39,.6)!important;color:#fff!important;display:grid!important;place-items:center;padding:0!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntp-t button .ry-i{width:16px;height:16px}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntp-add{position:relative;aspect-ratio:1;border-radius:12px;border:1.5px dashed #C7D7FE;background:#F5F8FF;color:#155EEF;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:13px;font-weight:600;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntp-add input{position:absolute;inset:0;opacity:0;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntp-add .ry-i{width:20px;height:20px}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntp-add small{font-size:11.5px;color:#6b7280;font-weight:400}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntr-opt{display:flex;align-items:center;gap:10px;min-height:52px;padding:6px 12px;margin:0 0 10px;border:1px solid #EDEEF0;border-radius:14px;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntr-opt input{width:22px;height:22px;flex:none;accent-color:#155EEF}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntr-opt span{display:flex;flex-direction:column;gap:1px}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntr-opt b{font-size:14.5px;font-weight:700;color:#111827}
+html:not(#q):not(#w):not(#e) body:not(#r) .ntr-opt small{font-size:12px;color:#6b7280}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-fields label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:#6b7280;min-width:0}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-fields label.wide{grid-column:1 / -1}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-fields label[hidden]{display:none!important}
@@ -10309,12 +10364,94 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         + '</div>'
         + '<h3 class="nt-title">' + escapeHtml(n.title) + '</h3>'
         + (n.body ? '<p class="nt-body">' + escapeHtml(n.body) + '</p>' : '')
+        + ntPhotosHtml(n.photos)
         + ntSetsHtml(n.before, n.effectiveAfter)
         + (n.corrections && n.corrections.length ? '<ol class="nt-tl">' + n.corrections.map(function (c) {
           return '<li><span class="nt-tl-d">정정 ' + ntStamp(c.createdAt) + '</span>' + (c.swaps && c.swaps.length ? ntSwapsHtml(c.swaps) : '<span class="nt-tl-t">' + escapeHtml(c.title) + '</span>')
             + (c.body ? '<p>' + escapeHtml(c.body) + '</p>' : '') + '</li>';
         }).join('') + '</ol>' : '')
+        + ntRsvpHtml(n) + ntCmtHtml(n)
         + '</article>';
+    }
+    /* ===== 0928 공지 사진 · 참석/불참 · 댓글 (서버 uploadNoticePhoto · setNoticeRsvp · addNoticeComment · deleteNoticeComment) ===== */
+    var NT_CMT_SHOW = 5;
+    function ntMe() { return currentSelectedMember && currentSelectedMember !== '미선택' ? currentSelectedMember : ''; }
+    function ntFind(id) { return ((NT.data && NT.data.items) || []).filter(function (x) { return x.id === id; })[0]; }
+    function ntRedraw(id) { var n = ntFind(id), el = document.querySelector('.nt-card[data-nt="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]'); if (n && el) el.outerHTML = ntCardHtml(n); }
+    function ntPhotosHtml(ph) {
+      if (!ph || !ph.length) return '';
+      return '<div class="ntp-grid n' + ph.length + '">' + ph.map(function (u, i) { return '<a class="ntp" href="' + escapeHtml(u) + '" target="_blank" rel="noopener" aria-label="사진 ' + (i + 1) + ' 크게 보기"><img src="' + escapeHtml(u) + '" alt="" loading="lazy"></a>'; }).join('') + '</div>';
+    }
+    function ntRsvpHtml(n) {
+      if (!n.rsvp) return '';
+      var me = ntMe(), y = n.rsvp.yes || [], no = n.rsvp.no || [], mine = y.indexOf(me) !== -1 ? '참석' : no.indexOf(me) !== -1 ? '불참' : '';
+      var b = function (c, arr, cls) { return '<button type="button" class="ntr-b ' + cls + (mine === c ? ' on' : '') + '" aria-pressed="' + (mine === c) + '" data-id="' + escapeHtml(n.id) + '" data-c="' + c + '" onclick="ntRsvp(this)">' + (mine === c ? RYI.check : '') + c + '<b>' + arr.length + '</b></button>'; };
+      var names = function (arr, lab, cls) { return arr.length ? '<p class="ntr-n"><span class="' + cls + '">' + lab + '</span>' + arr.map(function (x) { return '<i' + (x === me ? ' class="me"' : '') + '>' + escapeHtml(x) + '</i>'; }).join('') + '</p>' : ''; };
+      return '<div class="ntr"><div class="ntr-row">' + b('참석', y, 'yes') + b('불참', no, 'no') + '</div>' + names(y, '참석', 'yes') + names(no, '불참', 'no')
+        + (mine ? '' : '<small class="ntr-hint">' + (me ? '참석 여부를 눌러 주세요 · 다시 누르면 취소' : '위에서 내 이름을 고르면 누를 수 있어요') + '</small>') + '</div>';
+    }
+    function ntCmtHtml(n) {
+      var cs = n.comments || [], me = ntMe(), admin = currentSelectedMember === PF_ADMIN, all = NT.cmtAll && NT.cmtAll[n.id], hid = all ? 0 : Math.max(0, cs.length - NT_CMT_SHOW);
+      var id = escapeHtml(n.id);
+      return '<div class="ntc"><div class="ntc-h">' + NT_ICON_CMT + '댓글 <b>' + cs.length + '</b></div>'
+        + (hid ? '<button type="button" class="ntc-more" data-id="' + id + '" onclick="NT.cmtAll = NT.cmtAll || {}; NT.cmtAll[this.dataset.id] = 1; ntRedraw(this.dataset.id)">이전 댓글 ' + hid + '개 더 보기</button>' : '')
+        + (cs.length ? '<ul class="ntc-list">' + cs.slice(hid).map(function (c) {
+          return '<li><div class="ntc-m"><b>' + escapeHtml(c.by) + '</b><span>' + escapeHtml(ntStamp(c.at)) + '</span>'
+            + (c.by === me || admin ? '<button type="button" class="ntc-del" aria-label="댓글 지우기" data-id="' + id + '" data-c="' + escapeHtml(c.id) + '" onclick="ntCmtDel(this)">지우기</button>' : '') + '</div><p>' + escapeHtml(c.text) + '</p></li>';
+        }).join('') + '</ul>' : '')
+        + '<form class="ntc-f" data-id="' + id + '" onsubmit="event.preventDefault(); ntCmtSend(this)"><input type="text" maxlength="500" enterkeyhint="send" placeholder="' + (me ? '댓글 달기' : '내 이름을 고르면 댓글을 달 수 있어요') + '" aria-label="댓글"' + (me ? '' : ' disabled') + '><button type="submit"' + (me ? '' : ' disabled') + '>보내기</button></form></div>';
+    }
+    var NT_ICON_CMT = '<svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>';
+    function ntRsvp(btn) {
+      var id = btn.dataset.id, n = ntFind(id), me = ntMe();
+      if (!n || !n.rsvp) return;
+      if (!me) { showToast('위에서 내 이름을 먼저 골라 주세요', 1800); return; }
+      var cur = n.rsvp.yes.indexOf(me) !== -1 ? '참석' : n.rsvp.no.indexOf(me) !== -1 ? '불참' : '', next = cur === btn.dataset.c ? '' : btn.dataset.c, old = { yes: n.rsvp.yes.slice(), no: n.rsvp.no.slice() };
+      n.rsvp.yes = n.rsvp.yes.filter(function (x) { return x !== me; }); n.rsvp.no = n.rsvp.no.filter(function (x) { return x !== me; });
+      if (next) n.rsvp[next === '참석' ? 'yes' : 'no'].push(me);
+      ntRedraw(id);
+      google.script.run
+        .withSuccessHandler(function (r) { if (r && r.success) { n.rsvp.yes = r.yes; n.rsvp.no = r.no; ntRedraw(id); showToast(next ? next + '으로 표시했어요' : '참석 여부를 지웠어요', 1400); } else { n.rsvp = old; ntRedraw(id); showToast((r && r.message) || '저장하지 못했어요', 2000); } })
+        .withFailureHandler(function () { n.rsvp = old; ntRedraw(id); showToast('저장하지 못했어요 · 인터넷 확인', 2000); })
+        .setNoticeRsvp(id, next, me);
+    }
+    function ntCmtSend(f) {
+      var id = f.dataset.id, n = ntFind(id), inp = f.querySelector('input'), t = inp.value.trim(), me = ntMe(), bt = f.querySelector('button');
+      if (!n || !t || !me) return;
+      inp.disabled = bt.disabled = true;
+      google.script.run
+        .withSuccessHandler(function (r) {
+          if (r && r.success) { n.comments = (n.comments || []).concat([r.comment]); ntRedraw(id); var ni = document.querySelector('.nt-card[data-nt="' + id + '"] .ntc-f input'); if (ni) ni.focus(); }
+          else { inp.disabled = bt.disabled = false; showToast((r && r.message) || '댓글을 올리지 못했어요', 2000); }
+        })
+        .withFailureHandler(function () { inp.disabled = bt.disabled = false; showToast('댓글을 올리지 못했어요 · 인터넷 확인', 2000); })
+        .addNoticeComment(id, t, me);
+    }
+    function ntCmtDel(btn) {
+      var id = btn.dataset.id, cid = btn.dataset.c, n = ntFind(id);
+      if (!n || !confirm('이 댓글을 지울까요?')) return;
+      google.script.run
+        .withSuccessHandler(function (r) { if (r && r.success) { n.comments = n.comments.filter(function (c) { return c.id !== cid; }); ntRedraw(id); } else showToast((r && r.message) || '지우지 못했어요', 2000); })
+        .withFailureHandler(function () { showToast('지우지 못했어요', 2000); })
+        .deleteNoticeComment(cid, currentSelectedMember);
+    }
+    /* 쓰기 창: 사진 (최대 6장, 고르자마자 올림) */
+    function ntPhRender() {
+      var box = document.getElementById('ntPhs'); if (!box) return;
+      var ph = NT.photos || [];
+      box.innerHTML = ph.map(function (p, i) { return p.url ? '<span class="ntp-t"><img src="' + escapeHtml(p.url) + '" alt=""><button type="button" aria-label="사진 빼기" onclick="NT.photos.splice(' + i + ', 1); ntPhRender()">' + RYI.x + '</button></span>' : '<span class="ntp-t busy" aria-busy="true">올리는 중…</span>'; }).join('')
+        + (ph.length < 6 ? '<label class="ntp-add">' + '<input type="file" accept="image/*" multiple onchange="ntAddPhotos(this)">' + RYI.plus + '<span>사진 추가</span><small>' + ph.length + '/6</small></label>' : '');
+    }
+    function ntAddPhotos(inp) {
+      NT.photos = NT.photos || [];
+      var fs = [].slice.call(inp.files || []).slice(0, 6 - NT.photos.length); inp.value = '';
+      fs.forEach(function (f) {
+        var slot = { busy: true }; NT.photos.push(slot); ntPhRender();
+        var drop = function (m) { var i = NT.photos.indexOf(slot); if (i !== -1) NT.photos.splice(i, 1); ntPhRender(); showToast(m || '사진을 올리지 못했어요', 2000); };
+        resizeImageFile(f, 1600, 0.82).then(function (du) {
+          google.script.run.withSuccessHandler(function (r) { if (r && r.success) { slot.url = r.url; slot.busy = false; ntPhRender(); } else drop(r && r.message); }).withFailureHandler(function () { drop(); }).uploadNoticePhoto(du);
+        }, function () { drop('사진을 읽지 못했어요'); });
+      });
     }
     function ntOpen() {
       var gi = document.getElementById('globalSearchInput');
@@ -10392,6 +10529,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       document.getElementById('ntSheet').classList.add('on');
       var d = document.getElementById('ntDate'); if (d && !d.value) d.value = sdLocalDate(new Date());
       if (!NT.data) ntLoad();
+      ntPhRender();
       ntPreview();
     }
     function ntClosePaste() { document.getElementById('ntDim').classList.remove('on'); document.getElementById('ntSheet').classList.remove('on'); }
@@ -10434,14 +10572,16 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       var raw = document.getElementById('ntRaw').value;
       if (!raw.trim()) { showToast('공지 글을 붙여넣어 주세요', 1600); return; }
       var obj = { date: document.getElementById('ntDate').value, tag: document.getElementById('ntTag').value, title: document.getElementById('ntTitle').value.trim() || p.title,
-        body: p.body, items: { before: p.before, after: p.after, swaps: p.swaps }, parentId: p.correction ? (document.getElementById('ntParent').value || '') : '', raw: raw };
+        body: p.body, items: { before: p.before, after: p.after, swaps: p.swaps }, parentId: p.correction ? (document.getElementById('ntParent').value || '') : '', raw: raw,
+        photos: (NT.photos || []).filter(function (x) { return x.url; }).map(function (x) { return x.url; }), rsvp: !!document.getElementById('ntRsvp').checked };
+      if ((NT.photos || []).some(function (x) { return x.busy; })) { showToast('사진을 올리는 중이에요 · 잠시만요', 1800); return; }
       var prev = setBtnBusy(btn, '저장 중…');
       google.script.run
         .withSuccessHandler(function (res) {
           restoreBtn(btn, prev);
           if (!res || !res.success) { alert('저장하지 못했어요: ' + ((res && res.message) || '')); return; }
           showToast(obj.parentId ? '정정을 원래 공지에 붙였어요' : '공지를 보관했어요');
-          document.getElementById('ntRaw').value = '';
+          document.getElementById('ntRaw').value = ''; NT.photos = []; ntPhRender(); document.getElementById('ntRsvp').checked = false;
           ['ntTag', 'ntTitle', 'ntParent'].forEach(function (id) { var e = document.getElementById(id); if (e) delete e.dataset.touched; });
           ntClosePaste(); NT.parsed = null; ntLoad();
         })
@@ -10728,6 +10868,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     <label class="wide">제목<input type="text" id="ntTitle" maxlength="120" oninput="this.dataset.touched=1"></label>
     <label class="wide" id="ntParentWrap" hidden>어느 공지의 정정인가요?<select id="ntParent" onchange="this.dataset.touched=1; NT.parentSel=this.value"></select></label>
   </div>
+  <div id="ntPhs" class="ntp-row" aria-label="공지 사진"></div>
+  <label class="ntr-opt"><input type="checkbox" id="ntRsvp"><span><b>참석 / 불참 받기</b><small>회식 · 교육처럼 인원을 모을 때 켜요</small></span></label>
   <div id="ntPrev" class="nt-prev"></div>
   <button type="button" class="np-save" id="ntSaveBtn" onclick="ntSave(this)">보관하기</button>
 </div>
