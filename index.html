@@ -10055,7 +10055,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       var others = (SD.data.staff || []).filter(function (x) { return cands.indexOf(x.name) === -1 && !x.excl && !(x.join && d.date < x.join) && !(x.leave && d.date > x.leave); });   /* 0928 제외 대상(조순주 등)은 목록에서 아예 뺌 */
       var known = cands.indexOf(cur) !== -1 || others.some(function (x) { return x.name === cur; });
       var opt = function (n, label, isSp) { return '<option value="' + escapeHtml(n) + '"' + (isSp ? ' data-sp="1"' : '') + (n === cur ? ' selected' : '') + '>' + escapeHtml(label) + '</option>'; };
-      var h = td + '<span class="sd-cell"><select class="sd-sel" aria-label="' + escapeHtml(d.date + ' ' + lab) + '" data-date="' + escapeHtml(d.date) + '" data-slot="' + slot + '" data-team="' + team + '" data-lab="' + escapeHtml(lab.replace(/^오[전후] /, '')) + '" onchange="sdSetManual(this)">'
+      var h = td + '<span class="sd-cell"><select class="sd-sel" aria-label="' + escapeHtml(d.date + ' ' + lab) + '" data-date="' + escapeHtml(d.date) + '" data-slot="' + slot + '" data-team="' + team + '" data-lab="' + escapeHtml(lab.replace(/^오[전후] /, '')) + '" onmousedown="sdSelDown(event, this)" onchange="sdSetManual(this)">'
         + (cur || sp ? '' : '<option value="" selected>선택</option>')
         + (cur && !known ? opt(cur, cur, true) : '')
         + '<optgroup label="근무표 후보">' + (cands.length ? cands.map(function (n) { var nt = sdTeamOf(n); return opt(n, n + (nt && nt !== stm ? ' · ' + sdTeamLabel(nt) : ''), false); }).join('') : '<option value="" disabled>후보 없음</option>') + '</optgroup>'
@@ -10197,8 +10197,10 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         .setSetDutyManual(sel.dataset.date, sel.dataset.slot, sel.dataset.team, name, currentSelectedMember, special);
     }
     /* 0928 폰 담당 고르기: 칸의 select 목록을 그대로 바텀시트로 보여 주고, 고르면 select 값을 바꿔 sdSetManual(select) — 저장 경로는 예전과 같음 */
+    /* 0928 PC 표: select 를 누르면 기본 목록 대신 폰과 같은 선택 창 (이번 달 횟수 · 근무표 후보/그 외 직원). 키보드로 바꾸는 건 그대로 onchange */
+    function sdSelDown(e, sel) { if (e.button !== 0 || sel.disabled) return; e.preventDefault(); sel.focus(); sdPick(sel); }
     function sdPick(btn) {
-      var sel = btn.parentNode.querySelector('select.sd-sel');
+      var sel = btn.tagName === 'SELECT' ? btn : btn.parentNode.querySelector('select.sd-sel');
       if (!sel || sel.disabled || !sdCanEdit()) return;
       SD.pkSel = sel;
       var cnt = {}, g = SD.data && SD.data.monthGrid, cur = sel.value, top = '', mid = '', tail = '';
