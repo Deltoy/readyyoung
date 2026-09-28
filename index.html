@@ -7148,7 +7148,11 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           </div>
         `;
       } else {
-        actionButtons = `
+        actionButtons = ryCanConfirmOrder() ? `
+          <div class="ry25-act">
+            <button type="button" onclick="rejectOrder(${item.rowNumber})" class="ry25-reject">재고있음</button>
+            <button type="button" onclick="confirmOrderPlaced(${item.rowNumber})" class="ry25-approve">주문 완료</button>
+          </div>` : `
           <button onclick="rejectOrder(${item.rowNumber})" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-black transition whitespace-nowrap">
             <span class="em">❌ </span>재고있음 (취소)
           </button>
@@ -7195,7 +7199,11 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           </div>
         `;
       } else {
-        actionButtons = `
+        actionButtons = ryCanConfirmOrder() ? `
+          <div class="ry25-act m">
+            <button type="button" onclick="rejectOrder(${item.rowNumber})" class="ry25-reject">재고있음</button>
+            <button type="button" onclick="confirmOrderPlaced(${item.rowNumber})" class="ry25-approve">주문 완료</button>
+          </div>` : `
           <button onclick="rejectOrder(${item.rowNumber})" class="w-full py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-black transition whitespace-nowrap shadow-sm">
             <span class="em">❌ </span>재고있음 (발주 취소)
           </button>
@@ -7434,6 +7442,35 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       }, 250);
     }
 
+    /* 0928 약사 '주문 완료' (엑셀 확인 체크 대신) — 관리약사 · 약사 · 물류관리자에게만 보임. 누르면 바로 입고대기로 */
+    function ryCanConfirmOrder() { try { return /^(관리약사|약사|물류관리자)$/.test(memberTitle(currentSelectedMember)); } catch (e) { return false; } }
+    function confirmOrderPlaced(rowNumber) {
+      if (!checkMemberSelectedOrAlert()) return;
+      const key = 'confirm-' + rowNumber;
+      if (inFlight.has(key)) return;
+      inFlight.add(key);
+      showToast('주문 완료 · 입고대기로 넘겼어요');
+      const idx = cachedOrderItems.findIndex(it => it.rowNumber === rowNumber);
+      if (idx !== -1) {
+        const item = cachedOrderItems.splice(idx, 1)[0];
+        item.orderDate = cachedTodayStr || item.orderDate;
+        cachedInboundItems.unshift(item);
+        renderAllViews();
+        persistSnapshot();
+      }
+      google.script.run
+        .withSuccessHandler(function (res) {
+          inFlight.delete(key);
+          if (res && res.success === false) { alert('주문 완료 처리 안 됨: ' + (res.message || '')); }
+          loadAllData(true, true, true);
+        })
+        .withFailureHandler(function (err) {
+          inFlight.delete(key);
+          alert('주문 완료 처리 오류: ' + (err && err.message ? err.message : err));
+          loadAllData(true, false, true);
+        })
+        .confirmOrderPlaced(rowNumber, currentSelectedMember);
+    }
     function rejectOrder(rowNumber, skipConfirm) {
       const key = 'reject-' + rowNumber;
       if (inFlight.has(key)) return;
@@ -8328,7 +8365,12 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 
     // forceRefresh=true: 서버 캐시를 건너뛰고 새로 계산 (요청·승인·입고 등 처리 직후에 사용)
     // afterMutation=true: 이 요청보다 먼저 시작된(처리 전 상태의) 응답은 화면에 반영하지 않음
+    /* 0928 누른 상품이 다시 나타나던 문제: 처리(inFlight) 중에 목록을 받으면 아직 서버가 안 끝낸 상품이 되살아남
+       → 처리 중이면 목록 받기를 미뤄 두었다가 모두 끝난 뒤 한 번만, 처리 중에 도착한 옛 목록은 버린다 (모든 버튼 공통) */
+    var _reloadPending = false;
+    setInterval(function () { if (_reloadPending && inFlight.size === 0 && _loadInFlight === 0) { _reloadPending = false; loadAllData(true, true, true); } }, 300);
     function loadAllData(forceRefresh, silent, afterMutation) {
+      if (inFlight.size > 0) { _reloadPending = true; return; }
       const seq = ++_loadSeq;
       if (afterMutation) _minAcceptSeq = seq;
       _loadInFlight++;
@@ -8338,7 +8380,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       const runner = google.script.run
         .withSuccessHandler(function(res) {
           finish();
-          // 이미 더 새로운 응답이 반영됐거나, 처리 전 상태의 응답이면 버림
+          // 이미 더 새로운 응답이 반영됐거나, 처리 전 상태의 응답이면 버림 · 받는 사이에 새 처리가 시작됐으면 버리고 끝난 뒤 다시
+          if (inFlight.size > 0) { _reloadPending = true; if (_loadInFlight === 0) setSyncState(_lastSyncAt ? 'idle' : 'error'); return; }
           if (seq < _appliedSeq || seq < _minAcceptSeq) { if (_loadInFlight === 0) setSyncState(_lastSyncAt ? 'idle' : 'error'); return; }
           if (!res) { setSyncState('error'); return; }
           _appliedSeq = seq;
