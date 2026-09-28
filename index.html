@@ -2381,6 +2381,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) #reviewTableBody td:nth-child(3),html:
 /* 5. 1차 검토 처리 칸 */
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-act{display:flex;align-items:flex-end;justify-content:center;gap:8px;flex-wrap:nowrap}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-act.m{display:grid;grid-template-columns:1fr 1fr;align-items:end}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-so-re{width:100%;min-height:44px}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-stk{display:flex;flex-direction:column;gap:2px;min-width:0}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-stk-l{font-size:11px;color:#6b7280;font-weight:500;text-align:left;padding-left:2px}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-stk select{height:44px!important;min-height:44px!important;min-width:92px;border-radius:12px!important;border:1px solid #d1d5db!important;background:#fff!important;padding:0 28px 0 12px!important;font-size:14px!important;color:#111827!important;font-weight:500!important;-webkit-appearance:none;appearance:none;background-image:linear-gradient(45deg,transparent 50%,#6b7280 50%),linear-gradient(135deg,#6b7280 50%,transparent 50%)!important;background-position:calc(100% - 16px) 19px,calc(100% - 11px) 19px!important;background-size:5px 5px,5px 5px!important;background-repeat:no-repeat!important;cursor:pointer;width:100%}
@@ -7148,7 +7149,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           </div>
         `;
       } else {
-        actionButtons = ryCanConfirmOrder() ? `
+        actionButtons = type === 'soldout' ? `
+          <button type="button" onclick="reorderSoldOut(${item.rowNumber})" class="ry25-approve ry-so-re">재주문 요청</button>` : ryCanConfirmOrder() ? `
           <div class="ry25-act">
             <button type="button" onclick="rejectOrder(${item.rowNumber})" class="ry25-reject">재고있음</button>
             <button type="button" onclick="confirmOrderPlaced(${item.rowNumber})" class="ry25-approve">주문 완료</button>
@@ -7199,7 +7201,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           </div>
         `;
       } else {
-        actionButtons = ryCanConfirmOrder() ? `
+        actionButtons = type === 'soldout' ? `
+          <button type="button" onclick="reorderSoldOut(${item.rowNumber})" class="ry25-approve ry-so-re">재주문 요청</button>` : ryCanConfirmOrder() ? `
           <div class="ry25-act m">
             <button type="button" onclick="rejectOrder(${item.rowNumber})" class="ry25-reject">재고있음</button>
             <button type="button" onclick="confirmOrderPlaced(${item.rowNumber})" class="ry25-approve">주문 완료</button>
@@ -7442,6 +7445,35 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       }, 250);
     }
 
+    /* 0928 품절 탭 '재주문 요청': 품절 표시를 지우고 1차 검토로 (요청자 = 누른 사람) */
+    function reorderSoldOut(rowNumber) {
+      if (!checkMemberSelectedOrAlert()) return;
+      const key = 'soreorder-' + rowNumber;
+      if (inFlight.has(key)) return;
+      const src = cachedReviewItems.find(it => it.rowNumber === rowNumber) || cachedOrderItems.find(it => it.rowNumber === rowNumber);
+      inFlight.add(key);
+      showToast('재주문 요청 · 1차 검토로 넘겼어요');
+      cachedReviewItems = cachedReviewItems.filter(it => it.rowNumber !== rowNumber);
+      cachedOrderItems = cachedOrderItems.filter(it => it.rowNumber !== rowNumber);
+      if (src) {
+        const clean = String(src.note || '').replace(/품절\s*\([^)]*\)/g, '').replace(/품절/g, '').replace(/\s{2,}/g, ' ').trim();
+        cachedReviewItems.unshift(Object.assign({}, src, { note: clean, requester: currentSelectedMember, isCheckRequested: false }));
+      }
+      renderAllViews();
+      persistSnapshot();
+      google.script.run
+        .withSuccessHandler(function (res) {
+          inFlight.delete(key);
+          if (res && res.success === false) alert('재주문 요청 안 됨: ' + (res.message || ''));
+          loadAllData(true, true, true);
+        })
+        .withFailureHandler(function (err) {
+          inFlight.delete(key);
+          alert('재주문 요청 오류: ' + (err && err.message ? err.message : err));
+          loadAllData(true, false, true);
+        })
+        .reorderSoldOut(rowNumber, src ? src.name : '', currentSelectedMember);
+    }
     /* 0928 약사 '주문 완료' (엑셀 확인 체크 대신) — 관리약사 · 약사 · 물류관리자에게만 보임. 누르면 바로 입고대기로 */
     function ryCanConfirmOrder() { try { return /^(관리약사|약사|물류관리자)$/.test(memberTitle(currentSelectedMember)); } catch (e) { return false; } }
     function confirmOrderPlaced(rowNumber) {
