@@ -3045,6 +3045,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .sd-reread .ry-i{width:15px;height:15p
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-row.sd-row2{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:12px;flex-wrap:nowrap}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-slot2{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:44px}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-slot2 .sd-slot{width:auto}
+html:not(#q):not(#w):not(#e) body:not(#r) .sd-slot2 .sd-hr{font-size:11.5px;color:#6b7280;font-variant-numeric:tabular-nums;white-space:nowrap}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-seats{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;min-width:0}
 @media(max-width:374px){ html:not(#q):not(#w):not(#e) body:not(#r) .sd-seats{column-gap:10px} html:not(#q):not(#w):not(#e) body:not(#r) .sd-seat.me{padding-right:8px} }
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-reread:disabled{opacity:.5}
@@ -9989,7 +9990,9 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       sdApplyOpen(open);
     }
     /* 0926 지금 담당 중인 조: 오전 10~15시 · 오후 15~23시 (서울 시각) */
-    function sdNowSlot() { var d = new Date(Date.now() + 9 * 3600000), m = d.getUTCHours() * 60 + d.getUTCMinutes(); return m >= 600 && m < 900 ? 'am' : m >= 900 && m < 1380 ? 'pm' : ''; }
+    /* 0928 담당 시간: 오전 10:00~16:30 · 오후 16:30~23:00 (지금 시간대 칸을 강조) */
+    var SD_HOURS = { am: '10:00~16:30', pm: '16:30~23:00' };
+    function sdNowSlot() { var d = new Date(Date.now() + 9 * 3600000), m = d.getUTCHours() * 60 + d.getUTCMinutes(); return m >= 600 && m < 990 ? 'am' : m >= 990 && m < 1380 ? 'pm' : ''; }
     function sdNowCls(slot) { var n = sdNowSlot(); return n ? (n === slot ? ' sd-now' : ' sd-rest') : ''; }
     /* 0926 영업 끝(23시~) · 출근 전(05~09:30)에는 담당자 대신 인사말. 09:30 부터 다시 담당자로 */
     function sdGreeting() {
@@ -10023,8 +10026,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (SD.err) { box.innerHTML = '<div class="sd-msg">근무표를 불러오지 못했어요 (근무표 앱 확인) <button type="button" class="sd-retry" onclick="sdLoad(true)">다시 시도</button></div>'; if (line) line.innerHTML = '<span class="sd-ln-msg">근무표를 못 불러왔어요</span>'; if (mine) mine.hidden = true; return; }
       var t = sdToday();
       if (!t) { box.innerHTML = '<div class="sd-row sd-sk" aria-busy="true"><i></i><i></i><i></i></div><div class="sd-row sd-sk"><i></i><i></i><i></i></div>'; if (line) line.innerHTML = '<span class="sd-ln-msg">불러오는 중…</span>'; if (mine) mine.hidden = true; return; }
-      box.innerHTML = '<div class="sd-row sd-row2' + sdNowCls('am') + '"><span class="sd-slot2"><span class="sd-slot">오전</span>' + sdSt(t.amLocked) + '</span><span class="sd-seats">' + sdName(t.am.cn, 'cn', sdIsSp(t, 'am', 'cn'), false, sdBy(t, 'am', 'cn')) + sdName(t.am.jp, sdSeatTeam(t, 'am', 'jp'), sdIsSp(t, 'am', 'jp'), false, sdBy(t, 'am', 'jp')) + '</span></div>'
-        + '<div class="sd-row sd-row2' + sdNowCls('pm') + '"><span class="sd-slot2"><span class="sd-slot">오후</span>' + sdSt(t.pmLocked) + '</span><span class="sd-seats">' + sdName(t.pm.cn, 'cn', sdIsSp(t, 'pm', 'cn'), sdC12(t, 'cn'), sdBy(t, 'pm', 'cn')) + sdName(t.pm.jp, 'jp', sdIsSp(t, 'pm', 'jp'), sdC12(t, 'jp'), sdBy(t, 'pm', 'jp')) + '</span></div>' + sdLiveHint() + sdCofRender();
+      box.innerHTML = '<div class="sd-row sd-row2' + sdNowCls('am') + '"><span class="sd-slot2"><span class="sd-slot">오전</span><small class="sd-hr">' + SD_HOURS.am + '</small>' + sdSt(t.amLocked) + '</span><span class="sd-seats">' + sdName(t.am.cn, 'cn', sdIsSp(t, 'am', 'cn'), false, sdBy(t, 'am', 'cn')) + sdName(t.am.jp, sdSeatTeam(t, 'am', 'jp'), sdIsSp(t, 'am', 'jp'), false, sdBy(t, 'am', 'jp')) + '</span></div>'
+        + '<div class="sd-row sd-row2' + sdNowCls('pm') + '"><span class="sd-slot2"><span class="sd-slot">오후</span><small class="sd-hr">' + SD_HOURS.pm + '</small>' + sdSt(t.pmLocked) + '</span><span class="sd-seats">' + sdName(t.pm.cn, 'cn', sdIsSp(t, 'pm', 'cn'), sdC12(t, 'cn'), sdBy(t, 'pm', 'cn')) + sdName(t.pm.jp, 'jp', sdIsSp(t, 'pm', 'jp'), sdC12(t, 'jp'), sdBy(t, 'pm', 'jp')) + '</span></div>' + sdLiveHint() + sdCofRender();
       var same = !!t.amLocked === !!t.pmLocked;   /* 오늘은 오전 · 오후가 함께 확정되므로 상태 칩 하나 */
       var greet = sdGreeting();
       if (line) line.innerHTML = greet ? '<span class="sd-greet">' + greet.split('|').map(function (x) { return '<b>' + escapeHtml(x) + '</b>'; }).join('') + '</span>' : sdLineSlot(t, 'am', !same, same) + sdLineSlot(t, 'pm', !same);
@@ -10073,7 +10076,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (!SD.data) { box.innerHTML = '<div class="sd-row sd-sk" aria-busy="true"><i></i><i></i><i></i></div><div class="sd-row sd-sk"><i></i><i></i><i></i></div><div class="sd-row sd-sk"><i></i><i></i><i></i></div>'; return; }
       var admin = sdCanEdit(), d = SD.data;
       var r2 = d.days.some(function (x) { return x.seat; });
-      var h = '<p class="sd-rule">' + (r2 ? '배정 기준 (9/29부터): 오전(10시) 출근 — 중국어가 일본어보다 많으면 중국어 2명, 같거나 적으면 중국어 1 + 일본어 1 · 오후(13시) 출근 중국어 1 + 일본어 1 · 이틀 연속 없음 (모자라면 다른 팀 오전 근무자를 섞고, 그래도 없으면 주 2~3일 근무자가 연속) · 그 주 2~3일 나오는 사람 먼저 · 이번 달 적게 한 사람 우선'
+      var h = '<p class="sd-rule"><b>담당 시간: 오전 ' + SD_HOURS.am + ' · 오후 ' + SD_HOURS.pm + '</b><br>' + (r2 ? '배정 기준 (9/29부터): 오전(10시) 출근 — 중국어가 일본어보다 많으면 중국어 2명, 같거나 적으면 중국어 1 + 일본어 1 · 오후(13시) 출근 중국어 1 + 일본어 1 · 이틀 연속 없음 (모자라면 다른 팀 오전 근무자를 섞고, 그래도 없으면 주 2~3일 근무자가 연속) · 그 주 2~3일 나오는 사람 먼저 · 이번 달 적게 한 사람 우선'
           : '배정 기준: 근무표 오전(10시)·오후(13시) 출근자 중 중국어 1 + 일본어 1, 이번 달 적게 한 사람 우선') + '</p>' + (admin ? sdGapHint(d) : '') + sdLiveHint()
         + (admin ? '<button type="button" class="sd-reread" onclick="sdReread(this)">' + RYI.refresh + '근무표 다시 읽기</button>' : '')
         + '<h4 class="sd-h">이번 주</h4>' + sdTblHtml(d.days.slice(0, 7), false, admin);
@@ -10105,7 +10108,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     function sdMD(ds) { var m = String(ds).match(/^\d{4}-(\d{2})-(\d{2})$/); return m ? (+m[1]) + '/' + (+m[2]) : String(ds); }
     /* 0927 주간 표 한 개 (plan = 다음 주 예정: 점선 · 흐린 글자 · '예정' 칩, 근무표가 아직 없으면 '근무표 아직 없음') */
     function sdTblHtml(days, plan, admin) {
-      return '<div class="sd-tbl-wrap' + (plan ? ' plan' : '') + '"><table class="sd-tbl"><thead><tr><th>날짜</th><th colspan="2">' + (days.some(function (x) { return x.seat; }) ? '오전 (중국어 · 중국어 또는 일본어)' : '오전 (중국어 · 일본어)') + '</th><th colspan="2">오후 (중국어 · 일본어)</th></tr></thead><tbody>'
+      return '<div class="sd-tbl-wrap' + (plan ? ' plan' : '') + '"><table class="sd-tbl"><thead><tr><th>날짜</th><th colspan="2">' + (days.some(function (x) { return x.seat; }) ? '오전 ' + SD_HOURS.am + ' (중국어 · 중국어 또는 일본어)' : '오전 ' + SD_HOURS.am + ' (중국어 · 일본어)') + '</th><th colspan="2">오후 ' + SD_HOURS.pm + ' (중국어 · 일본어)</th></tr></thead><tbody>'
         + days.map(function (x) {
           var label = escapeHtml(sdMD(x.date)) + ' (' + (SD_DOW[parseInt(x.dow, 10)] || '') + ')', none = x.noRecord || (plan && x.noSched);
           return '<tr data-date="' + escapeHtml(x.date) + '" class="' + (x.isToday ? 'today' : plan ? 'plan' : '') + (none || x.noRecord ? ' nil' : '') + '"><th scope="row">' + label + (x.isToday ? '<span class="sd-tag now">오늘</span>' : '') + (none ? '' : plan ? '<span class="sd-st plan" title="근무표로 미리 계산 · 그날 09:35에 확정">예정</span>' : sdSt(x.confirmed)) + '</th>'
