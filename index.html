@@ -8413,7 +8413,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           if (!v) return;
           if (_dataVer === null) { _dataVer = v; return; }      // 처음엔 기준만 잡는다
           if (v !== _dataVer) {
-            _dataVer = v;
+            _dataVer = v; setTimeout(function () { ryCatLoad(true); }, 4000);
             setSyncBadge('changed');
             loadAllData(false, true);                           // 바뀐 경우에만 목록 갱신
           }
@@ -8453,9 +8453,35 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 
       searchDebounceTimer = setTimeout(() => {
         executeServerSearch(query);
-      }, 250);
+      }, RY_CAT && RY_CAT.items ? 60 : 250);
     }
 
+    /* 0928 검색 빠르게: 전체 상품 목록(getCatalogIndex)을 폰에 받아 두고 폰 안에서 바로 찾는다. 데이터 버전이 바뀌거나 10분 지나면 다시 받음. 목록이 없으면 예전처럼 서버 검색 */
+    var RY_CAT = null, RY_CAT_KEY = 'ry_cat_v1', _catLoading = false;
+    try { RY_CAT = JSON.parse(localStorage.getItem(RY_CAT_KEY) || 'null'); } catch (e) {}
+    function ryCatLoad(force) {
+      if (_catLoading || typeof google === 'undefined' || !google.script || !google.script.run) return;
+      if (!force && RY_CAT && RY_CAT.items && Date.now() - (RY_CAT.t || 0) < 10 * 60000 && (_dataVer === null || RY_CAT.v === _dataVer)) return;
+      _catLoading = true;
+      google.script.run
+        .withSuccessHandler(function (r) {
+          _catLoading = false;
+          if (!r || !r.ok || !Array.isArray(r.items)) return;
+          RY_CAT = { v: String(r.v), t: Date.now(), items: r.items };
+          try { localStorage.setItem(RY_CAT_KEY, JSON.stringify(RY_CAT)); } catch (e) {}
+          var q = (document.getElementById('globalSearchInput') || {}).value;
+          if (q && q.trim() && !document.getElementById('searchResultView').classList.contains('hidden')) executeServerSearch(q.trim());
+        })
+        .withFailureHandler(function () { _catLoading = false; })
+        .getCatalogIndex();
+    }
+    function ryCatSearch(query) {
+      if (!RY_CAT || !RY_CAT.items) return null;
+      var q = String(query).replace(/\s+/g, '').toLowerCase(), out = [];
+      for (var i = 0; i < RY_CAT.items.length && out.length < 40; i++) { var it = RY_CAT.items[i]; if (String(it._k || '').indexOf(q) !== -1) out.push(it); }
+      return out;
+    }
+    setTimeout(function () { ryCatLoad(false); }, 2500);
     function executeServerSearch(query) {
       const views = ['reviewView', 'orderView', 'soldOutView', 'inboundView', 'delayedView', 'historyView', 'stockCheckView', 'rankingView', 'reorderView', 'leadView', 'rejAView', 'noticeView'];
       views.forEach(v => {
@@ -8466,9 +8492,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (sView) sView.classList.remove('hidden');
 
       const currentRequestId = ++latestSearchRequestId;
-
-      google.script.run
-        .withSuccessHandler(function(results) {
+      const localHit = ryCatSearch(query);
+      const onResults = function(results) {
           if (currentRequestId !== latestSearchRequestId) return;
           const _SLAB = { REVIEW:'1차검토', ORDER:'발주대기', INBOUND:'입고대기', DONE:'입고완료 · 재주문 가능', SOLDOUT:'품절', IDLE:'미주문' };
           const _SCOL = {
@@ -8487,7 +8512,10 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           lastSearchResults = mapped;
           renderSearchResults(mapped);
           if (mapped.length) ry25RememberSoon(query);
-        })
+      };
+      if (localHit) { onResults(localHit); ryCatLoad(false); return; }   // 폰 안 목록으로 즉시
+      google.script.run
+        .withSuccessHandler(onResults)
         .withFailureHandler(function(err) {
           if (currentRequestId !== latestSearchRequestId) return;
           const resCount = document.getElementById('searchResultCount');
