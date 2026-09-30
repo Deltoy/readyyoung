@@ -6657,7 +6657,9 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     /* ═══ 0930 월 한도 소진 상품 → '다음 달 대기' (사용자: 한도 다 쓴 상품이 최종 발주에 방치됨)
        특이사항에 '월 N개 제한/한도' + 소진 표시(이미끝·소진·한도 끝·다 씀)가 있으면 이번 달 표식 [한도소진 YYYY.MM] 을 붙여 최종 발주 목록에서 빼 두고,
        달이 바뀌면 표식과 소진 표시를 지워 자동 복귀 (서버 updateProduct 재사용, 붙여넣기 없음) ═══ */
-    const LM_RX = /월\s*(\d+)\s*개?\s*(제한|한도)/, LM_DONE = /(이미\s*끝|한도\s*끝|소진|다\s*씀|다\s*썼)/, LM_TAG = /\[한도소진\s+(\d{4})\.(\d{2})\]/;
+    const LM_RX = /월\s*(\d+)\s*개?\s*(제한|한도)/, LM_DONE = /(이미\s*끝|한도\s*끝|소진|다\s*씀|다\s*썼)/, LM_TAG = /\[한도소진\s+(\d{4})\.(\d{2})\]/, LM_WAIT = /\[발주대기\s+(\d{4})\.(\d{2})\.(\d{2})\]/, LM_IDLE_DAYS = 3;   // 0930 월 한도 상품이 3일 넘게 발주 안 되면 자동 대기
+    const lmToday = () => { const d = new Date(Date.now() + 9 * 3600000); return d.getUTCFullYear() + '.' + String(d.getUTCMonth() + 1).padStart(2, '0') + '.' + String(d.getUTCDate()).padStart(2, '0'); };
+    const lmDays = (y, m, d) => Math.floor((Date.now() + 9 * 3600000 - Date.UTC(+y, +m - 1, +d)) / 86400000);
     const lmMonth = () => { const d = new Date(Date.now() + 9 * 3600000); return d.getUTCFullYear() + '.' + String(d.getUTCMonth() + 1).padStart(2, '0'); };
     const lmBusy = {};
     function lmSaveNote(it, note, done) {
@@ -6680,6 +6682,11 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         lmSaveNote(it, (note + ' [한도소진 ' + cur + ']').trim(), function () { renderAllViews(); });
         return true;
       }
+      if (LM_RX.test(note)) {   // 월 한도 상품: 최종 발주에 들어온 날을 [발주대기 날짜]로 적어 두고, 3일 넘게 발주가 안 되면 자동 대기
+        const w = note.match(LM_WAIT);
+        if (!w) { lmSaveNote(it, (note + ' [발주대기 ' + lmToday() + ']').trim(), function () {}); return false; }
+        if (lmDays(w[1], w[2], w[3]) >= LM_IDLE_DAYS) { lmSaveNote(it, (note.replace(LM_WAIT, '').replace(/\s{2,}/g, ' ').trim() + ' [한도소진 ' + cur + ']').trim(), function () { renderAllViews(); }); return true; }
+      }
       return false;
     }
     function lmRelease(row) {
@@ -6688,7 +6695,13 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       lmSaveNote(it, cleaned, function () { showToast('최종 발주로 되돌렸어요 · 한도를 늘리려면 특이사항의 숫자를 고쳐 주세요', 2800); renderAllViews(); });
       renderAllViews();
     }
+    function lmSweepWait() {
+      [].concat(cachedInboundItems || [], cachedHistoryItems || []).forEach(function (it) {
+        const note = String(it.note || ''); if (LM_WAIT.test(note) || LM_TAG.test(note)) lmSaveNote(it, note.replace(LM_WAIT, '').replace(LM_TAG, '').replace(/\s{2,}/g, ' ').trim(), function () {});
+      });
+    }
     function lmRenderHeld(items) {
+      try { lmSweepWait(); } catch (e) {}
       let box = document.getElementById('lmHeldBox');
       const host = document.getElementById('readyTableContainer');
       if (!box) { box = document.createElement('details'); box.id = 'lmHeldBox'; box.className = 'mt-3'; if (host && host.parentNode) host.parentNode.insertBefore(box, host.nextSibling); else return; }
