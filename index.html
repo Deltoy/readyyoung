@@ -5784,7 +5784,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           var extra = (res.category ? ' · ' + res.category : '') + (res.requested ? ' · 1차 검토로 들어갔어요' : '');
           if (res.photo && !res.photo.ok) extra += ' · 사진은 저장 못 했어요';
           showToast('✓ ' + res.name + ' 등록 완료' + extra);
-          if (RY_CAT) RY_CAT.t = 0; ryCatLoad(true);   // 0929 새 상품이 검색되게 폰 목록 새로
+          // 0930 목록을 억지로 다시 받지 않는다(서버가 2분 걸림). 새 상품은 폰 목록에 없어도 서버 이름 스캔으로 바로 찾힌다
           loadAllData(true, true, true);
         })
         .withFailureHandler(function (e) {
@@ -8754,7 +8754,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       };
       /* 0929 방금 등록한 상품: 폰 목록(최대 5분 전)엔 없어 0건 → 서버에 한 번 더 묻고 목록도 새로 받는다 */
       if (localHit && localHit.length) { onResults(localHit); return; }   // 폰 안 목록으로 즉시
-      if (localHit) { if (RY_CAT) RY_CAT.t = 0; ryCatLoad(true); }
+      if (localHit && RY_CAT && Date.now() - (RY_CAT.t || 0) > 10 * 60000) { RY_CAT.t = 0; ryCatLoad(true); }   // 0930 0건이면 서버 검색으로 넘어가고, 목록은 10분 지났을 때만 새로
       /* 0929 전체 목록이 없을 때: 탭 목록에서 먼저 보여주고, 서버 검색은 8초 기다림 → 한 번 더 → 그래도 안 되면 [다시 검색] (서버가 가끔 2분 멈춰 '검색 중...'에 갇히던 문제) */
       const part = ryListSearch(query), rc = document.getElementById('searchResultCount');
       const partNote = function (msg) { if (rc) rc.innerHTML = (part.length ? escapeHtml(part.length + '건 먼저 · ') : '') + msg; };
