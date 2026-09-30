@@ -2032,12 +2032,17 @@ html body:not(#_):not(#_) .max-w-\[96\%\]>.flex.items-center.gap-2\.5:first-chil
 html body:not(#_):not(#_) .ry-delay{border:1px dashed var(--ry-line-2)!important;background:transparent!important;color:#6e6e73!important;border-radius:12px!important;font-weight:400!important;font-size:13px!important}
 html body:not(#_):not(#_) .ry-delay.has{border:0!important;background:var(--ry-warn-soft)!important;color:var(--ry-warn)!important}
 /* 0930 제조사·경로 줄 (발주 담당자만) */
-.ry-mr{display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px;margin-top:3px;font-size:12px;line-height:1.35;color:var(--ry-ink-2);min-width:0}
+.ry-mr{display:grid;grid-template-columns:minmax(0,1fr) 24px;align-items:center;gap:0 8px;margin-top:4px;font-size:12px;line-height:1.35;color:var(--ry-ink-2);min-width:0;max-width:360px}
+.ry-mr-body{min-width:0;display:grid;gap:2px}
+.ry-mr-row{display:flex;align-items:center;gap:6px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ry-mr-row>*{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ry-mr-row .ry-mr-l{flex:none;width:34px}
+.ry-mr .ry-mr-ed{grid-column:1/-1}
 .ry-mr:empty{display:none}
 .ry-mr-m{font-weight:700;color:var(--ry-ink)}
 .ry-mr-dot{color:var(--ry-ink-4)}
 .ry-mr-l{font-size:10.5px;font-weight:700;color:var(--ry-ink-4);letter-spacing:.02em}
-.ry-mr-a{color:var(--ry-brand);font-weight:700;text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--ry-brand) 35%,transparent);text-underline-offset:2px;word-break:break-all;display:inline-flex;align-items:center;gap:3px}
+.ry-mr-a{color:var(--ry-brand);font-weight:700;text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--ry-brand) 35%,transparent);text-underline-offset:2px;white-space:nowrap;display:inline-flex;align-items:center;gap:3px}
 .ry-mr-t{color:var(--ry-warn);font-weight:600;word-break:keep-all;overflow-wrap:anywhere}
 .ry-mr-none{color:var(--ry-ink-4);font-weight:500}
 .ry-mr-pen{border:0!important;background:var(--ry-sunken)!important;color:var(--ry-ink-3)!important;font-size:12px;line-height:1;width:24px!important;height:22px!important;min-height:0!important;min-width:0!important;border-radius:7px!important;cursor:pointer;padding:0!important;margin:0;display:inline-flex;align-items:center;justify-content:center;flex:none;box-shadow:none!important;transition:background .12s}
@@ -7527,8 +7532,12 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     var RYI_MR = { tel: '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.9 2z"/></svg>' };
     function mrLineHtml(r) {
       var d = MR.map[r] || {}, maker = String(d.maker || '').trim(), route = String(d.route || '').trim(), pen = '<button type="button" class="ry-mr-pen" onclick="event.stopPropagation(); mrEdit(' + r + ')" aria-label="제조사·경로 고치기">✎</button>';
-      if (!maker && !route) return '<span class="ry-mr-none">제조사·경로 없음</span>' + pen;
-      return (maker ? '<span class="ry-mr-m">🏭 ' + escapeHtml(maker) + '</span>' : '') + (maker && route ? '<span class="ry-mr-dot">·</span>' : '') + (route ? '<span class="ry-mr-r"><span class="ry-mr-l">경로</span> ' + mrRouteHtml(route) + '</span>' : '') + pen;
+      if (!maker && !route) return '<div class="ry-mr-body"><div class="ry-mr-row"><span class="ry-mr-none">제조사·경로 없음</span></div></div>' + pen;
+      /* 0930 사용자: 경로가 길어도 ✎ 가 엉뚱한 자리로 안 가게 — 제조사·경로를 두 줄 칸으로, ✎ 는 오른쪽 칸에 고정 */
+      return '<div class="ry-mr-body">'
+        + '<div class="ry-mr-row"><span class="ry-mr-l">제조사</span>' + (maker ? '<span class="ry-mr-m">' + escapeHtml(maker) + '</span>' : '<span class="ry-mr-none">없음</span>') + '</div>'
+        + '<div class="ry-mr-row" title="' + escapeHtml(route) + '"><span class="ry-mr-l">경로</span>' + (route ? mrRouteHtml(route) : '<span class="ry-mr-none">없음</span>') + '</div>'
+        + '</div>' + pen;
     }
     function mrPaint(r) { [].forEach.call(document.querySelectorAll('.ry-mr[data-mr="' + r + '"]'), function (el) { el.classList.remove('wait'); el.innerHTML = mrLineHtml(r); }); }
     function mrFill() {
