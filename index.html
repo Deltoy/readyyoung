@@ -6985,6 +6985,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (d == null) return null;
       return { days: d, late: d >= LATE_DAYS, soon: d >= LATE_DAYS - 2 && d < LATE_DAYS };
     }
+    /* 0930 발주일이 비어 있는 줄(시트에서 직접 체크해 발주) → '-' 대신 이유가 보이게 */
+    function odText(item) { var d = String(item.orderDate || '').trim(); return d && d !== '-' ? escapeHtml(d) : '<span class="ry-el" title="시트에서 직접 체크해 발주된 상품이라 날짜가 없어요. 앞으로는 시트에서 체크해도 날짜가 자동으로 들어가요">날짜 없음 · 시트 직접 체크</span>'; }
     function elapsedChip(item) {
       var e = elapsedInfo(item);
       if (!e) return '';
@@ -8114,13 +8116,13 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         <td class="p-2.5 text-center">${imgHtml}</td>
         <td class="p-3">
           <div class="font-bold text-slate-900 text-sm leading-relaxed${nameClass(item)}">${escapeHtml(item.name)} ${endedBadge(item)}</div>
-          <div class="lg:hidden text-xs text-slate-600 mt-0.5">발주 ${escapeHtml(item.orderDate)}</div>
+          <div class="lg:hidden text-xs text-slate-600 mt-0.5">발주 ${odText(item)}</div>
           ${item.isCheckRequested ? `<div class="lg:hidden mt-1">${statusBadge}</div>` : ''}
           <div class="mt-1.5 flex items-center gap-2 flex-wrap">${elapsedChip(item)}<button onclick="cancelSoldOut(${item.rowNumber})" class="ry-tcancel" title="공급사 품절로 못 들어오는 상품을 취소합니다">${RYI.ban}품절 취소</button></div>
           ${delayReasonHtml(item)}
         </td>
         <td class="p-3 text-center bg-emerald-50/40 font-extrabold text-base text-emerald-700">${item.targetQty}${item.unit || '개'}</td>
-        <td class="p-3 text-center text-xs text-slate-700 hidden lg:table-cell"><div>${escapeHtml(item.orderDate)}</div></td>
+        <td class="p-3 text-center text-xs text-slate-700 hidden lg:table-cell"><div>${odText(item)}</div></td>
         <td class="p-3 text-center hidden lg:table-cell">${statusBadge}</td>
         <td class="p-3 text-center">${actionBtn}</td>
       `;
@@ -8148,7 +8150,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           <div class="ry-in-text">
             ${item.isCheckRequested ? `<span class="ry-in-wait">${RYI.searchcheck}관리자 확인대기 (${escapeHtml(item.checkRequester)})</span>` : ''}
             <div class="ry-in-name${nameClass(item)}">${escapeHtml(item.name)} ${endedBadge(item)}</div>
-            <div class="ry-in-meta"><span>발주 <b>${escapeHtml(item.orderDate)}</b></span>${elapsedChip(item)}<button onclick="cancelSoldOut(${item.rowNumber})" class="ry-in-cancel" title="공급사 품절로 못 들어오는 상품을 취소합니다">${RYI.ban}품절 취소</button></div>
+            <div class="ry-in-meta"><span>발주 <b>${odText(item)}</b></span>${elapsedChip(item)}<button onclick="cancelSoldOut(${item.rowNumber})" class="ry-in-cancel" title="공급사 품절로 못 들어오는 상품을 취소합니다">${RYI.ban}품절 취소</button></div>
             ${delayReasonHtml(item)}
           </div>
           <div class="ry-in-qty">
