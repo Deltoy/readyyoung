@@ -7525,6 +7525,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     function mrRouteHtml(route) {
       var s = String(route || '').trim();
       if (!s) return '';
+      if (/^(www\.)?[a-z0-9-]+(\.[a-z0-9-]+)+(\/\S*)?$/i.test(s)) s = 'https://' + s;   // 0930 'hmpmall.co.kr' 처럼 http 없이 적은 주소도 링크로
       if (/^https?:\/\/\S+$/i.test(s)) { var short = s.replace(/^https?:\/\/(www\.)?/i, ''); if (short.length > 34) short = short.slice(0, 32) + '…'; return '<a class="ry-mr-a" href="' + escapeHtml(s) + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">' + escapeHtml(short) + '</a>'; }
       if (/^\+?[\d\-\s().]{8,20}$/.test(s)) return '<a class="ry-mr-a" href="tel:' + escapeHtml(s.replace(/[^\d+]/g, '')) + '" onclick="event.stopPropagation()">' + RYI_MR.tel + escapeHtml(s) + '</a>';
       return '<span class="ry-mr-t">' + escapeHtml(s) + '</span>';
