@@ -2031,6 +2031,24 @@ html body:not(#_):not(#_) .max-w-\[96\%\]>.flex.items-center.gap-2\.5:first-chil
 @media(min-width:768px){html body:not(#_):not(#_) .max-w-\[96\%\]>.flex.items-center.gap-2\.5:first-child{margin-top:0!important;min-height:72px!important}}
 html body:not(#_):not(#_) .ry-delay{border:1px dashed var(--ry-line-2)!important;background:transparent!important;color:#6e6e73!important;border-radius:12px!important;font-weight:400!important;font-size:13px!important}
 html body:not(#_):not(#_) .ry-delay.has{border:0!important;background:var(--ry-warn-soft)!important;color:var(--ry-warn)!important}
+/* 0930 제조사·경로 줄 (발주 담당자만) */
+.ry-mr{display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px;margin-top:3px;font-size:12px;line-height:1.35;color:var(--ry-ink-2);min-width:0}
+.ry-mr:empty{display:none}
+.ry-mr-m{font-weight:700;color:var(--ry-ink)}
+.ry-mr-dot{color:var(--ry-ink-4)}
+.ry-mr-l{font-size:10.5px;font-weight:700;color:var(--ry-ink-4);letter-spacing:.02em}
+.ry-mr-a{color:var(--ry-brand);font-weight:700;text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--ry-brand) 35%,transparent);text-underline-offset:2px;word-break:break-all;display:inline-flex;align-items:center;gap:3px}
+.ry-mr-t{color:var(--ry-warn);font-weight:600;word-break:keep-all;overflow-wrap:anywhere}
+.ry-mr-none{color:var(--ry-ink-4);font-weight:500}
+.ry-mr-pen{border:0!important;background:var(--ry-sunken)!important;color:var(--ry-ink-3)!important;font-size:12px;line-height:1;width:24px!important;height:22px!important;min-height:0!important;min-width:0!important;border-radius:7px!important;cursor:pointer;padding:0!important;margin:0;display:inline-flex;align-items:center;justify-content:center;flex:none;box-shadow:none!important;transition:background .12s}
+.ry-mr-pen:hover{background:var(--ry-brand-soft);color:var(--ry-brand)}
+.ry-mr-ed{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;width:100%;margin:2px 0}
+.ry-mr-in{width:100%;min-width:0;height:36px;padding:0 10px;border:1.5px solid var(--ry-line);border-radius:10px;background:var(--ry-surface);font:inherit;font-size:14px;color:var(--ry-ink);outline:none}
+.ry-mr-in:focus{border-color:var(--ry-brand);box-shadow:0 0 0 3px var(--ry-brand-soft)}
+.ry-mr-btns{display:flex;gap:6px;justify-content:flex-end}
+.ry-mr-ok,.ry-mr-x{height:32px!important;min-height:0!important;padding:0 14px;border-radius:9px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--ry-line);background:var(--ry-surface);color:var(--ry-ink-2)}
+.ry-mr-ok{background:var(--ry-brand);border-color:var(--ry-brand);color:#fff}
+@media (min-width:721px){.ry-mr-ed{max-width:360px}}
 </style>
 <style id="ry25-design">
 /* ═══════════ 0925 디자인 시스템 — 밝은 머리 · 파이프라인 · 카드 (맨 마지막에 둬서 이전 규칙을 덮는다) ═══════════
@@ -6418,6 +6436,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       try { ry25RenderBar(false); } catch (e) {}   /* 0925: 요약 바도 그 사람 기준으로 */
       try { pfSyncAdmin(); } catch (e) {}
       try { sdRenderCard(); sdRenderSheet(); } catch (e) {}   /* 0925: 내 담당 표시 */
+      try { if (cachedOrderItems.length || cachedReviewItems.length) renderAllViews(); } catch (e) {}   /* 0930: 제조사·경로 줄·주문 완료 버튼은 사람마다 달라서 */
       const menu = document.getElementById('profileDropdownMenu');
       if (menu) menu.classList.add('hidden');
     }
@@ -6732,6 +6751,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       // 검색 결과가 떠 있으면 거기도 같이 갱신 (이름·특이사항을 검색 화면에서 고쳤을 때)
       const _sv = document.getElementById('searchResultView');
       if (_sv && !_sv.classList.contains('hidden')) renderSearchResults(lastSearchResults || []);
+      try { mrFill(); } catch (e) {}   /* 0930 제조사·경로 (발주 담당자만) */
     }
 
     function setHistoryRangeFilter(range) {
@@ -7176,6 +7196,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         <td class="p-2.5 text-center">${imgHtml}</td>
         <td class="p-3 max-w-[260px]">
           <div class="font-bold text-slate-900 text-sm leading-relaxed break-keep">${escapeHtml(item.name)} ${endedBadge(item)}</div>
+          ${mrSlot(item, type)}
           ${reqBadge}
         </td>
         <td class="p-3 text-center bg-blue-50/40">${qtyInputHtml}${type === 'review' || type === 'order' ? boxRefHtml(item, false) : ''}</td>
@@ -7229,6 +7250,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         <section class="ry-oc-head">
           <div class="ry-oc-text">
             <div class="ry-oc-name">${escapeHtml(item.name)} ${endedBadge(item)}</div>
+            ${mrSlot(item, type)}
             <div class="ry-oc-meta"><span class="ry-s15l">15일</span> ${type === 'review' ? sales15InputHtml(item, true) : `<b class="whitespace-nowrap">${escapeHtml(item.sales15)}</b>`}
               ${type === 'review' || type === 'order' ? boxRefHtml(item, true) : (item.boxUnit ? `| 1박스 ${escapeHtml(item.boxUnit)}개` : '')}</div>
             <div class="ry-oc-tags">
@@ -7486,6 +7508,60 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         .reorderSoldOut(rowNumber, src ? src.name : '', currentSelectedMember);
     }
     /* 0928 약사 '주문 완료' (엑셀 확인 체크 대신) — 관리약사 · 약사 · 물류관리자에게만 보임. 누르면 바로 입고대기로 */
+    /* 0930 제조사·경로 — 발주 담당자(진성·하은·관리약사·물류관리자)만 카드에 보이고 고침. 서버 mrCanSee_ 와 같은 규칙.
+       대시보드 목록엔 없고 getMakerRoute 로 따로 받음(세션 캐시 MR.map). 서버에 함수가 없으면 조용히 아무것도 안 보임 */
+    var MR = { map: {}, busy: false, ver: 0 };
+    function mrCanSee() { try { return /^(진성|하은)$/.test(String(currentSelectedMember || '').trim()) || /^(관리약사|물류관리자)$/.test(memberTitle(currentSelectedMember)); } catch (e) { return false; } }
+    function mrSlot(item, type) {
+      if ((type !== 'order' && type !== 'review') || !mrCanSee()) return '';
+      var r = item.rowNumber, has = Object.prototype.hasOwnProperty.call(MR.map, r);
+      return '<div class="ry-mr' + (has ? '' : ' wait') + '" data-mr="' + r + '">' + (has ? mrLineHtml(r) : '') + '</div>';
+    }
+    function mrRouteHtml(route) {
+      var s = String(route || '').trim();
+      if (!s) return '';
+      if (/^https?:\/\/\S+$/i.test(s)) { var short = s.replace(/^https?:\/\/(www\.)?/i, ''); if (short.length > 34) short = short.slice(0, 32) + '…'; return '<a class="ry-mr-a" href="' + escapeHtml(s) + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">' + escapeHtml(short) + '</a>'; }
+      if (/^\+?[\d\-\s().]{8,20}$/.test(s)) return '<a class="ry-mr-a" href="tel:' + escapeHtml(s.replace(/[^\d+]/g, '')) + '" onclick="event.stopPropagation()">' + RYI_MR.tel + escapeHtml(s) + '</a>';
+      return '<span class="ry-mr-t">' + escapeHtml(s) + '</span>';
+    }
+    var RYI_MR = { tel: '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.9 2z"/></svg>' };
+    function mrLineHtml(r) {
+      var d = MR.map[r] || {}, maker = String(d.maker || '').trim(), route = String(d.route || '').trim(), pen = '<button type="button" class="ry-mr-pen" onclick="event.stopPropagation(); mrEdit(' + r + ')" aria-label="제조사·경로 고치기">✎</button>';
+      if (!maker && !route) return '<span class="ry-mr-none">제조사·경로 없음</span>' + pen;
+      return (maker ? '<span class="ry-mr-m">🏭 ' + escapeHtml(maker) + '</span>' : '') + (maker && route ? '<span class="ry-mr-dot">·</span>' : '') + (route ? '<span class="ry-mr-r"><span class="ry-mr-l">경로</span> ' + mrRouteHtml(route) + '</span>' : '') + pen;
+    }
+    function mrPaint(r) { [].forEach.call(document.querySelectorAll('.ry-mr[data-mr="' + r + '"]'), function (el) { el.classList.remove('wait'); el.innerHTML = mrLineHtml(r); }); }
+    function mrFill() {
+      if (!mrCanSee() || !window.google || !google.script) return;
+      var need = {}; [].forEach.call(document.querySelectorAll('.ry-mr.wait[data-mr]'), function (el) { var r = parseInt(el.dataset.mr, 10); if (r >= 2 && !Object.prototype.hasOwnProperty.call(MR.map, r)) need[r] = 1; });
+      var rows = Object.keys(need).map(Number).slice(0, 200);
+      if (!rows.length || MR.busy) return;
+      MR.busy = true; var member = currentSelectedMember, ver = ++MR.ver;
+      google.script.run.withSuccessHandler(function (res) {
+        MR.busy = false;
+        if (ver !== MR.ver || !res || !res.ok || member !== currentSelectedMember) return;   // 늦게 온 응답·사람 바뀜은 버림
+        Object.keys(res.items || {}).forEach(function (k) { MR.map[k] = res.items[k]; mrPaint(k); });
+        rows.forEach(function (r) { if (!Object.prototype.hasOwnProperty.call(MR.map, r)) { MR.map[r] = { maker: '', route: '' }; mrPaint(r); } });
+      }).withFailureHandler(function () { MR.busy = false; }).getMakerRoute(rows, member);   // 서버에 아직 없으면 조용히
+    }
+    function mrEdit(r) {
+      var d = MR.map[r] || { maker: '', route: '' };
+      [].forEach.call(document.querySelectorAll('.ry-mr[data-mr="' + r + '"]'), function (el) {
+        el.innerHTML = '<form class="ry-mr-ed" onsubmit="event.preventDefault(); mrSave(' + r + ', this)" onclick="event.stopPropagation()">'
+          + '<input class="ry-mr-in" name="maker" maxlength="40" placeholder="제조사" value="' + escapeHtml(d.maker || '') + '" autocomplete="off">'
+          + '<input class="ry-mr-in" name="route" maxlength="300" placeholder="경로 (주문 링크 · 전화 · 메모)" value="' + escapeHtml(d.route || '') + '" autocomplete="off">'
+          + '<div class="ry-mr-btns"><button type="button" class="ry-mr-x" onclick="mrPaint(' + r + ')">취소</button><button type="submit" class="ry-mr-ok">저장</button></div></form>';
+        var f = el.querySelector('input[name=maker]'); if (f) setTimeout(function () { f.focus(); }, 30);
+      });
+    }
+    function mrSave(r, form) {
+      var maker = String(form.maker.value || '').trim().slice(0, 40), route = String(form.route.value || '').trim().slice(0, 300), before = MR.map[r] || { maker: '', route: '' };
+      MR.map[r] = { maker: maker, route: route }; mrPaint(r);   // 먼저 보여주고 서버에 저장
+      google.script.run.withSuccessHandler(function (res) {
+        if (!res || !res.ok) { MR.map[r] = before; mrPaint(r); showToast((res && res.msg) || '저장하지 못했어요'); return; }
+        MR.map[r] = { maker: String(res.maker || ''), route: String(res.route || '') }; mrPaint(r); showToast('제조사·경로를 저장했어요');
+      }).withFailureHandler(function () { MR.map[r] = before; mrPaint(r); showToast('저장 실패 — 잠시 뒤 다시 시도해주세요.'); }).setMakerRoute(r, maker, route, currentSelectedMember);
+    }
     function ryCanConfirmOrder() { try { return /^(관리약사|약사|물류관리자)$/.test(memberTitle(currentSelectedMember)); } catch (e) { return false; } }
     function confirmOrderPlaced(rowNumber) {
       if (!checkMemberSelectedOrAlert()) return;
