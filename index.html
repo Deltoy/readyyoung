@@ -6221,6 +6221,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         (arr || []).forEach(it => { if (it.rowNumber === rowNumber) it.imgUrl = url; });
       });
       lastSearchResults.forEach(it => { if (it.rowNumber === rowNumber) it.imgUrl = url; });
+      /* 0930 폰에 받아 둔 전체 상품 목록(RY_CAT)의 사진도 바꾼다 — 검색 결과가 목록에서 오므로 안 바꾸면 옛 사진이 계속 보였음 */
+      try { if (typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) { RY_CAT.items.forEach(function (it) { if (it.rowNumber === rowNumber) it.imgUrl = url; }); if (typeof ryCatSave === 'function') ryCatSave(RY_CAT); else localStorage.setItem(RY_CAT_KEY, JSON.stringify(RY_CAT)); } } catch (e) {}
       persistSnapshot();
       renderAllViews();
       const sView = document.getElementById('searchResultView');
