@@ -397,6 +397,11 @@ img[alt="레디영 마스코트"],img[alt="레디영 마스코트"]+span{width:2
 .ry-cat{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:3px 9px;min-height:0;
   background:var(--ry-brand-soft);color:var(--ry-brand);white-space:nowrap;border:0;cursor:pointer}
 .ry-cat.none{background:var(--ry-sunken);color:var(--ry-ink-3);font-weight:600}
+.ry-cat>span{font-weight:600;opacity:.72}.ry-cat>i{font-style:normal;opacity:.45;margin:0 4px}.ry-cat>b{font-weight:800}
+.ry-cat.rv{background:#FFFBEB;color:#B54708;box-shadow:inset 0 0 0 1px #FDE68A}.ry-cat.rv>b{color:#B54708}
+#reviewCardContainer>div .ry-cat.rv,#readyCardContainer>div .ry-cat.rv{color:#B54708!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-cat.rv,html:not(#q):not(#w):not(#e) body:not(#r) .ry-cat.rv>b{color:#B54708!important}html body:not(#_):not(#_) .ry-cat>span{font-weight:500!important;opacity:.75}
+.np-field .cat-2{display:flex;gap:8px}.np-field .cat-2>select{flex:1;min-width:0}
 /* 컨트롤 바 — 기간 세그먼트 + 보조 버튼을 한 줄로 */
 .ry-bar{display:flex;align-items:center;gap:6px;margin-top:10px;overflow-x:auto;padding-bottom:2px}
 .ry-bar::-webkit-scrollbar{display:none}
@@ -1125,6 +1130,13 @@ td:has(button[id^="unit-btn-"][class*="bg-indigo-600"]) input[id^="qty-"]{color:
   color:var(--ry-ink-2);font-size:13px;font-weight:700;white-space:nowrap}
 .cb-chip b{font-weight:800;color:var(--ry-ink-3);margin-left:2px}
 .cb-chip.warn{border-color:#FEC84B;background:var(--ry-warn-soft);color:#7A4A00}
+.scr-row{background:#fff;border-radius:16px;padding:14px 16px;margin-top:8px;box-shadow:0 1px 3px rgba(0,0,0,.04)}.scr-row.busy{opacity:.55;pointer-events:none}
+.scr-h{display:flex;align-items:center;gap:10px;margin-bottom:10px}.scr-h b{flex:1;min-width:0;font-size:15px;line-height:1.35}.scr-h .ry-cat{flex:none}
+.scr-picks{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.scr-picks .cb-chip{min-height:40px}.scr-picks .cb-chip.on{background:#155EEF;border-color:#155EEF;color:#fff}
+.scr-more{min-height:40px;min-width:132px;border:1px solid var(--ry-line-2);border-radius:999px;padding:0 32px 0 14px;background:#fff;font-size:13px;font-weight:700;color:var(--ry-ink-2)}
+.scr-grid{display:grid;grid-template-columns:1fr;gap:0 10px;align-items:start}@media(min-width:1000px){.scr-grid{grid-template-columns:1fr 1fr}}
+.cb-subchips{padding-top:0;margin-top:-4px}.cb-subchips[hidden]{display:none!important}.cb-subchips .cb-chip{min-height:36px;font-size:12.5px;padding:0 12px}
+.cb-row .cb-sub{display:inline-block;margin-left:6px;font-size:11.5px;font-weight:700;color:var(--ry-brand)}.cb-row .cb-sub.rv{color:#B54708}
 .cb-chip.warn b{color:#B54708}
 .cb-chip.on{background:var(--ry-ink)!important;border-color:var(--ry-ink)!important;color:#fff!important}
 .cb-chip.on b{color:#fff!important}
@@ -2737,6 +2749,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .pfa-skip{min-height:44px!important;pa
 html:not(#q):not(#w):not(#e) body:not(#r) .st-note{margin:8px 4px 0;font-size:12.5px;color:#6b7280;line-height:1.5}
 /* 0928 15일 판매량 엑셀 */
 html:not(#q):not(#w):not(#e) body:not(#r) #s15Entry[hidden]{display:none!important}
+html:not(#q):not(#w):not(#e) body:not(#r) #scrEntry[hidden]{display:none!important}
+.scr-cnt{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;background:#FFFBEB;color:#B54708;font-size:11.5px;font-weight:800;box-shadow:inset 0 0 0 1px #FDE68A;vertical-align:1px}.scr-cnt[hidden]{display:none!important}
 html:not(#q):not(#w):not(#e) body:not(#r) #s15Entry.due small{color:#b45309!important}
 html:not(#q):not(#w):not(#e) body:not(#r) #toolMoreBtn.s15-due{position:relative}
 html:not(#q):not(#w):not(#e) body:not(#r) #toolMoreBtn.s15-due::after{content:"";position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%;background:#F59E0B;box-shadow:0 0 0 2px #fff}
@@ -3505,6 +3519,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
             <button type="button" role="menuitem" onclick="closeToolMore(); mbOpenArchive()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>뷰티 브리핑 모아보기<small>날짜별 목록 · 첫 화면 카드는 10~11시엔 숨김</small></button>
             <button type="button" role="menuitem" onclick="closeToolMore(); nophOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>사진 없는 상품 찍기<small>사진 없는 상품만 모아 카메라로 바로 넣기</small></button>
             <button type="button" role="menuitem" id="pfAutoEntry" hidden onclick="closeToolMore(); pfaOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6"/><circle cx="9" cy="9" r="2"/><path d="m3 17 4-4 3 3"/><circle cx="17.5" cy="17.5" r="3.5"/><path d="m22 22-1.9-1.9"/></svg>사진 자동 채우기<small>사진 없는 상품을 인터넷 사진으로 (문준 전용)</small></button>
+            <button type="button" role="menuitem" id="scrEntry" hidden onclick="closeToolMore(); scrOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>하위 섹터 확인 필요<span id="scrCnt" class="scr-cnt" hidden></span><small>자동 분류가 자신 없던 상품의 하위 섹터 정하기</small></button>
             <button type="button" role="menuitem" id="s15Entry" hidden onclick="closeToolMore(); s15Open()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M8 13h2"/><path d="M14 13h2"/><path d="M8 17h2"/><path d="M14 17h2"/></svg>15일 판매량 엑셀<small>판매량 통계 엑셀로 한 번에</small></button>
             <button type="button" role="menuitem" onclick="closeToolMore(); openStale()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="m7.5 4.27 9 5.15"/></svg>창고 정리<small>한 달 넘게 주문 안 한 상품 정리</small></button>
             <button type="button" role="menuitem" data-url="https://pallang-0258.github.io/seongsu/viewer.html" onclick="closeToolMore(); window.open(this.dataset.url, '_blank', 'noopener')"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/></svg>근무표<small>약국 근무표 보기 (새 창)</small></button>
@@ -4246,11 +4261,43 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 
     /* ===== 카테고리 ===== */
     var CATEGORY_LIST = ['일반의약품','의료기기','건강기능식품','스킨케어','클렌징','선케어','헤어케어','바디케어','구강용품','반려동물','의약외품','위생·소모품','식품·음료','기타'];
+    /* 0930 하위 섹터: 카테고리 값이 '대분류 › 하위' (없으면 대분류만 — 옛 서버·아직 안 나눈 상품도 그대로 보임) */
+    var SUBCATS = {
+      '일반의약품': ['감기·기침','해열·진통','소화·위장','변비·지사','피부외용','상처·화상','안약','비염·알레르기','파스·근육','수면·멀미','자양강장','여성·비뇨','구충·금연','기타'],
+      '의료기기': ['밴드·드레싱','흉터·습윤','서포터·보호대','검사키트','체온·혈압','렌즈용품','코·호흡','붕대·거즈','기타'],
+      '건강기능식품': ['비타민','유산균','오메가3','콜라겐·이너뷰티','다이어트','눈건강','간건강','관절·뼈','홍삼·면역','미네랄','단백질','키즈','기타'],
+      '스킨케어': ['아이크림','크림','세럼·앰플','토너·스킨','로션·에멀전','선케어','클렌징','마스크팩','립케어','스팟·트러블','장벽·진정','미스트·오일','기타'],
+      '클렌징': ['폼·젤','오일·밤','워터·패드','필링·스크럽','핸드워시','기타'],
+      '선케어': ['선크림','선스틱','선쿠션','선세럼·에센스','톤업','기타'],
+      '마스크팩': ['시트마스크','아이패치','코팩','패드·토닝','워시오프','기타'],
+      '헤어케어': ['샴푸','트리트먼트·린스','두피앰플','탈모','헤어에센스·오일','스타일링','기타'],
+      '바디케어': ['핸드크림','풋케어','바디로션·크림','바디워시','데오드란트','바디미스트·스프레이','패치','기타'],
+      '구강용품': ['치약','칫솔','치실·치간','가글','틀니','미백','기타'],
+      '반려동물': ['영양제','심장사상충·구충','피부·귀','사료·간식','샴푸·케어','의약품','기타'],
+      '의약외품': ['마스크','생리대','소독·살균','밴드·반창고','붕대·거즈','드링크','벌레·모기','기타'],
+      '위생·소모품': ['핫팩·쿨링','안대','물티슈·휴지','장갑·마스크','생활용품','기타'],
+      '식품·음료': ['숙취해소','차·티백','캔디·젤리','에너지·드링크','효소·건강식품','기타'],
+      '비품': ['포장','청소','사무','기타']
+    };
+    var CAT_REVIEW = '확인필요';
+    function catTop(x) { x = String(x == null ? '' : x).trim(); var i = x.indexOf('›'); return (i === -1 ? x : x.slice(0, i)).trim(); }
+    function catSub(x) { x = String(x == null ? '' : x).trim(); var i = x.indexOf('›'); return i === -1 ? '' : x.slice(i + 1).trim(); }
+    function catJoin(top, sub) { return sub ? top + ' › ' + sub : top; }
+    function catLabel(x) { var t = catTop(x), u = catSub(x); return u ? t + ' · ' + u : t; }
+    /* 하위 선택칸 채우기: 그 대분류에 하위가 없으면 숨김 */
+    function fillSubSel(sel, top, cur) {
+      if (!sel) return;
+      var subs = SUBCATS[top] || [];
+      sel.innerHTML = '<option value="">하위 선택…</option>' + subs.map(function (u) { return '<option' + (u === cur ? ' selected' : '') + '>' + escapeHtml(u) + '</option>'; }).join('')
+        + (cur === CAT_REVIEW ? '<option value="' + CAT_REVIEW + '" selected>확인필요</option>' : '');
+      sel.style.display = subs.length ? '' : 'none';
+    }
     function catChip(item) {
       var c = String(item.category || '').trim();
       if (c === 'FALSE' || c === 'TRUE' || c === '거짓' || c === '참') c = '';   // 체크박스 잔재 방어
-      return '<button type="button" onclick="event.stopPropagation(); openNote(' + item.rowNumber + ')" class="ry-cat' + (c ? '' : ' none') + '">'
-        + (c ? escapeHtml(c) : '분류 없음') + '</button>';
+      var top = catTop(c), sub = catSub(c);
+      return '<button type="button" onclick="event.stopPropagation(); openNote(' + item.rowNumber + ')" class="ry-cat' + (c ? '' : ' none') + (sub === CAT_REVIEW ? ' rv' : '') + '">'
+        + (c ? '<span>' + escapeHtml(top) + '</span>' + (sub ? '<i aria-hidden="true">·</i><b>' + escapeHtml(sub) + '</b>' : '') : '분류 없음') + '</button>';
     }
 
     /* ===== 판매종료 표시 ===== */
@@ -4306,7 +4353,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     function renderInfo(info) {
       INFO_CUR = info;
       var item = INFO_ROW ? findItemByRow(INFO_ROW) : null;
-      var curCat = item ? String(item.category || '').trim() : '';
+      var curCat = item ? catTop(item.category || '') : '';
       var manual = info.source === '직접수정';
       var unsure = info.source === 'AI(불확실)';
       var h = '';
@@ -4422,9 +4469,10 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       var sel = document.getElementById('noteCat');
       sel.innerHTML = CATEGORY_LIST.map(function (c) { return '<option>' + escapeHtml(c) + '</option>'; }).join('')
         + '<option value="' + NOTE_NEWCAT + '">＋ 새 카테고리 추가…</option>';
-      sel.value = val;
-      if (sel.value !== val) sel.value = '기타';
+      sel.value = catTop(val);
+      if (sel.value !== catTop(val)) sel.value = '기타';
       NOTE_CAT_PREV = sel.value;
+      fillSubSel(document.getElementById('noteSub'), sel.value, catSub(val));   // 0930 하위 섹터
     }
     function noteNewCatShow(on) {
       document.getElementById('noteNewCatRow').hidden = !on;
@@ -4432,7 +4480,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     }
     function noteCatChange() {
       var sel = document.getElementById('noteCat');
-      if (sel.value !== NOTE_NEWCAT) { NOTE_CAT_PREV = sel.value; noteNewCatShow(false); return; }
+      if (sel.value !== NOTE_NEWCAT) { NOTE_CAT_PREV = sel.value; noteNewCatShow(false); fillSubSel(document.getElementById('noteSub'), sel.value, ''); return; }
       sel.value = NOTE_CAT_PREV;   // 이름을 정할 때까지 원래 분류 유지
       noteNewCatShow(true);
       setTimeout(function () { document.getElementById('noteNewCat').focus(); }, 60);
@@ -4502,6 +4550,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       btn.disabled = true; btn.textContent = '저장 중…';
       var newCat = document.getElementById('noteCat').value;
       if (newCat === NOTE_NEWCAT) newCat = NOTE_CAT_PREV;
+      newCat = catJoin(newCat, document.getElementById('noteSub').value);   // 0930 '대분류 › 하위'
       var before = item.note || '', beforeName = item.name, beforeCat = item.category || '';
       item.note = text; item.name = newName; item.category = newCat;   // 화면에 먼저 반영
       renderAllViews();
@@ -4598,7 +4647,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         return '<div class="rej-r" id="rej-row-' + it.rowNumber + '">' +
           '<div class="t">' + escapeHtml(it.name) + '</div>' +
           '<div class="m">' + (it.date ? escapeHtml(it.date) + ' 반려' : '반려') +
-            (it.category ? ' · ' + escapeHtml(it.category) : '') +
+            (it.category ? ' · ' + escapeHtml(catLabel(it.category)) : '') +
             (it.note ? ' · ' + escapeHtml(it.note) : '') + '</div>' +
           '<div class="a">' +
             '<input type="number" id="rej-qty-' + it.rowNumber + '" value="' + escapeHtml(it.qty || '1') + '" min="1" inputmode="numeric">' +
@@ -4741,7 +4790,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       var h = '<div class="st-row" data-row="' + it.row + '">' + stImg(it)
         + '<div class="st-main"><div class="st-name">' + escapeHtml(it.name) + '</div>'
         + '<div class="st-meta">' + stAgo(it) + '</div>'
-        + '<div class="st-tags">' + (it.discontinued ? '<span class="st-tag sale">소진 후 판매종료</span>' : '') + s15 + (it.category ? '<span class="st-cat">' + escapeHtml(it.category) + '</span>' : '') + '</div>';
+        + '<div class="st-tags">' + (it.discontinued ? '<span class="st-tag sale">소진 후 판매종료</span>' : '') + s15 + (it.category ? '<span class="st-cat">' + escapeHtml(catLabel(it.category)) + '</span>' : '') + '</div>';
       if (it.status === '처리 중') {
         h += '<div class="st-decided"><span class="st-dec ' + (ST_DEC[it.decision] || '') + '">' + escapeHtml(it.decision) + '</span>'
           + (it.memo ? '<span class="st-memo">' + escapeHtml(it.memo) + '</span>' : '') + '<span class="st-by">' + escapeHtml(it.decidedAt) + '</span></div>'
@@ -5019,7 +5068,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       else h += '<div id="spAiMsg" class="cb-ai-msg">' + escapeHtml(SP.aiMsg || '') + '</div>';
       if (!tags.length) { box.innerHTML = h + '<div class="sp-empty"><div class="sp-empty-i">🏷</div><b>아직 용도가 분류되지 않았어요</b><p>위 버튼을 누르면 AI가 상품마다 여드름, 기미·잡티, 보습 같은 용도를 붙여줘요.</p></div>'; return; }
       /* 0926 분류(카테고리) 칩: 여러 개 고를 수 있고, 아래 용도 · 목록에 함께 적용 */
-      var ccnt = {}; prods.forEach(function (p) { if (p.category) ccnt[p.category] = (ccnt[p.category] || 0) + 1; }); SP.cats = (SP.cats || []).filter(function (c) { return ccnt[c]; });
+      var ccnt = {}; prods.forEach(function (p) { var pc = catTop(p.category); if (pc) ccnt[pc] = (ccnt[pc] || 0) + 1; }); SP.cats = (SP.cats || []).filter(function (c) { return ccnt[c]; });
       h += '<div class="sp-cats"><span class="sp-cats-l">분류</span>' + Object.keys(ccnt).sort(function (a, b) { return ccnt[b] - ccnt[a]; }).map(function (c) { var on = SP.cats.indexOf(c) !== -1; return '<button type="button" class="cb-chip sp-cat' + (on ? ' on' : '') + '" aria-pressed="' + on + '" data-c="' + escapeHtml(c) + '" onclick="spPickCat(this.dataset.c)">' + escapeHtml(c) + ' <b>' + ccnt[c] + '</b></button>'; }).join('') + (SP.cats.length ? '<button type="button" class="cb-chip" onclick="SP.cats=[];spRenderTags()">분류 풀기</button>' : '') + '</div>';
       h += '<div class="sp-tags">' + tags.map(function (t) {
           var on = !SP.none && sel.indexOf(t) !== -1, n = cnt[t], plus = false;
@@ -5045,7 +5094,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     function spIsSel(t) { return !SP.none && (SP.sel || []).indexOf(t) !== -1 ? 1 : 0; }
     function spPickCat(c) { var a = SP.cats = SP.cats || [], i = a.indexOf(c); if (i !== -1) a.splice(i, 1); else a.push(c); var top = document.getElementById('spBody').scrollTop; spRenderTags(); document.getElementById('spBody').scrollTop = top; }
     function spMatch(p) {
-      if (SP.cats && SP.cats.length && SP.cats.indexOf(p.category) === -1) return false;
+      if (SP.cats && SP.cats.length && SP.cats.indexOf(catTop(p.category)) === -1) return false;
       if (SP.none) return !p.tags.length;
       var sel = SP.sel || [];
       if (!sel.length) return false;
@@ -5079,7 +5128,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       box.innerHTML = SP.rows.map(function (p, i) {
         var ins = spSetsWith(p.name);
         return '<div class="sp-prow">' + spThumb(p) + '<span class="sp-prow-t"><button type="button" class="sp-prow-n" onclick="spInfo(' + i + ')">' + escapeHtml(p.name) + ' <em>ⓘ</em></button>'
-          + '<span class="sp-item-s">' + (p.category ? '<i class="cat">' + escapeHtml(p.category) + '</i>' : '')
+          + '<span class="sp-item-s">' + (p.category ? '<i class="cat">' + escapeHtml(catLabel(p.category)) + '</i>' : '')
           + p.tags.slice().sort(function (a, b) { return (spIsSel(b) - spIsSel(a)); }).map(function (t) { return '<i' + (spIsSel(t) ? ' class="cur"' : '') + '>' + escapeHtml(t) + '</i>'; }).join('')
           + '</span>' + (ins.length ? '<span class="sp-prow-sets">' + ins.map(function (s) { return '<button type="button" data-id="' + escapeHtml(s.id) + '" onclick="spOpenSet(this.dataset.id)">🎁 ' + escapeHtml(s.name) + ' ›</button>'; }).join('') + '</span>' : '')
           + '</span><button type="button" class="sp-prow-e" aria-label="' + escapeHtml(p.name) + ' 용도 고치기" onclick="openTagEdit(' + i + ')">✏️ 용도</button></div>';
@@ -5510,7 +5559,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (list && list.length) CATEGORY_LIST = list;
       if (custom) CB_CUSTOM = custom;
       var np = document.getElementById('npCat');
-      if (np) { var keep = np.value; np.innerHTML = '<option value="">자동 분류</option>' + CATEGORY_LIST.map(function (c) { return '<option>' + escapeHtml(c) + '</option>'; }).join(''); np.value = keep; }
+      if (np) { var keep = np.value; np.innerHTML = '<option value="">자동 분류</option>' + CATEGORY_LIST.map(function (c) { return '<option>' + escapeHtml(c) + '</option>'; }).join(''); np.value = keep; fillSubSel(document.getElementById('npSub'), np.value, ''); }
       renderCustomCats();
     }
     function renderCustomCats() {
@@ -5604,9 +5653,23 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       }).join('');
       renderCatBrowseList();
     }
+    var CB_SUB = null;   // 0930 하위 칩 (null = 전체)
+    function selectCatSub(v) { CB_SUB = (CB_SUB === v) ? null : v; renderCatBrowseList(); }
+    function renderCatSubChips(g) {
+      var box = document.getElementById('cbSubChips');
+      if (!box) return;
+      var subs = SUBCATS[g.category] || [];
+      if (!subs.length) { box.hidden = true; box.innerHTML = ''; CB_SUB = null; return; }
+      var cnt = {}; g.items.forEach(function (it) { var k = it.sub || ''; cnt[k] = (cnt[k] || 0) + 1; });
+      var keys = subs.filter(function (u) { return cnt[u]; }); if (cnt[CAT_REVIEW]) keys.push(CAT_REVIEW); if (cnt['']) keys.push('');
+      if (CB_SUB !== null && !cnt[CB_SUB]) CB_SUB = null;
+      box.hidden = false;
+      box.innerHTML = '<button type="button" class="cb-chip' + (CB_SUB === null ? ' on' : '') + '" onclick="CB_SUB=null;renderCatBrowseList()">전체 <b>' + g.items.length + '</b></button>'
+        + keys.map(function (u) { return '<button type="button" class="cb-chip' + (CB_SUB === u ? ' on' : '') + (u === CAT_REVIEW || u === '' ? ' warn' : '') + '" data-u="' + escapeHtml(u) + '" onclick="selectCatSub(this.dataset.u)">' + (u === '' ? '하위 없음' : escapeHtml(u)) + ' <b>' + cnt[u] + '</b></button>'; }).join('');
+    }
     function selectCatBrowse(i) {
       if (!CB_DATA || !CB_DATA.groups[i]) return;
-      CB_SEL = CB_DATA.groups[i].category;
+      CB_SEL = CB_DATA.groups[i].category; CB_SUB = null;
       document.getElementById('cbFilter').value = '';
       renderCatBrowse();
       document.getElementById('cbBody').scrollTop = 0;
@@ -5615,23 +5678,44 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       var box = document.getElementById('cbBody');
       if (!CB_DATA) return;
       var g = CB_DATA.groups.filter(function (x) { return x.category === CB_SEL; })[0];
-      if (!g) { box.innerHTML = '<div class="cb-msg">이 분류에는 상품이 없어요 👍</div>'; return; }
+      if (!g) { box.innerHTML = '<div class="cb-msg">이 분류에는 상품이 없어요 👍</div>'; var sc = document.getElementById('cbSubChips'); if (sc) sc.hidden = true; return; }
+      renderCatSubChips(g);
       var q = document.getElementById('cbFilter').value.replace(/\s+/g, '').toLowerCase();
       var items = q ? g.items.filter(function (it) { return it.name.replace(/\s+/g, '').toLowerCase().indexOf(q) !== -1; }) : g.items;
+      if (CB_SUB !== null) items = items.filter(function (it) { return (it.sub || '') === CB_SUB; });
       if (!items.length) { box.innerHTML = '<div class="cb-msg">찾는 이름이 없어요</div>'; return; }
       var shown = items.slice(0, 300);
-      var opts = function (cur) {
-        return (cur ? '' : '<option value="" selected>분류 없음</option>') + CATEGORY_LIST.map(function (c) {
-          return '<option' + (c === cur ? ' selected' : '') + '>' + escapeHtml(c) + '</option>'; }).join('');
+      /* 0930: 지금 대분류의 하위는 '› 하위'(값 '대분류 › 하위'), 다른 대분류는 이름만(값 대분류 — 서버가 하위를 이름으로 채움) */
+      var opts = function (top, sub) {
+        var subs = SUBCATS[top] || [], h = (top ? '' : '<option value="" selected>분류 없음</option>');
+        if (subs.length) h += '<optgroup label="' + escapeHtml(top) + ' 하위">' + subs.map(function (u) { return '<option value="' + escapeHtml(catJoin(top, u)) + '"' + (u === sub ? ' selected' : '') + '>› ' + escapeHtml(u) + '</option>'; }).join('') + '</optgroup>';
+        if (top && !sub) h += '<option value="' + escapeHtml(top) + '" selected>' + escapeHtml(top) + (subs.length ? ' (하위 없음)' : '') + '</option>';
+        if (sub === CAT_REVIEW) h += '<option value="' + escapeHtml(catJoin(top, CAT_REVIEW)) + '" selected>확인필요</option>';
+        return h + '<optgroup label="다른 분류로">' + CATEGORY_LIST.filter(function (c) { return c !== top; }).map(function (c) { return '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>'; }).join('') + '</optgroup>';
       };
       box.innerHTML = shown.map(function (it) {
-        return '<div class="cb-row"><span class="cb-name">' + escapeHtml(it.name) + '</span>'
-          + '<select id="cb-sel-' + it.rowNumber + '" aria-label="분류 바꾸기" onchange="changeCatBrowse(' + it.rowNumber + ', this)">' + opts(g.category) + '</select></div>';
+        return '<div class="cb-row"><span class="cb-name">' + escapeHtml(it.name) + (it.sub ? '<em class="cb-sub' + (it.sub === CAT_REVIEW ? ' rv' : '') + '">' + escapeHtml(it.sub) + '</em>' : '') + '</span>'
+          + '<select id="cb-sel-' + it.rowNumber + '" aria-label="분류 바꾸기" onchange="changeCatBrowse(' + it.rowNumber + ', this)">' + opts(g.category, it.sub || '') + '</select></div>';
       }).join('') + (items.length > shown.length ? '<div class="cb-msg">앞의 300개만 보여요. 위 칸에 이름을 쳐서 좁혀주세요</div>' : '');
     }
     function changeCatBrowse(rowNumber, sel) {
       var to = sel.value, from = CB_SEL;
-      if (!to || to === from || !CB_DATA) return;
+      if (!to || !CB_DATA) return;
+      if (catTop(to) === from && catSub(to)) {   // 0930 같은 대분류 안에서 하위만 바꿈 (묶음 이동 없음)
+        var g0 = CB_DATA.groups.filter(function (x) { return x.category === from; })[0], it0 = g0 && g0.items.filter(function (x) { return x.rowNumber === rowNumber; })[0];
+        if (!it0 || it0.sub === catSub(to)) return;
+        var prev = it0.sub; it0.sub = catSub(to); sel.disabled = true;
+        google.script.run.withSuccessHandler(function (res) {
+          sel.disabled = false;
+          if (!res || res.success === false) { it0.sub = prev; renderCatBrowseList(); showToast((res && res.message) || '하위를 바꾸지 못했어요'); return; }
+          var live0 = findItemByRow(rowNumber); if (live0) { live0.category = res.category || to; renderAllViews(); }
+          var keep0 = document.getElementById('cbBody').scrollTop; renderCatBrowseList(); document.getElementById('cbBody').scrollTop = keep0;
+          showToast(it0.name + ' → ' + catLabel(res.category || to));
+        }).withFailureHandler(function () { sel.disabled = false; it0.sub = prev; renderCatBrowseList(); showToast('하위를 바꾸지 못했어요. 잠시 뒤 다시 시도해주세요'); })
+          .setCategory(rowNumber, it0.name, to);
+        return;
+      }
+      if (to === from) return;
       var src = CB_DATA.groups.filter(function (x) { return x.category === from; })[0];
       var it = src && src.items.filter(function (x) { return x.rowNumber === rowNumber; })[0];
       if (!it) return;
@@ -5640,17 +5724,18 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       google.script.run
         .withSuccessHandler(function (res) {
           if (!res || res.success === false) { fail((res && res.message) || '분류를 바꾸지 못했어요'); return; }
+          var saved = (res && res.category) || to, toTop = catTop(saved);   // 0930 서버가 하위를 채워 돌려줌
           src.items = src.items.filter(function (x) { return x.rowNumber !== rowNumber; }); src.count = src.items.length;
-          var dst = CB_DATA.groups.filter(function (x) { return x.category === to; })[0];
-          if (!dst) { dst = { category: to, count: 0, items: [] }; CB_DATA.groups.push(dst); }
-          dst.items.push(it); dst.count = dst.items.length;
+          var dst = CB_DATA.groups.filter(function (x) { return x.category === toTop; })[0];
+          if (!dst) { dst = { category: toTop, count: 0, items: [] }; CB_DATA.groups.push(dst); }
+          it.sub = catSub(saved); dst.items.push(it); dst.count = dst.items.length;
           CB_DATA.groups = CB_DATA.groups.filter(function (x) { return x.count > 0 || x.category === from; });
           var live = findItemByRow(rowNumber);
-          if (live) { live.category = to; renderAllViews(); }
+          if (live) { live.category = saved; renderAllViews(); }
           var keepScroll = document.getElementById('cbBody').scrollTop;
           renderCatBrowse();
           document.getElementById('cbBody').scrollTop = keepScroll;
-          showToast(it.name + ' → ' + to);
+          showToast(it.name + ' → ' + catLabel(saved));
         })
         .withFailureHandler(function () { fail('분류를 바꾸지 못했어요. 잠시 뒤 다시 시도해주세요'); })
         .setCategory(rowNumber, it.name, to);
@@ -5682,7 +5767,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           var hidden = String(r.note || '').indexOf('취급안함') !== -1;
           html += '<div class="dup-r" id="dup-row-' + r.rowNumber + '">'
             + '<div class="i"><b>' + r.rowNumber + '행</b>'
-            + (r.category ? ' · ' + escapeHtml(r.category) : '')
+            + (r.category ? ' · ' + escapeHtml(catLabel(r.category)) : '')
             + (r.inboundDate ? ' · 최근입고 ' + escapeHtml(r.inboundDate) : ' · 입고기록 없음')
             + (r.sales15 ? ' · 15일 ' + escapeHtml(r.sales15) : '')
             + (hidden ? ' · <span style="color:var(--ry-ink-3)">숨김</span>' : '')
@@ -5782,7 +5867,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           }
           if (res.requested) ry25TrackRequest(res.rowNumber, res.name, parseInt(document.getElementById('npQty').value, 10) || 1);   /* 0925: 하단 요약 바 */
           closeNewProduct();
-          var extra = (res.category ? ' · ' + res.category : '') + (res.requested ? ' · 1차 검토로 들어갔어요' : '');
+          var extra = (res.category ? ' · ' + catLabel(res.category) : '') + (res.requested ? ' · 1차 검토로 들어갔어요' : '');
           if (res.photo && !res.photo.ok) extra += ' · 사진은 저장 못 했어요';
           showToast('✓ ' + res.name + ' 등록 완료' + extra);
           // 0930 목록을 억지로 다시 받지 않는다(서버가 2분 걸림). 새 상품은 폰 목록에 없어도 서버 이름 스캔으로 바로 찾힌다
@@ -5800,7 +5885,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           unit: document.getElementById('npUnit').value,
           note: document.getElementById('npNote').value.trim(),
           sales15: document.getElementById('npSales15').value.trim(),
-          category: document.getElementById('npCat').value,
+          category: catJoin(document.getElementById('npCat').value, document.getElementById('npSub').value),
           photo: NP_PHOTO || '',
           request: document.getElementById('npRequest').checked,
           requester: currentSelectedMember || ''
@@ -8280,7 +8365,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       var m = {};
       [cachedReviewItems, cachedOrderItems, cachedInboundItems, cachedStockCheckItems, cachedHistoryItems, lastSearchResults].forEach(function (arr) {
         (arr || []).forEach(function (it) {
-          var c = String((it && it.category) || '').trim(), k = String((it && it.name) || '').replace(/\s+/g, '').toLowerCase();
+          var c = catTop((it && it.category) || ''), k = String((it && it.name) || '').replace(/\s+/g, '').toLowerCase();   // 0930 통계는 대분류로
           if (!k || !c || c === '분류 없음' || c === 'FALSE' || c === 'TRUE') return;
           if (!m[k] || (m[k].log && !it.isLog)) m[k] = { c: c, log: !!it.isLog };
         });
@@ -8288,7 +8373,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       return m;
     }
     function ryCatOf(it, map) {
-      var c = String((it && it.category) || '').trim();
+      var c = catTop((it && it.category) || '');
       if (c && c !== '분류 없음' && c !== 'FALSE' && c !== 'TRUE') return c;
       var hit = map[String((it && it.name) || '').replace(/\s+/g, '').toLowerCase()];
       return hit ? hit.c : '분류 없음';
@@ -9134,7 +9219,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       }
       var byCat = {};
       items.forEach(function (it) {
-        var c = String(it.category || '').trim();
+        var c = catTop(it.category || '');
         if (c === 'FALSE' || c === 'TRUE') c = '';
         c = c || '기타';
         (byCat[c] = byCat[c] || []).push(it);
@@ -9703,7 +9788,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 
     /* 자동 채우기 (문준만 · 서버에서도 막는다) */
     var PFA = { applied: [], review: [], seen: [], remaining: 0, running: false, sel: {}, dirty: false };
-    function pfSyncAdmin() { var b = document.getElementById('pfAutoEntry'); if (b) b.hidden = (currentSelectedMember !== PF_ADMIN); var s = document.getElementById('s15Entry'); if (s) s.hidden = (currentSelectedMember !== PF_ADMIN); setTimeout(function () { try { s15Dot(); s15InfoLoad(false); } catch (e) {} }, 0); }
+    function pfSyncAdmin() { if (typeof scrSyncEntry === 'function') scrSyncEntry(); var b = document.getElementById('pfAutoEntry'); if (b) b.hidden = (currentSelectedMember !== PF_ADMIN); var s = document.getElementById('s15Entry'); if (s) s.hidden = (currentSelectedMember !== PF_ADMIN); setTimeout(function () { try { s15Dot(); s15InfoLoad(false); } catch (e) {} }, 0); }
     function pfaOpen() {
       if (currentSelectedMember !== PF_ADMIN) { showToast('사진 자동 채우기는 ' + PF_ADMIN + ' 프로필에서만 쓸 수 있어요'); return; }
       document.getElementById('pfaDim').classList.add('on');
@@ -11028,6 +11113,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     <div id="cbAiMsg" class="cb-ai-msg"></div>
   </div>
   <div id="cbChips" class="cb-chips"></div>
+  <div id="cbSubChips" class="cb-chips cb-subchips" hidden></div>
   <details class="cb-manage" id="cbManage">
     <summary>＋ 분류 추가 · 관리</summary>
     <div class="cb-add">
@@ -11069,7 +11155,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 <div class="ava-sheet" id="noteSheet" role="dialog" aria-label="특이사항">
   <div class="ava-head"><b>상품 수정</b><button type="button" onclick="closeNote()">닫기</button></div>
   <div class="np-field"><label>상품명</label><input type="text" id="noteName" placeholder="상품명"></div>
-  <div class="np-field"><label for="noteCat">카테고리</label><select id="noteCat" onchange="noteCatChange()"></select>
+  <div class="np-field"><label for="noteCat">카테고리</label><div class="cat-2"><select id="noteCat" onchange="noteCatChange()"></select><select id="noteSub" aria-label="하위 섹터" style="display:none"></select></div>
     <div class="cb-add note-newcat" id="noteNewCatRow" hidden>
       <input type="text" id="noteNewCat" maxlength="12" placeholder="새 카테고리 이름 (예: 비품)" autocomplete="off" aria-label="새 카테고리 이름" onkeydown="if(event.key==='Enter'&&!event.isComposing){event.preventDefault();addNoteCat();}">
       <button type="button" id="noteNewCatBtn" onclick="addNoteCat()">추가</button>
@@ -11287,7 +11373,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     <div class="np-field"><label>15일 판매 (선택)</label><input type="number" id="npSales15" inputmode="numeric" placeholder="예: 40"></div>
   </div>
   <div class="np-row">
-    <div class="np-field"><label>카테고리</label><select id="npCat"><option value="">자동 분류</option></select></div>
+    <div class="np-field"><label>카테고리</label><div class="cat-2"><select id="npCat" onchange="fillSubSel(document.getElementById('npSub'), this.value, '')"><option value="">자동 분류</option></select><select id="npSub" aria-label="하위 섹터" style="display:none"></select></div></div>
     <div class="np-field"><label>특이사항 (선택)</label><input type="text" id="npNote" placeholder="예: 공급사 직거래"></div>
   </div>
   <div class="np-field"><label>사진 (선택)</label>
@@ -11458,6 +11544,11 @@ html:not(#q):not(#w):not(#e) body:not(#r) .so-rc-note svg{width:14px;height:14px
   <div style="padding:8px 16px;color:#6b7280;font-size:13px">📷 를 누르면 카메라가 열리고, 찍으면 바로 저장돼요. 저장된 상품은 목록에서 사라져요.</div>
   <div id="nophList" style="padding:0 12px 24px"></div>
 </div>
+<div id="scrDim" hidden role="dialog" aria-modal="true" aria-label="하위 섹터 확인 필요" style="display:none;position:fixed;inset:0;z-index:9000;background:var(--ry-bg,#f5f6f8);overflow:auto;-webkit-overflow-scrolling:touch">
+  <div style="position:sticky;top:0;background:#fff;border-bottom:1px solid #e5e7eb;padding:12px 16px;display:flex;align-items:center;gap:10px;z-index:1"><b style="font-size:17px;flex:1">하위 섹터 확인 필요 <span id="scrHeadCnt" style="color:#6b7280;font-weight:600;font-size:14px"></span></b><button type="button" onclick="scrClose()" style="min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #e5e7eb;background:#fff;font-weight:700">닫기</button></div>
+  <div style="padding:8px 16px;color:#6b7280;font-size:13px">자동 분류가 자신 없던 상품이에요. 맞는 하위 섹터를 한 번 누르면 바로 저장돼요.</div>
+  <div id="scrList" class="scr-grid" style="padding:0 12px 24px;max-width:1000px;margin:0 auto"></div>
+</div>
 <div id="mbReader" class="mb-rd" hidden role="dialog" aria-modal="true" aria-label="아침 뷰티 브리핑">
   <header class="mb-top">
     <button type="button" class="mb-ic" onclick="mbBack()" aria-label="뒤로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
@@ -11468,6 +11559,49 @@ html:not(#q):not(#w):not(#e) body:not(#r) .so-rc-note svg{width:14px;height:14px
 </div>
 
 <script>
+/* 0930 하위 섹터 확인 필요(scr*) — 서버 getSubcatReview / applySubcat (발주 담당자만, 서버에 없으면 메뉴 숨김 유지) */
+var SCR = { items: null, busy: {} };
+function scrSyncEntry() { var b = document.getElementById('scrEntry'); if (b) b.hidden = !(typeof mrCanSee === 'function' && mrCanSee()); }
+function scrOpen() {
+  var d = document.getElementById('scrDim'); d.hidden = false; d.style.display = 'block'; document.documentElement.classList.add('mb-lock');
+  document.getElementById('scrList').innerHTML = '<div class="cb-msg">불러오는 중…</div>';
+  google.script.run.withSuccessHandler(function (r) {
+    if (!r || !r.ok) { document.getElementById('scrList').innerHTML = '<div class="cb-msg">' + escapeHtml((r && r.msg) || '불러오지 못했어요') + '</div>'; return; }
+    SCR.items = r.items || []; SCR.total = r.total || SCR.items.length; scrRender();
+  }).withFailureHandler(function () { document.getElementById('scrList').innerHTML = '<div class="cb-msg">서버가 예전 버전이거나 연결이 끊겼어요</div>'; })
+    .getSubcatReview(currentSelectedMember || '');
+}
+function scrClose() { var d = document.getElementById('scrDim'); d.hidden = true; d.style.display = 'none'; document.documentElement.classList.remove('mb-lock'); scrBadge(); }
+function scrBadge() { var c = document.getElementById('scrCnt'); if (!c || !SCR.items) return; c.textContent = SCR.total || ''; c.hidden = !SCR.total; }
+function scrRender() {
+  var el = document.getElementById('scrList'), items = SCR.items || [];
+  document.getElementById('scrHeadCnt').textContent = SCR.total ? SCR.total + '개' : '';
+  scrBadge();
+  if (!items.length) { el.innerHTML = '<div style="background:#fff;border-radius:16px;padding:28px;text-align:center;color:#6b7280">확인할 상품이 없어요 👍</div>'; return; }
+  el.innerHTML = items.map(function (x, i) {
+    var subs = SUBCATS[x.top] || [], picks = [];
+    if (x.sug) picks.push(x.sug);
+    (x.alt || []).forEach(function (a) { if (picks.indexOf(a) === -1 && subs.indexOf(a) !== -1) picks.push(a); });
+    var none = !picks.length, rest = none ? [] : subs.filter(function (u) { return picks.indexOf(u) === -1; });
+    if (none) picks = subs;   // 추천이 없으면 하위 전부를 칩으로 (한 번에 고르게)
+    return '<div class="scr-row" data-row="' + x.row + '"><div class="scr-h"><b>' + escapeHtml(x.name) + '</b><span class="ry-cat none">' + escapeHtml(x.top) + '</span></div>'
+      + '<div class="scr-picks">' + picks.map(function (u, k) { return '<button type="button" class="cb-chip' + (k === 0 && !none ? ' on' : '') + '" onclick="scrPick(' + i + ', this.dataset.u)" data-u="' + escapeHtml(u) + '">' + escapeHtml(u) + '</button>'; }).join('')
+      + (rest.length ? '<select class="scr-more" aria-label="다른 하위" onchange="if(this.value){scrPick(' + i + ', this.value)}"><option value="">다른 하위…</option>' + rest.map(function (u) { return '<option>' + escapeHtml(u) + '</option>'; }).join('') + '</select>' : '') + '</div></div>';
+  }).join('');
+}
+function scrPick(i, sub) {
+  var x = SCR.items[i]; if (!x || SCR.busy[x.row]) return;
+  SCR.busy[x.row] = 1;
+  var rowEl = document.querySelector('.scr-row[data-row="' + x.row + '"]'); if (rowEl) rowEl.classList.add('busy');
+  google.script.run.withSuccessHandler(function (r) {
+    delete SCR.busy[x.row];
+    if (!r || !r.ok || !r.done || !r.done.length) { if (rowEl) rowEl.classList.remove('busy'); showToast((r && (r.msg || (r.bad && r.bad[0] && r.bad[0].why))) || '저장하지 못했어요'); return; }
+    SCR.items = SCR.items.filter(function (y) { return y.row !== x.row; }); SCR.total = Math.max(0, (SCR.total || 1) - 1);
+    var live = findItemByRow(x.row); if (live) { live.category = r.done[0].cat; renderAllViews(); }
+    scrRender(); showToast(x.name + ' → ' + catLabel(r.done[0].cat));
+  }).withFailureHandler(function () { delete SCR.busy[x.row]; if (rowEl) rowEl.classList.remove('busy'); showToast('저장하지 못했어요. 잠시 뒤 다시 눌러주세요'); })
+    .applySubcat([{ row: x.row, cat: catJoin(x.top, sub), name: x.name }], currentSelectedMember || '');
+}
 /* 0930 사진 없는 상품 찍기 — 폰 상품 목록(RY_CAT)·탭 목록에서 사진 없는 것만 모아 카메라로 바로 넣기 */
 function nophItems() {
   var seen = {}, out = [], push = function (x) { if (!x || !x.rowNumber || seen[x.rowNumber]) return; seen[x.rowNumber] = 1; if (!String(x.imgUrl || '').trim()) out.push(x); };
@@ -11481,7 +11615,7 @@ function nophRender() {
   var items = nophItems(), el = document.getElementById('nophList'); document.getElementById('nophCnt').textContent = items.length ? items.length + '개' : '';
   if (!items.length) { el.innerHTML = '<div style="background:#fff;border-radius:16px;padding:28px;text-align:center;color:#6b7280">사진 없는 상품이 없어요 👍<br><small>목록은 검색창을 누를 때 새로 받아요</small></div>'; return; }
   el.innerHTML = items.slice(0, 300).map(function (x) {
-    return '<div class="np-row" data-row="' + x.rowNumber + '" style="display:flex;align-items:center;gap:12px;background:#fff;border-radius:14px;padding:12px 14px;margin-top:8px"><div style="flex:1;min-width:0"><b style="display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(x.name || '') + '</b><small style="color:#6b7280">' + escapeHtml(x.category || '') + (x.requester ? ' · ' + escapeHtml(x.requester) : '') + '</small></div><button type="button" onclick="openPhotoPicker(' + x.rowNumber + ', event)" style="min-width:56px;min-height:48px;border-radius:14px;border:0;background:#155EEF;color:#fff;font-size:22px" aria-label="사진 찍기">📷</button></div>';
+    return '<div class="np-row" data-row="' + x.rowNumber + '" style="display:flex;align-items:center;gap:12px;background:#fff;border-radius:14px;padding:12px 14px;margin-top:8px"><div style="flex:1;min-width:0"><b style="display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(x.name || '') + '</b><small style="color:#6b7280">' + escapeHtml(catLabel(x.category || '')) + (x.requester ? ' · ' + escapeHtml(x.requester) : '') + '</small></div><button type="button" onclick="openPhotoPicker(' + x.rowNumber + ', event)" style="min-width:56px;min-height:48px;border-radius:14px;border:0;background:#155EEF;color:#fff;font-size:22px" aria-label="사진 찍기">📷</button></div>';
   }).join('') + (items.length > 300 ? '<div style="padding:12px;color:#6b7280;text-align:center">…외 ' + (items.length - 300) + '개</div>' : '');
 }
 /* 0929 아침 뷰티 브리핑 — getMorningBrief / listMorningBriefs (서버에 없으면 카드는 계속 숨김) */
