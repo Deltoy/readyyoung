@@ -6654,6 +6654,50 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       ry25SyncTabs(tab);   /* 0925: 파이프라인 카드 */
     }
 
+    /* ═══ 0930 월 한도 소진 상품 → '다음 달 대기' (사용자: 한도 다 쓴 상품이 최종 발주에 방치됨)
+       특이사항에 '월 N개 제한/한도' + 소진 표시(이미끝·소진·한도 끝·다 씀)가 있으면 이번 달 표식 [한도소진 YYYY.MM] 을 붙여 최종 발주 목록에서 빼 두고,
+       달이 바뀌면 표식과 소진 표시를 지워 자동 복귀 (서버 updateProduct 재사용, 붙여넣기 없음) ═══ */
+    const LM_RX = /월\s*(\d+)\s*개?\s*(제한|한도)/, LM_DONE = /(이미\s*끝|한도\s*끝|소진|다\s*씀|다\s*썼)/, LM_TAG = /\[한도소진\s+(\d{4})\.(\d{2})\]/;
+    const lmMonth = () => { const d = new Date(Date.now() + 9 * 3600000); return d.getUTCFullYear() + '.' + String(d.getUTCMonth() + 1).padStart(2, '0'); };
+    const lmBusy = {};
+    function lmSaveNote(it, note, done) {
+      if (lmBusy[it.rowNumber]) return; lmBusy[it.rowNumber] = 1;
+      const before = it.note; it.note = note;
+      google.script.run.withSuccessHandler(function (res) { delete lmBusy[it.rowNumber]; if (!res || res.success === false) { it.note = before; renderAllViews(); return; } done && done(); })
+        .withFailureHandler(function () { delete lmBusy[it.rowNumber]; it.note = before; renderAllViews(); })
+        .updateProduct(it.rowNumber, it.name, it.name, note, currentSelectedMember || '', it.category || '');
+    }
+    function lmHeld(it) {
+      const note = String(it.note || ''), m = note.match(LM_TAG), cur = lmMonth();
+      if (m) {
+        if (m[1] + '.' + m[2] === cur) return true;
+        // 지난달 표식 → 자동 복귀: 표식과 소진 표시를 지운다
+        const cleaned = note.replace(LM_TAG, '').replace(LM_DONE, '').replace(/\s{2,}/g, ' ').trim();
+        lmSaveNote(it, cleaned, function () { showToast('월 한도가 새로 시작돼 ' + (it.name || '') + '이(가) 최종 발주로 돌아왔어요', 2500); renderAllViews(); });
+        return false;
+      }
+      if (LM_RX.test(note) && LM_DONE.test(note)) {   // 표식 없이 '이미끝' 등만 적힌 것 → 이번 달 표식 붙이기(한 번)
+        lmSaveNote(it, (note + ' [한도소진 ' + cur + ']').trim(), function () { renderAllViews(); });
+        return true;
+      }
+      return false;
+    }
+    function lmRelease(row) {
+      const it = (cachedOrderItems || []).find(x => x.rowNumber === row); if (!it) return;
+      const cleaned = String(it.note || '').replace(LM_TAG, '').replace(LM_DONE, '').replace(/\s{2,}/g, ' ').trim();
+      lmSaveNote(it, cleaned, function () { showToast('최종 발주로 되돌렸어요 · 한도를 늘리려면 특이사항의 숫자를 고쳐 주세요', 2800); renderAllViews(); });
+      renderAllViews();
+    }
+    function lmRenderHeld(items) {
+      let box = document.getElementById('lmHeldBox');
+      const host = document.getElementById('readyTableContainer');
+      if (!box) { box = document.createElement('details'); box.id = 'lmHeldBox'; box.className = 'mt-3'; if (host && host.parentNode) host.parentNode.insertBefore(box, host.nextSibling); else return; }
+      if (!items.length) { box.hidden = true; box.innerHTML = ''; return; }
+      box.hidden = false;
+      const nextM = (() => { const d = new Date(Date.now() + 9 * 3600000); const y = d.getUTCFullYear(), m = d.getUTCMonth() + 2; return (m > 12 ? (y + 1) : y) + '.' + String(m > 12 ? 1 : m).padStart(2, '0') + '.01'; })();
+      box.innerHTML = '<summary style="cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:12px 16px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:14px;font-weight:700;color:#92400E">⏸ 다음 달 대기 · 월 한도 소진 ' + items.length + '건 <small style="font-weight:500;color:#B45309">' + nextM + ' 자동 복귀 · 눌러서 보기</small></summary>'
+        + '<div style="margin-top:8px">' + items.map(it => { const lim = (String(it.note || '').match(LM_RX) || [])[1]; return '<div style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #F3F4F6;border-radius:12px;padding:10px 14px;margin-top:6px"><div style="flex:1;min-width:0"><b style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(it.name || '') + '</b><small style="color:#6b7280">월 ' + (lim || '?') + '개 한도 소진' + (it.requester ? ' · ' + escapeHtml(it.requester) : '') + '</small></div><button type="button" onclick="lmRelease(' + it.rowNumber + ')" style="min-height:40px;padding:0 12px;border-radius:999px;border:1px solid #e5e7eb;background:#fff;font-weight:700">이달 더 주문</button></div>'; }).join('') + '</div>';
+    }
     function renderAllViews() {
       const pureReviewItems = [];
       const pureOrderItems = [];
@@ -6667,11 +6711,13 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         else pureReviewItems.push(it);
       });
 
+      const heldItems = [];   // 0930 월 한도 소진 → 다음 달 대기
       cachedOrderItems.forEach(it => {
         const nameStr = String(it.name || '');
         const noteStr = ryNoRc(it.note);
         const isSoldOut = (noteStr.indexOf('품절') !== -1) || (nameStr.indexOf('품절') !== -1);
         if (isSoldOut) soldOutItems.push(it);
+        else if (lmHeld(it)) heldItems.push(it);
         else pureOrderItems.push(it);
       });
 
@@ -6726,6 +6772,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           if (readyCards) readyCards.appendChild(createItemMobileCard(item, 'order'));
         });
       }
+      lmRenderHeld(heldItems);
 
       // 3. 품절 목록
       const badgeSoldOut = document.getElementById('tabSoldOutBadge');
