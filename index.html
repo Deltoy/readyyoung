@@ -1358,6 +1358,15 @@ html body:not(#_):not(#_) .ava-sheet.st-sheet.on{display:flex!important;flex-dir
 .st-tags .st-s15.zero{background:var(--ry-bad-soft);color:var(--ry-bad);font-weight:600}
 .st-tags .st-tag.sale{background:var(--ry-warn-soft);color:var(--ry-warn);font-weight:600}
 .st-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.st-cand{border:1px solid #BFD3FB;background:#EAF1FE;color:#1D4ED8}
+.s15-period{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 10px;font-size:14px;color:var(--ry-ink-2)}
+.s15-period input{min-height:40px;padding:0 8px;border:1px solid var(--ry-line-2);border-radius:10px;background:#fff;font-size:14px;color:var(--ry-ink)}
+.st-tags .st-tag.cand{background:#EAF1FE;color:#1D4ED8;font-weight:600}
+.st-bask{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px;margin:0 0 8px;border:1px solid #BFD3FB;border-radius:12px;background:#F5F8FF}
+.st-bask b{margin-right:auto;font-size:15px}
+.st-bask button{min-height:44px;padding:0 14px;font-size:14px}
+.st-bask select{min-height:44px;padding:0 10px;border:1px solid var(--ry-line-2);border-radius:10px;background:#fff;font-size:14px}
+.st-bask .st-note{width:100%;margin:4px 0 0}
 html body:not(#_):not(#_) .st-acts button,html body:not(#_):not(#_) .st-cancel,html body:not(#_):not(#_) .st-foot{border-radius:999px!important}
 .st-acts button,.st-cancel{min-height:44px;padding:0 16px;font-size:14px;font-weight:400}
 .st-open,.st-ghost,.st-cancel{border:1px solid var(--ry-line-2);background:#fff;color:var(--ry-ink)}
@@ -4727,7 +4736,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 
     /* ===== 창고 정리 (0923) — 오래 주문 안 한 상품 정리. 결정은 문준 프로필만 ===== */
     var ST = { data: null, seg: 'todo', range: 'all', open: '', busy: {}, rev: 0, imgAsked: {}, changed: false };
-    var ST_RANGES = [['all', '전체'], ['m1', '1~2개월'], ['m2', '2~3개월'], ['m3', '3개월 이상'], ['none', '기록 없음 · 안 팔리는 순']];
+    var ST_RANGES = [['all', '전체'], ['cand', '정리 후보'], ['m1', '1~2개월'], ['m2', '2~3개월'], ['m3', '3개월 이상'], ['none', '기록 없음 · 안 팔리는 순']];
     var ST_DEC = { '유지': 'keep', '할인 소진': 'sale', '반품': 'ret', '폐기': 'dis', '본사 이벤트': 'hq', '샘플 제공': 'smp', '지점 이동': 'mv' };
     var ST_DOING = { '할인 소진': '할인해서 다 팔아주세요', '반품': '반품 박스에 모아주세요', '폐기': '폐기함으로 옮겨주세요', '본사 이벤트': '「목록 복사」로 본사에 이벤트 제안 → 보낸 뒤 처리 완료', '샘플 제공': '샘플·증정으로 쓰고 다 쓰면 처리 완료', '지점 이동': '트랜드랩 › 재고 스왑에서 받는 지점 확인 → 보낸 뒤 처리 완료' };
     function stBars(m) { m = m || [0, 0, 0]; var mx = Math.max(m[0], m[1], m[2], 1); return '<span class="st-bars" title="지지난달 · 지난달 · 이번 달 입고 수량">' + [m[2], m[1], m[0]].map(function (v) { return '<i style="height:' + Math.max(3, Math.round(v / mx * 16)) + 'px' + (v ? '' : ';opacity:.35') + '"></i>'; }).join('') + '<small>' + [m[2], m[1], m[0]].join('·') + '</small></span>'; }
@@ -4802,31 +4811,32 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         '<p class="st-rule">한 달 넘게 주문하지 않은 상품이에요. 주문 진행 중이거나 숨긴 상품은 빠져요.'
         + (d.doneMonth ? ' <span class="st-month">이번 달 ' + d.doneMonth + '개 정리</span>' : '')
         + (admin ? '' : '<br><span class="st-staff">정리 결정은 ' + escapeHtml(d.admin) + ' 님만 할 수 있어요.</span>') + '</p>';
-      var segs = [['todo', '결정 전', L.todo.length], ['doing', '처리 중', L.doing.length], ['done', '완료', L.done.length]];
+      var disc = L.todo.concat(L.doing).filter(function (it) { return it.discontinued; }).concat(L.done.filter(function (it) { return it.decision === '할인 소진'; }));   /* 1001 소진 후 판매종료만 모아 보기 */
+      var segs = [['todo', '결정 전', L.todo.length], ['doing', '처리 중', L.doing.length], ['disc', '소진 후 판매종료', disc.length], ['done', '완료', L.done.length]];
       document.getElementById('stSeg').innerHTML = segs.map(function (g) {
         return '<button type="button" role="tab" aria-selected="' + (ST.seg === g[0]) + '" class="' + (ST.seg === g[0] ? 'on' : '') + '" data-k="' + g[0] + '" onclick="stSetSeg(this.dataset.k)">' + g[1] + ' <i>' + g[2] + '</i></button>';
       }).join('');
       var chips = document.getElementById('stChips'), list;
       if (ST.seg === 'todo') {
-        var cnt = { all: 0, m1: 0, m2: 0, m3: 0, none: 0 };
-        L.todo.forEach(function (it) { cnt[stRange(it)]++; if (it.days >= 0) cnt.all++; });
+        var cnt = { all: 0, cand: 0, m1: 0, m2: 0, m3: 0, none: 0 };
+        L.todo.forEach(function (it) { cnt[stRange(it)]++; if (it.days >= 0) cnt.all++; if (it.status === '후보') cnt.cand++; });
         if (ST.range !== 'all' && !cnt[ST.range]) ST.range = 'all';
         chips.innerHTML = ST_RANGES.map(function (r) {
           return '<button type="button" class="cb-chip' + (ST.range === r[0] ? ' on' : '') + (r[0] === 'm3' && cnt.m3 ? ' warn' : '') + '" aria-pressed="' + (ST.range === r[0]) + '" data-k="' + r[0] + '" onclick="stSetRange(this.dataset.k)"' + (cnt[r[0]] || r[0] === 'all' ? '' : ' disabled') + '>' + r[1] + ' <b>' + cnt[r[0]] + '</b></button>';
         }).join('');
         chips.hidden = false;
-        list = ST.range === 'all' ? L.todo.filter(function (it) { return it.days >= 0; }) : L.todo.filter(function (it) { return stRange(it) === ST.range; });
+        list = ST.range === 'all' ? L.todo.filter(function (it) { return it.days >= 0; }) : ST.range === 'cand' ? stCands() : L.todo.filter(function (it) { return stRange(it) === ST.range; });
         var noneFoot = ST.range === 'all' && cnt.none ? '<button type="button" class="st-foot" data-k="none" onclick="stSetRange(this.dataset.k)">주문 기록이 없는 상품 ' + cnt.none + '개 — 15일 판매가 적은 순으로 보기(0개부터)</button>' : '';
         var hn = ST.data && ST.data.hiddenNew;   /* 0928 새로 등록 · 주문 기록 없는 상품은 처음 본 날부터 한 달 숨김 */
         if (hn) noneFoot += '<p class="st-note">갓 등록돼 15일 판매 숫자도 없는 상품 ' + hn + '개는 한 달 동안 여기 안 보여요</p>';
-        if (ST.data && ST.data.s15Last) noneFoot += '<p class="st-note">15일 판매 숫자는 ' + ST.data.s15Last + ' 올린 판매량 엑셀 기준 · 그 엑셀에 없던 상품은 0</p>';
-      } else { chips.hidden = ST.seg !== 'doing'; chips.innerHTML = ST.seg === 'doing' && L.doing.length ? '<button type="button" class="cb-chip" onclick="stCopy()">결정별 목록 복사 · 본사·거래처용</button>' : ''; list = ST.seg === 'doing' ? L.doing : L.done; var noneFoot = ''; }
+        if (ST.data && ST.data.s15Last) noneFoot += '<p class="st-note">15일 판매 숫자는 ' + ST.data.s15Last + ' 판매량 엑셀 기준 · 그 엑셀에 없던 상품은 0</p>';
+      } else { chips.hidden = ST.seg !== 'doing'; chips.innerHTML = ST.seg === 'doing' && L.doing.length ? '<button type="button" class="cb-chip" onclick="stCopy()">결정별 목록 복사 · 본사·거래처용</button>' : ''; list = ST.seg === 'doing' ? L.doing : ST.seg === 'disc' ? disc : L.done; var noneFoot = ST.seg === 'disc' ? '<p class="st-note">할인으로 소진 중인 상품(위)과 다 팔려 숨긴 상품(완료)을 함께 보여줘요. 완료 탭에서 되돌릴 수 있어요.</p>' : ''; }
       var body = document.getElementById('stBody');
       if (!list.length) {
-        body.innerHTML = '<div class="st-msg">' + (ST.seg === 'todo' ? '정리할 상품이 없어요 👍' : ST.seg === 'doing' ? '처리 중인 상품이 없어요<small>결정 전 탭에서 반품·폐기·할인 소진을 정하면 여기로 와요</small>' : '아직 정리한 상품이 없어요') + '</div>' + noneFoot;
+        body.innerHTML = (ST.seg === 'todo' ? stBasket(admin) : '') + '<div class="st-msg">' + (ST.seg === 'todo' ? (ST.range === 'cand' ? '정리 후보가 없어요<small>목록에서 「후보 담기」를 누르면 여기 모여요</small>' : '정리할 상품이 없어요 👍') : ST.seg === 'doing' ? '처리 중인 상품이 없어요<small>결정 전 탭에서 반품·폐기·할인 소진을 정하면 여기로 와요</small>' : ST.seg === 'disc' ? '소진 후 판매종료 상품이 없어요' : '아직 정리한 상품이 없어요') + '</div>' + noneFoot;
         return;
       }
-      body.innerHTML = list.map(function (it) { return ST.seg === 'done' ? stDoneRow(it, admin) : stRow(it, admin); }).join('') + noneFoot;
+      body.innerHTML = (ST.seg === 'todo' ? stBasket(admin) : '') + list.map(function (it) { return ST.seg === 'done' || (ST.seg === 'disc' && it.hidden) ? stDoneRow(it, admin) : stRow(it, admin); }).join('') + noneFoot;
       // 사진 없는 줄: 받아둔 주소가 있으면 바로 쓰고, 처음 보는 줄만 서버에 한 번 묻는다
       var asked = 0;
       [].slice.call(body.querySelectorAll('img.st-need')).forEach(function (img) {
@@ -4846,7 +4856,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       var h = '<div class="st-row" data-row="' + it.row + '">' + stImg(it)
         + '<div class="st-main"><div class="st-name">' + escapeHtml(it.name) + '</div>'
         + '<div class="st-meta">' + stAgo(it) + (it.m ? stBars(it.m) : '') + '</div>'
-        + '<div class="st-tags">' + (it.discontinued ? '<span class="st-tag sale">소진 후 판매종료</span>' : '') + s15 + (it.category ? '<span class="st-cat">' + escapeHtml(catLabel(it.category)) + '</span>' : '') + '</div>';
+        + '<div class="st-tags">' + (it.status === '후보' ? '<span class="st-tag cand">정리 후보 ' + stCandNo(it) + '번</span>' : '') + (it.discontinued ? '<span class="st-tag sale">소진 후 판매종료</span>' : '') + s15 + (it.category ? '<span class="st-cat">' + escapeHtml(catLabel(it.category)) + '</span>' : '') + '</div>';
       if (it.status === '처리 중') {
         h += '<div class="st-decided"><span class="st-dec ' + (ST_DEC[it.decision] || '') + '">' + escapeHtml(it.decision) + '</span>'
           + (it.memo ? '<span class="st-memo">' + escapeHtml(it.memo) + '</span>' : '') + '<span class="st-by">' + escapeHtml(it.decidedAt) + '</span></div>'
@@ -4863,7 +4873,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
               }).join('')
             + '<button type="button" class="st-cancel" onclick="stToggle(\'\')">취소</button></div>';
         } else {
-          h += '<div class="st-acts"><button type="button" class="st-open" data-row="' + it.row + '" onclick="stToggle(this.dataset.row)">정리 결정</button></div>';
+          h += '<div class="st-acts"><button type="button" class="' + (it.status === '후보' ? 'st-ghost' : 'st-cand') + '" data-row="' + it.row + '" data-name="' + escapeHtml(it.name) + '" data-last="' + escapeHtml(it.lastOrder || '') + '" data-on="' + (it.status === '후보' ? '0' : '1') + '" onclick="stCand(this)"' + (busy ? ' disabled' : '') + '>' + (it.status === '후보' ? '후보에서 빼기' : '후보 담기') + '</button><button type="button" class="st-open" data-row="' + it.row + '" onclick="stToggle(this.dataset.row)">바로 결정</button></div>';
         }
       }
       return h + '</div></div>';
@@ -4875,6 +4885,53 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         + '<div class="st-meta">' + sub + '</div>'
         + (admin ? '<div class="st-acts"><button type="button" class="st-ghost" data-row="' + it.row + '" data-name="' + escapeHtml(it.name) + '" onclick="stUndo(this)"' + (ST.busy[String(it.row)] ? ' disabled' : '') + '>되돌리기</button></div>' : '')
         + '</div></div>';
+    }
+    /* ═════ 1001 정리 후보 → 카톡 공지 → 답장 번호 반영 → 한 번에 확정 (사용자: 혼자 못 정하니 약사·팀장에게 물어보는 흐름) ═════ */
+    function stCands() { return (ST.data ? ST.data.items : []).filter(function (it) { return it.status === '후보'; }).sort(function (a, b) { return (a.seq || 0) - (b.seq || 0) || a.row - b.row; }); }
+    function stCandNo(it) { var c = stCands(); for (var i = 0; i < c.length; i++) if (c[i].row === it.row) return i + 1; return '?'; }
+    function stAgoText(it) { if (it.days < 0) return '주문 기록 없음'; var m = Math.floor(it.days / 30); return '마지막 주문 ' + (m >= 1 ? m + '개월' : it.days + '일') + ' 전'; }
+    function stBasket(admin) {
+      var c = stCands(); if (!c.length) return '';
+      var opts = ['할인 소진', '반품', '폐기', '본사 이벤트', '샘플 제공', '지점 이동'].map(function (d) { return '<option' + (d === '할인 소진' ? ' selected' : '') + '>' + d + '</option>'; }).join('');
+      return '<div class="st-bask"><b>정리 후보 ' + c.length + '개</b>'
+        + (ST.range === 'cand' ? '' : '<button type="button" class="st-ghost" onclick="stSetRange(\'cand\')">후보만 보기</button>')
+        + '<button type="button" class="st-ghost" onclick="stNotice()">카톡 공지 복사</button>'
+        + (admin ? '<button type="button" class="st-ghost" onclick="stReply()">답장 번호 반영</button><select id="stBaskDec" aria-label="정리 방법">' + opts + '</select><button type="button" class="st-primary" onclick="stConfirmAll()">정리 확정</button>' : '')
+        + '<p class="st-note">1 담기 → 2 공지 복사해 약사·팀장에게 → 3 답장 번호 반영(없는 번호는 후보에서 빠져요) → 4 확정: 할인 소진이면 「소진 후 판매종료」 표시, 다 팔리면 「다 팔렸어요」로 숨김</p></div>';
+    }
+    function stNotice() {
+      var c = stCands(); if (!c.length) { showToast('담긴 후보가 없어요'); return; }
+      var d = new Date(), txt = '[창고 정리 확인 요청 ' + (d.getMonth() + 1) + '/' + d.getDate() + ']\n오래 안 나가는 상품 ' + c.length + '개예요. 정리(할인으로 소진 후 판매종료)해도 되는 번호만 답해 주세요. 예) 1, 3, 5\n\n'
+        + c.map(function (it, i) { var m = it.m || [0, 0, 0]; return (i + 1) + '. ' + it.name.replace(/\s+/g, ' ') + (it.category ? ' (' + catLabel(it.category) + ')' : '') + ' · ' + stAgoText(it) + (it.sales15 != null ? ' · 15일 판매 ' + it.sales15 : '') + ' · 최근 3달 입고 ' + [m[2], m[1], m[0]].join('/'); }).join('\n');
+      try { navigator.clipboard.writeText(txt).then(function () { showToast('✓ 공지를 복사했어요 — 카톡에 붙여넣기'); }, function () { prompt('복사해서 쓰세요', txt); }); } catch (e) { prompt('복사해서 쓰세요', txt); }
+    }
+    function stReply() {
+      var c = stCands(); if (!c.length) { showToast('담긴 후보가 없어요'); return; }
+      var ans = prompt('답장에 있는 번호를 붙여넣어 주세요 (예: 1, 3, 5)\n적은 번호만 후보에 남고 나머지는 빠져요'); if (ans == null) return;
+      var keep = {}; (ans.match(/\d+/g) || []).forEach(function (n) { keep[+n] = 1; });
+      var drop = c.filter(function (it, i) { return !keep[i + 1]; });
+      if (!Object.keys(keep).length) { showToast('번호를 못 읽었어요'); return; }
+      if (!drop.length) { showToast('전부 유지 — 빠지는 상품이 없어요'); return; }
+      if (!confirm(drop.length + '개를 후보에서 뺄까요?\n' + drop.slice(0, 8).map(function (it) { return '- ' + it.name; }).join('\n') + (drop.length > 8 ? '\n…' : ''))) return;
+      stBatch('setCleanupCandidates', [drop.map(function (it) { return { row: it.row, name: it.name }; }), false], function (r) { return (r.n || 0) + '개를 후보에서 뺐어요 · 남은 후보 ' + (c.length - (r.n || 0)) + '개'; });
+    }
+    function stConfirmAll() {
+      var c = stCands(), sel = document.getElementById('stBaskDec'), dec = sel ? sel.value : '할인 소진';
+      if (!c.length) return;
+      if (!confirm('후보 ' + c.length + '개를 「' + dec + '」(으)로 확정할까요?\n' + (dec === '할인 소진' ? '상품에 「소진 후 판매종료」가 붙고, 다 팔리면 처리 중 탭에서 「다 팔렸어요」를 눌러 숨겨요.' : '처리 중 탭으로 옮겨져요.'))) return;
+      stBatch('confirmCleanupCandidates', [dec, ''], function (r) { return (r.n || 0) + '개 확정 · 처리 중으로 옮겼어요' + (r.fail && r.fail.length ? ' · 실패 ' + r.fail.length + '개' : ''); });
+    }
+    function stCand(btn) {
+      var it = { row: +btn.dataset.row, name: btn.dataset.name, lastOrder: btn.dataset.last }, on = btn.dataset.on === '1';
+      btn.disabled = true;
+      stBatch('setCleanupCandidates', [[it], on], function () { return on ? '후보에 담았어요' : '후보에서 뺐어요'; });
+    }
+    function stBatch(fn, args, okMsg) {
+      if (ST.busy.batch) return; ST.busy.batch = 1;
+      if (typeof google.script.run[fn] !== 'function') { ST.busy.batch = 0; showToast('서버(Code.gs)가 예전 버전이에요. Code.gs 를 새로 붙여넣고 배포해주세요'); return; }
+      var runner = google.script.run.withSuccessHandler(function (res) { ST.busy.batch = 0; if (!res || res.success === false) { showToast((res && res.message) || '저장하지 못했어요'); renderStale(); return; } ST.changed = true; showToast(okMsg(res), 2600); stLoad(true); })
+        .withFailureHandler(function () { ST.busy.batch = 0; showToast('저장하지 못했어요. 잠시 뒤 다시 시도해주세요.'); renderStale(); });
+      runner[fn].apply(runner, args.concat([currentSelectedMember || '']));
     }
     function stToggle(row) { ST.open = row || ''; renderStale(); stReveal(row); }
     function stReveal(row) {
@@ -10308,7 +10365,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     function s15Match(xs, links) {
       var byName = {}, byKey = {}, groups = {};
       xs.forEach(function (x) { byName[x.n] = x; var k = s15Key(x.n); byKey[k] = byKey[k] ? 'dup' : x; });   /* 괄호(맛·성분)까지 똑같은 이름은 바로 */
-      [[cachedReviewItems, 1], [cachedOrderItems, 1], [cachedInboundItems, 1], [cachedStockCheckItems, 1], [cachedHistoryItems, 0]].forEach(function (p) {
+      [[cachedReviewItems, 1], [cachedOrderItems, 1], [cachedInboundItems, 1], [cachedStockCheckItems, 1], [cachedHistoryItems, 0], [(typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) || [], 0]].forEach(function (p) {   /* 1001 폰 상품 목록(RY_CAT)도 넣어 주문 흐름에 없는 상품까지 맞춘다 — 전엔 안 맞춰진 상품에 옛 숫자가 남았음 */
         (p[0] || []).forEach(function (it) {
           if (!it || !it.rowNumber || !it.name) return;
           var k = s15Key(it.name); if (!k) return;
@@ -10353,9 +10410,26 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       google.script.run.withSuccessHandler(function (r) { if (r && r.success) { S15.info = r; s15Dot(); if (!S15.groups.length) s15Render(); } }).withFailureHandler(function () {}).getSales15Info();
     }
     function s15Days() { var l = S15.info && S15.info.last; if (!l) return null; var d = new Date(l + 'T00:00:00'), t = new Date(); t.setHours(0, 0, 0, 0); return Math.round((t - d) / 864e5); }
+    /* 1001 엑셀 기간: 다음 기간 = 끝날 다음 날부터 15일 (사용자: 버튼에 몇 월 며칠부터 며칠까지 올릴지 보이게) */
+    function s15Ymd(d) { return d.getFullYear() + '-' + (d.getMonth() + 1 < 10 ? '0' : '') + (d.getMonth() + 1) + '-' + (d.getDate() < 10 ? '0' : '') + d.getDate(); }
+    function s15Md(v) { var m = String(v || '').match(/^(\d{4})-(\d{2})-(\d{2})$/); return m ? (+m[2]) + '/' + (+m[3]) : ''; }
+    function s15Next(to) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(String(to || ''))) return null;
+      var a = new Date(to + 'T00:00:00'); a.setDate(a.getDate() + 1); var b = new Date(a); b.setDate(b.getDate() + 14);
+      var t = new Date(); t.setHours(0, 0, 0, 0); var left = Math.round((b - t) / 864e5);
+      return { from: s15Ymd(a), to: s15Ymd(b), label: s15Md(s15Ymd(a)) + '~' + s15Md(s15Ymd(b)), when: left > 0 ? s15Md(s15Ymd(b)) + '에(' + left + '일 뒤)' : '지금', due: left <= 0 };
+    }
+    function s15PeriodDefaults() {
+      var f = document.getElementById('s15From'), t = document.getElementById('s15To'); if (!f || !t) return;
+      var nx = S15.info && s15Next(S15.info.to), today = new Date(); today.setHours(0, 0, 0, 0);
+      if (!f.value) { if (nx) f.value = nx.from; else { var d = new Date(today); d.setDate(d.getDate() - 14); f.value = s15Ymd(d); } }
+      if (!t.value) t.value = nx && nx.to < s15Ymd(today) ? nx.to : s15Ymd(today);
+    }
     function s15Dot() {
       var b = document.getElementById('s15Entry'), due = currentSelectedMember === PF_ADMIN && S15.info && (s15Days() == null || s15Days() >= 7);
-      if (b) { b.hidden = currentSelectedMember !== PF_ADMIN; var sm = b.querySelector('small'); if (sm && S15.info) sm.textContent = S15.info.last ? '마지막 ' + S15.info.last.slice(5).replace('-', '/') + (due ? ' · ' + s15Days() + '일 지났어요' : '') : '판매량 통계 엑셀로 한 번에'; b.classList.toggle('due', !!due); }
+      var nx = S15.info && s15Next(S15.info.to); if (nx) due = currentSelectedMember === PF_ADMIN && nx.due;
+      if (b) { b.hidden = currentSelectedMember !== PF_ADMIN; var sm = b.querySelector('small'); if (sm && S15.info) sm.textContent = nx ? '마지막 ' + s15Md(S15.info.from) + '~' + s15Md(S15.info.to) + ' · 다음 ' + nx.label + ' 자료를 ' + nx.when : S15.info.last ? '마지막 ' + S15.info.last.slice(5).replace('-', '/') + (due ? ' · ' + s15Days() + '일 지났어요' : '') : '판매량 통계 엑셀로 한 번에'; b.classList.toggle('due', !!due); }
+      s15PeriodDefaults();
       var m = document.getElementById('toolMoreBtn'); if (m) m.classList.toggle('s15-due', !!due);
     }
     function s15Pick(inp) {
@@ -10450,10 +10524,11 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           S15.groups = []; S15.xs = [];
           s15Render(); s15Dot();
           showToast(cnt + '개 상품 15일 판매량을 바꿨어요' + (r.reset ? ' · 엑셀에 없던 ' + r.reset + '개는 0으로' : '') + (r.skipped ? ' · 시트 수식 칸 ' + r.skipped + '개는 그대로' : ''), 3200);
+          try { var nx = s15Next((document.getElementById('s15To') || {}).value); if (nx) setTimeout(function () { alert('다음 15일 판매량은 ' + nx.label + ' 기간으로 ' + nx.when + ' 올려주세요'); }, 400); } catch (eN) {}
           loadAllData(true, true, true);
         })
         .withFailureHandler(function (e) { S15.busy = false; s15Render(); showToast('저장하지 못했어요: ' + (e && e.message || e), 2600); })
-        .updateSales15Batch(list, links);
+        .updateSales15Batch(list, links, { from: (document.getElementById('s15From') || {}).value || '', to: (document.getElementById('s15To') || {}).value || '' });
     }
 
     /* ===== 0925 세트 · 인플루언서 담당 — 서버 getSetDuty (근무표 앱을 읽어 자동 배정) · 문준만 칸 변경 ===== */
@@ -11481,7 +11556,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 <div class="ava-dim" id="s15Dim" onclick="s15Close()"></div>
 <div class="ava-sheet" id="s15Sheet" role="dialog" aria-label="15일 판매량 엑셀">
   <div class="ava-head"><b class="ry-info-title">15일 판매량 엑셀</b><button type="button" onclick="s15Close()">닫기</button></div>
-  <div class="ava-sub">판매량 통계 엑셀을 올리면 앱 상품의 15일 판매 숫자를 한꺼번에 바꿔요. 매주 한 번이면 돼요.</div>
+  <div class="ava-sub">판매량 통계 엑셀을 올리면 앱 상품의 15일 판매 숫자를 한꺼번에 바꿔요. 15일마다 한 번이면 돼요.</div>
+  <div class="s15-period"><label>엑셀 기간 <input type="date" id="s15From" aria-label="기간 시작"></label><span>~</span><label><input type="date" id="s15To" aria-label="기간 끝"></label></div>
   <label class="np-save s15-pick" id="s15PickL"><input type="file" accept=".xlsx,.xls,.csv" onchange="s15Pick(this)"><span>엑셀 파일 고르기</span></label>
   <div id="s15Body" class="s15-body"></div>
   <button type="button" class="np-save s15-save" id="s15Save" hidden onclick="s15Save()">저장하기</button>
