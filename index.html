@@ -7043,7 +7043,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
        날짜가 없고 '재주문'만 있으면 이유를 적은 날 기준. 연도는 올해(그 날짜가 미래면 작년) */
     function effOrderDate(item) {
       try {
-        var r = (typeof DELAY_REASONS !== 'undefined' && item) ? DELAY_REASONS[delayKey(item)] : null;
+        var r = delayReasonOf(item);
         if (!r || !/재주문|재발주|다시\s*주문/.test(String(r.text || ''))) return item.orderDate;
         var m = String(r.text).match(/(\d{4})[.\-\/]\s*(\d{1,2})[.\-\/]\s*(\d{1,2})/) || String(r.text).match(/(\d{1,2})\s*[\/.월]\s*(\d{1,2})\s*일?/);
         var now = new Date(Date.now() + 9 * 3600000), y, mo, d;
@@ -7867,6 +7867,14 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     /* ===== 입고 지연 사유 (0921) — 최종 입고완료가 되면 서버에서 자동으로 지워진다 ===== */
     var DELAY_REASONS = {}, DELAY_AT = 0, DELAY_BUSY = false, DELAY_CUR = null;
     function delayKey(item) { return 'r' + (parseInt(item.rowNumber, 10) || 0) + '|' + String(item.name || '').replace(/\s+/g, '').toLowerCase(); }
+    /* 1001 행 번호가 밀려도(시트 행 삭제) 늦은 이유가 사라지지 않게: 정확한 키 → 없으면 같은 이름('|이름' 꼬리)으로 찾고 새 키로 옮겨 둔다 */
+    function delayReasonOf(item) {
+      if (!item || typeof DELAY_REASONS === 'undefined') return null;
+      var k = delayKey(item), r = DELAY_REASONS[k]; if (r) return r;
+      var tail = '|' + String(item.name || '').replace(/\s+/g, '').toLowerCase(); if (tail === '|') return null;
+      var keys = Object.keys(DELAY_REASONS); for (var i = 0; i < keys.length; i++) { if (keys[i].slice(keys[i].indexOf('|')) === tail) { r = DELAY_REASONS[keys[i]]; DELAY_REASONS[k] = r; return r; } }
+      return null;
+    }
     function refreshDelayReasons(force) {
       if (DELAY_BUSY || (!force && Date.now() - DELAY_AT < 120000)) return;
       if (typeof google.script.run.getDelayReasons !== 'function') { DELAY_AT = Date.now(); return; }
@@ -7884,7 +7892,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     }
     // 늦었거나 곧 늦을 상품, 또는 이미 사유가 적힌 상품에만 보인다
     function delayReasonHtml(item) {
-      var r = DELAY_REASONS[delayKey(item)], e = elapsedInfo(item);
+      var r = delayReasonOf(item), e = elapsedInfo(item);
       if (!r && !(e && (e.late || e.soon))) return '';
       return '<button type="button" class="ry-delay' + (r ? ' has' : '') + '" onclick="event.stopPropagation(); openDelayReason(' + item.rowNumber + ')">'
         + RYI.clock + (r ? escapeHtml(r.text) + (r.editor ? ' <i>· ' + escapeHtml(r.editor) + '</i>' : '') : '늦는 이유 적기') + '</button>';
@@ -7894,7 +7902,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (!item) { showToast('상품을 찾을 수 없어요'); return; }
       if (!currentSelectedMember) { showToast('먼저 위에서 이름을 선택해주세요'); return; }
       DELAY_CUR = item;
-      var r = DELAY_REASONS[delayKey(item)];
+      var r = delayReasonOf(item);
       document.getElementById('drTitle').textContent = item.name;
       document.getElementById('drSub').textContent = '발주 ' + (item.orderDate || '-') + (effOrderDate(item) !== item.orderDate ? ' → 재주문 ' + effOrderDate(item) : '') + ' · ' + (daysSince(effOrderDate(item)) == null ? '' : daysSince(effOrderDate(item)) + '일째 · ') + (item.targetQty || '') + (item.unit || '개');
       document.getElementById('drText').value = r ? r.text : '';
@@ -9340,7 +9348,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         text += (i + 1) + '. ' + it.name + ' ' + (it.targetQty || '') + (it.unit || '개')
              + ' · 발주 ' + it.orderDate + (effOrderDate(it) !== it.orderDate ? ' → 재주문 ' + effOrderDate(it) : '') + ' (' + daysSince(effOrderDate(it)) + '일째)'
              + (it.isCheckRequested ? ' · 도착 확인요청됨' : '') + '\n';
-        var dr = DELAY_REASONS[delayKey(it)];
+        var dr = delayReasonOf(it);
         text += dr ? '   → 사유: ' + dr.text + '\n' : '   → 사유 확인 필요\n';
       });
       text += '\n"사유 확인 필요"로 표시된 상품의 출고 여부와 늦는 이유 확인 부탁드립니다 🙏';
