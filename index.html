@@ -3379,6 +3379,11 @@ html:not(#q):not(#w):not(#e) body:not(#r) .nt-sheet .nt-arrow{transform:rotate(9
 </style>
 <style id="ry25-launch">
 .ry-tools .ry-quick{font-weight:700}
+/* 1001 창고 정리 인라인: 팝업 규칙(고정 위치·내부 스크롤·폭 480) 전부 끄고 본문 카드처럼 */
+html body:not(#_):not(#_) #stSheet.st-inline{position:static!important;transform:none!important;left:auto!important;bottom:auto!important;width:100%!important;max-width:none!important;height:auto!important;max-height:none!important;overflow:visible!important;display:flex!important;flex-direction:column;border-radius:20px!important;box-shadow:0 1px 3px rgba(0,0,0,.04)!important;border:1px solid #EDEEF0!important;margin:0!important;z-index:auto!important}
+html body:not(#_):not(#_) #stSheet.st-inline .st-body{max-height:none!important;overflow:visible!important;flex:none!important}
+html body:not(#_):not(#_) #stSheet.st-inline .ava-head{position:static!important}
+#staleHost{margin:0 0 16px}#staleHost[hidden]{display:none}
 /* 1001 통합 패널: 그룹 머리 · 정의 한 줄 · 길어지면 안에서 스크롤 */
 html:not(#q):not(#w):not(#e) body:not(#r) #ryLaunchGrid.ry-ln-grid{display:block!important;grid-template-columns:none!important}
 html:not(#q):not(#w):not(#e) body:not(#r) #ryLaunch{max-height:min(82vh,760px)!important;overflow:auto!important;width:min(760px,96vw)!important}
@@ -4733,16 +4738,26 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       try { navigator.clipboard.writeText(txt).then(function () { showToast('✓ 결정별 목록을 복사했어요 — 본사·거래처에 붙여넣기'); }, function () { prompt('복사해서 쓰세요', txt); }); } catch (e) { prompt('복사해서 쓰세요', txt); }
     }
     function stRange(it) { return it.days < 0 ? 'none' : it.days >= 90 ? 'm3' : it.days >= 60 ? 'm2' : 'm1'; }
+    /* 1001 사용자: 팝업 말고 놓친 주문처럼 본문에 넓게 → 창고 정리 시트를 검색 결과 자리에 끼워 넣는다(닫으면 원래 탭으로) */
+    function stInlineMount() {
+      var sh = document.getElementById('stSheet'), host = document.getElementById('staleHost'), sv = document.getElementById('searchResultView');
+      if (!host) { host = document.createElement('div'); host.id = 'staleHost'; if (sv && sv.parentNode) sv.parentNode.insertBefore(host, sv); else document.body.appendChild(host); }
+      ['reviewView', 'orderView', 'soldOutView', 'inboundView', 'delayedView', 'historyView', 'stockCheckView', 'rankingView', 'reorderView', 'leadView', 'rejAView', 'noticeView'].forEach(function (v) { var el = document.getElementById(v); if (el) el.classList.add('hidden'); });
+      if (sv) sv.classList.add('hidden');
+      host.appendChild(sh); host.hidden = false; sh.classList.add('on', 'st-inline');
+      try { window.scrollTo({ top: Math.max(0, host.getBoundingClientRect().top + window.scrollY - 84), behavior: 'smooth' }); } catch (e) {}
+    }
     function openStale() {
-      document.getElementById('stDim').classList.add('on');
-      document.getElementById('stSheet').classList.add('on');
+      stInlineMount();
       try { rjaLoad(false); rjaRenderAll(); } catch (eR) {}   /* 0925: 과재고 신호 수 */
       stLoad(false);
     }
     function closeStale() {
+      var sh = document.getElementById('stSheet'), host = document.getElementById('staleHost');
+      sh.classList.remove('on', 'st-inline'); document.body.appendChild(sh); if (host) host.hidden = true;
       document.getElementById('stDim').classList.remove('on');
-      document.getElementById('stSheet').classList.remove('on');
       if (ST.changed) { ST.changed = false; if (typeof loadAllData === 'function') loadAllData(true, true, true); }   /* 메인 목록은 닫을 때 한 번만 새로 */
+      try { switchTab(currentTab); } catch (e) {}
     }
     function stLoad(quiet) {
       var rev = ++ST.rev;
