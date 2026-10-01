@@ -444,6 +444,11 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-cat.rv,html:not(#q):not(#w):not(#e
   border:1px solid #FEC84B;border-radius:16px;padding:12px 14px;cursor:pointer;width:100%;text-align:left}
 .rej-banner .b1{flex:1;min-width:0;font-size:13px;font-weight:700;color:var(--ry-warn);word-break:keep-all}
 .rej-banner .b2{font-size:12px;font-weight:800;color:var(--ry-warn);white-space:nowrap}
+/* 1001 15일 판매 · 1박스 입수량을 서로 다른 알약으로 (사용자: 구분이 애매) */
+.ry-oc-meta{display:flex!important;flex-wrap:wrap;align-items:center;gap:6px 8px!important}
+.ry-stat{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;background:#F3F4F6;font-size:11.5px;font-weight:700;color:#4B5563;white-space:nowrap}
+.ry-stat b{font-size:14px;font-weight:800;color:#111827}.ry-stat .ry-u{font-weight:600;color:#6B7280}.ry-stat.s15{background:#EAF1FE;color:#1D4ED8}.ry-stat.s15 b{color:#1D4ED8}
+.ry-stat.box{background:#FFF7ED;color:#9A3412}.ry-stat.box .boxref{margin-top:0;color:#9A3412}.ry-stat.box .boxref input{min-height:36px;width:64px;border-color:#FED7AA}.ry-stat.box .boxref .calc{color:#9A3412;font-weight:800}
 /* 1박스 입수량 */
 .boxref{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-size:11.5px;
   font-weight:700;color:var(--ry-ink-3);white-space:nowrap}
@@ -7421,8 +7426,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           <div class="ry-oc-text">
             <div class="ry-oc-name">${escapeHtml(item.name)} ${endedBadge(item)}</div>
             ${mrSlot(item, type)}
-            <div class="ry-oc-meta"><span class="ry-s15l">15일</span> ${type === 'review' ? sales15InputHtml(item, true) : `<b class="whitespace-nowrap">${escapeHtml(item.sales15)}</b>`}
-              ${type === 'review' || type === 'order' ? boxRefHtml(item, true) : (item.boxUnit ? `| 1박스 ${escapeHtml(item.boxUnit)}개` : '')}</div>
+            <div class="ry-oc-meta"><span class="ry-stat s15" title="최근 15일 동안 팔린 수량"><span class="ry-s15l">15일 판매</span> ${type === 'review' ? sales15InputHtml(item, true) : `<b class="whitespace-nowrap">${escapeHtml(item.sales15)}</b>`}<span class="ry-u">개</span></span>
+              ${type === 'review' || type === 'order' ? `<span class="ry-stat box" title="1박스에 몇 개가 들어있는지">${boxRefHtml(item, true)}</span>` : (item.boxUnit ? `<span class="ry-stat box" title="1박스에 몇 개가 들어있는지"><span class="ry-s15l">1박스 =</span> <b>${escapeHtml(item.boxUnit)}</b><span class="ry-u">개</span></span>` : '')}</div>
             <div class="ry-oc-tags">
               ${reqBadge}
               ${catChip(item)}
@@ -7508,9 +7513,9 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       var qty = parseInt(String(item.targetQty).replace(/[^0-9]/g, ''), 10) || 0;
       var calc = (per > 0 && (item.unit === '박스') && qty > 0)
         ? '<span class="calc">= ' + (per * qty).toLocaleString() + '개</span>' : '';
-      return '<div class="boxref"><span>1박스</span>'
+      return '<div class="boxref"><span>1박스 =</span>'
         + '<input type="text" inputmode="numeric" id="' + (isMobile ? 'm-boxref-' : 'boxref-') + item.rowNumber + '"'
-        + ' value="' + escapeHtml(v) + '" placeholder="?" maxlength="20" title="1박스에 몇 개가 들어있는지 (예: 30)"'
+        + ' value="' + escapeHtml(v) + '" placeholder="입수량" maxlength="20" title="1박스에 몇 개가 들어있는지 (예: 30)"'
         + ' onclick="event.stopPropagation()" onblur="saveBoxRef(' + item.rowNumber + ', this)"'
         + ' onkeydown="if (event.key === \'Enter\') this.blur();">'
         + '<span>개</span>' + calc + '</div>';
