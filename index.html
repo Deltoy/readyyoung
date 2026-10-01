@@ -5561,7 +5561,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       google.script.run
         .withSuccessHandler(function (res) {
           if (!res || res.success === false || !res.groups) { document.getElementById('cbBody').innerHTML = '<div class="cb-msg">불러오지 못했어요</div>'; return; }
-          CB_DATA = res;
+          CB_DATA = res; cbAddKidsGroup(res);   // 1001 분류 상관없이 어린이 제품만 모아보기
           applyCategoryList(res.categories, res.custom || []);
           var keep = res.groups.filter(function (g) { return g.category === CB_SEL; })[0];
           CB_SEL = keep ? CB_SEL : (res.groups[0] ? res.groups[0].category : null);
@@ -5569,6 +5569,19 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         })
         .withFailureHandler(function () { document.getElementById('cbBody').innerHTML = '<div class="cb-msg">불러오지 못했어요. 잠시 뒤 다시 눌러주세요</div>'; })
         .getProductsByCategory();
+    }
+    /* 1001 어린이 전체 모아보기: 이름(키즈·어린이·소아·유아·베이비·아기·주니어) 또는 하위 섹터가 '어린이 …'·'키즈'인 상품을 분류 상관없이 한 묶음으로. 칩은 대분류로 나뉘고, 분류 바꾸기는 원래 분류 기준 */
+    var CB_KIDS = '어린이 전체', CB_KIDS_RX = /키즈|어린이|소아|유아|영유아|베이비|아기|주니어|아동|키드/;
+    function cbAddKidsGroup(res) {
+      try {
+        var items = [];
+        (res.groups || []).forEach(function (g) { if (g.category === CB_KIDS) return; (g.items || []).forEach(function (it) {
+          var sub = String(it.sub || ''); if (!(CB_KIDS_RX.test(it.name || '') || sub.indexOf('어린이') === 0 || sub === '키즈')) return;
+          items.push({ rowNumber: it.rowNumber, name: it.name, sub: g.category || '분류 없음', _top: g.category, _sub: sub, _realSub: sub });
+        }); });
+        res.groups = res.groups.filter(function (g) { return g.category !== CB_KIDS; });
+        if (items.length) res.groups.unshift({ category: CB_KIDS, count: items.length, items: items.sort(function (a, b) { return a.sub.localeCompare(b.sub) || a.name.localeCompare(b.name); }) });
+      } catch (e) {}
     }
     var CB_CUSTOM = [];
     function applyCategoryList(list, custom) {
@@ -5711,7 +5724,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       };
       box.innerHTML = shown.map(function (it) {
         return '<div class="cb-row"><span class="cb-name">' + escapeHtml(it.name) + (it.sub ? '<em class="cb-sub' + (it.sub === CAT_REVIEW ? ' rv' : '') + '">' + escapeHtml(it.sub) + '</em>' : '') + '</span>'
-          + '<select id="cb-sel-' + it.rowNumber + '" aria-label="분류 바꾸기" onchange="changeCatBrowse(' + it.rowNumber + ', this)">' + opts(g.category, it.sub || '') + '</select></div>';
+          + '<select id="cb-sel-' + it.rowNumber + '" aria-label="분류 바꾸기" onchange="changeCatBrowse(' + it.rowNumber + ', this)">' + opts(it._top != null ? it._top : g.category, it._top != null ? (it._realSub || '') : (it.sub || '')) + '</select></div>';
       }).join('') + (items.length > shown.length ? '<div class="cb-msg">앞의 300개만 보여요. 위 칸에 이름을 쳐서 좁혀주세요</div>' : '');
     }
     function changeCatBrowse(rowNumber, sel) {
