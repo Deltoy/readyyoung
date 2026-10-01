@@ -4787,7 +4787,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     }
     function stLists() {
       var d = ST.data, todo = [], doing = [], disc = [];
-      d.items.forEach(function (it) { if (it.status === '처리 중') doing.push(it); else if (it.discontinued) disc.push(it); else todo.push(it); });   /* 1001 사용자: 소진 후 판매종료 표시된 상품은 이미 정리된 것 → 결정 전에 안 보이고 판매종료 탭에만 */
+      var so = {}; try { ((typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) || []).forEach(function (x) { if (x.status === 'SOLDOUT' || /품절/.test(String(x.note || '').replace(/재확인[^·]*/g, ''))) so[x.rowNumber] = 1; }); } catch (eS) {}   /* 1001 품절 상태는 창고 정리에서 제외(옛 서버 대비 화면에서도) */
+      d.items.forEach(function (it) { if (it.status === '처리 중') doing.push(it); else if (!it.status && so[it.row]) return; else if (it.discontinued) disc.push(it); else todo.push(it); });   /* 1001 사용자: 소진 후 판매종료 표시된 상품은 이미 정리된 것 → 결정 전에 안 보이고 판매종료 탭에만 */
       var s15v = function (x) { return x.sales15 == null ? 1e9 : x.sales15; };   // 1001 기록 없음끼리는 15일 판매 적은 순(0개 먼저)
       todo.sort(function (a, b) { return (b.discontinued - a.discontinued) || ((b.days < 0 ? -1 : b.days) - (a.days < 0 ? -1 : a.days)) || (a.days < 0 && b.days < 0 ? s15v(a) - s15v(b) : 0); });
       return { todo: todo, doing: doing, disc: disc, done: d.done };
