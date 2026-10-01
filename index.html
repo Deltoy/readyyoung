@@ -11675,15 +11675,22 @@ function moOpen(min) {
   if (!RY_CAT || !RY_CAT.items || !RY_CAT.items.length) { showToast('상품 목록을 받는 중이에요 — 잠시 뒤 다시 눌러 주세요'); if (typeof ryCatLoad === 'function') { RY_CAT && (RY_CAT.t = 0); ryCatLoad(true); } return; }
   ['reviewView', 'orderView', 'soldOutView', 'inboundView', 'delayedView', 'historyView', 'stockCheckView', 'rankingView', 'reorderView', 'leadView', 'rejAView', 'noticeView'].forEach(function (v) { var el = document.getElementById(v); if (el) el.classList.add('hidden'); });
   var sView = document.getElementById('searchResultView'); if (sView) sView.classList.remove('hidden');
-  var list = moItems(MO.min), _SLAB = { REVIEW: '1차검토', ORDER: '발주대기', INBOUND: '입고대기', DONE: '입고완료 · 재주문 가능', SOLDOUT: '품절', IDLE: '미주문' }, _SCOL = { REVIEW: 'bg-indigo-100 text-indigo-700', ORDER: 'bg-blue-100 text-blue-700', INBOUND: 'bg-emerald-100 text-emerald-800', DONE: 'bg-slate-200 text-slate-700', SOLDOUT: 'bg-rose-100 text-rose-700', IDLE: 'bg-slate-100 text-slate-600' };
-  var mapped = list.map(function (it) { return Object.assign({}, it, { statusLabel: _SLAB[it.status] || '미주문', statusColor: _SCOL[it.status] || 'bg-slate-100 text-slate-600' }); });
-  latestSearchRequestId++; lastSearchResults = mapped; renderSearchResults(mapped);
-  var rc = document.getElementById('searchResultCount');
-  if (rc) rc.innerHTML = '<span style="font-weight:800">놓친 주문 후보 ' + mapped.length + '개</span> <span style="color:#6b7280">· 15일 판매 <b>' + MO.min + '개</b> 이상인데 미주문이거나 입고 뒤 2주 지남 · 품절·판매종료 제외</span> '
-    + [5, 10, 20, 50].map(function (m) { return '<button type="button" class="ry-chip' + (MO.min === m ? ' on' : '') + '" style="margin-left:6px' + (MO.min === m ? ';background:#111827;color:#fff;border-color:#111827' : '') + '" onclick="moOpen(' + m + ')">' + m + '개↑</button>'; }).join('')
-    + '<span style="display:block;margin-top:4px;color:#6b7280;font-size:12px">많이 팔린 순 · 각 줄의 [주문 요청]으로 바로 넣으면 돼요 · 목록은 폰에 저장된 상품 목록 기준(최대 5분 전)</span>';
-  var em = document.getElementById('searchEmptyMessage'); if (em) em.classList.toggle('hidden', mapped.length > 0);
-  window.scrollTo({ top: (sView ? sView.offsetTop - 80 : 0), behavior: 'smooth' });
+  var rc = document.getElementById('searchResultCount'); if (rc) rc.textContent = '놓친 주문 찾는 중… (입고 기록으로 재고 소진을 추정해요)';
+  var chips = function () { return [5, 10, 20, 50].map(function (m) { return '<button type="button" class="ry-chip' + (MO.min === m ? ' on' : '') + '" style="margin-left:6px' + (MO.min === m ? ';background:#111827;color:#fff;border-color:#111827' : '') + '" onclick="moOpen(' + m + ')">' + m + '개↑</button>'; }).join(''); };
+  var _SLAB = { REVIEW: '1차검토', ORDER: '발주대기', INBOUND: '입고대기', DONE: '입고완료 · 재주문 가능', SOLDOUT: '품절', IDLE: '미주문' }, _SCOL = { REVIEW: 'bg-indigo-100 text-indigo-700', ORDER: 'bg-blue-100 text-blue-700', INBOUND: 'bg-emerald-100 text-emerald-800', DONE: 'bg-slate-200 text-slate-700', SOLDOUT: 'bg-rose-100 text-rose-700', IDLE: 'bg-slate-100 text-slate-600' };
+  var show = function (mapped, head) { latestSearchRequestId++; lastSearchResults = mapped; renderSearchResults(mapped); if (rc) rc.innerHTML = head + chips() + '<span style="display:block;margin-top:4px;color:#6b7280;font-size:12px">급한 순 · 각 줄의 [주문 요청]으로 바로 넣으면 돼요</span>'; var em = document.getElementById('searchEmptyMessage'); if (em) em.classList.toggle('hidden', mapped.length > 0); window.scrollTo({ top: (sView ? sView.offsetTop - 80 : 0), behavior: 'smooth' }); };
+  var fallback = function () {   // 옛 서버: 폰 목록만으로(소진 추정 없음)
+    var mapped = moItems(MO.min).map(function (it) { return Object.assign({}, it, { statusLabel: _SLAB[it.status] || '미주문', statusColor: _SCOL[it.status] || 'bg-slate-100 text-slate-600' }); });
+    show(mapped, '<span style="font-weight:800">놓친 주문 후보 ' + mapped.length + '개</span> <span style="color:#6b7280">· 15일 판매 <b>' + MO.min + '개</b> 이상 · 미주문 또는 입고 뒤 2주 지남 (서버가 예전 판이라 소진 추정 없음)</span> ');
+  };
+  if (typeof google === 'undefined' || !google.script || !google.script.run) { fallback(); return; }
+  google.script.run.withSuccessHandler(function (r) {
+    if (!r || !r.ok) { fallback(); return; }
+    var mapped = (r.items || []).map(function (it) { var o = it.over, lab = o == null ? '소진 추정 · 입고 ' + it.lastIn.since + '일 지남' : o >= 0 ? '소진 추정 · ' + (it.cover || 0) + '일치 입고, ' + it.lastIn.since + '일 지남(' + o + '일 초과)' : '곧 소진 · ' + it.cover + '일치 중 ' + it.lastIn.since + '일 지남';
+      return Object.assign({}, it, { statusLabel: lab, statusColor: o == null || o >= 0 ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-800' }); })
+      .concat((r.noLog || []).map(function (it) { return Object.assign({}, it, { statusLabel: '입고 기록 없음 · 15일 ' + it.sales15 + '개 팔림', statusColor: 'bg-slate-100 text-slate-600' }); }));
+    show(mapped, '<span style="font-weight:800">놓친 주문 후보 ' + r.total + '개</span>' + (r.noLogTotal ? ' <span style="color:#6b7280">+ 입고 기록 없어 추정 못 한 ' + r.noLogTotal + '개(아래)</span>' : '') + ' <span style="color:#6b7280">· 15일 판매 <b>' + r.min + '개</b> 이상 · 마지막 입고 수량 ÷ 하루 판매 = 며칠치 → 그보다 오래 지났으면 소진 추정</span> ');
+  }).withFailureHandler(function () { fallback(); }).getMissedOrders(MO.min, currentSelectedMember || '');
 }
 function nophOpen() { var d = document.getElementById('nophDim'); d.hidden = false; d.style.display = 'block'; document.documentElement.classList.add('mb-lock'); if (typeof ryCatLoad === 'function') ryCatLoad(false); nophRender(); }
 function nophClose() { var d = document.getElementById('nophDim'); d.hidden = true; d.style.display = 'none'; document.documentElement.classList.remove('mb-lock'); }
