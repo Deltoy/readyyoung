@@ -3379,11 +3379,17 @@ html:not(#q):not(#w):not(#e) body:not(#r) .nt-sheet .nt-arrow{transform:rotate(9
 </style>
 <style id="ry25-launch">
 /* 1001 통합 패널: 그룹 머리 · 정의 한 줄 · 길어지면 안에서 스크롤 */
-html:not(#q):not(#w):not(#e) body:not(#r) .ry-ln-grid{display:block}
-#ryLaunch{max-height:min(82vh,760px);overflow:auto;width:min(760px,96vw)}.ry-ln-sub{margin-left:10px;font-size:12px;font-weight:600;color:#6b7280}
-.ry-ln-sec{margin-top:8px}.ry-ln-sec:first-child{margin-top:0}.ry-ln-sh{margin:6px 4px 6px;font-size:11.5px;font-weight:800;letter-spacing:.02em;color:#6b7280;text-transform:uppercase}
-.ry-ln-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}@media(min-width:700px){.ry-ln-cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
-.ry-ln-card .ry-ln-t em{display:block;font-style:normal;font-size:11px;line-height:1.35;color:#9ca3af;margin-top:2px;white-space:normal}
+html:not(#q):not(#w):not(#e) body:not(#r) #ryLaunchGrid.ry-ln-grid{display:block!important;grid-template-columns:none!important}
+html:not(#q):not(#w):not(#e) body:not(#r) #ryLaunch{max-height:min(82vh,760px)!important;overflow:auto!important;width:min(760px,96vw)!important}
+.ry-ln-sub{margin-left:10px;font-size:12px;font-weight:600;color:#6b7280}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-ln-sec{display:block!important;width:100%!important;margin:0 0 10px!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-ln-sh{display:block;margin:4px 4px 6px!important;font-size:11.5px;font-weight:800;letter-spacing:.02em;color:#6b7280}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-ln-cards{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;width:100%!important}
+@media(min-width:700px){html:not(#q):not(#w):not(#e) body:not(#r) .ry-ln-cards{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-ln-cards .ry-ln-card{display:flex!important;flex-direction:row!important;align-items:flex-start!important;min-width:0!important;width:auto!important;height:auto!important;writing-mode:horizontal-tb!important;text-align:left!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-ln-cards .ry-ln-t{display:block!important;min-width:0!important;flex:1 1 auto!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-ln-cards .ry-ln-t b,html:not(#q):not(#w):not(#e) body:not(#r) .ry-ln-cards .ry-ln-t small{display:block;white-space:normal}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-ln-cards .ry-ln-t em{display:block;font-style:normal;font-size:11px;line-height:1.35;color:#9ca3af;margin-top:2px;white-space:normal}
 /* ═══ 0925 보조 탭 4칸 + 분석·기록 ═══ */
 /* 0926: 밖에는 입고내역 · 품절 · 지연 + 분석·기록 (나머지는 분석·기록 안에서) */
 html:not(#q):not(#w):not(#e) body:not(#r) #subtabTray #tabBtnStockCheck,html:not(#q):not(#w):not(#e) body:not(#r) #subtabTray #tabBtnReorder,html:not(#q):not(#w):not(#e) body:not(#r) #subtabTray #tabBtnLead,html:not(#q):not(#w):not(#e) body:not(#r) #subtabTray #tabBtnRanking{display:none!important}
