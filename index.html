@@ -10364,9 +10364,17 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       return Object.keys(by).map(function (n) { var p = s15Prep(n); p.n = n; p.q = Math.round(by[n]); return p; });
     }
     /* 앱 상품을 이름별로 묶고(같은 상품 여러 줄은 같은 숫자) 엑셀과 맞춘다 */
+    /* 1001 용량·개수 꼬리(10T · 14ml · 10g · 6매 · 30c …)를 뗀 이름 — '지르텍정(세티리진염산염)' = '지르텍정(세티리진염산염) 10T' */
+    var S15_SZ = /(\d+(?:\.\d+)?(?:t|정|ml|mg|g|매|포|c|개|캡슐|ea|p|병|개입|매입|정입|포입|입)x?)+$/;
+    function s15Stem(n) {
+      var b = s15Base(n), p, sz = { n: [], v: [] };   /* n = 개수(정·T·포·매…) · v = 용량(ml·mg·g) */
+      do { p = b; b = b.replace(S15_SZ, function (m) { var re = /(\d+(?:\.\d+)?)([a-z가-힣]+)/g, t; while ((t = re.exec(m))) (/^(ml|mg|g)$/.test(t[2]) ? sz.v : sz.n).push(+t[1]); return ''; }).replace(/x$/, ''); } while (b !== p && b.length > 2);
+      return { k: b, sz: sz };
+    }
+    function s15SameSize(a, b) { return ['n', 'v'].every(function (c) { return !a[c].length || !b[c].length || a[c].some(function (v) { return b[c].indexOf(v) !== -1; }); }); }
     function s15Match(xs, links) {
-      var byName = {}, byKey = {}, groups = {};
-      xs.forEach(function (x) { byName[x.n] = x; var k = s15Key(x.n); byKey[k] = byKey[k] ? 'dup' : x; });   /* 괄호(맛·성분)까지 똑같은 이름은 바로 */
+      var byName = {}, byKey = {}, groups = {}, byStem = {};
+      xs.forEach(function (x) { byName[x.n] = x; var k = s15Key(x.n); byKey[k] = byKey[k] ? 'dup' : x; var st = s15Stem(x.n); if (st.k.length >= 3) { x.stem = st; (byStem[st.k] = byStem[st.k] || []).push(x); } });   /* 괄호(맛·성분)까지 똑같은 이름은 바로 */
       [[cachedReviewItems, 1], [cachedOrderItems, 1], [cachedInboundItems, 1], [cachedStockCheckItems, 1], [cachedHistoryItems, 0], [(typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) || [], 0]].forEach(function (p) {   /* 1001 폰 상품 목록(RY_CAT)도 넣어 주문 흐름에 없는 상품까지 맞춘다 — 전엔 안 맞춰진 상품에 옛 숫자가 남았음 */
         (p[0] || []).forEach(function (it) {
           if (!it || !it.rowNumber || !it.name) return;
@@ -10376,17 +10384,20 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           if (p[1]) g.active = true;
         });
       });
+      var stemOwners = {}; Object.keys(groups).forEach(function (k) { var sk = s15Stem(groups[k].name).k; stemOwners[sk] = (stemOwners[sk] || 0) + 1; });   /* 앱 쪽에도 같은 꼬리 뗀 이름이 하나뿐일 때만 */
       return Object.keys(groups).map(function (k) {
         var g = groups[k], ln = links[k];
         if (ln === '-') { g.st = 'skip'; return g; }
         if (ln && byName[ln]) { g.x = byName[ln]; g.st = 'auto'; g.linked = true; return g; }
         if (byKey[k] && byKey[k] !== 'dup') { g.x = byKey[k]; g.st = 'auto'; return g; }
+        var gs = s15Stem(g.name), cand = gs.k.length >= 3 ? byStem[gs.k] : null;   /* 용량 꼬리만 다르고 엑셀에 그 이름이 하나뿐 → 자동. 둘 다 용량이 있는데 다르면(100정 ≠ 600정) 확인으로 */
+        if (cand && cand.length === 1 && stemOwners[gs.k] === 1) { var cx = cand[0], same = s15SameSize(gs.sz, cx.stem.sz); g.x = cx; g.score = same ? 1 : .8; g.st = same ? 'auto' : 'check'; return g; }
         var a = s15Prep(g.name), best = null, bs = 0, sec = 0;
         xs.forEach(function (x) { var s = s15Score(a, x); if (s > bs) { sec = bs; bs = s; best = x; } else if (s > sec) sec = s; });
         g.x = best; g.score = bs;
         g.st = bs >= .9 && bs - sec >= .05 ? 'auto' : bs >= .6 ? 'check' : 'none';
         return g;
-      }).filter(function (g) { return g.active || g.st === 'auto'; });   /* 끝난 상품(내역만)은 확실히 맞을 때만 */
+      }).filter(function (g) { return g.active || g.st === 'auto' || (g.st === 'check' && g.x && g.x.q >= 3); });   /* 1001 주문 흐름 밖 상품도 엑셀에서 3개 이상 팔린 후보면 확인 목록에 (안 그러면 0으로 지워짐) */
     }
     function s15LoadLib(cb) {
       if (window.XLSX) return cb();
@@ -10486,7 +10497,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       var body = document.getElementById('s15Body'), save = document.getElementById('s15Save'), pick = document.getElementById('s15PickL');
       if (!body) return;
       var gs = S15.groups, n = function (st) { return gs.filter(function (g) { return g.st === st; }); };
-      var auto = n('auto'), chk = n('check'), none = n('none'), skip = n('skip');
+      var auto = n('auto'), chk = n('check').sort(function (p, q) { return (q.x ? q.x.q : 0) - (p.x ? p.x.q : 0); }), none = n('none'), skip = n('skip');   /* 1001 많이 팔린 것부터 확인 */
       var chg = auto.filter(function (g) { return String(g.cur) !== String(g.x.q); });
       pick.querySelector('span').textContent = S15.busy === 'read' ? '읽는 중…' : gs.length ? '다른 엑셀 고르기' : '엑셀 파일 고르기';
       pick.classList.toggle('sub', !!gs.length);
