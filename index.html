@@ -4715,7 +4715,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 
     /* ===== 창고 정리 (0923) — 오래 주문 안 한 상품 정리. 결정은 문준 프로필만 ===== */
     var ST = { data: null, seg: 'todo', range: 'all', open: '', busy: {}, rev: 0, imgAsked: {}, changed: false };
-    var ST_RANGES = [['all', '전체'], ['m1', '1~2개월'], ['m2', '2~3개월'], ['m3', '3개월 이상'], ['none', '주문 기록 없음']];
+    var ST_RANGES = [['all', '전체'], ['m1', '1~2개월'], ['m2', '2~3개월'], ['m3', '3개월 이상'], ['none', '기록 없음 · 안 팔리는 순']];
     var ST_DEC = { '유지': 'keep', '할인 소진': 'sale', '반품': 'ret', '폐기': 'dis', '본사 이벤트': 'hq', '샘플 제공': 'smp', '지점 이동': 'mv' };
     var ST_DOING = { '할인 소진': '할인해서 다 팔아주세요', '반품': '반품 박스에 모아주세요', '폐기': '폐기함으로 옮겨주세요', '본사 이벤트': '「목록 복사」로 본사에 이벤트 제안 → 보낸 뒤 처리 완료', '샘플 제공': '샘플·증정으로 쓰고 다 쓰면 처리 완료', '지점 이동': '트랜드랩 › 재고 스왑에서 받는 지점 확인 → 보낸 뒤 처리 완료' };
     function stBars(m) { m = m || [0, 0, 0]; var mx = Math.max(m[0], m[1], m[2], 1); return '<span class="st-bars" title="지지난달 · 지난달 · 이번 달 입고 수량">' + [m[2], m[1], m[0]].map(function (v) { return '<i style="height:' + Math.max(3, Math.round(v / mx * 16)) + 'px' + (v ? '' : ';opacity:.35') + '"></i>'; }).join('') + '<small>' + [m[2], m[1], m[0]].join('·') + '</small></span>'; }
@@ -4757,7 +4757,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     function stLists() {
       var d = ST.data, todo = [], doing = [];
       d.items.forEach(function (it) { if (it.status === '처리 중') doing.push(it); else todo.push(it); });
-      todo.sort(function (a, b) { return (b.discontinued - a.discontinued) || ((b.days < 0 ? -1 : b.days) - (a.days < 0 ? -1 : a.days)); });
+      var s15v = function (x) { return x.sales15 == null ? 1e9 : x.sales15; };   // 1001 기록 없음끼리는 15일 판매 적은 순(0개 먼저)
+      todo.sort(function (a, b) { return (b.discontinued - a.discontinued) || ((b.days < 0 ? -1 : b.days) - (a.days < 0 ? -1 : a.days)) || (a.days < 0 && b.days < 0 ? s15v(a) - s15v(b) : 0); });
       return { todo: todo, doing: doing, done: d.done };
     }
     function stSetSeg(k) { ST.seg = k; ST.open = ''; renderStale(); document.getElementById('stBody').scrollTop = 0; }
@@ -4793,9 +4794,9 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         }).join('');
         chips.hidden = false;
         list = ST.range === 'all' ? L.todo.filter(function (it) { return it.days >= 0; }) : L.todo.filter(function (it) { return stRange(it) === ST.range; });
-        var noneFoot = ST.range === 'all' && cnt.none ? '<button type="button" class="st-foot" data-k="none" onclick="stSetRange(this.dataset.k)">주문 기록이 없는 상품 ' + cnt.none + '개는 따로 모아뒀어요 · 보기</button>' : '';
+        var noneFoot = ST.range === 'all' && cnt.none ? '<button type="button" class="st-foot" data-k="none" onclick="stSetRange(this.dataset.k)">주문 기록이 없는 상품 ' + cnt.none + '개 — 15일 판매가 적은 순으로 보기(0개부터)</button>' : '';
         var hn = ST.data && ST.data.hiddenNew;   /* 0928 새로 등록 · 주문 기록 없는 상품은 처음 본 날부터 한 달 숨김 */
-        if (hn) noneFoot += '<p class="st-note">새로 등록했거나 주문 기록이 없는 상품 ' + hn + '개는 한 달 동안 여기 안 보여요 · 그동안 주문이 없으면 그때 나와요</p>';
+        if (hn) noneFoot += '<p class="st-note">갓 등록돼 15일 판매 숫자도 없는 상품 ' + hn + '개는 한 달 동안 여기 안 보여요</p>';
       } else { chips.hidden = ST.seg !== 'doing'; chips.innerHTML = ST.seg === 'doing' && L.doing.length ? '<button type="button" class="cb-chip" onclick="stCopy()">결정별 목록 복사 · 본사·거래처용</button>' : ''; list = ST.seg === 'doing' ? L.doing : L.done; var noneFoot = ''; }
       var body = document.getElementById('stBody');
       if (!list.length) {
