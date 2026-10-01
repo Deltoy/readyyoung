@@ -3378,6 +3378,12 @@ html:not(#q):not(#w):not(#e) body:not(#r) .nt-sheet .nt-sets{grid-template-colum
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-sheet .nt-arrow{transform:rotate(90deg);height:24px}
 </style>
 <style id="ry25-launch">
+/* 1001 통합 패널: 그룹 머리 · 정의 한 줄 · 길어지면 안에서 스크롤 */
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-ln-grid{display:block}
+#ryLaunch{max-height:min(82vh,760px);overflow:auto;width:min(760px,96vw)}.ry-ln-sub{margin-left:10px;font-size:12px;font-weight:600;color:#6b7280}
+.ry-ln-sec{margin-top:8px}.ry-ln-sec:first-child{margin-top:0}.ry-ln-sh{margin:6px 4px 6px;font-size:11.5px;font-weight:800;letter-spacing:.02em;color:#6b7280;text-transform:uppercase}
+.ry-ln-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}@media(min-width:700px){.ry-ln-cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.ry-ln-card .ry-ln-t em{display:block;font-style:normal;font-size:11px;line-height:1.35;color:#9ca3af;margin-top:2px;white-space:normal}
 /* ═══ 0925 보조 탭 4칸 + 분석·기록 ═══ */
 /* 0926: 밖에는 입고내역 · 품절 · 지연 + 분석·기록 (나머지는 분석·기록 안에서) */
 html:not(#q):not(#w):not(#e) body:not(#r) #subtabTray #tabBtnStockCheck,html:not(#q):not(#w):not(#e) body:not(#r) #subtabTray #tabBtnReorder,html:not(#q):not(#w):not(#e) body:not(#r) #subtabTray #tabBtnLead,html:not(#q):not(#w):not(#e) body:not(#r) #subtabTray #tabBtnRanking{display:none!important}
@@ -3620,7 +3626,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       </div>
       <div class="ry-ln-dim" id="ryLaunchDim" onclick="ryLaunchClose()"></div>
       <div id="ryLaunch" class="ry-launch" role="dialog" aria-label="분석·기록" hidden>
-        <div class="ry-ln-h"><b>분석 · 기록</b><button type="button" class="ry-ln-x" onclick="ryLaunchClose()" aria-label="닫기"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+        <div class="ry-ln-h"><b>도구 · 분석</b><span class="ry-ln-sub">한곳에서 — 매일 챙길 것 · 기록·분석 · 상품 정리</span><button type="button" class="ry-ln-x" onclick="ryLaunchClose()" aria-label="닫기"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
         <div id="ryLaunchGrid" class="ry-ln-grid"></div>
       </div>
     </div>
@@ -5457,6 +5463,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     function closeToolMore() { var m = document.getElementById('toolMoreMenu'), b = document.getElementById('toolMoreBtn'); if (m) m.hidden = true; if (b) b.setAttribute('aria-expanded', 'false'); }
     function toggleToolMore(ev) {
       if (ev) ev.stopPropagation();
+      ryLaunchOpen(ev); return;   /* 1001 도구 드롭다운 → 통합 패널(도구 · 분석)로 */
       var m = document.getElementById('toolMoreMenu'), b = document.getElementById('toolMoreBtn');
       if (!m) return;
       var open = m.hidden; m.hidden = !open; b.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -11108,13 +11115,40 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       var ro = rg ? ((rg.now.length + rg.week.length) ? '놓친 주문 ' + (rg.now.length + rg.week.length) + '개' + (rg.now.length ? ' · 지금 ' + rg.now.length : '') : '놓친 주문 없음') : (RF.loading ? '불러오는 중…' : '놓친 주문');
       return { stockCheck: sk, reorder: ro, lead: lt, ranking: rk, rejstats: rj, notices: nt, stale: st, setduty: sd };
     }
+    /* 1001 사용자: 도구 메뉴와 분석·기록이 겹침 → 한 패널로 통합(정의 한 줄씩). 옛 드롭다운은 숨긴 채 두어 관리자 표시 플래그만 쓴다 */
+    function ryLaunchGroups() {
+      var k = ryLaunchKpis(), isAdmin = (typeof PF_ADMIN !== 'undefined') && currentSelectedMember === PF_ADMIN;
+      var scr = document.getElementById('scrEntry'), scrN = (document.getElementById('scrCnt') || {}).textContent || '', s15 = document.getElementById('s15Entry');
+      var mo = (typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) ? '15일 판매 많은데 안 시킨 것' : '15일 판매 많은데 안 시킨 것';
+      return [
+        ['매일 챙길 것', [
+          ['missed', RYI.trend || RYI.bellring, '놓친 주문 찾기', mo, '잘 팔리는데 재고가 떨어졌을 상품 — 마지막 입고 ÷ 하루 판매로 추정'],
+          ['reorder', RYI.bellring, '재주문 후보', k.reorder, '입고 완료 뒤 다시 시킬 때가 된 상품'],
+          ['stockCheck', RYI.searchcheck, '재고 확인 요청', k.stockCheck, "약사가 '재고 있음'으로 돌려보낸 건 — 오늘 확인"],
+          ['stale', RYI.package, '창고 정리', k.stale, '한 달 넘게 안 시킨 상품 → 유지·할인·반품·폐기·본사 이벤트·샘플·지점 이동']]],
+        ['기록 · 분석', [
+          ['lead', RYI.timer, '입고 소요일', k.lead, '발주 → 입고까지 걸린 영업일'],
+          ['ranking', RYI.trophy, '발주왕', k.ranking, '이달 직원별 발주 성공·정확도(관리자 제외)'],
+          ['rejstats', RYI.searchcheck, '반려(재고 있음) 분석', k.rejstats, "'재고 있음'이 자주 나오는 품목 = 과재고 신호"],
+          ['notices', NT_ICON.mega, '공지 보관함', k.notices, '카톡 공지 모아보기 · 증정품 변경'],
+          ['brief', RYI.clipboard, '뷰티 브리핑 모아보기', '날짜별 목록', '아침 뷰티 브리핑(첫 화면 카드는 10~23시엔 숨김)'],
+          ['setduty', RYI.cal, '세트 담당 주간표', k.setduty, '오전·오후 세트 담당, 반차도 포함'],
+          ['roster', RYI.cal, '근무표', '새 창', '약국 근무표 보기']].concat(s15 && !s15.hidden ? [['s15', RYI.clipboard, '15일 판매량 엑셀', '마지막 ' + (((s15.querySelector('small') || {}).textContent || '').replace('판매량 통계 엑셀로 한 번에', '').trim() || '올리기'), 'POS 15일 판매량을 한 번에 넣기(문준)']] : [])],
+        ['상품 정리', [
+          ['catbrowse', RYI.package, '카테고리별 보기', '어린이 전체 · 분류 고치기', "분류가 비었거나 '기타'인 상품 바로잡기"],
+          ['dups', RYI.searchcheck, '중복 정리', '이름 겹치는 상품', '같은 상품이 두 줄이면 하나로'],
+          ['noph', RYI.clipboard, '사진 없는 상품 찍기', '카메라로 바로', '사진 없는 상품만 모아 찍어 넣기']]
+          .concat(scr && !scr.hidden ? [['scr', RYI.searchcheck, '하위 섹터 확인 필요', (scrN ? scrN + '개' : '확인'), '자동 분류가 자신 없던 상품의 하위 섹터 정하기']] : [])
+          .concat(isAdmin ? [['pfauto', RYI.clipboard, '사진 자동 채우기', '문준 전용', '사진 없는 상품을 인터넷 사진으로']] : [])]];
+    }
     function ryLaunchRender() {
       var box = document.getElementById('ryLaunchGrid');
       if (!box) return;
-      var k = ryLaunchKpis(), cur = currentTab;
-      var cards = [['stockCheck', RYI.searchcheck, '재고확인'], ['reorder', RYI.bellring, '재주문'], ['lead', RYI.timer, '리드타임'], ['ranking', RYI.trophy, '발주왕'], ['rejstats', RYI.searchcheck, '반려 분석'], ['notices', NT_ICON.mega, '공지 보관함'], ['stale', RYI.package, '창고 정리'], ['setduty', RYI.cal, '세트 담당 주간표']];
-      box.innerHTML = cards.map(function (c) {
-        return '<button type="button" class="ry-ln-card' + (cur === c[0] ? ' on' : '') + '" data-k="' + c[0] + '" onclick="ryLaunchGo(this.dataset.k)"><span class="ry-ln-ic">' + c[1] + '</span><span class="ry-ln-t"><b>' + c[2] + '</b><small>' + escapeHtml(k[c[0]]) + '</small></span></button>';
+      var cur = currentTab, G = ryLaunchGroups();
+      box.innerHTML = G.map(function (g) {
+        return '<div class="ry-ln-sec"><p class="ry-ln-sh">' + escapeHtml(g[0]) + '</p><div class="ry-ln-cards">' + g[1].map(function (c) {
+          return '<button type="button" class="ry-ln-card' + (cur === c[0] ? ' on' : '') + '" data-k="' + c[0] + '" title="' + escapeHtml(c[4] || '') + '" onclick="ryLaunchGo(this.dataset.k)"><span class="ry-ln-ic">' + c[1] + '</span><span class="ry-ln-t"><b>' + escapeHtml(c[2]) + '</b><small>' + escapeHtml(c[3] || '') + '</small><em>' + escapeHtml(c[4] || '') + '</em></span></button>';
+        }).join('') + '</div></div>';
       }).join('');
     }
     function ryLaunchOpen(ev) {
@@ -11126,7 +11160,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       ryLaunchRender();
       p.hidden = false;
       document.getElementById('ryLaunchDim').classList.add('on');
-      document.getElementById('tabBtnMore').setAttribute('aria-expanded', 'true');
+      var tbm = document.getElementById('tabBtnMore'); if (tbm) tbm.setAttribute('aria-expanded', 'true');
       var f = p.querySelector('.ry-ln-card');
       if (f) try { f.focus({ preventScroll: true }); } catch (e) {}
     }
@@ -11135,7 +11169,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (!p || p.hidden) return;
       p.hidden = true;
       document.getElementById('ryLaunchDim').classList.remove('on');
-      document.getElementById('tabBtnMore').setAttribute('aria-expanded', 'false');
+      var tbm2 = document.getElementById('tabBtnMore'); if (tbm2) tbm2.setAttribute('aria-expanded', 'false');
     }
     function ryLaunchGo(k) {
       ryLaunchClose();
@@ -11143,12 +11177,21 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (k === 'setduty') { sdOpenWeek(); return; }
       if (k === 'notices') { ntOpen(); return; }
       if (k === 'rejstats') { rjaOpen(); return; }
+      if (k === 'missed') { moOpen(); return; }
+      if (k === 'brief') { mbOpenArchive(); return; }
+      if (k === 'roster') { window.open('https://pallang-0258.github.io/seongsu/viewer.html', '_blank', 'noopener'); return; }
+      if (k === 's15') { s15Open(); return; }
+      if (k === 'catbrowse') { openCatBrowse(); return; }
+      if (k === 'dups') { openDuplicates(); return; }
+      if (k === 'noph') { nophOpen(); return; }
+      if (k === 'scr') { scrOpen(); return; }
+      if (k === 'pfauto') { pfaOpen(); return; }
       switchTab(k);
       var v = document.getElementById(k + 'View');
       if (v) window.scrollTo({ top: Math.max(0, v.getBoundingClientRect().top + window.scrollY - 12), behavior: 'smooth' });
     }
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') ryLaunchClose(); });
-    document.addEventListener('click', function (e) { var p = document.getElementById('ryLaunch'); if (p && !p.hidden && !e.target.closest('#ryLaunch, #tabBtnMore')) ryLaunchClose(); });
+    document.addEventListener('click', function (e) { var p = document.getElementById('ryLaunch'); if (p && !p.hidden && !e.target.closest('#ryLaunch, #tabBtnMore, #toolMoreBtn')) ryLaunchClose(); });
     setInterval(function () {   /* 열려 있는 동안 숫자만 새로 (포커스는 그대로) */
       var p = document.getElementById('ryLaunch');
       if (!p || p.hidden) return;
