@@ -8945,8 +8945,12 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         onResults(localHit);
         try { google.script.run.withSuccessHandler(function (r) {
           if (currentRequestId !== latestSearchRequestId || !Array.isArray(r)) return;
+          /* 1001 시트에서 행이 지워져 번호가 밀렸을 때: 서버 결과에 같은 이름이 다른 행으로 오면 폰 쪽 행 번호를 바로 고친다 (메모·주문·재주문이 엉뚱한 상품으로 가던 문제) */
+          var byName = {}; r.forEach(function (x) { if (x && x.name) byName[String(x.name).replace(/\s+/g, '').toLowerCase()] = x; });
+          var moved = 0; localHit.forEach(function (l) { var sv = byName[String(l.name || '').replace(/\s+/g, '').toLowerCase()]; if (sv && sv.rowNumber && sv.rowNumber !== l.rowNumber) { var old = l.rowNumber; l.rowNumber = sv.rowNumber; l.status = sv.status || l.status; moved++; try { (RY_CAT.items || []).forEach(function (it) { if (it.rowNumber === old && it.name === l.name) it.rowNumber = sv.rowNumber; }); } catch (eM) {} } });
+          if (moved) { try { ryCatSave(); } catch (eS2) {} }
           var have = {}; localHit.forEach(function (x) { have[x.rowNumber] = x; });
-          var extra = r.filter(function (x) { return x && x.rowNumber && !have[x.rowNumber]; }), changed = false;
+          var extra = r.filter(function (x) { return x && x.rowNumber && !have[x.rowNumber]; }), changed = moved > 0;
           r.forEach(function (x) { var l = x && have[x.rowNumber]; if (!l) return; if ((x.imgUrl && x.imgUrl !== l.imgUrl) || (x.name && x.name !== l.name) || (x.category && x.category !== l.category)) { l.imgUrl = x.imgUrl || l.imgUrl; l.name = x.name || l.name; l.category = x.category || l.category; changed = true; } });   // 1001 사진·이름이 바뀐 건 서버 값으로 바로
           if (changed) { try { (RY_CAT.items || []).forEach(function (it) { var x = r.filter(function (y) { return y.rowNumber === it.rowNumber; })[0]; if (x) { it.imgUrl = x.imgUrl || it.imgUrl; it.name = x.name || it.name; it.category = x.category || it.category; } }); ryCatSave(); } catch (eS) {} }
           if (extra.length || changed) onResults(localHit.concat(extra));
