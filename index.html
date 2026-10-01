@@ -3760,11 +3760,6 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         </div>
         <div id="inboundSearchInfo" class="hidden mt-1.5 text-[11px] font-bold text-emerald-900"></div>
         <div class="flex flex-wrap items-center gap-1.5 mt-2">
-          <button type="button" id="filterCheckReqBtn" onclick="toggleFilterCheckRequested()"
-                  class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-slate-900 font-black rounded-lg shadow-sm transition whitespace-nowrap flex items-center gap-1.5 text-[11px]">
-            <svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 11 2 2 4-4"/><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span>확인요청 모아보기</span>
-            <span id="checkReqBadgeCount" class="bg-slate-900 text-white text-[10px] px-1.5 py-0.5 rounded-full">0</span>
-          </button>
           <button type="button" id="lateShareBtn" onclick="shareLateInbound()" class="ry-lateshare" title="발주 후 7일 넘게 안 들어온 상품 목록을 복사합니다. 카톡방에 붙여넣으세요">
             <svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><span>지연 상품 복사 (카톡용)</span>
             <span id="lateShareCount" class="ry-lateshare-n">0</span>
@@ -3775,9 +3770,10 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           <summary>ⓘ 사용법 보기</summary>
           <div class="guide-body">
             도착한 박스를 확인하고 처리하세요.<br>
-            • <b>근무직원</b>: 실물 확인 후 <b>[📋 도착 확인요청]</b> → 물류관리자 확인 대기<br>
-            • <b>물류관리자</b>: 최종 검수 후 <b>[✅ 최종 입고완료]</b> → 입고 완료 처리<br>
+            • <b>누구나</b>: 박스 열어 수량 확인했으면 바로 <b>[✅ 최종 입고완료]</b> — 누가·언제 처리했는지 자동 기록돼요(토요일 도착은 옆의 토요일 칩 먼저)<br>
+            • <b>물류관리자</b>: 월요일에 입고내역(오늘·어제 묶음)에서 훑어보고 틀린 건 <b>[되돌리기]</b><br>
             • 공급사가 품절로 못 보낸다고 하면 <b>[🚫 품절]</b> → 특이사항에 품절이 적히고 🚫 품절 탭으로 이동<br>
+            <span id="satNudge" hidden style="display:block;margin-top:8px;padding:8px 12px;border-radius:10px;background:#FFFBEB;border:1px solid #FDE68A;color:#92400E;font-weight:700">오늘은 토요일 — 도착한 상품은 수량만 맞으면 [최종 입고완료]를 눌러 주세요. 이름이 기록되니 월요일에 따로 확인 안 받아도 돼요.</span>
             • 상품이 많을 땐 위 검색칸에 이름 일부만 쳐도 바로 찾아 처리할 수 있어요<br>
             • 오래 기다린 주문이 위쪽에 옵니다. 상단 평균 소요일만큼 미리 주문하세요.
           </div>
@@ -3916,7 +3912,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         <details class="tab-guide text-rose-800">
           <summary>ⓘ 사용법 보기</summary>
           <div class="guide-body">
-            발주 후 7일이 지나도 입고되지 않은 품목입니다(오래된 순). 도착하면 여기서 바로 <b>[도착 확인요청]</b> 또는 <b>[최종 입고완료]</b> 처리할 수 있습니다.
+            발주 후 7일이 지나도 입고되지 않은 품목입니다(오래된 순). 도착하면 여기서 바로 <b>[최종 입고완료]</b> 처리할 수 있습니다.
           </div>
         </details>
       </div>
@@ -6832,6 +6828,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     var HIST_OPEN = {};
     function histToggle(head) { var d = head.dataset.date; if (!d) return; HIST_OPEN[d] = !HIST_OPEN[d]; try { renderAllViews(); } catch (e) {} var again = document.querySelector('.hist-date-head[data-date="' + d + '"]'); if (again) again.scrollIntoView({ block: 'nearest' }); }
     function renderAllViews() {
+      try { var sn = document.getElementById('satNudge'); if (sn) sn.hidden = new Date(Date.now() + 9 * 3600000).getUTCDay() !== 6; } catch (eSn) {}   // 1001 토요일 안내
       const pureReviewItems = [];
       const pureOrderItems = [];
       const soldOutItems = [];
@@ -8131,13 +8128,10 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         ? `<span class="bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-lg text-xs font-black whitespace-nowrap inline-flex items-center gap-1">${RYI.searchcheck}관리자 확인대기 (${escapeHtml(item.checkRequester)})</span>`
         : `<span class="text-slate-400 text-xs">-</span>`;
 
+      /* 1001 '도착 확인요청' 버튼 제거(아무도 안 씀) — 누구나 실물 확인 후 [최종 입고완료], 이름·날짜가 기록되고 입고내역에서 되돌릴 수 있다 */
       const checkBtnRow = item.isCheckRequested
         ? `<span class="px-2.5 py-1.5 bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-black whitespace-nowrap">✓ 확인요청됨</span>`
-        : `<button onclick="handleRequestInboundCheck(${item.rowNumber})" 
-                  class="px-2.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition whitespace-nowrap flex items-center gap-1"
-                  title="직원이 실물 도착을 확인하고 물류관리자에게 확인을 요청합니다">
-            <span class="inline-flex items-center">${RYI.clipboard}도착 확인요청</span>
-          </button>`;
+        : '';
       let actionBtn = `
         <div class="flex flex-wrap items-center justify-center gap-2">
           ${checkBtnRow}
@@ -8178,9 +8172,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 
       const checkBtnCard = item.isCheckRequested
         ? `<div class="ry-in-btn ry-in-done">✓ 확인요청됨 · ${escapeHtml(item.checkRequester)}</div>`
-        : `<button onclick="handleRequestInboundCheck(${item.rowNumber})" class="ry-in-btn ry-in-check">
-            <span class="inline-flex items-center">${RYI.clipboard}도착 확인요청</span>
-          </button>`;
+        : '';
 
       const qtyNum = String(item.targetQty == null ? '' : item.targetQty);
       card.innerHTML = `
