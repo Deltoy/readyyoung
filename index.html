@@ -7689,7 +7689,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     var MR = { map: {}, busy: false, ver: 0 };
     function mrCanSee() { try { return /^(진성|하은)$/.test(String(currentSelectedMember || '').trim()) || /^(관리약사|물류관리자)$/.test(memberTitle(currentSelectedMember)); } catch (e) { return false; } }
     function mrSlot(item, type) {
-      if ((type !== 'order' && type !== 'review') || !mrCanSee()) return '';
+      if ((type !== 'order' && type !== 'review' && type !== 'soldout') || !mrCanSee()) return '';   // 1001 품절 탭에도 제조사·경로 (보면서 바로 재주문)
       var r = item.rowNumber, has = Object.prototype.hasOwnProperty.call(MR.map, r);
       return '<div class="ry-mr' + (has ? '' : ' wait') + '" data-mr="' + r + '">' + (has ? mrLineHtml(r) : '') + '</div>';
     }
