@@ -4786,11 +4786,11 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         .getStaleProducts(currentSelectedMember || '');
     }
     function stLists() {
-      var d = ST.data, todo = [], doing = [];
-      d.items.forEach(function (it) { if (it.status === '처리 중') doing.push(it); else todo.push(it); });
+      var d = ST.data, todo = [], doing = [], disc = [];
+      d.items.forEach(function (it) { if (it.status === '처리 중') doing.push(it); else if (it.discontinued) disc.push(it); else todo.push(it); });   /* 1001 사용자: 소진 후 판매종료 표시된 상품은 이미 정리된 것 → 결정 전에 안 보이고 판매종료 탭에만 */
       var s15v = function (x) { return x.sales15 == null ? 1e9 : x.sales15; };   // 1001 기록 없음끼리는 15일 판매 적은 순(0개 먼저)
       todo.sort(function (a, b) { return (b.discontinued - a.discontinued) || ((b.days < 0 ? -1 : b.days) - (a.days < 0 ? -1 : a.days)) || (a.days < 0 && b.days < 0 ? s15v(a) - s15v(b) : 0); });
-      return { todo: todo, doing: doing, done: d.done };
+      return { todo: todo, doing: doing, disc: disc, done: d.done };
     }
     function stSetSeg(k) { ST.seg = k; ST.open = ''; renderStale(); document.getElementById('stBody').scrollTop = 0; }
     function stSetRange(k) { ST.range = k; ST.open = ''; renderStale(); document.getElementById('stBody').scrollTop = 0; }
@@ -4811,7 +4811,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         '<p class="st-rule">한 달 넘게 주문하지 않은 상품이에요. 주문 진행 중이거나 숨긴 상품은 빠져요.'
         + (d.doneMonth ? ' <span class="st-month">이번 달 ' + d.doneMonth + '개 정리</span>' : '')
         + (admin ? '' : '<br><span class="st-staff">정리 결정은 ' + escapeHtml(d.admin) + ' 님만 할 수 있어요.</span>') + '</p>';
-      var disc = L.todo.concat(L.doing).filter(function (it) { return it.discontinued; }).concat(L.done.filter(function (it) { return it.decision === '할인 소진'; }));   /* 1001 소진 후 판매종료만 모아 보기 */
+      var disc = L.disc.concat(L.doing.filter(function (it) { return it.discontinued; })).concat(L.done.filter(function (it) { return it.decision === '할인 소진'; }));   /* 1001 소진 후 판매종료만 모아 보기 */
       var segs = [['todo', '결정 전', L.todo.length], ['doing', '처리 중', L.doing.length], ['disc', '소진 후 판매종료', disc.length], ['done', '완료', L.done.length]];
       document.getElementById('stSeg').innerHTML = segs.map(function (g) {
         return '<button type="button" role="tab" aria-selected="' + (ST.seg === g[0]) + '" class="' + (ST.seg === g[0] ? 'on' : '') + '" data-k="' + g[0] + '" onclick="stSetSeg(this.dataset.k)">' + g[1] + ' <i>' + g[2] + '</i></button>';
