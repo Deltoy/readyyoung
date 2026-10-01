@@ -4819,6 +4819,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         var noneFoot = ST.range === 'all' && cnt.none ? '<button type="button" class="st-foot" data-k="none" onclick="stSetRange(this.dataset.k)">주문 기록이 없는 상품 ' + cnt.none + '개 — 15일 판매가 적은 순으로 보기(0개부터)</button>' : '';
         var hn = ST.data && ST.data.hiddenNew;   /* 0928 새로 등록 · 주문 기록 없는 상품은 처음 본 날부터 한 달 숨김 */
         if (hn) noneFoot += '<p class="st-note">갓 등록돼 15일 판매 숫자도 없는 상품 ' + hn + '개는 한 달 동안 여기 안 보여요</p>';
+        if (ST.data && ST.data.s15Last) noneFoot += '<p class="st-note">15일 판매 숫자는 ' + ST.data.s15Last + ' 올린 판매량 엑셀 기준 · 그 엑셀에 없던 상품은 0</p>';
       } else { chips.hidden = ST.seg !== 'doing'; chips.innerHTML = ST.seg === 'doing' && L.doing.length ? '<button type="button" class="cb-chip" onclick="stCopy()">결정별 목록 복사 · 본사·거래처용</button>' : ''; list = ST.seg === 'doing' ? L.doing : L.done; var noneFoot = ''; }
       var body = document.getElementById('stBody');
       if (!list.length) {
@@ -10448,7 +10449,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           S15.info.last = sdLocalDate(new Date());
           S15.groups = []; S15.xs = [];
           s15Render(); s15Dot();
-          showToast(cnt + '개 상품 15일 판매량을 바꿨어요' + (r.skipped ? ' · 시트 수식 칸 ' + r.skipped + '개는 그대로' : ''), 2600);
+          showToast(cnt + '개 상품 15일 판매량을 바꿨어요' + (r.reset ? ' · 엑셀에 없던 ' + r.reset + '개는 0으로' : '') + (r.skipped ? ' · 시트 수식 칸 ' + r.skipped + '개는 그대로' : ''), 3200);
           loadAllData(true, true, true);
         })
         .withFailureHandler(function (e) { S15.busy = false; s15Render(); showToast('저장하지 못했어요: ' + (e && e.message || e), 2600); })
@@ -11798,7 +11799,7 @@ function moOpen(min) {
     var mapped = (r.items || []).map(function (it) { var o = it.over, lab = o == null ? '소진 추정 · 입고 ' + it.lastIn.since + '일 지남' : o >= 0 ? '소진 추정 · ' + (it.cover || 0) + '일치 입고, ' + it.lastIn.since + '일 지남(' + o + '일 초과)' : '곧 소진 · ' + it.cover + '일치 중 ' + it.lastIn.since + '일 지남';
       return Object.assign({}, it, { statusLabel: lab, statusColor: o == null || o >= 0 ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-800', _mo: { since: it.lastIn ? it.lastIn.since : null, sales15: it.sales15, over: it.over } }); })
       .concat((r.noLog || []).map(function (it) { return Object.assign({}, it, { statusLabel: '입고 기록 없음 · 15일 ' + it.sales15 + '개 팔림', statusColor: 'bg-slate-100 text-slate-600', _mo: { since: null, sales15: it.sales15, over: null } }); }));
-    show(mapped, '<span style="font-weight:800">놓친 주문 후보 ' + r.total + '개</span>' + (r.noLogTotal ? ' <span style="color:#6b7280">+ 입고 기록 없어 추정 못 한 ' + r.noLogTotal + '개(아래)</span>' : '') + ' <span style="color:#6b7280">· 15일 판매 <b>' + r.min + '개</b> 이상 · 마지막 입고 수량 ÷ 하루 판매 = 며칠치 → 그보다 오래 지났으면 소진 추정</span> ');
+    show(mapped, '<span style="font-weight:800">놓친 주문 후보 ' + r.total + '개</span>' + (r.s15Last ? ' <span style="color:#6b7280">· 15일 판매는 ' + r.s15Last + ' 엑셀 기준</span>' : '') + (r.noLogTotal ? ' <span style="color:#6b7280">+ 입고 기록 없어 추정 못 한 ' + r.noLogTotal + '개(아래)</span>' : '') + ' <span style="color:#6b7280">· 15일 판매 <b>' + r.min + '개</b> 이상 · 마지막 입고 수량 ÷ 하루 판매 = 며칠치 → 그보다 오래 지났으면 소진 추정</span> ');
   }).withFailureHandler(function () { fallback(); }).getMissedOrders(MO.min, currentSelectedMember || '');
 }
 function nophOpen() { var d = document.getElementById('nophDim'); d.hidden = false; d.style.display = 'block'; document.documentElement.classList.add('mb-lock'); if (typeof ryCatLoad === 'function') ryCatLoad(false); nophRender(); }
