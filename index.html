@@ -5886,6 +5886,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           var extra = (res.category ? ' · ' + catLabel(res.category) : '') + (res.requested ? ' · 1차 검토로 들어갔어요' : '');
           if (res.photo && !res.photo.ok) extra += ' · 사진은 저장 못 했어요';
           showToast('✓ ' + res.name + ' 등록 완료' + extra);
+          try { if (RY_CAT && RY_CAT.items) { RY_CAT.items.push({ rowNumber: res.rowNumber, name: res.name, category: res.category || '', imgUrl: '', note: '', sales15: '-', status: 'IDLE', _k: String(res.name || '').replace(/\s+/g, '').toLowerCase() }); ryCatSave(); } if (RY_CAT) RY_CAT.t = 0; ryCatLoad(true); } catch (eC) {}   // 1001 등록한 상품이 검색에 바로
           // 0930 목록을 억지로 다시 받지 않는다(서버가 2분 걸림). 새 상품은 폰 목록에 없어도 서버 이름 스캔으로 바로 찾힌다
           loadAllData(true, true, true);
         })
@@ -8782,6 +8783,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
             _dataVer = v;
             setSyncBadge('changed');
             loadAllData(false, true);                           // 바뀐 경우에만 목록 갱신
+            try { if (RY_CAT && Date.now() - (RY_CAT.t || 0) > 60000) { RY_CAT.t = 0; ryCatLoad(true); } } catch (eC) {}   // 1001 새 상품·사진이 다른 기기에서 바뀌어도 1분 안에 검색에 반영
           }
         })
         .withFailureHandler(function () { _verChecking = false; })
@@ -8930,9 +8932,11 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         onResults(localHit);
         try { google.script.run.withSuccessHandler(function (r) {
           if (currentRequestId !== latestSearchRequestId || !Array.isArray(r)) return;
-          var have = {}; localHit.forEach(function (x) { have[x.rowNumber] = 1; });
-          var extra = r.filter(function (x) { return x && x.rowNumber && !have[x.rowNumber]; });
-          if (extra.length) onResults(localHit.concat(extra));
+          var have = {}; localHit.forEach(function (x) { have[x.rowNumber] = x; });
+          var extra = r.filter(function (x) { return x && x.rowNumber && !have[x.rowNumber]; }), changed = false;
+          r.forEach(function (x) { var l = x && have[x.rowNumber]; if (!l) return; if ((x.imgUrl && x.imgUrl !== l.imgUrl) || (x.name && x.name !== l.name) || (x.category && x.category !== l.category)) { l.imgUrl = x.imgUrl || l.imgUrl; l.name = x.name || l.name; l.category = x.category || l.category; changed = true; } });   // 1001 사진·이름이 바뀐 건 서버 값으로 바로
+          if (changed) { try { (RY_CAT.items || []).forEach(function (it) { var x = r.filter(function (y) { return y.rowNumber === it.rowNumber; })[0]; if (x) { it.imgUrl = x.imgUrl || it.imgUrl; it.name = x.name || it.name; it.category = x.category || it.category; } }); ryCatSave(); } catch (eS) {} }
+          if (extra.length || changed) onResults(localHit.concat(extra));
         }).withFailureHandler(function () {}).searchCatalogItems(query); } catch (e) {}
         return;
       }
