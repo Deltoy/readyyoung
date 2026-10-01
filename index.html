@@ -7959,7 +7959,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           if (!res || !res.reasons) return;
           var changed = JSON.stringify(res.reasons) !== JSON.stringify(DELAY_REASONS);
           DELAY_REASONS = res.reasons;
-          if (changed) renderInboundList(cachedInboundItems);
+          if (changed) { renderInboundList(cachedInboundItems); try { renderDelayedList(); } catch (eD) {} }   /* 1001 지연 탭도 다시 — 늦은 이유(재주문 날짜)가 늦게 도착하면 지연 탭이 옛 날짜로 남던 문제 */
         })
         .withFailureHandler(function () { DELAY_BUSY = false; DELAY_AT = Date.now(); })
         .getDelayReasons();
@@ -8443,10 +8443,11 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 
     // 🚨 지연: 발주 후 7일 이상 미입고 품목 (입고대기 중 오래된 것만 모아 보기)
     function renderDelayedList() {
+      refreshDelayReasons(false);
       const src = cachedInboundItems || [];
       const delayed = src
         .filter(it => { const d = daysSince(effOrderDate(it)); return d != null && d >= 7; })   /* 1001 재주문 날짜부터 다시 셈 */
-        .sort((a, b) => (daysSince(b.orderDate) || 0) - (daysSince(a.orderDate) || 0));
+        .sort((a, b) => (daysSince(effOrderDate(b)) || 0) - (daysSince(effOrderDate(a)) || 0));
 
       setSubBadge('tabDelayedBadge', delayed.length, true);
       const cnt = document.getElementById('delayedCount'); if (cnt) cnt.innerText = delayed.length + '건';
