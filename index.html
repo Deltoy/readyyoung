@@ -3527,6 +3527,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
             <button type="button" role="menuitem" onclick="closeToolMore(); openDuplicates()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>중복 정리<small>이름이 겹치는 상품 찾기</small></button>
             <button type="button" role="menuitem" onclick="closeToolMore(); ntOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>공지 보관함<small>카톡 공지 모아보기 · 증정품 변경 한눈에</small></button>
             <button type="button" role="menuitem" onclick="closeToolMore(); mbOpenArchive()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>뷰티 브리핑 모아보기<small>날짜별 목록 · 첫 화면 카드는 10시~23시엔 숨김</small></button>
+            <button type="button" role="menuitem" onclick="closeToolMore(); moOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/><circle cx="19" cy="9" r="2"/></svg>놓친 주문 찾기<small>15일 판매 많은데 미주문·입고 안 한 상품</small></button>
             <button type="button" role="menuitem" onclick="closeToolMore(); nophOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>사진 없는 상품 찍기<small>사진 없는 상품만 모아 카메라로 바로 넣기</small></button>
             <button type="button" role="menuitem" id="pfAutoEntry" hidden onclick="closeToolMore(); pfaOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6"/><circle cx="9" cy="9" r="2"/><path d="m3 17 4-4 3 3"/><circle cx="17.5" cy="17.5" r="3.5"/><path d="m22 22-1.9-1.9"/></svg>사진 자동 채우기<small>사진 없는 상품을 인터넷 사진으로 (문준 전용)</small></button>
             <button type="button" role="menuitem" id="scrEntry" hidden onclick="closeToolMore(); scrOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>하위 섹터 확인 필요<span id="scrCnt" class="scr-cnt" hidden></span><small>자동 분류가 자신 없던 상품의 하위 섹터 정하기</small></button>
@@ -11655,6 +11656,34 @@ function nophItems() {
   [cachedReviewItems, cachedOrderItems, cachedInboundItems, cachedHistoryItems].forEach(function (a) { (a || []).forEach(push); });
   if (typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) RY_CAT.items.forEach(push);
   return out.sort(function (a, b) { return b.rowNumber - a.rowNumber; });   // 최근 등록(아래 줄)부터
+}
+/* 1001 놓친 주문 찾기 — 15일 판매가 많은데(기준 이상) 지금 주문 흐름에 없고(미주문 또는 입고완료 뒤 14일 지남) 품절·판매종료도 아닌 상품을 검색 결과 카드로 보여 준다(바로 주문 요청 가능). 폰 상품 목록(RY_CAT) 기준 */
+var MO = { min: 10 };
+function moSales(it) { var n = Number(String(it.sales15 == null ? '' : it.sales15).replace(/[^0-9.]/g, '')); return isFinite(n) ? n : 0; }
+function moItems(min) {
+  var items = (RY_CAT && RY_CAT.items) || [];
+  return items.filter(function (it) {
+    if (moSales(it) < min) return false;
+    if (it.status !== 'IDLE' && it.status !== 'DONE') return false;   // 검토·발주·입고 대기 중이면 놓친 게 아님
+    var note = String(it.note || ''); if (/판매종료|품절|취급안함/.test(note + String(it.name || ''))) return false;
+    if (it.status === 'DONE') { var d = daysSince(it.inboundDate); if (d != null && d < 14) return false; }   // 2주 안에 받은 건 아직 재고 있음으로 봄
+    return true;
+  }).sort(function (a, b) { return moSales(b) - moSales(a); });
+}
+function moOpen(min) {
+  if (min) MO.min = min;
+  if (!RY_CAT || !RY_CAT.items || !RY_CAT.items.length) { showToast('상품 목록을 받는 중이에요 — 잠시 뒤 다시 눌러 주세요'); if (typeof ryCatLoad === 'function') { RY_CAT && (RY_CAT.t = 0); ryCatLoad(true); } return; }
+  ['reviewView', 'orderView', 'soldOutView', 'inboundView', 'delayedView', 'historyView', 'stockCheckView', 'rankingView', 'reorderView', 'leadView', 'rejAView', 'noticeView'].forEach(function (v) { var el = document.getElementById(v); if (el) el.classList.add('hidden'); });
+  var sView = document.getElementById('searchResultView'); if (sView) sView.classList.remove('hidden');
+  var list = moItems(MO.min), _SLAB = { REVIEW: '1차검토', ORDER: '발주대기', INBOUND: '입고대기', DONE: '입고완료 · 재주문 가능', SOLDOUT: '품절', IDLE: '미주문' }, _SCOL = { REVIEW: 'bg-indigo-100 text-indigo-700', ORDER: 'bg-blue-100 text-blue-700', INBOUND: 'bg-emerald-100 text-emerald-800', DONE: 'bg-slate-200 text-slate-700', SOLDOUT: 'bg-rose-100 text-rose-700', IDLE: 'bg-slate-100 text-slate-600' };
+  var mapped = list.map(function (it) { return Object.assign({}, it, { statusLabel: _SLAB[it.status] || '미주문', statusColor: _SCOL[it.status] || 'bg-slate-100 text-slate-600' }); });
+  latestSearchRequestId++; lastSearchResults = mapped; renderSearchResults(mapped);
+  var rc = document.getElementById('searchResultCount');
+  if (rc) rc.innerHTML = '<span style="font-weight:800">놓친 주문 후보 ' + mapped.length + '개</span> <span style="color:#6b7280">· 15일 판매 <b>' + MO.min + '개</b> 이상인데 미주문이거나 입고 뒤 2주 지남 · 품절·판매종료 제외</span> '
+    + [5, 10, 20, 50].map(function (m) { return '<button type="button" class="ry-chip' + (MO.min === m ? ' on' : '') + '" style="margin-left:6px' + (MO.min === m ? ';background:#111827;color:#fff;border-color:#111827' : '') + '" onclick="moOpen(' + m + ')">' + m + '개↑</button>'; }).join('')
+    + '<span style="display:block;margin-top:4px;color:#6b7280;font-size:12px">많이 팔린 순 · 각 줄의 [주문 요청]으로 바로 넣으면 돼요 · 목록은 폰에 저장된 상품 목록 기준(최대 5분 전)</span>';
+  var em = document.getElementById('searchEmptyMessage'); if (em) em.classList.toggle('hidden', mapped.length > 0);
+  window.scrollTo({ top: (sView ? sView.offsetTop - 80 : 0), behavior: 'smooth' });
 }
 function nophOpen() { var d = document.getElementById('nophDim'); d.hidden = false; d.style.display = 'block'; document.documentElement.classList.add('mb-lock'); if (typeof ryCatLoad === 'function') ryCatLoad(false); nophRender(); }
 function nophClose() { var d = document.getElementById('nophDim'); d.hidden = true; d.style.display = 'none'; document.documentElement.classList.remove('mb-lock'); }
