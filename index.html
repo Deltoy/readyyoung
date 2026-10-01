@@ -1371,7 +1371,8 @@ html body:not(#_):not(#_) .st-opt.dis{color:var(--ry-bad)!important}
 .st-decided{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px;font-size:12.5px;color:var(--ry-ink-2)}
 .st-dec{padding:3px 10px;border-radius:999px;font-weight:600;font-size:12.5px;background:#f5f5f7;color:var(--ry-ink)}
 .st-dec.sale{background:var(--ry-warn-soft);color:var(--ry-warn)}
-.st-dec.dis{background:var(--ry-bad-soft);color:var(--ry-bad)}
+.st-dec.dis{background:var(--ry-bad-soft);color:var(--ry-bad)}.st-dec.hq{background:#EAF1FE;color:#155EEF}.st-dec.smp{background:#ECFDF3;color:#047857}.st-dec.mv{background:#F3F0FF;color:#6D28D9}
+.st-bars{display:inline-flex;align-items:flex-end;gap:2px;height:18px;margin-left:10px;vertical-align:middle}.st-bars i{display:block;width:6px;border-radius:2px;background:#155EEF}.st-bars small{margin-left:4px;color:#6b7280;font-size:11px;align-self:center}
 .st-todo{margin-top:6px;font-size:13px;color:var(--ry-ink)}
 .st-todo:empty{display:none}
 .st-memo{color:var(--ry-ink);word-break:keep-all;overflow-wrap:anywhere}
@@ -3517,7 +3518,6 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
             <button type="button" role="menuitem" onclick="closeToolMore(); openDuplicates()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>중복 정리<small>이름이 겹치는 상품 찾기</small></button>
             <button type="button" role="menuitem" onclick="closeToolMore(); ntOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>공지 보관함<small>카톡 공지 모아보기 · 증정품 변경 한눈에</small></button>
             <button type="button" role="menuitem" onclick="closeToolMore(); mbOpenArchive()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>뷰티 브리핑 모아보기<small>날짜별 목록 · 첫 화면 카드는 10시~23시엔 숨김</small></button>
-            <button type="button" role="menuitem" onclick="closeToolMore(); cuOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>안 나가는 제품 정리<small>1·2·3개월째 주문 없는 상품 → 판매종료 · 본사 이벤트 · 샘플 결정</small></button>
             <button type="button" role="menuitem" onclick="closeToolMore(); nophOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>사진 없는 상품 찍기<small>사진 없는 상품만 모아 카메라로 바로 넣기</small></button>
             <button type="button" role="menuitem" id="pfAutoEntry" hidden onclick="closeToolMore(); pfaOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6"/><circle cx="9" cy="9" r="2"/><path d="m3 17 4-4 3 3"/><circle cx="17.5" cy="17.5" r="3.5"/><path d="m22 22-1.9-1.9"/></svg>사진 자동 채우기<small>사진 없는 상품을 인터넷 사진으로 (문준 전용)</small></button>
             <button type="button" role="menuitem" id="scrEntry" hidden onclick="closeToolMore(); scrOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>하위 섹터 확인 필요<span id="scrCnt" class="scr-cnt" hidden></span><small>자동 분류가 자신 없던 상품의 하위 섹터 정하기</small></button>
@@ -4693,7 +4693,15 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     /* ===== 창고 정리 (0923) — 오래 주문 안 한 상품 정리. 결정은 문준 프로필만 ===== */
     var ST = { data: null, seg: 'todo', range: 'all', open: '', busy: {}, rev: 0, imgAsked: {}, changed: false };
     var ST_RANGES = [['all', '전체'], ['m1', '1~2개월'], ['m2', '2~3개월'], ['m3', '3개월 이상'], ['none', '주문 기록 없음']];
-    var ST_DEC = { '유지': 'keep', '할인 소진': 'sale', '반품': 'ret', '폐기': 'dis' };
+    var ST_DEC = { '유지': 'keep', '할인 소진': 'sale', '반품': 'ret', '폐기': 'dis', '본사 이벤트': 'hq', '샘플 제공': 'smp', '지점 이동': 'mv' };
+    var ST_DOING = { '할인 소진': '할인해서 다 팔아주세요', '반품': '반품 박스에 모아주세요', '폐기': '폐기함으로 옮겨주세요', '본사 이벤트': '「목록 복사」로 본사에 이벤트 제안 → 보낸 뒤 처리 완료', '샘플 제공': '샘플·증정으로 쓰고 다 쓰면 처리 완료', '지점 이동': '트랜드랩 › 재고 스왑에서 받는 지점 확인 → 보낸 뒤 처리 완료' };
+    function stBars(m) { m = m || [0, 0, 0]; var mx = Math.max(m[0], m[1], m[2], 1); return '<span class="st-bars" title="지지난달 · 지난달 · 이번 달 입고 수량">' + [m[2], m[1], m[0]].map(function (v) { return '<i style="height:' + Math.max(3, Math.round(v / mx * 16)) + 'px' + (v ? '' : ';opacity:.35') + '"></i>'; }).join('') + '<small>' + [m[2], m[1], m[0]].join('·') + '</small></span>'; }
+    function stCopy() {
+      var by = {}; ((ST.data && ST.data.items) || []).filter(function (x) { return x.status === '처리 중'; }).forEach(function (x) { (by[x.decision] = by[x.decision] || []).push(x); });
+      var txt = Object.keys(by).map(function (k) { return '[' + k + '] ' + by[k].length + '개\n' + by[k].map(function (x) { return '- ' + x.name + (x.category ? ' (' + catLabel(x.category) + ')' : '') + (x.days >= 0 ? ' · 마지막 주문 ' + x.lastOrder : ' · 주문 기록 없음') + (x.memo ? ' · ' + x.memo : ''); }).join('\n'); }).join('\n\n');
+      if (!txt) { showToast('복사할 처리 중 상품이 없어요'); return; }
+      try { navigator.clipboard.writeText(txt).then(function () { showToast('✓ 결정별 목록을 복사했어요 — 본사·거래처에 붙여넣기'); }, function () { prompt('복사해서 쓰세요', txt); }); } catch (e) { prompt('복사해서 쓰세요', txt); }
+    }
     function stRange(it) { return it.days < 0 ? 'none' : it.days >= 90 ? 'm3' : it.days >= 60 ? 'm2' : 'm1'; }
     function openStale() {
       document.getElementById('stDim').classList.add('on');
@@ -4765,7 +4773,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         var noneFoot = ST.range === 'all' && cnt.none ? '<button type="button" class="st-foot" data-k="none" onclick="stSetRange(this.dataset.k)">주문 기록이 없는 상품 ' + cnt.none + '개는 따로 모아뒀어요 · 보기</button>' : '';
         var hn = ST.data && ST.data.hiddenNew;   /* 0928 새로 등록 · 주문 기록 없는 상품은 처음 본 날부터 한 달 숨김 */
         if (hn) noneFoot += '<p class="st-note">새로 등록했거나 주문 기록이 없는 상품 ' + hn + '개는 한 달 동안 여기 안 보여요 · 그동안 주문이 없으면 그때 나와요</p>';
-      } else { chips.hidden = true; chips.innerHTML = ''; list = ST.seg === 'doing' ? L.doing : L.done; var noneFoot = ''; }
+      } else { chips.hidden = ST.seg !== 'doing'; chips.innerHTML = ST.seg === 'doing' && L.doing.length ? '<button type="button" class="cb-chip" onclick="stCopy()">결정별 목록 복사 · 본사·거래처용</button>' : ''; list = ST.seg === 'doing' ? L.doing : L.done; var noneFoot = ''; }
       var body = document.getElementById('stBody');
       if (!list.length) {
         body.innerHTML = '<div class="st-msg">' + (ST.seg === 'todo' ? '정리할 상품이 없어요 👍' : ST.seg === 'doing' ? '처리 중인 상품이 없어요<small>결정 전 탭에서 반품·폐기·할인 소진을 정하면 여기로 와요</small>' : '아직 정리한 상품이 없어요') + '</div>' + noneFoot;
@@ -4790,21 +4798,21 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       var s15 = it.sales15 == null ? '' : '<span class="st-s15' + (it.sales15 === 0 ? ' zero' : '') + '">15일 판매 ' + it.sales15 + '</span>';
       var h = '<div class="st-row" data-row="' + it.row + '">' + stImg(it)
         + '<div class="st-main"><div class="st-name">' + escapeHtml(it.name) + '</div>'
-        + '<div class="st-meta">' + stAgo(it) + '</div>'
+        + '<div class="st-meta">' + stAgo(it) + (it.m ? stBars(it.m) : '') + '</div>'
         + '<div class="st-tags">' + (it.discontinued ? '<span class="st-tag sale">소진 후 판매종료</span>' : '') + s15 + (it.category ? '<span class="st-cat">' + escapeHtml(catLabel(it.category)) + '</span>' : '') + '</div>';
       if (it.status === '처리 중') {
         h += '<div class="st-decided"><span class="st-dec ' + (ST_DEC[it.decision] || '') + '">' + escapeHtml(it.decision) + '</span>'
           + (it.memo ? '<span class="st-memo">' + escapeHtml(it.memo) + '</span>' : '') + '<span class="st-by">' + escapeHtml(it.decidedAt) + '</span></div>'
-          + '<div class="st-todo">' + ({ '할인 소진': '할인해서 다 팔아주세요', '반품': '반품 박스에 모아주세요', '폐기': '폐기함으로 옮겨주세요' }[it.decision] || '') + '</div>';
+          + '<div class="st-todo">' + (ST_DOING[it.decision] || '') + '</div>';
         if (admin) h += '<div class="st-acts"><button type="button" class="st-primary" data-row="' + it.row + '" data-name="' + escapeHtml(it.name) + '" onclick="stComplete(this)"' + (busy ? ' disabled' : '') + '>' + (it.decision === '할인 소진' ? '다 팔렸어요 · 목록에서 빼기' : it.decision + ' 처리 완료') + '</button>'
           + '<button type="button" class="st-ghost" data-row="' + it.row + '" data-name="' + escapeHtml(it.name) + '" onclick="stUndo(this)"' + (busy ? ' disabled' : '') + '>되돌리기</button></div>';
       } else if (admin) {
         if (ST.open === key) {
           h += '<div class="st-pick" role="group" aria-label="정리 결정">'
             + '<input type="text" class="st-memo-in" id="stMemo-' + it.row + '" maxlength="80" placeholder="메모 (선택) · 먼저 적고 고르세요" autocomplete="off" aria-label="메모">'
-            + ['유지', '할인 소진', '반품', '폐기'].map(function (dcs) {
+            + ['유지', '할인 소진', '반품', '폐기', '본사 이벤트', '샘플 제공', '지점 이동'].map(function (dcs) {
                 return '<button type="button" class="st-opt ' + ST_DEC[dcs] + '" data-row="' + it.row + '" data-name="' + escapeHtml(it.name) + '" data-dec="' + dcs + '" data-last="' + escapeHtml(it.lastOrder || '') + '" onclick="stDecide(this)"' + (busy ? ' disabled' : '') + '>' + dcs
-                  + '<small>' + (dcs === '유지' ? ST.data.keepDays + '일 뒤 다시 확인' : dcs === '할인 소진' ? '다 팔고 끝' : dcs === '반품' ? '공급사로' : '버리기') + '</small></button>';
+                  + '<small>' + ({ '유지': ST.data.keepDays + '일 뒤 다시 확인', '할인 소진': '다 팔고 끝', '반품': '공급사로', '폐기': '버리기', '본사 이벤트': '본사 마케팅에 제안', '샘플 제공': '샘플·증정', '지점 이동': '팔리는 지점으로' }[dcs] || '') + '</small></button>';
               }).join('')
             + '<button type="button" class="st-cancel" onclick="stToggle(\'\')">취소</button></div>';
         } else {
@@ -11544,12 +11552,6 @@ html:not(#q):not(#w):not(#e) body:not(#r) .so-rc-note{margin:6px 0 0!important;f
 html:not(#q):not(#w):not(#e) body:not(#r) .so-rc-note svg{width:14px;height:14px;flex:none}
 </style>
 
-<div id="cuDim" hidden role="dialog" aria-modal="true" aria-label="안 나가는 제품 정리" style="display:none;position:fixed;inset:0;z-index:9000;background:var(--ry-bg,#f5f6f8);overflow:auto;-webkit-overflow-scrolling:touch">
-  <div style="position:sticky;top:0;background:#fff;border-bottom:1px solid #e5e7eb;padding:12px 16px;display:flex;align-items:center;gap:10px;z-index:1"><b style="font-size:17px;flex:1">안 나가는 제품 정리 <span id="cuCnt" style="color:#6b7280;font-weight:600;font-size:14px"></span></b><button type="button" onclick="cuCopy()" id="cuCopyBtn" hidden style="min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #e5e7eb;background:#fff;font-weight:700">목록 복사</button><button type="button" onclick="cuClose()" style="min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #e5e7eb;background:#fff;font-weight:700">닫기</button></div>
-  <div id="cuHint" style="padding:8px 16px;color:#6b7280;font-size:13px">마지막 주문(입고)일로 몇 개월째 안 들어오는지 묶었어요. 결정을 누르면 특이사항에 〔정리: …〕로 남고, 판매종료는 바로 '소진 후 판매종료' 처리돼요. 지금 주문 중인 상품과 30일 안에 주문한 상품은 안 보여요.</div>
-  <div id="cuChips" class="ry-chips" style="padding:0 16px 8px;display:flex;gap:6px;flex-wrap:wrap"></div>
-  <div id="cuList" style="padding:0 12px 24px;max-width:1000px;margin:0 auto"></div>
-</div>
 <div id="nophDim" hidden role="dialog" aria-modal="true" aria-label="사진 없는 상품 찍기" style="display:none;position:fixed;inset:0;z-index:9000;background:var(--ry-bg,#f5f6f8);overflow:auto;-webkit-overflow-scrolling:touch">
   <div style="position:sticky;top:0;background:#fff;border-bottom:1px solid #e5e7eb;padding:12px 16px;display:flex;align-items:center;gap:10px;z-index:1"><b style="font-size:17px;flex:1">사진 없는 상품 찍기 <span id="nophCnt" style="color:#6b7280;font-weight:600;font-size:14px"></span></b><button type="button" onclick="nophClose()" style="min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #e5e7eb;background:#fff;font-weight:700">닫기</button></div>
   <div style="padding:8px 16px;color:#6b7280;font-size:13px">📷 를 누르면 카메라가 열리고, 찍으면 바로 저장돼요. 저장된 상품은 목록에서 사라져요.</div>
@@ -11619,49 +11621,6 @@ function nophItems() {
   [cachedReviewItems, cachedOrderItems, cachedInboundItems, cachedHistoryItems].forEach(function (a) { (a || []).forEach(push); });
   if (typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) RY_CAT.items.forEach(push);
   return out.sort(function (a, b) { return b.rowNumber - a.rowNumber; });   // 최근 등록(아래 줄)부터
-}
-/* 1001 안 나가는 제품 정리 — 서버 getSlowMovers / setCleanupDecision */
-var CU = { data: null, f: '3', busy: false };
-var CU_LAB = { '3': '3개월 이상', '2': '2개월째', '1': '1개월째', 'none': '기록 없음', 'decided': '결정됨' };
-var CU_DEC = [['판매종료', '#111827', '#fff'], ['본사이벤트', '#1d4ed8', '#fff'], ['샘플', '#047857', '#fff'], ['보류', '#fff', '#374151']];
-function cuOpen() { var d = document.getElementById('cuDim'); d.hidden = false; d.style.display = 'block'; document.documentElement.classList.add('mb-lock'); cuLoad(); }
-function cuClose() { var d = document.getElementById('cuDim'); d.hidden = true; d.style.display = 'none'; document.documentElement.classList.remove('mb-lock'); }
-function cuLoad() {
-  CU.busy = true; cuRender();
-  google.script.run.withSuccessHandler(function (r) { CU.busy = false; CU.data = r && r.ok ? r : { items: [], counts: {}, err: (r && r.message) || '불러오지 못했어요' }; if (CU.data.counts && !CU.data.counts[CU.f] && CU.f !== 'decided') { var ks = ['3', '2', '1', 'none']; for (var i = 0; i < ks.length; i++) if (CU.data.counts[ks[i]]) { CU.f = ks[i]; break; } } cuRender(); })
-    .withFailureHandler(function (e) { CU.busy = false; CU.data = { items: [], counts: {}, err: '서버 파일(Code.gs)을 새 버전으로 교체 · 배포한 뒤에 쓸 수 있어요' }; cuRender(); }).getSlowMovers(currentSelectedMember || '');
-}
-function cuItems() { var d = CU.data; if (!d) return []; return d.items.filter(function (x) { return CU.f === 'decided' ? !!x.decision : !x.decision && (CU.f === 'none' ? x.bucket == null : String(x.bucket) === CU.f); }); }
-function cuBars(m) { var mx = Math.max(m[0], m[1], m[2], 1); return '<span style="display:inline-flex;align-items:flex-end;gap:3px;height:18px;margin-right:6px" title="이번 달 · 지난달 · 지지난달 주문 수량">' + [m[2], m[1], m[0]].map(function (v) { return '<i style="display:block;width:7px;border-radius:2px;background:' + (v ? '#155EEF' : '#e5e7eb') + ';height:' + Math.max(3, Math.round(v / mx * 18)) + 'px"></i>'; }).join('') + '</span>'; }
-function cuRender() {
-  var el = document.getElementById('cuList'), ch = document.getElementById('cuChips'), d = CU.data, c = (d && d.counts) || {};
-  ch.innerHTML = ['3', '2', '1', 'none', 'decided'].map(function (k) { var n = c[k] || 0; return '<button type="button" class="ry-chip' + (CU.f === k ? ' on' : '') + '" onclick="CU.f=\'' + k + '\';cuRender()" style="' + (CU.f === k ? 'background:#111827;color:#fff;border-color:#111827' : '') + '">' + CU_LAB[k] + ' <b>' + n + '</b></button>'; }).join('');
-  document.getElementById('cuCopyBtn').hidden = CU.f !== 'decided';
-  if (CU.busy) { el.innerHTML = '<div style="background:#fff;border-radius:16px;padding:28px;text-align:center;color:#6b7280">주문 이력을 읽는 중… (처음은 1~2분 걸릴 수 있어요)</div>'; return; }
-  if (!d) return; if (d.err) { el.innerHTML = '<div style="background:#fff;border-radius:16px;padding:28px;text-align:center;color:#6b7280">' + escapeHtml(d.err) + '</div>'; return; }
-  var items = cuItems(); document.getElementById('cuCnt').textContent = (d.total || 0) + '개 후보' + (d.since ? ' · 기록 ' + d.since.slice(5) + '부터' : '');
-  if (!items.length) { el.innerHTML = '<div style="background:#fff;border-radius:16px;padding:28px;text-align:center;color:#6b7280">' + (CU.f === 'decided' ? '아직 결정한 상품이 없어요' : '이 묶음엔 상품이 없어요 👍') + '</div>'; return; }
-  var when = function (x) { return x.days == null ? '주문 기록 없음' : '마지막 주문 ' + x.last.slice(5).replace('.', '/') + ' · ' + x.days + '일 전'; };
-  el.innerHTML = items.slice(0, 300).map(function (x) {
-    var img = x.img ? '<img src="' + escapeHtml(x.img) + '" referrerpolicy="no-referrer" loading="lazy" alt="" style="width:56px;height:56px;border-radius:12px;object-fit:cover;background:#f3f4f6;flex:none" onerror="this.style.visibility=\'hidden\'">' : '<div style="width:56px;height:56px;border-radius:12px;background:#f3f4f6;flex:none"></div>';
-    var btns = x.decision ? '<span style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap"><b style="padding:4px 10px;border-radius:999px;background:#111827;color:#fff;font-size:12px">' + escapeHtml(x.decision) + '</b><button type="button" class="ry-chip" onclick="cuDecide(this,' + x.row + ',\'\')" style="font-size:12px">유지로 되돌리기</button></span>'
-      : CU_DEC.map(function (b) { return '<button type="button" onclick="cuDecide(this,' + x.row + ',\'' + b[0] + '\')" style="min-height:34px;padding:0 12px;border-radius:999px;border:1px solid ' + (b[1] === '#fff' ? '#d1d5db' : b[1]) + ';background:' + b[1] + ';color:' + b[2] + ';font-weight:700;font-size:13px">' + b[0].replace('본사이벤트', '본사 이벤트') + '</button>'; }).join('');
-    return '<div class="cu-row" data-row="' + x.row + '" style="display:flex;gap:12px;background:#fff;border-radius:14px;padding:12px 14px;margin-top:8px;align-items:flex-start">' + img + '<div style="flex:1;min-width:0"><b style="display:block;font-size:15px;line-height:1.3">' + escapeHtml(x.name) + '</b><div style="color:#6b7280;font-size:12px;margin-top:2px">' + escapeHtml([x.cat, x.sales15 && x.sales15 !== '-' ? '15일 판매 ' + x.sales15 : ''].filter(Boolean).join(' · ')) + '</div><div style="display:flex;align-items:center;font-size:13px;color:#374151;margin-top:6px">' + cuBars(x.m) + escapeHtml(when(x)) + (x.orders ? ' · 기록 ' + x.orders + '건' : '') + '</div>' + (x.note ? '<div style="color:#6b7280;font-size:12px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(x.note) + '</div>' : '') + '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">' + btns + '</div></div></div>';
-  }).join('') + (items.length > 300 ? '<div style="padding:12px;color:#6b7280;text-align:center">…외 ' + (items.length - 300) + '개</div>' : '');
-}
-function cuDecide(btn, row, decision) {
-  var x = (CU.data.items || []).filter(function (i) { return i.row === row; })[0]; if (!x) return;
-  var key = 'cu-' + row; if (inFlight.has(key)) return; inFlight.add(key); var prev = setBtnBusy(btn, '저장 중…');
-  google.script.run.withSuccessHandler(function (r) { inFlight.delete(key); if (!r || !r.success) { restoreBtn(btn, prev); showToast((r && r.message) || '저장 안 됨'); return; }
-    x.decision = decision; if (decision) { CU.data.counts.decided = (CU.data.counts.decided || 0) + 1; var bk = x.bucket == null ? 'none' : String(x.bucket); CU.data.counts[bk] = Math.max(0, (CU.data.counts[bk] || 0) - 1); } else { CU.data.counts.decided = Math.max(0, (CU.data.counts.decided || 0) - 1); var bk2 = x.bucket == null ? 'none' : String(x.bucket); CU.data.counts[bk2] = (CU.data.counts[bk2] || 0) + 1; }
-    showToast(decision ? '✓ ' + decision + ' 기록' : '유지로 되돌렸어요'); cuRender(); })
-    .withFailureHandler(function (e) { inFlight.delete(key); restoreBtn(btn, prev); showToast('저장 오류: ' + (e && e.message ? e.message : e)); }).setCleanupDecision(row, x.name, decision, currentSelectedMember || '');
-}
-function cuCopy() {
-  var by = {}; (CU.data.items || []).filter(function (x) { return x.decision; }).forEach(function (x) { (by[x.decision] = by[x.decision] || []).push(x); });
-  var txt = Object.keys(by).map(function (k) { return '[' + k + '] ' + by[k].length + '개\n' + by[k].map(function (x) { return '- ' + x.name + (x.cat ? ' (' + x.cat + ')' : '') + (x.last ? ' · 마지막 주문 ' + x.last : ' · 주문 기록 없음'); }).join('\n'); }).join('\n\n');
-  if (!txt) { showToast('복사할 결정이 없어요'); return; }
-  try { navigator.clipboard.writeText(txt).then(function () { showToast('✓ 목록을 복사했어요 — 본사·거래처에 붙여넣기'); }, function () { prompt('복사해서 쓰세요', txt); }); } catch (e) { prompt('복사해서 쓰세요', txt); }
 }
 function nophOpen() { var d = document.getElementById('nophDim'); d.hidden = false; d.style.display = 'block'; document.documentElement.classList.add('mb-lock'); if (typeof ryCatLoad === 'function') ryCatLoad(false); nophRender(); }
 function nophClose() { var d = document.getElementById('nophDim'); d.hidden = true; d.style.display = 'none'; document.documentElement.classList.remove('mb-lock'); }
