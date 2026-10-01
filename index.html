@@ -2327,7 +2327,9 @@ html:not(#q):not(#w):not(#e) body:not(#r) #filterCheckReqBtn,html:not(#q):not(#w
 html:not(#q):not(#w):not(#e) body:not(#r) #filterCheckReqBtn[class*="bg-slate-9"],html:not(#q):not(#w):not(#e) body:not(#r) #filterCheckReqBtn[class*="ring"]{background:var(--z-ink)!important;color:#fff!important}
 html:not(#q):not(#w):not(#e) body:not(#r) #checkReqBadgeCount{background:var(--z-ink)!important;color:#fff!important}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry-ghost{display:inline-flex!important;align-items:center;gap:6px}
-html:not(#q):not(#w):not(#e) body:not(#r) .hist-date-head{background:#f8f9fb!important;border-radius:var(--z-r) var(--z-r) 0 0!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .hist-date-head{background:#f8f9fb!important;border-radius:var(--z-r) var(--z-r) 0 0!important;cursor:pointer;min-height:48px}
+html:not(#q):not(#w):not(#e) body:not(#r) .hist-date-head.hist-fold{border-radius:var(--z-r)!important;border-bottom:0!important}
+.hist-chev{font-size:11px;font-weight:700;color:#6b7280;white-space:nowrap}.hist-date-head:hover .hist-chev{color:#155EEF}
 html:not(#q):not(#w):not(#e) body:not(#r) .hist-date-head .ry-i{color:var(--z-mute)}
 html:not(#q):not(#w):not(#e) body:not(#r) #historyGroupContainer>div{border-radius:var(--z-r)!important;border:1px solid var(--z-line)!important;overflow:hidden}
 html:not(#q):not(#w):not(#e) body:not(#r) #historyGroupContainer [id^="hist-row-"] .ry-i{width:13px;height:13px}
@@ -6826,6 +6828,9 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       box.innerHTML = '<summary style="cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:12px 16px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:14px;font-weight:700;color:#92400E">⏸ 다음 달 대기 · 월 한도 소진 ' + items.length + '건 <small style="font-weight:500;color:#B45309">' + nextM + ' 자동 복귀 · 눌러서 보기</small></summary>'
         + '<div style="margin-top:8px">' + items.map(it => { const lim = (String(it.note || '').match(LM_RX) || [])[1]; return '<div style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #F3F4F6;border-radius:12px;padding:10px 14px;margin-top:6px"><div style="flex:1;min-width:0"><b style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(it.name || '') + '</b><small style="color:#6b7280">월 ' + (lim || '?') + '개 한도 소진' + (it.requester ? ' · ' + escapeHtml(it.requester) : '') + '</small></div><button type="button" onclick="lmRelease(' + it.rowNumber + ')" style="min-height:40px;padding:0 12px;border-radius:999px;border:1px solid #e5e7eb;background:#fff;font-weight:700">이달 더 주문</button></div>'; }).join('') + '</div>';
     }
+    /* 1001 입고내역 날짜 묶음 접기/펼치기 — 오늘은 항상 펼침, 나머지는 눌러서 */
+    var HIST_OPEN = {};
+    function histToggle(head) { var d = head.dataset.date; if (!d) return; HIST_OPEN[d] = !HIST_OPEN[d]; try { renderAllViews(); } catch (e) {} var again = document.querySelector('.hist-date-head[data-date="' + d + '"]'); if (again) again.scrollIntoView({ block: 'nearest' }); }
     function renderAllViews() {
       const pureReviewItems = [];
       const pureOrderItems = [];
@@ -7229,14 +7234,16 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 
           const ago = daysSince(dateStr);
           const agoLabel = (ago === 0) ? '오늘' : (ago === 1) ? '어제' : (ago != null && ago > 1) ? `${ago}일 전` : '';
+          /* 1001 오늘 입고만 펼치고, 그 전 날짜는 접어 두고 머리를 누르면 펼친다 (사용자 요청) */
+          const folded = ago !== 0 && !HIST_OPEN[dateStr];
           let headerHtml = `
-            <div class="hist-date-head bg-slate-50 border-b border-slate-200 rounded-t-2xl px-4 py-2.5 flex items-center justify-between">
+            <div class="hist-date-head bg-slate-50 border-b border-slate-200 rounded-t-2xl px-4 py-2.5 flex items-center justify-between${folded ? ' hist-fold' : ''}" role="button" tabindex="0" aria-expanded="${!folded}" data-date="${escapeHtml(dateStr)}" onclick="histToggle(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();histToggle(this)}">
               <div class="flex items-center gap-2 min-w-0">
                 ${RYI.cal}
                 <span class="font-extrabold text-slate-800 text-xs sm:text-sm whitespace-nowrap">${dateStr} 입고</span>
                 ${agoLabel ? `<span class="text-[10px] font-bold text-slate-500 bg-white border border-slate-200 px-1.5 py-0.5 rounded-full whitespace-nowrap">${agoLabel}</span>` : ''}
               </div>
-              <span class="text-[11px] font-black text-blue-700 bg-blue-100/70 px-2 py-0.5 rounded-full whitespace-nowrap">${groupItems.length}개 품목</span>
+              <span class="flex items-center gap-2"><span class="text-[11px] font-black text-blue-700 bg-blue-100/70 px-2 py-0.5 rounded-full whitespace-nowrap">${groupItems.length}개 품목</span><span class="hist-chev" aria-hidden="true">${folded ? '펼치기 ▾' : '접기 ▴'}</span></span>
             </div>
           `;
 
@@ -7292,7 +7299,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           });
           itemsHtml += `</div>`;
 
-          groupCard.innerHTML = headerHtml + itemsHtml;
+          groupCard.innerHTML = headerHtml + (folded ? '' : itemsHtml);
+          groupCard.dataset.date = dateStr; groupCard.classList.toggle('hist-folded', folded);
           container.appendChild(groupCard);
         });
       } catch(err) {
