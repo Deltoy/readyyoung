@@ -9189,6 +9189,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
             <div class="ry25-pc-name">${escapeHtml(item.name)} ${endedBadge(item)}</div>
             <div class="ry25-pc-row" onclick="event.stopPropagation()">
               ${ry25StatusBadge(item)}
+              ${!item._mo && /^\d+(\.\d+)?$/.test(String(item.sales15 == null ? '' : item.sales15).trim()) ? `<span class="ry25-b" style="background:#EAF1FE;color:#1D4ED8" title="최근 15일 판매 수량">15일 판매 ${escapeHtml(String(item.sales15).trim())}개</span>` : ''}
               ${boxTxt ? `<span class="ry25-b">박스 ${escapeHtml(boxTxt)}${/^[0-9]+$/.test(boxTxt) ? '개' : ''}</span>` : ''}
               ${catChip(item)}
               ${item._mo ? moChips(item._mo) : (item.status === 'DONE' && item.inboundDate ? `<span class="ry25-pc-sub">입고 ${escapeHtml(item.inboundDate)}</span>` : '')}
