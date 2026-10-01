@@ -7038,8 +7038,24 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     // 입고대기 항목용: "N일 경과 · 예상 M/D" (평균 소요일 초과 시 빨간 경고)
     // 며칠째인지와 늦었는지 여부. 기준은 지연 탭과 같은 7일
     var LATE_DAYS = 7;
+    /* 1001 사용자: 늦은 이유에 '재주문'과 날짜(예: 9/30)가 적히면 그날부터 다시 센다 → 7일 미입고에서 빠지고 N일째도 그날 기준.
+       날짜가 없고 '재주문'만 있으면 이유를 적은 날 기준. 연도는 올해(그 날짜가 미래면 작년) */
+    function effOrderDate(item) {
+      try {
+        var r = (typeof DELAY_REASONS !== 'undefined' && item) ? DELAY_REASONS[delayKey(item)] : null;
+        if (!r || !/재주문|재발주|다시\s*주문/.test(String(r.text || ''))) return item.orderDate;
+        var m = String(r.text).match(/(\d{4})[.\-\/]\s*(\d{1,2})[.\-\/]\s*(\d{1,2})/) || String(r.text).match(/(\d{1,2})\s*[\/.월]\s*(\d{1,2})\s*일?/);
+        var now = new Date(Date.now() + 9 * 3600000), y, mo, d;
+        if (m && m.length === 4) { y = +m[1]; mo = +m[2]; d = +m[3]; }
+        else if (m) { y = now.getUTCFullYear(); mo = +m[1]; d = +m[2]; if (Date.UTC(y, mo - 1, d) > Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())) y--; }
+        else { var a = String(r.at || '').match(/(\d{4})\D(\d{1,2})\D(\d{1,2})/); if (!a) return item.orderDate; y = +a[1]; mo = +a[2]; d = +a[3]; }
+        if (!(mo >= 1 && mo <= 12 && d >= 1 && d <= 31)) return item.orderDate;
+        var eff = y + '. ' + mo + '. ' + d, od = parseDateToTime(item.orderDate), ed = parseDateToTime(eff);
+        return (od && ed && ed < od) ? item.orderDate : eff;   // 재주문 날짜가 발주일보다 앞이면 무시
+      } catch (e) { return item.orderDate; }
+    }
     function elapsedInfo(item) {
-      var d = daysSince(item.orderDate);
+      var d = daysSince(effOrderDate(item));
       if (d == null) return null;
       return { days: d, late: d >= LATE_DAYS, soon: d >= LATE_DAYS - 2 && d < LATE_DAYS };
     }
@@ -7058,13 +7074,13 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     }
 
     function expectedArrivalHtml(item, stats, compact) {
-      const elapsed = daysSince(item.orderDate);
+      const elapsed = daysSince(effOrderDate(item));
       if (elapsed == null) return '';
       const lead = (stats && stats.avg != null) ? Math.round(stats.avg) : null;
       let exp = '';
-      if (lead != null) exp = ' · 예상 ' + fmtMD(bizAddDays(parseDateToTime(item.orderDate), lead));   /* 영업일로 더함 */
+      if (lead != null) exp = ' · 예상 ' + fmtMD(bizAddDays(parseDateToTime(effOrderDate(item)), lead));   /* 영업일로 더함 */
       const t0 = new Date(); t0.setHours(0, 0, 0, 0);
-      const late = (lead != null) ? (t0.getTime() > bizAddDays(parseDateToTime(item.orderDate), lead)) : (elapsed >= 7);   /* 예상일(영업일)이 지났으면 늦음 */
+      const late = (lead != null) ? (t0.getTime() > bizAddDays(parseDateToTime(effOrderDate(item)), lead)) : (elapsed >= 7);   /* 예상일(영업일)이 지났으면 늦음 */
       const cls = late ? 'text-rose-600 font-black' : 'text-slate-500';
       return `<span class="${cls} ${compact ? 'text-[10px]' : 'text-[11px]'} whitespace-nowrap">${late ? '⚠ ' : ''}${elapsed}일 경과${exp}</span>`;
     }
@@ -7879,7 +7895,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       DELAY_CUR = item;
       var r = DELAY_REASONS[delayKey(item)];
       document.getElementById('drTitle').textContent = item.name;
-      document.getElementById('drSub').textContent = '발주 ' + (item.orderDate || '-') + ' · ' + (daysSince(item.orderDate) == null ? '' : daysSince(item.orderDate) + '일째 · ') + (item.targetQty || '') + (item.unit || '개');
+      document.getElementById('drSub').textContent = '발주 ' + (item.orderDate || '-') + (effOrderDate(item) !== item.orderDate ? ' → 재주문 ' + effOrderDate(item) : '') + ' · ' + (daysSince(effOrderDate(item)) == null ? '' : daysSince(effOrderDate(item)) + '일째 · ') + (item.targetQty || '') + (item.unit || '개');
       document.getElementById('drText').value = r ? r.text : '';
       var err = document.getElementById('drErr'); err.textContent = ''; err.classList.remove('on');
       document.getElementById('drDim').classList.add('on');
@@ -8346,7 +8362,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     function renderDelayedList() {
       const src = cachedInboundItems || [];
       const delayed = src
-        .filter(it => { const d = daysSince(it.orderDate); return d != null && d >= 7; })
+        .filter(it => { const d = daysSince(effOrderDate(it)); return d != null && d >= 7; })   /* 1001 재주문 날짜부터 다시 셈 */
         .sort((a, b) => (daysSince(b.orderDate) || 0) - (daysSince(a.orderDate) || 0));
 
       setSubBadge('tabDelayedBadge', delayed.length, true);
@@ -9321,7 +9337,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       var text = '📢 [성수레디영 입고 지연 확인 요청] (' + cachedTodayStr + ')\n발주 후 ' + LATE_DAYS + '일 넘게 입고되지 않은 상품 ' + list.length + '건입니다.\n\n';
       list.forEach(function (it, i) {
         text += (i + 1) + '. ' + it.name + ' ' + (it.targetQty || '') + (it.unit || '개')
-             + ' · 발주 ' + it.orderDate + ' (' + daysSince(it.orderDate) + '일째)'
+             + ' · 발주 ' + it.orderDate + (effOrderDate(it) !== it.orderDate ? ' → 재주문 ' + effOrderDate(it) : '') + ' (' + daysSince(effOrderDate(it)) + '일째)'
              + (it.isCheckRequested ? ' · 도착 확인요청됨' : '') + '\n';
         var dr = DELAY_REASONS[delayKey(it)];
         text += dr ? '   → 사유: ' + dr.text + '\n' : '   → 사유 확인 필요\n';
@@ -10197,7 +10213,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       var t = ryToday0(), dow = t.getDay();
       if (dow > 2) return null;
       var sat = new Date(t); sat.setDate(sat.getDate() - (dow + 1));
-      var od = item ? parseDateToTime(item.orderDate) : null;
+      var od = item ? parseDateToTime(effOrderDate(item)) : null;
       if (od != null && !(sat.getTime() > od)) return null;
       return sat;
     }
