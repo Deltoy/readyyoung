@@ -3507,6 +3507,23 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 .ch-bar .t{height:10px;border-radius:5px;background:#EEF2FF;overflow:hidden}.ch-bar .t i{display:block;height:100%;border-radius:5px;background:#155EEF}.ch-bar b{font-variant-numeric:tabular-nums}
 .ch-items{margin:0 0 8px 4px;font-size:12px;color:#424245;display:grid;gap:4px}
 </style>
+<style>
+/* 1002 세트 담당 이달 횟수 */
+.sdm{margin-top:14px;border-top:1px solid #ececf0;padding-top:12px}
+.sdm-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}.sdm-top b{font-size:15px}
+.sdm-lg{display:flex;align-items:center;gap:6px;font-size:12px;color:#6e6e73}.sdm-lg i{display:inline-block;width:12px;height:8px;border-radius:3px;margin-left:6px}
+.sdm-lg i.d,.sdm-bar i.d{background:#155EEF}.sdm-lg i.p,.sdm-bar i.p{background:#84ADFF}.sdm-lg i.e,.sdm-bar i.e{background:#D1E0FF}
+.sdm-two{display:grid;grid-template-columns:1fr;gap:14px}@media (min-width:900px){.sdm-two{grid-template-columns:1fr 1fr}}
+.sdm-h{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;margin-bottom:4px}.sdm-h b{font-size:14px}.sdm-h span{font-size:12px;color:#6e6e73}
+.sdm-r{display:grid;grid-template-columns:60px minmax(0,1fr) 112px 78px;align-items:center;gap:8px;min-height:40px;border-bottom:1px solid #f3f3f6;padding:2px 0}
+.sdm-r.me .sdm-n{color:#155EEF}
+.sdm-n{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sdm-bar{display:flex;height:10px;border-radius:5px;background:#F2F4F7;overflow:hidden}.sdm-bar i{display:block;height:100%}
+.sdm-v{text-align:right;font-variant-numeric:tabular-nums}.sdm-v b{display:block;font-size:14px}.sdm-v small{font-size:11px;color:#6e6e73;white-space:nowrap}
+.sdm-e{text-align:center;font-size:12px;font-weight:700;padding:3px 6px;border-radius:999px;background:#EFF4FF;color:#155EEF;white-space:nowrap;font-variant-numeric:tabular-nums}
+.sdm-e.hi{background:#FFF4ED;color:#B93815}.sdm-e.lo{background:#F2F4F7;color:#475467}
+.sdm-note{font-size:12px;color:#6e6e73;margin-top:8px}
+</style>
 </head>
 <body class="bg-slate-100 p-2.5 sm:p-5 text-slate-800 antialiased" onclick="closeDropdownIfOutside(event)">
     </div>
@@ -3583,7 +3600,6 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         <button type="button" id="newProductBtn" onclick="openNewProduct()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>새 상품 등록</button>
         <button type="button" class="ry-ghost ry-quick" onclick="moOpen()" title="잘 팔리는데 재고가 떨어졌을 상품">놓친 주문</button>
         <button type="button" class="ry-ghost ry-quick" onclick="openStale()" title="한 달 넘게 안 시킨 상품 정리">창고 정리</button>
-        <button type="button" class="ry-ghost ry-quick" id="s15Quick" hidden onclick="s15Open()" title="판매량 통계 엑셀로 15일 판매 숫자 한꺼번에">15일 판매량 엑셀</button>
         <div class="ry-more">
           <div class="ry-more-menu" id="toolMoreMenu" role="menu" hidden>
             <button type="button" role="menuitem" onclick="closeToolMore(); openCatBrowse()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>카테고리별 보기<small>분류가 비었거나 기타인 상품 고치기</small></button>
@@ -10716,7 +10732,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (b) { b.hidden = currentSelectedMember !== PF_ADMIN; var sm = b.querySelector('small'); if (sm && S15.info) sm.textContent = nx ? '마지막 ' + s15Md(S15.info.from) + '~' + s15Md(S15.info.to) + ' · 다음 ' + nx.label + ' 자료를 ' + nx.when : S15.info.last ? '마지막 ' + S15.info.last.slice(5).replace('-', '/') + (due ? ' · ' + s15Days() + '일 지났어요' : '') : '판매량 통계 엑셀로 한 번에'; b.classList.toggle('due', !!due); }
       s15PeriodDefaults();
       var m = document.getElementById('toolMoreBtn'); if (m) m.classList.toggle('s15-due', !!due);
-      var q = document.getElementById('s15Quick'); if (q) { q.hidden = currentSelectedMember !== PF_ADMIN; q.classList.toggle('s15-q-due', !!due); q.title = nx ? '다음 ' + nx.label + ' 자료를 ' + nx.when + ' 올려주세요' : '판매량 통계 엑셀로 15일 판매 숫자 한꺼번에'; }   /* 1001 툴바 바로가기(문준만) · 올릴 날이면 빨간 점 */
+      /* 1002 사용자: 15일 판매량 엑셀은 도구 모음에서만 (퀵버튼 뺌) */
     }
     function s15Pick(inp) {
       var f = inp.files && inp.files[0]; inp.value = '';
@@ -11084,7 +11100,45 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       var lg = '<div class="sdc-lg"><span><i class="sdc-dot cn"></i>중국어</span><span><i class="sdc-dot jp"></i>일본어</span><span><i class="sdc-k am">오전</i><i class="sdc-k pm">오후</i></span>' + (anyPlan ? '<span><i class="sdc-k plan">점선</i>예정</span>' : '') + '</div>';
       return '<div class="sdc-bar">' + seg + lg + '</div>'
         + (SD.gp ? '<button type="button" class="sdc-who" onclick="sdGv(\'cal\', \'\')">' + escapeHtml(SD.gp) + ' 담당일 ' + hits + '일 표시 중' + RYI.x + '</button>' : '')
-        + '<div class="sdc">' + h + '</div>';
+        + '<div class="sdc">' + h + '</div>' + sdMonthSummary(g);
+    }
+    /* 1002 달력 아래: 중국어·일본어 담당 횟수 + 이달 예상 (지금까지 + 예정 + 일정 아직 없는 근무일 × 그 사람 담당 비율) */
+    function sdMonthSummary(g) {
+      if (!g || !g.people || !g.people.length) return '';
+      var me = currentSelectedMember, tOf = function (p) { return p.team === 'jp' ? 'jp' : 'cn'; }, isW = function (c) { return c === 'w' || c === 'a' || c === 'p'; };
+      var planned = [], known = 0, slots = { cn: 0, jp: 0 };
+      for (var k = Math.max(0, g.startIdx); k < g.days; k++) {
+        planned[k] = k > g.uptoIdx && g.people.some(function (p) { return /[ap]/.test(p.cells.charAt(k)); });
+        if (k <= g.uptoIdx || planned[k]) { known++; g.people.forEach(function (p) { if (/[ap]/.test(p.cells.charAt(k))) slots[tOf(p)]++; }); }
+      }
+      ['cn', 'jp'].forEach(function (t) { slots[t] = known ? slots[t] / known : 0; });   // 팀이 하루에 맡는 평균 횟수 (기록·예정된 날 기준)
+      var rows = g.people.map(function (p) {
+        var plan = 0, share = 0, t = tOf(p);
+        for (var k = g.uptoIdx + 1; k < g.days; k++) {
+          var c = p.cells.charAt(k);
+          if (c === 'a' || c === 'p') { plan++; continue; }
+          if (c !== 'w' || planned[k]) continue;
+          var n = g.people.filter(function (q) { return tOf(q) === t && isW(q.cells.charAt(k)); }).length;   // 그날 같은 팀 근무자끼리 똑같이 나눔
+          if (n) share += slots[t] / n;
+        }
+        return { p: p, plan: plan, est: Math.round(p.duty + plan + share) };
+      });
+      var mx = Math.max.apply(null, rows.map(function (r) { return r.est; }).concat([1]));
+      var team = function (t, label) {
+        var rs = rows.filter(function (r) { return (r.p.team === 'jp' ? 'jp' : 'cn') === t; }).sort(function (a, b) { return b.est - a.est || b.p.duty - a.p.duty || (a.p.name < b.p.name ? -1 : 1); });
+        if (!rs.length) return '';
+        var sum = rs.reduce(function (s2, r) { return s2 + r.p.duty; }, 0), sumE = rs.reduce(function (s2, r) { return s2 + r.est; }, 0), avg = sumE / rs.length;
+        return '<div class="sdm-t"><div class="sdm-h"><i class="sdc-dot ' + t + '"></i><b>' + label + '</b><span>지금까지 ' + sum + '회 · 이달 예상 ' + sumE + '회 · 1인 평균 ' + avg.toFixed(1) + '회</span></div>' + rs.map(function (r) {
+          var done = Math.round(r.p.duty / mx * 100), pl = Math.round(r.plan / mx * 100), rest = Math.max(0, Math.round(r.est / mx * 100) - done - pl);
+          return '<div class="sdm-r' + (r.p.name === me ? ' me' : '') + '"><span class="sdm-n">' + escapeHtml(r.p.name) + '</span>'
+            + '<span class="sdm-bar" aria-hidden="true"><i class="d" style="width:' + done + '%"></i><i class="p" style="width:' + pl + '%"></i><i class="e" style="width:' + rest + '%"></i></span>'
+            + '<span class="sdm-v"><b>' + r.p.duty + '회</b><small>오전 ' + r.p.am + ' · 오후 ' + r.p.pm + (r.plan ? ' · 예정 ' + r.plan : '') + '</small></span>'
+            + '<span class="sdm-e' + (r.est > avg + 1.5 ? ' hi' : r.est < avg - 1.5 ? ' lo' : '') + '">예상 ' + r.est + '회</span></div>';
+        }).join('') + '</div>';
+      };
+      return '<div class="sdm"><div class="sdm-top"><b>이달 담당 횟수</b><span class="sdm-lg"><i class="d"></i>한 것 <i class="p"></i>예정 <i class="e"></i>예상</span></div>'
+        + '<div class="sdm-two">' + team('cn', '중국어') + team('jp', '일본어') + '</div>'
+        + '<p class="sdm-note">예상 = 지금까지 + 예정 + 아직 담당이 안 정해진 근무일마다 (팀이 하루 맡는 평균 횟수 ÷ 그날 같은 팀 근무자 수) · 1인 평균보다 많으면 주황, 적으면 회색</p></div>';
     }
     function sdSetManual(sel) {
       if (!sdCanEdit()) return;
