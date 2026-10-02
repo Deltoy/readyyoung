@@ -4517,7 +4517,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (!item) { showToast('상품을 찾을 수 없어요'); return; }
       if (nm && item.name !== nm) { showToast('목록이 바뀌어 다시 불러와요 — 잠시 뒤 다시 눌러 주세요'); try { ryCatStale(); } catch (e) {} return; }
       NOTE_ROW = rowNumber;
-      document.getElementById('noteName').value = item.name || '';
+      NOTE_NAME0 = item.name || ''; NOTE_NAME_SHOWN = NOTE_NAME0.replace(/\s*\n\s*/g, ' ');   /* 1002 이름에 줄바꿈이 있는 상품: 한 줄 칸에 보기 좋게 보여 주고, 이름을 안 고쳤으면 원래 이름 그대로 저장 */
+      document.getElementById('noteName').value = NOTE_NAME_SHOWN;
       fillNoteCat(item.category || '기타');
       var _inCycle = (cachedReviewItems || []).some(function (x) { return x.rowNumber === rowNumber; }) || (cachedOrderItems || []).some(function (x) { return x.rowNumber === rowNumber; });
       document.getElementById('noteDiscBtn').hidden = !_inCycle; document.getElementById('noteDiscHint').hidden = !_inCycle;
@@ -4526,9 +4527,16 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       var err = document.getElementById('noteErr'); err.textContent = ''; err.classList.remove('on');
       document.getElementById('noteDim').classList.add('on');
       document.getElementById('noteSheet').classList.add('on');
-      setTimeout(function () { document.getElementById('noteText').focus(); }, 120);
+      ryLockScroll(true);   /* 1002 메모 칸에 키보드가 뜨면서 뒤 화면이 위로 밀리던 것: 뒤 화면을 그 자리에 고정, 닫으면 같은 위치로 */
+      setTimeout(function () { try { document.getElementById('noteText').focus({ preventScroll: true }); } catch (e) { document.getElementById('noteText').focus(); } }, 120);
     }
-    var NOTE_NEWCAT = '__new__', NOTE_CAT_PREV = '';
+    var RY_LOCK_Y = null;
+    function ryLockScroll(on) {
+      var b = document.body;
+      if (on) { if (RY_LOCK_Y != null) return; RY_LOCK_Y = window.scrollY; b.style.position = 'fixed'; b.style.top = (-RY_LOCK_Y) + 'px'; b.style.left = '0'; b.style.right = '0'; b.style.width = '100%'; }
+      else { if (RY_LOCK_Y == null) return; var y = RY_LOCK_Y; RY_LOCK_Y = null; b.style.position = ''; b.style.top = ''; b.style.left = ''; b.style.right = ''; b.style.width = ''; window.scrollTo({ top: y, left: 0, behavior: 'instant' }); }
+    }
+    var NOTE_NEWCAT = '__new__', NOTE_CAT_PREV = '', NOTE_NAME0 = '', NOTE_NAME_SHOWN = '';
     function fillNoteCat(val) {
       var sel = document.getElementById('noteCat');
       sel.innerHTML = CATEGORY_LIST.map(function (c) { return '<option>' + escapeHtml(c) + '</option>'; }).join('')
@@ -4596,6 +4604,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     function closeNote() {
       document.getElementById('noteDim').classList.remove('on');
       document.getElementById('noteSheet').classList.remove('on');
+      ryLockScroll(false);
     }
     function quickNote(text) {
       var ta = document.getElementById('noteText');
@@ -4608,6 +4617,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (!item) { closeNote(); return; }
       var text = document.getElementById('noteText').value.trim();
       var newName = document.getElementById('noteName').value.trim();
+      if (newName === NOTE_NAME_SHOWN.trim()) newName = NOTE_NAME0;   // 이름을 안 건드렸으면 줄바꿈 포함 원래 이름 유지
       var err = document.getElementById('noteErr');
       if (!newName) { err.textContent = '상품명은 비울 수 없어요.'; err.classList.add('on'); return; }
       var btn = document.getElementById('noteSave');
@@ -7543,7 +7553,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         </td>
         <td class="p-3 text-center bg-blue-50/40">${qtyInputHtml}${type === 'review' || type === 'order' ? boxRefHtml(item, false) : ''}</td>
         <td class="p-3 text-center font-bold text-xs text-slate-600 whitespace-nowrap ry25-s15" style="min-width:90px">${type === 'review' ? sales15InputHtml(item, false) : escapeHtml(item.sales15)}</td>
-        <td class="p-3 text-center text-xs text-slate-500">${catChip(item)}<br><button type="button" onclick="event.stopPropagation(); openNote(${item.rowNumber}, '${escapeHtml(item.name)}')" class="ry-note${item.note ? '' : ' empty'}${String(item.note || '').indexOf('소진 후 판매종료') !== -1 ? ' disc' : ''}" style="margin-top:4px">${item.note ? escapeHtml(item.note) + ' ' + RYI.pen : RYI.pen + '수정'}</button></td>
+        <td class="p-3 text-center text-xs text-slate-500">${catChip(item)}<br><button type="button" data-row="${item.rowNumber}" data-name="${escapeHtml(item.name)}" onclick="event.stopPropagation(); openNote(+this.dataset.row, this.dataset.name)" class="ry-note${item.note ? '' : ' empty'}${String(item.note || '').indexOf('소진 후 판매종료') !== -1 ? ' disc' : ''}" style="margin-top:4px">${item.note ? escapeHtml(item.note) + ' ' + RYI.pen : RYI.pen + '수정'}</button></td>
         <td class="p-3 text-center">${actionButtons}</td>
       `;
       return tr;
@@ -7598,7 +7608,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
             <div class="ry-oc-tags">
               ${reqBadge}
               ${catChip(item)}
-              <button type="button" onclick="event.stopPropagation(); openNote(${item.rowNumber}, '${escapeHtml(item.name)}')" class="ry-note${item.note ? '' : ' empty'}${String(item.note || '').indexOf('소진 후 판매종료') !== -1 ? ' disc' : ''}">${item.note ? RYI.bulb + escapeHtml(item.note) + '<span class="ry-note-pen" aria-hidden="true">' + RYI.pen + '</span>' : RYI.pen + '수정'}</button>
+              <button type="button" data-row="${item.rowNumber}" data-name="${escapeHtml(item.name)}" onclick="event.stopPropagation(); openNote(+this.dataset.row, this.dataset.name)" class="ry-note${item.note ? '' : ' empty'}${String(item.note || '').indexOf('소진 후 판매종료') !== -1 ? ' disc' : ''}">${item.note ? RYI.bulb + escapeHtml(item.note) + '<span class="ry-note-pen" aria-hidden="true">' + RYI.pen + '</span>' : RYI.pen + '수정'}</button>
             </div>
           </div>
           <div class="ry-oc-qty">
@@ -9199,7 +9209,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           <td class="p-3 font-bold text-slate-900 text-sm leading-relaxed">${escapeHtml(item.name)} ${endedBadge(item)}</td>
           <td class="p-3 text-center"><span class="px-2 py-0.5 rounded-full text-xs font-extrabold ${item.statusColor}">${item.statusLabel}</span></td>
           <td class="p-3 text-center font-black">${item.targetQty}${item.unit || '개'}</td>
-          <td class="p-3 text-center text-xs text-slate-500">${catChip(item)}<br><button type="button" onclick="event.stopPropagation(); openNote(${item.rowNumber}, '${escapeHtml(item.name)}')" class="ry-note${item.note ? '' : ' empty'}${String(item.note || '').indexOf('소진 후 판매종료') !== -1 ? ' disc' : ''}" style="margin-top:4px">${item.note ? escapeHtml(item.note) + ' ' + RYI.pen : RYI.pen + '수정'}</button></td>
+          <td class="p-3 text-center text-xs text-slate-500">${catChip(item)}<br><button type="button" data-row="${item.rowNumber}" data-name="${escapeHtml(item.name)}" onclick="event.stopPropagation(); openNote(+this.dataset.row, this.dataset.name)" class="ry-note${item.note ? '' : ' empty'}${String(item.note || '').indexOf('소진 후 판매종료') !== -1 ? ' disc' : ''}" style="margin-top:4px">${item.note ? escapeHtml(item.note) + ' ' + RYI.pen : RYI.pen + '수정'}</button></td>
           <td class="p-3 text-center">
             ${item.status === 'IDLE' ? `
               <div class="flex items-center justify-center gap-1">
@@ -9239,7 +9249,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
               ${item._mo ? moChips(item._mo) : (item.status === 'DONE' && item.inboundDate ? `<span class="ry25-pc-sub">입고 ${escapeHtml(item.inboundDate)}</span>` : '')}
             </div>
             <div class="ry25-pc-row" onclick="event.stopPropagation()">
-              <button type="button" onclick="event.stopPropagation(); openNote(${item.rowNumber}, '${escapeHtml(item.name)}')" class="ry-note${item.note ? '' : ' empty'}${String(item.note || '').indexOf('소진 후 판매종료') !== -1 ? ' disc' : ''}">${item.note ? RYI.pen + escapeHtml(item.note) : RYI.pen + '메모'}</button>
+              <button type="button" data-row="${item.rowNumber}" data-name="${escapeHtml(item.name)}" onclick="event.stopPropagation(); openNote(+this.dataset.row, this.dataset.name)" class="ry-note${item.note ? '' : ' empty'}${String(item.note || '').indexOf('소진 후 판매종료') !== -1 ? ' disc' : ''}">${item.note ? RYI.pen + escapeHtml(item.note) : RYI.pen + '메모'}</button>
               ${canAct ? ry25PresetHtml(item) : ''}
               ${item.status === 'DONE' ? `<button type="button" class="ry25-hist" onclick="goToItem(${item.rowNumber}, 'DONE')">${RYI.clipboard}입고 기록</button>` : ''}
             </div>
@@ -9368,7 +9378,13 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         .reorderReceivedItem(rowNumber, n, '개', currentSelectedMember);
     }
 
+    /* 1002 '소진 후 판매종료' 상품은 검색엔 남기되, 주문할 때 한 번 더 묻는다 (실수로 다시 들여오지 않게) */
+    function ryEndedOk(rowNumber) {
+      const it = (lastSearchResults || []).find(x => x.rowNumber === rowNumber);
+      return !it || !isEnded(it) || confirm('[' + String(it.name).split('\n')[0] + ']\n판매종료 상품이에요. 그래도 주문할까요?\n(소진 후 판매종료로 정한 상품이라 보통은 다시 주문하지 않아요)');
+    }
     function handleSearchReorder(rowNumber, isMobile, btnEl) {
+      if (!ryEndedOk(rowNumber)) return;
       const input = document.getElementById((isMobile ? 'm-s-qty-' : 's-qty-') + rowNumber);
       const n = parseInt(input ? input.value.trim() : '1', 10);
       const src = lastSearchResults.find(it => it.rowNumber === rowNumber);
@@ -9385,6 +9401,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 
     function handleSearchOrderRequest(rowNumber, isMobile, btnEl) {
       if (!checkMemberSelectedOrAlert()) return;
+      if (!ryEndedOk(rowNumber)) return;
       const key = 'sorder-' + rowNumber;
       if (inFlight.has(key)) return;
       dismissKeyboard();
