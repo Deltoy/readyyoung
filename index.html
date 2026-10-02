@@ -9154,7 +9154,20 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (keepFocus && inputEl && document.activeElement !== inputEl) inputEl.focus();
     }
 
+    /* 1002 검색 결과는 0.4초·3~5초(서버 전체 결과) 두세 번 다시 그려진다 → 그 사이 고친 수량·커서·스크롤이 날아가 화면이 튀던 문제.
+       다시 그릴 때 사용자가 바꾼 수량 칸 값과 포커스, 스크롤 위치를 그대로 되살린다 */
     function renderSearchResults(items) {
+      var keep = {}, foc = document.activeElement, focId = foc && foc.id && /^(m-)?s-qty-/.test(foc.id) ? foc.id : '', selS = null, y = window.scrollY;
+      document.querySelectorAll('#searchCardContainer input[id^="m-s-qty-"], #searchTableBody input[id^="s-qty-"]').forEach(function (el) { if (el.dataset.touched === '1' || el === foc) keep[el.id] = el.value; });
+      try { if (focId) selS = [foc.selectionStart, foc.selectionEnd]; } catch (eS) { selS = null; }
+      var top0 = focId ? foc.getBoundingClientRect().top : null;
+      renderSearchResults0(items);
+      Object.keys(keep).forEach(function (id) { var el = document.getElementById(id); if (el) { el.value = keep[id]; el.dataset.touched = '1'; var m = id.match(/(\d+)$/); if (m && typeof ry25MarkPreset === 'function') ry25MarkPreset(+m[1]); } });
+      var f2 = focId ? document.getElementById(focId) : null;
+      if (f2) { try { f2.focus({ preventScroll: true }); if (selS) f2.setSelectionRange(selS[0], selS[1]); } catch (eF) {} var dy = f2.getBoundingClientRect().top - top0; if (Math.abs(dy) > 2) window.scrollBy(0, dy); }   /* 고치던 칸이 화면의 같은 자리에 오도록 */
+      else if (Object.keys(keep).length && Math.abs(window.scrollY - y) > 2) window.scrollTo(0, y);
+    }
+    function renderSearchResults0(items) {
       const tbody = document.getElementById('searchTableBody');
       const cardContainer = document.getElementById('searchCardContainer');
       const emptyMsg = document.getElementById('searchEmptyMessage');
@@ -9588,6 +9601,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     }
     function ry25MarkPreset(rowNumber) {
       var inp = document.getElementById('m-s-qty-' + rowNumber);
+      if (inp && document.activeElement === inp) inp.dataset.touched = '1';
       var v = inp ? parseInt(inp.value, 10) : NaN;
       document.querySelectorAll('[data-pre-row="' + rowNumber + '"]').forEach(function (b) {
         b.classList.toggle('on', parseInt(b.getAttribute('data-n'), 10) === v);
@@ -9595,6 +9609,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     }
     function ry25SetQty(rowNumber, n) {
       var inp = document.getElementById('m-s-qty-' + rowNumber);
+      if (inp) inp.dataset.touched = '1';
       if (!inp) return;
       inp.value = String(n);
       ry25MarkPreset(rowNumber);
@@ -9603,6 +9618,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     function ry25Step(rowNumber, d) {
       var inp = document.getElementById('m-s-qty-' + rowNumber);
       if (!inp) return;
+      inp.dataset.touched = '1';
       var v = parseInt(inp.value, 10);
       if (!Number.isFinite(v)) v = 0;
       v = Math.max(1, Math.min(99999, v + d));
