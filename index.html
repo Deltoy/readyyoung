@@ -5641,6 +5641,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       RY_NAV.busy = false;
       return true;
     }
+    try { history.scrollRestoration = 'manual'; } catch (e) {}   /* 1002 창 닫을 때 뒤로가기 기록이 '창 열 때 위치'로 화면을 되돌리던 것(사진 확대·메모): 화면 위치는 앱이 직접 지킨다 */
     window.addEventListener('popstate', function () {
       if (RY_NAV.ignore > 0) { RY_NAV.ignore--; return; }
       if (RY_NAV.pushed > 0) RY_NAV.pushed--;
@@ -6340,10 +6341,12 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       document.getElementById('phTitle').textContent = it && it.name ? it.name : '상품 사진';
       document.getElementById('phDim').classList.add('on');
       document.getElementById('phSheet').classList.add('on');
+      ryLockScroll(true);   /* 1002 사진 고르기 창에서도 뒤 화면 고정 */
     }
     function closePhotoChoice() {
       document.getElementById('phDim').classList.remove('on');
       document.getElementById('phSheet').classList.remove('on');
+      ryLockScroll(false);
     }
     function pickPhotoFrom(kind) {
       ensurePhotoInput();
@@ -6554,12 +6557,14 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       const retake = ov.querySelector('#imgPreviewRetake');
       if (retake) retake.hidden = !r;   // 행 번호가 있는 상품 사진에서만 표시
       ov.classList.add('open');
+      ryLockScroll(true);   /* 1002 사진 확대 중 손가락이 조금만 움직여도 뒤 목록이 위로 밀리던 것: 뒤 화면 고정, 닫으면 같은 위치 */
     }
 
     function closeImagePreview() {
       const ov = document.getElementById('imgPreviewOverlay');
       if (!ov) return;
       ov.classList.remove('open');
+      ryLockScroll(false);
       const im = ov.querySelector('img');
       if (im) im.removeAttribute('src');
     }
