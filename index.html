@@ -3490,6 +3490,23 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
   html:not(#q):not(#w):not(#e) body:not(#r) .sync-pill[data-state="idle"]{opacity:0!important}
 }
 </style>
+<style>
+/* 1002 자주 찾는 상품 · 캐릭터별 판매 */
+.sr-two{display:grid;grid-template-columns:1fr;gap:16px}@media (min-width:900px){.sr-two{grid-template-columns:1fr 1fr}}
+.sr-h{font-size:14px;font-weight:700;color:#1d1d1f;margin:2px 0 6px}.sr-h small{display:block;font-size:12px;font-weight:500;color:#6e6e73;margin-top:2px}
+.sr-row{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid #f0f0f3;min-height:44px}.sr-row:last-child{border-bottom:0}
+.sr-rk{flex:0 0 24px;text-align:center;font-weight:700;color:#155EEF;font-variant-numeric:tabular-nums}
+.sr-m{flex:1;min-width:0}.sr-m b{display:block;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sr-m small{display:block;font-size:12px;color:#6e6e73;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sr-r{flex:0 0 auto;text-align:right;font-variant-numeric:tabular-nums}.sr-r b{display:block;font-size:15px}.sr-r small{font-size:12px;color:#6e6e73}
+.sr-zero{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:999px;background:#FEF3F2;color:#B42318;font-size:11px;font-weight:700;vertical-align:1px}
+.sr-empty{color:#6e6e73;font-size:13px;padding:10px 2px}
+.ch-brand{border:1px solid #ececf0;border-radius:14px;padding:12px 14px;margin-top:10px}
+.ch-bh{display:flex;align-items:baseline;gap:8px}.ch-bh b{font-size:16px}.ch-bh span{color:#6e6e73;font-size:13px}.ch-bh em{margin-left:auto;font-style:normal;font-weight:700;font-variant-numeric:tabular-nums}
+.ch-bars{margin-top:8px;display:grid;gap:2px}
+.ch-bar{display:grid;grid-template-columns:minmax(84px,30%) 1fr auto;align-items:center;gap:8px;font-size:13px;min-height:36px;cursor:pointer;background:none;border:0;padding:0;text-align:left;width:100%;color:inherit}
+.ch-bar .t{height:10px;border-radius:5px;background:#EEF2FF;overflow:hidden}.ch-bar .t i{display:block;height:100%;border-radius:5px;background:#155EEF}.ch-bar b{font-variant-numeric:tabular-nums}
+.ch-items{margin:0 0 8px 4px;font-size:12px;color:#424245;display:grid;gap:4px}
+</style>
 </head>
 <body class="bg-slate-100 p-2.5 sm:p-5 text-slate-800 antialiased" onclick="closeDropdownIfOutside(event)">
     </div>
@@ -4131,6 +4148,30 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         <div id="prodRankList" class="ry25-prlist"></div>
         <div id="prodRankEmpty" class="hidden ry25-kempty">이 기간에 주문(발주) 기록이 없어요.</div>
       </section>
+
+      <section class="ry25-kcard" id="srCard">
+        <div class="ry25-khead">
+          <h3><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>자주 찾는 상품</h3>
+          <div class="ry25-seg" role="group" aria-label="기간">
+            <button type="button" id="srW7" onclick="srSetWindow(7)" class="ry25-seg-b on" aria-pressed="true">최근 7일</button>
+            <button type="button" id="srW30" onclick="srSetWindow(30)" class="ry25-seg-b" aria-pressed="false">최근 1개월</button>
+          </div>
+        </div>
+        <div id="srInfo" class="ry25-kinfo">물류앱 검색창에서 찾은 기록이에요.</div>
+        <div class="sr-two">
+          <div><div class="sr-h">많이 찾은 상품 <small>검색 뒤 누른 상품 · 결과가 하나뿐인 검색</small></div><div id="srProducts" class="ry25-prlist"></div></div>
+          <div><div class="sr-h">많이 검색한 말 <small>결과 없음 = 우리에게 없는 상품을 찾은 것</small></div><div id="srTerms" class="ry25-prlist"></div></div>
+        </div>
+      </section>
+
+      <section class="ry25-kcard" id="chCard">
+        <div class="ry25-khead">
+          <h3><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg>캐릭터별 판매</h3>
+          <span class="ry25-kmeta">15일 판매량 엑셀 기준</span>
+        </div>
+        <div id="chInfo" class="ry25-kinfo"></div>
+        <div id="chList"></div>
+      </section>
     </div>
 
   </div>
@@ -4313,7 +4354,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     }
 
     /* ===== 카테고리 ===== */
-    var CATEGORY_LIST = ['일반의약품','의료기기','건강기능식품','스킨케어','클렌징','선케어','헤어케어','바디케어','구강용품','반려동물','의약외품','위생·소모품','식품·음료','산리오','기타'];
+    var CATEGORY_LIST = ['일반의약품','의료기기','건강기능식품','스킨케어','클렌징','선케어','헤어케어','바디케어','구강용품','반려동물','의약외품','위생·소모품','식품·음료','산리오','포켓몬','티니핑','짱구','뽀로로','기타'];
     /* 0930 하위 섹터: 카테고리 값이 '대분류 › 하위' (없으면 대분류만 — 옛 서버·아직 안 나눈 상품도 그대로 보임) */
     var SUBCATS = {
       '일반의약품': ['감기·기침','해열·진통','소화·위장','변비·지사','피부외용','상처·화상','안약','비염·알레르기','파스·근육','수면·멀미','자양강장','여성·비뇨','구충·금연','탈모','치질·정맥','구강·구내염','기타','어린이 감기·기침','어린이 해열·진통','어린이 소화·위장','어린이 비염·알레르기','어린이 피부외용','어린이 기타'],
@@ -4333,6 +4374,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       '비품': ['포장','청소','사무','기타'],
       '산리오': ['캐릭터 굿즈','캔디·젤리','비타민·영양','칫솔·치약','립·스킨케어','밴드·패치','위생용품','기타']   /* 1002 캐릭터 브랜드 대분류 */
     };
+    ['포켓몬', '티니핑', '짱구', '뽀로로'].forEach(function (b) { SUBCATS[b] = SUBCATS['산리오']; });   /* 1002 캐릭터 브랜드는 하위 같은 표 */
     var CAT_REVIEW = '확인필요';
     function catTop(x) { x = String(x == null ? '' : x).trim(); var i = x.indexOf('›'); return (i === -1 ? x : x.slice(0, i)).trim(); }
     function catSub(x) { x = String(x == null ? '' : x).trim(); var i = x.indexOf('›'); return i === -1 ? '' : x.slice(i + 1).trim(); }
@@ -8691,6 +8733,104 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       }).join('');
     }
 
+    /* ═════ 1002 자주 찾는 상품 순위: 검색이 1.5초 멈추면 (검색어·결과 수·첫 상품) 기록, 검색 결과를 누르면 그 상품을 '선택' 기록 → 모아서 서버로 ═════ */
+    var SR_Q_KEY = 'ry_slog_v1', SR_SEEN = {}, _srT = null, SR_WIN = 7, SR_DATA = {}, SR_AT = {};
+    function srQueue() { try { return JSON.parse(localStorage.getItem(SR_Q_KEY) || '[]'); } catch (e) { return []; } }
+    function srPush(x) { var q = srQueue(); q.push(x); try { localStorage.setItem(SR_Q_KEY, JSON.stringify(q.slice(-300))); } catch (e) {} if (q.length >= 5) srFlush(); }
+    function srLogSoon(query) {
+      clearTimeout(_srT);
+      _srT = setTimeout(function () {
+        var q = String(query || '').trim(), inp = document.getElementById('globalSearchInput');
+        if (q.length < 2 || q.length > 40 || !inp || inp.value.trim() !== q) return;   // 치는 도중의 앞부분은 안 셈
+        var k = 's|' + q.replace(/\s+/g, '').toLowerCase(); if (SR_SEEN[k] && Date.now() - SR_SEEN[k] < 600000) return; SR_SEEN[k] = Date.now();   // 10분 안 같은 검색은 한 번
+        var r = lastSearchResults || [];
+        srPush({ q: q, n: r.length, p: r.length ? String(r[0].name || '').split('\n')[0] : '', t: Date.now() });
+      }, 1500);
+    }
+    function srPick(row) {
+      var it = (lastSearchResults || []).find(function (x) { return x.rowNumber === row; }); if (!it) return;
+      var q = ((document.getElementById('globalSearchInput') || {}).value || '').trim(), nm = String(it.name || '').split('\n')[0];
+      var k = 'p|' + q + '|' + row; if (SR_SEEN[k] && Date.now() - SR_SEEN[k] < 600000) return; SR_SEEN[k] = Date.now();
+      srPush({ q: q || nm, n: (lastSearchResults || []).length, p: nm, k: 'pick', t: Date.now() });
+    }
+    document.addEventListener('click', function (e) {
+      var t = e.target; if (!t || !t.closest) return;
+      var box = t.closest('#searchCardContainer,#searchTableBody'); if (!box) return;
+      var el = t.closest('[data-row],[data-photo-row],[onclick]'); if (!el || !box.contains(el)) return;
+      var row = parseInt(el.getAttribute('data-row') || el.getAttribute('data-photo-row') || ((el.getAttribute('onclick') || '').match(/\((\d+)/) || [])[1], 10);
+      if (row > 1) srPick(row);
+    }, true);
+    var _srBusy = false;
+    function srFlush() {
+      if (_srBusy || !currentSelectedMember) return; var q = srQueue(); if (!q.length) return; _srBusy = true;
+      var batch = q.slice(0, 100);
+      google.script.run.withSuccessHandler(function (r) {
+        _srBusy = false; if (!r || r.success === false) return;
+        var rest = srQueue().slice(batch.length); try { localStorage.setItem(SR_Q_KEY, JSON.stringify(rest)); } catch (e) {}
+      }).withFailureHandler(function () { _srBusy = false; }).logSearches(batch, currentSelectedMember);
+    }
+    setInterval(srFlush, 60000);
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') srFlush(); });
+    function srSetWindow(d) { SR_WIN = d; ['7', '30'].forEach(function (k) { var b = document.getElementById('srW' + k); if (b) { b.className = 'ry25-seg-b' + (String(d) === k ? ' on' : ''); b.setAttribute('aria-pressed', String(d) === k ? 'true' : 'false'); } }); srLoad(false); }
+    function srLoad(force) {
+      var d = SR_WIN; srRender();
+      if (!force && SR_AT[d] && Date.now() - SR_AT[d] < 120000) return;
+      srFlush();
+      google.script.run.withSuccessHandler(function (r) { if (!r || r.success === false) return; SR_DATA[d] = r; SR_AT[d] = Date.now(); srRender(); })
+        .withFailureHandler(function () {}).getSearchRanking(d);
+    }
+    function srStatusOf(name) {
+      var nk = String(name || '').replace(/\s+/g, '').toLowerCase(), it = (RY_CAT && RY_CAT.items || []).find(function (x) { return String(x.name || '').replace(/\s+/g, '').toLowerCase() === nk; });
+      if (!it) return '';
+      var lab = { REVIEW: '1차 검토', ORDER: '발주 대기', INBOUND: '입고 대기', DONE: '입고 완료', SOLDOUT: '품절', IDLE: '' }[it.status] || '';
+      var s15 = it.sales15 && it.sales15 !== '-' ? '15일 ' + it.sales15 + '개' : '';
+      return [lab, s15].filter(Boolean).join(' · ');
+    }
+    function srRender() {
+      var r = SR_DATA[SR_WIN], pe = document.getElementById('srProducts'), te = document.getElementById('srTerms'), info = document.getElementById('srInfo');
+      if (!pe || !te) return;
+      if (!r) { pe.innerHTML = te.innerHTML = '<div class="sr-empty">불러오는 중…</div>'; return; }
+      if (info) info.textContent = '최근 ' + r.days + '일 · 검색 ' + r.total.toLocaleString() + '번 · 물류앱 검색창 기준 (같은 사람이 10분 안에 같은 걸 찾으면 한 번)';
+      var row = function (i, title, sub, right, rsub) { return '<div class="sr-row"><span class="sr-rk">' + (i + 1) + '</span><div class="sr-m"><b>' + title + '</b>' + (sub ? '<small>' + sub + '</small>' : '') + '</div><div class="sr-r"><b>' + right + '</b><small>' + rsub + '</small></div></div>'; };
+      pe.innerHTML = r.products.length ? r.products.slice(0, 15).map(function (x, i) { return row(i, escapeHtml(x.name), escapeHtml(srStatusOf(x.name)), x.count + '번', x.people + '명'); }).join('') : '<div class="sr-empty">아직 기록이 없어요. 오늘부터 검색할 때마다 쌓여요.</div>';
+      te.innerHTML = r.terms.length ? r.terms.slice(0, 15).map(function (x, i) {
+        var zero = x.zero && x.zero >= x.count ? '<span class="sr-zero">결과 없음</span>' : '';
+        return row(i, escapeHtml(x.q) + zero, zero ? '새 상품 등록이 필요할 수 있어요' : (x.top ? '첫 결과: ' + escapeHtml(x.top) : ''), x.count + '번', x.people + '명');
+      }).join('') : '<div class="sr-empty">아직 기록이 없어요.</div>';
+    }
+
+    /* ═════ 1002 캐릭터별 판매: 캐릭터 브랜드 대분류(산리오·포켓몬…) 상품의 15일 판매를 캐릭터별로 합침 ═════ */
+    var CH_CHARS = {
+      '산리오': [['헬로키티', /헬로\s*키티|hello\s*kitty/i], ['마이멜로디', /마이\s*멜로디|my\s*melody/i], ['쿠로미', /쿠로미|kuromi/i], ['시나모롤', /시나모롤|cinnamoroll/i], ['폼폼푸린', /폼폼\s*푸린/], ['포차코', /포차코/], ['케로피', /케로피/], ['리틀트윈스타', /리틀\s*트윈/], ['한교동', /한교동/], ['바츠마루', /바츠마루/]],
+      '포켓몬': [['피카츄', /피카츄/], ['이브이', /이브이/], ['잠만보', /잠만보/], ['파이리', /파이리/], ['꼬부기', /꼬부기/], ['이상해씨', /이상해씨/], ['고라파덕', /고라파덕/], ['메타몽', /메타몽/]],
+      '티니핑': [['하츄핑', /하츄핑|하츄빙/], ['바로핑', /바로핑/], ['차차핑', /차차핑/], ['라라핑', /라라핑/], ['해핑', /해핑/], ['아자핑', /아자핑/]],
+      '짱구': [], '뽀로로': []
+    };
+    function chCharOf(brand, name) { var L = CH_CHARS[brand] || []; for (var i = 0; i < L.length; i++) if (L[i][1].test(name)) return L[i][0]; return L.length ? '여러 캐릭터·기타' : brand; }
+    var CH_OPEN = {};
+    function chRender() {
+      var box = document.getElementById('chList'), info = document.getElementById('chInfo'); if (!box) return;
+      if (!RY_CAT || !RY_CAT.items) { box.innerHTML = '<div class="sr-empty">상품 목록을 불러오는 중…</div>'; try { ryCatLoad(true); } catch (e) {} setTimeout(chRender, 4000); return; }
+      var B = {};
+      RY_CAT.items.forEach(function (it) {
+        var top = catTop(it.category || ''); if (!CH_CHARS.hasOwnProperty(top)) return;
+        var nm = String(it.name || '').split('\n')[0], n = parseInt(String(it.sales15 || '').replace(/[^0-9]/g, ''), 10) || 0, ch = chCharOf(top, nm);
+        var b = B[top] || (B[top] = { brand: top, qty: 0, cnt: 0, chars: {} }); b.qty += n; b.cnt++;
+        var c = b.chars[ch] || (b.chars[ch] = { name: ch, qty: 0, items: [] }); c.qty += n; c.items.push({ name: nm, qty: n, sub: catSub(it.category || '') });
+      });
+      var brands = Object.values(B).sort(function (a, b) { return b.qty - a.qty || b.cnt - a.cnt; });
+      if (info) info.textContent = brands.length ? '캐릭터 브랜드 ' + brands.length + '개 · 상품 ' + brands.reduce(function (s2, b) { return s2 + b.cnt; }, 0) + '개 · 캐릭터를 누르면 상품별로' : '';
+      if (!brands.length) { box.innerHTML = '<div class="sr-empty">캐릭터 브랜드(산리오·포켓몬·티니핑·짱구·뽀로로) 상품이 아직 없어요.</div>'; return; }
+      box.innerHTML = brands.map(function (b) {
+        var chars = Object.values(b.chars).sort(function (x, y) { return y.qty - x.qty; }), mx = Math.max.apply(null, chars.map(function (c) { return c.qty; }).concat([1]));
+        return '<div class="ch-brand"><div class="ch-bh"><b>' + escapeHtml(b.brand) + '</b><span>상품 ' + b.cnt + '개</span><em>' + b.qty.toLocaleString() + '개</em></div><div class="ch-bars">' + chars.map(function (c) {
+          var key = b.brand + '|' + c.name, open = !!CH_OPEN[key];
+          return '<button type="button" class="ch-bar" data-k="' + escapeHtml(key) + '" onclick="CH_OPEN[this.dataset.k]=!CH_OPEN[this.dataset.k];chRender()" aria-expanded="' + open + '"><span>' + escapeHtml(c.name) + ' <small style="color:#6e6e73">' + c.items.length + '</small></span><span class="t"><i style="width:' + Math.round(c.qty / mx * 100) + '%"></i></span><b>' + c.qty.toLocaleString() + '개</b></button>'
+            + (open ? '<div class="ch-items">' + c.items.sort(function (x, y) { return y.qty - x.qty; }).map(function (x) { return '<div>' + escapeHtml(x.name) + ' <span style="color:#6e6e73">· ' + escapeHtml(x.sub || '') + ' · 15일 ' + x.qty + '개</span></div>'; }).join('') + '</div>' : '');
+        }).join('') + '</div></div>';
+      }).join('');
+    }
+
     var RY25_PR = [];
     function renderProductRanking() {
       const list = document.getElementById('prodRankList'), info = document.getElementById('prodRankInfo'), empty = document.getElementById('prodRankEmpty');
@@ -8837,6 +8977,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     function renderMonthlyRankingView() {
       renderCategoryStats();
       renderProductRanking();
+      try { srLoad(false); chRender(); } catch (eSr) {}   /* 1002 */
       const data = cachedMonthlyRanking || { monthLabel: '이번달', rankingList: [] };
       const labelEl = document.getElementById('rankingMonthLabel');
       if (labelEl) labelEl.innerText = data.monthLabel;
@@ -9150,6 +9291,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           lastSearchResults = mapped;
           renderSearchResults(mapped);
           if (mapped.length) ry25RememberSoon(query);
+          srLogSoon(query);   /* 1002 자주 찾는 상품 순위용 기록 */
       };
       /* 0929 방금 등록한 상품: 폰 목록(최대 5분 전)엔 없어 0건 → 서버에 한 번 더 묻고 목록도 새로 받는다 */
       if (localHit && localHit.length) {   // 폰 안 목록으로 즉시 + 0930 서버에 조용히 한 번 더 물어 새로 등록된 상품을 보탠다
