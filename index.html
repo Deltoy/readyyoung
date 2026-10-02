@@ -1364,11 +1364,25 @@ html body:not(#_):not(#_) .ava-sheet.st-sheet.on{display:flex!important;flex-dir
 .s15-period{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 10px;font-size:14px;color:var(--ry-ink-2)}
 .s15-period input{min-height:40px;padding:0 8px;border:1px solid var(--ry-line-2);border-radius:10px;background:#fff;font-size:14px;color:var(--ry-ink)}
 .st-tags .st-tag.cand{background:#EAF1FE;color:#1D4ED8;font-weight:600}
-.st-bask{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px;margin:0 0 8px;border:1px solid #BFD3FB;border-radius:12px;background:#F5F8FF}
-.st-bask b{margin-right:auto;font-size:15px}
-.st-bask button{min-height:44px;padding:0 14px;font-size:14px}
-.st-bask select{min-height:44px;padding:0 10px;border:1px solid var(--ry-line-2);border-radius:10px;background:#fff;font-size:14px}
-.st-bask .st-note{width:100%;margin:4px 0 0}
+.st-split{display:flex;flex-direction:column;gap:12px}
+.st-aside{background:#F5F8FF;border:1px solid #BFD3FB;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.st-aside-empty{display:none}
+.st-ah{display:flex;align-items:center;gap:8px}.st-ah b{font-size:16px;margin-right:auto}.st-link{color:#155EEF;font-weight:600;font-size:14px;min-height:36px}
+.st-blist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;max-height:min(46vh,420px);overflow-y:auto}
+.st-blist li{display:flex;align-items:center;gap:10px;background:#fff;border-radius:12px;padding:6px 8px}
+.st-bn{width:24px;height:24px;border-radius:50%;background:#155EEF;color:#fff;font-size:13px;font-weight:700;display:grid;place-items:center;flex:0 0 auto}
+.st-blist img,.st-bimg{width:36px;height:36px;border-radius:8px;object-fit:cover;flex:0 0 auto;background:#EEF0F3}
+.st-bt{flex:1;min-width:0;line-height:1.3}.st-bt b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.st-bt small{display:block;font-size:12px;color:#646B78}
+.st-bx{width:36px;height:36px;border-radius:50%;color:#646B78;font-size:16px;flex:0 0 auto}.st-bx:hover{background:#EEF0F3;color:#111827}
+.st-bacts{display:grid;grid-template-columns:1fr 1fr;gap:8px}.st-bacts button,.st-bacts select{min-height:44px;font-size:14px}.st-bacts select{padding:0 10px;border:1px solid var(--ry-line-2);border-radius:10px;background:#fff}
+.st-aside .st-note{margin:0}
+@media (min-width:1024px){
+  #stSheet.st-inline .st-split{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+  #stSheet.st-inline .st-aside{grid-column:2;grid-row:1;position:sticky;top:84px}
+  #stSheet.st-inline .st-mainlist{grid-column:1;grid-row:1;min-width:0}
+  #stSheet.st-inline .st-aside-empty{display:flex}
+  .st-blist{max-height:calc(100vh - 360px)}
+}
 html body:not(#_):not(#_) .st-acts button,html body:not(#_):not(#_) .st-cancel,html body:not(#_):not(#_) .st-foot{border-radius:999px!important}
 .st-acts button,.st-cancel{min-height:44px;padding:0 16px;font-size:14px;font-weight:400}
 .st-open,.st-ghost,.st-cancel{border:1px solid var(--ry-line-2);background:#fff;color:var(--ry-ink)}
@@ -3390,6 +3404,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .nt-sheet .nt-arrow{transform:rotate(9
 </style>
 <style id="ry25-launch">
 .ry-tools .ry-quick{font-weight:700}
+/* 1002 폰: 바로가기 4개가 화면 밖으로 밀려 가로 스크롤 생기던 것 → 줄바꿈 */
+@media (max-width:640px){html body:not(#_) .ry-tools{flex-wrap:wrap;row-gap:8px}}
 /* 1001 창고 정리 인라인: 팝업 규칙(고정 위치·내부 스크롤·폭 480) 전부 끄고 본문 카드처럼 */
 html body:not(#_):not(#_) #stSheet.st-inline{position:static!important;transform:none!important;left:auto!important;bottom:auto!important;width:100%!important;max-width:none!important;height:auto!important;max-height:none!important;overflow:visible!important;display:flex!important;flex-direction:column;border-radius:20px!important;box-shadow:0 1px 3px rgba(0,0,0,.04)!important;border:1px solid #EDEEF0!important;margin:0!important;z-index:auto!important}
 html body:not(#_):not(#_) #stSheet.st-inline .st-body{max-height:none!important;overflow:visible!important;flex:none!important}
@@ -4837,10 +4853,10 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       } else { chips.hidden = ST.seg !== 'doing'; chips.innerHTML = ST.seg === 'doing' && L.doing.length ? '<button type="button" class="cb-chip" onclick="stCopy()">결정별 목록 복사 · 본사·거래처용</button>' : ''; list = ST.seg === 'doing' ? L.doing : ST.seg === 'disc' ? disc : L.done; var noneFoot = ST.seg === 'disc' ? '<p class="st-note">할인으로 소진 중인 상품(위)과 다 팔려 숨긴 상품(완료)을 함께 보여줘요. 완료 탭에서 되돌릴 수 있어요.</p>' : ''; }
       var body = document.getElementById('stBody');
       if (!list.length) {
-        body.innerHTML = (ST.seg === 'todo' ? stBasket(admin) : '') + '<div class="st-msg">' + (ST.seg === 'todo' ? (ST.range === 'cand' ? '정리 후보가 없어요<small>목록에서 「후보 담기」를 누르면 여기 모여요</small>' : '정리할 상품이 없어요 👍') : ST.seg === 'doing' ? '처리 중인 상품이 없어요<small>결정 전 탭에서 반품·폐기·할인 소진을 정하면 여기로 와요</small>' : ST.seg === 'disc' ? '소진 후 판매종료 상품이 없어요' : '아직 정리한 상품이 없어요') + '</div>' + noneFoot;
+        body.innerHTML = (ST.seg === 'todo' ? '<div class="st-split">' + stBasket(admin) + '<div class="st-mainlist">' : '') + '<div class="st-msg">' + (ST.seg === 'todo' ? (ST.range === 'cand' ? '정리 후보가 없어요<small>목록에서 「후보 담기」를 누르면 여기 모여요</small>' : '정리할 상품이 없어요 👍') : ST.seg === 'doing' ? '처리 중인 상품이 없어요<small>결정 전 탭에서 반품·폐기·할인 소진을 정하면 여기로 와요</small>' : ST.seg === 'disc' ? '소진 후 판매종료 상품이 없어요' : '아직 정리한 상품이 없어요') + '</div>' + noneFoot + (ST.seg === 'todo' ? '</div></div>' : '');
         return;
       }
-      body.innerHTML = (ST.seg === 'todo' ? stBasket(admin) : '') + list.map(function (it) { return ST.seg === 'done' || (ST.seg === 'disc' && it.hidden) ? stDoneRow(it, admin) : stRow(it, admin); }).join('') + noneFoot;
+      body.innerHTML = (ST.seg === 'todo' ? '<div class="st-split">' + stBasket(admin) + '<div class="st-mainlist">' : '') + list.map(function (it) { return ST.seg === 'done' || (ST.seg === 'disc' && it.hidden) ? stDoneRow(it, admin) : stRow(it, admin); }).join('') + noneFoot + (ST.seg === 'todo' ? '</div></div>' : '');
       // 사진 없는 줄: 받아둔 주소가 있으면 바로 쓰고, 처음 보는 줄만 서버에 한 번 묻는다
       var asked = 0;
       [].slice.call(body.querySelectorAll('img.st-need')).forEach(function (img) {
@@ -4894,14 +4910,22 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     function stCands() { return (ST.data ? ST.data.items : []).filter(function (it) { return it.status === '후보'; }).sort(function (a, b) { return (a.seq || 0) - (b.seq || 0) || a.row - b.row; }); }
     function stCandNo(it) { var c = stCands(); for (var i = 0; i < c.length; i++) if (c[i].row === it.row) return i + 1; return '?'; }
     function stAgoText(it) { if (it.days < 0) return '주문 기록 없음'; var m = Math.floor(it.days / 30); return '마지막 주문 ' + (m >= 1 ? m + '개월' : it.days + '일') + ' 전'; }
+    /* 1002 담은 후보를 옆에(PC) · 위에(폰) 번호 목록으로 — 카톡 공지 번호와 같은 순서, ✕ 로 바로 빼기 */
     function stBasket(admin) {
-      var c = stCands(); if (!c.length) return '';
+      var c = stCands();
+      if (!c.length) return '<aside class="st-aside st-aside-empty"><b>정리 후보</b><p>목록에서 「후보 담기」를 누르면 여기에 번호와 함께 쌓여요. 다 담으면 카톡 공지로 복사해 약사·팀장님께 물어보세요.</p></aside>';
       var opts = ['할인 소진', '소진 후 판매종료', '반품', '폐기', '본사 이벤트', '샘플 제공', '지점 이동'].map(function (d) { return '<option' + (d === '할인 소진' ? ' selected' : '') + '>' + d + '</option>'; }).join('');
-      return '<div class="st-bask"><b>정리 후보 ' + c.length + '개</b>'
-        + (ST.range === 'cand' ? '' : '<button type="button" class="st-ghost" onclick="stSetRange(\'cand\')">후보만 보기</button>')
-        + '<button type="button" class="st-ghost" onclick="stNotice()">카톡 공지 복사</button>'
-        + (admin ? '<button type="button" class="st-ghost" onclick="stReply()">답장 번호 반영</button><select id="stBaskDec" aria-label="정리 방법">' + opts + '</select><button type="button" class="st-primary" onclick="stConfirmAll()">정리 확정</button>' : '')
-        + '<p class="st-note">1 담기 → 2 공지 복사해 약사·팀장에게 → 3 답장 번호 반영(없는 번호는 후보에서 빠져요) → 4 확정: 할인 소진이면 「소진 후 판매종료」 표시, 다 팔리면 「다 팔렸어요」로 숨김</p></div>';
+      var items = c.map(function (it, k) {
+        var meta = (it.days < 0 ? '주문 기록 없음' : '마지막 주문 ' + escapeHtml(it.lastOrder)) + (it.sales15 != null ? ' · 15일 판매 ' + it.sales15 : '');
+        return '<li><span class="st-bn num">' + (k + 1) + '</span>' + (it.img ? '<img src="' + escapeHtml(it.img) + '" alt="" referrerpolicy="no-referrer" loading="lazy" onerror="this.style.visibility=\'hidden\'">' : '<i class="st-bimg"></i>') +
+          '<span class="st-bt"><b>' + escapeHtml(it.name.split('\n')[0]) + '</b><small>' + meta + '</small></span>' +
+          (admin ? '<button type="button" class="st-bx" aria-label="' + escapeHtml(it.name.split('\n')[0]) + ' 후보에서 빼기" data-row="' + it.row + '" data-name="' + escapeHtml(it.name) + '" data-on="0" onclick="stCand(this)">✕</button>' : '') + '</li>';
+      }).join('');
+      return '<aside class="st-aside"><div class="st-ah"><b>정리 후보 <span class="num">' + c.length + '</span>개</b>' + (ST.range === 'cand' ? '' : '<button type="button" class="st-link" onclick="stSetRange(\'cand\')">후보만 보기</button>') + '</div>'
+        + '<ol class="st-blist">' + items + '</ol>'
+        + '<div class="st-bacts"><button type="button" class="st-ghost" onclick="stNotice()">카톡 공지 복사</button>'
+        + (admin ? '<button type="button" class="st-ghost" onclick="stReply()">답장 번호 반영</button><select id="stBaskDec" aria-label="정리 방법">' + opts + '</select><button type="button" class="st-primary" onclick="stConfirmAll()">정리 확정</button>' : '') + '</div>'
+        + '<p class="st-note">담기 → 카톡 공지 복사 → 답장 번호 반영(없는 번호는 빠져요) → 정리 확정</p></aside>';
     }
     function stNotice() {
       var c = stCands(); if (!c.length) { showToast('담긴 후보가 없어요'); return; }
@@ -4928,6 +4952,10 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     function stCand(btn) {
       var it = { row: +btn.dataset.row, name: btn.dataset.name, lastOrder: btn.dataset.last }, on = btn.dataset.on === '1';
       btn.disabled = true;
+      /* 바로 보이게: 서버 저장 전에 화면에서 먼저 담기/빼기 (실패하면 stBatch 가 다시 불러와 되돌림) */
+      var mx = 0; (ST.data.items || []).forEach(function (x) { if (x.seq > mx) mx = x.seq; });
+      (ST.data.items || []).forEach(function (x) { if (x.row === it.row) { x.status = on ? '후보' : ''; if (on) x.seq = mx + 1; } });
+      renderStale();
       stBatch('setCleanupCandidates', [[it], on], function () { return on ? '후보에 담았어요' : '후보에서 뺐어요'; });
     }
     function stBatch(fn, args, okMsg) {
