@@ -9379,6 +9379,24 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (sView && !sView.classList.contains('hidden')) renderSearchResults(lastSearchResults);
     }
 
+    /* 1002 주문 요청 미리 보여 주기 → 실패하면 되돌리기 */
+    function ryReqSnap(rowNumber) {
+      const it = (lastSearchResults || []).find(x => x.rowNumber === rowNumber);
+      let reqs = null; try { reqs = localStorage.getItem(ry25ReqKey()); } catch (e) {}
+      return { it: it ? Object.assign({}, it) : null, inReview: (cachedReviewItems || []).some(x => x.rowNumber === rowNumber), reqs: reqs };
+    }
+    function ryReqUndo(rowNumber, snap) {
+      try {
+        const cur = (lastSearchResults || []).find(x => x.rowNumber === rowNumber);
+        if (cur && snap.it) { Object.keys(cur).forEach(k => { if (!(k in snap.it)) delete cur[k]; }); Object.assign(cur, snap.it); }
+        if (!snap.inReview) { for (let i = cachedReviewItems.length - 1; i >= 0; i--) if (cachedReviewItems[i].rowNumber === rowNumber) cachedReviewItems.splice(i, 1); }
+        try { if (snap.reqs == null) localStorage.removeItem(ry25ReqKey()); else localStorage.setItem(ry25ReqKey(), snap.reqs); } catch (e) {}
+        try { ry25RenderBar(false); } catch (e) {}
+        renderAllViews(); persistSnapshot();
+        const sView = document.getElementById('searchResultView');
+        if (sView && !sView.classList.contains('hidden')) renderSearchResults(lastSearchResults);
+      } catch (e) { try { loadAllData(true, false, true); } catch (e2) {} }
+    }
     function optimisticAddToReview(rowNumber, src, n) {
       if (!src || cachedReviewItems.some(it => it.rowNumber === rowNumber)) return;
       /* 0928 요청자는 요청자 배지로만 보여 줌 — 특이사항에 '[요청자:이름]' 을 붙이지 않는다 (붙이면 메모 고칠 때 시트에 저장돼 계속 나옴) */
@@ -9400,23 +9418,23 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (!Number.isFinite(n) || n <= 0 || n > 99999) { alert('수량을 1~99999 사이 숫자로 입력해 주세요.'); return; }
       if (!confirm(`[${src && src.name ? src.name : '이 상품'}] 을(를) ${n}개 다시 주문 요청할까요?\n(이전 입고 기록은 📅 입고내역에 그대로 남습니다)`)) return;
       inFlight.add(key);
-      const prev = setBtnBusy(btnEl, '요청 중…');
+      /* 1002 빠르게: 바로 보여 주고 뒤에서 저장, 실패하면 되돌림 */
+      const snap = ryReqSnap(rowNumber);
+      const hist = cachedHistoryItems.find(it => it.rowNumber === rowNumber && !it.isLog);
+      if (hist) hist.isLog = true;            // 현재 행 기록은 이제 '지난 기록'으로 표시
+      optimisticAddToReview(rowNumber, src || hist, n);
+      markSearchResultRequested(rowNumber, n);   // 검색 중이면 검색 결과 유지
+      ry25TrackRequest(rowNumber, (src && src.name) || ry25NameOf(rowNumber), n);   /* 0925: 하단 요약 바 */
+      showToast('✓ ' + currentSelectedMember + ' 님 재주문 요청 (1차 검토)');
+      const undo = function (msg) { inFlight.delete(key); if (hist) hist.isLog = false; ryReqUndo(rowNumber, snap); alert(msg); };
       google.script.run
         .withSuccessHandler(function(res) {
+          if (res && res.success === false) { undo('재주문이 저장되지 않았어요: ' + (res.error || res.message || '')); return; }
           inFlight.delete(key);
-          if (res && res.success === false) { restoreBtn(btnEl, prev); alert('재주문 실패: ' + (res.error || '')); return; }
-          const hist = cachedHistoryItems.find(it => it.rowNumber === rowNumber && !it.isLog);
-          if (hist) hist.isLog = true;            // 현재 행 기록은 이제 '지난 기록'으로 표시
-          optimisticAddToReview(rowNumber, src || hist, n);
-          markSearchResultRequested(rowNumber, n);   // 검색 중이면 검색 결과 유지
-          ry25TrackRequest(rowNumber, (src && src.name) || ry25NameOf(rowNumber), n);   /* 0925: 하단 요약 바 */
-          showToast('✓ ' + currentSelectedMember + ' 님 재주문 요청 등록 (1차 검토)');
           loadAllData(true, true, true);
         })
         .withFailureHandler(function(err) {
-          inFlight.delete(key);
-          restoreBtn(btnEl, prev);
-          alert('재주문 요청 오류: ' + (err && err.message ? err.message : err));
+          undo('재주문이 저장되지 않았어요. 다시 눌러 주세요.\n(' + (err && err.message ? err.message : err) + ')');
         })
         .reorderReceivedItem(rowNumber, n, '개', currentSelectedMember);
     }
@@ -9454,23 +9472,25 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (!Number.isFinite(n) || n <= 0 || n > 99999) { alert('수량을 1~99999 사이 숫자로 입력해 주세요.'); return; }
 
       inFlight.add(key);
-      const prev = setBtnBusy(btnEl, '요청 중…');
+      /* 1002 빠르게: 서버를 기다리지 않고 바로 '요청됨'으로 보여 주고 뒤에서 저장. 실패하면 되돌리고 알림 */
+      const snap = ryReqSnap(rowNumber), nm0 = ryNameOf(rowNumber);
+      optimisticAddToReview(rowNumber, lastSearchResults.find(it => it.rowNumber === rowNumber), n);
+      markSearchResultRequested(rowNumber, n);   // 검색 결과·검색어 유지, 이 줄만 '요청됨'으로
+      ry25TrackRequest(rowNumber, ry25NameOf(rowNumber), n);   /* 0925: 하단 요약 바 */
+      showToast('✓ ' + currentSelectedMember + ' 님 주문 요청 (1차 검토) · 이어서 다른 상품도 요청할 수 있어요');
 
       google.script.run
-        .withSuccessHandler(function() {
+        .withSuccessHandler(function(res) {
           inFlight.delete(key);
-          optimisticAddToReview(rowNumber, lastSearchResults.find(it => it.rowNumber === rowNumber), n);
-          markSearchResultRequested(rowNumber, n);   // 검색 결과·검색어 유지, 이 줄만 '요청됨'으로
-          ry25TrackRequest(rowNumber, ry25NameOf(rowNumber), n);   /* 0925: 하단 요약 바 */
-          showToast('✓ ' + currentSelectedMember + ' 님 주문 요청 등록 (1차 검토) · 이어서 다른 상품도 요청할 수 있어요');
+          if (res && res.success === false) { ryReqUndo(rowNumber, snap); alert('주문 요청이 저장되지 않았어요: ' + (res.message || '')); return; }
           loadAllData(true, true, true);
         })
         .withFailureHandler(function(err) {
           inFlight.delete(key);
-          restoreBtn(btnEl, prev);
-          alert('주문 요청 오류: ' + (err && err.message ? err.message : err));
+          ryReqUndo(rowNumber, snap);
+          alert('주문 요청이 저장되지 않았어요. 다시 눌러 주세요.\n(' + (err && err.message ? err.message : err) + ')');
         })
-        .requestOrderFromDashboard(rowNumber, n, '개', currentSelectedMember, ryNameOf(rowNumber));
+        .requestOrderFromDashboard(rowNumber, n, '개', currentSelectedMember, nm0);
     }
 
     // 오늘 입고된 것만 모아 카톡에 붙여넣을 글로 만든다
