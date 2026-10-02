@@ -3530,6 +3530,54 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 td .ry-uses{margin:4px 0 0}
 .ry-end.ry-hid{background:#F2F4F7;color:#344054;border-color:#D0D5DD}
 </style>
+<style>
+/* 1002 도구 패널 2차 (관리자 대시보드) — 옛 전역 규칙(button 6px · input 포커스 링)을 이 안에서만 덮어씀 */
+#ryLaunch{overscroll-behavior:contain}
+html body #ryLaunchGrid .tl-search{position:sticky;top:-4px;z-index:2;scroll-margin-top:60px;display:flex;align-items:center;gap:10px;height:52px;margin:0 0 12px;padding:0 16px;border-radius:12px;background:#F5F6F8;border:1px solid #EDEEF0}
+html body:not(#_):not(#_) #ryLaunchGrid .tl-search{box-shadow:0 -12px 0 6px #fff!important}html body:not(#_):not(#_) #ryLaunchGrid .tl-search:focus-within{box-shadow:0 -12px 0 6px #fff,0 0 0 9px rgba(21,94,239,.15)!important}
+html body #ryLaunchGrid .tl-search:focus-within{border-color:#155EEF;box-shadow:0 -12px 0 6px #fff,0 0 0 9px rgba(21,94,239,.15)}
+#ryLaunchGrid .tl-search-ic{display:grid;color:#667085}#ryLaunchGrid .tl-search-ic .ry-i{width:20px;height:20px}
+html body:not(#_):not(#_) #ryLaunchGrid .tl-search input{flex:1;min-width:0;height:100%!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;outline:none!important;font-size:16px;color:#111827}
+html body:not(#_):not(#_) #ryLaunchGrid .tl-search input:focus-visible,html body:not(#_):not(#_) #ryLaunchGrid .tl-search input:focus{outline:none!important;box-shadow:none!important}
+#ryLaunchGrid #tlQ::placeholder{color:#667085}
+#ryLaunch .ry-ln-sub{margin:0 auto 0 10px!important}
+#ryLaunchGrid .tl-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}
+@media(min-width:720px){#ryLaunchGrid .tl-stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+html body #ryLaunchGrid .tl-st{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:76px;padding:10px 14px;border:1px solid #EDEEF0!important;border-radius:12px!important;background:#F9FAFB;text-align:left;cursor:pointer;color:#111827}
+#ryLaunchGrid .tl-st:hover{background:#F2F4F7}#ryLaunchGrid .tl-st small{font-size:12px;font-weight:600;color:#475467}#ryLaunchGrid .tl-st b{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+#ryLaunchGrid .tl-st small{display:flex;align-items:center;gap:2px;width:100%}#ryLaunchGrid .tl-st small .ry-i{width:14px;height:14px;margin-left:auto;color:#98A2B3}#ryLaunchGrid .tl-st.few b{color:#667085}
+#ryLaunchGrid .tl-chev{display:grid;color:#98A2B3}#ryLaunchGrid .tl-chev .ry-i{width:18px;height:18px}
+#ryLaunchGrid .tl-st:active,#ryLaunchGrid .tl-act:active,#ryLaunchGrid .tl-row:active,#ryLaunchGrid .tl-rc button:active{transform:scale(.98);transition:transform .1s}
+#ryLaunchGrid .tl-st span{font-size:12px;color:#667085;word-break:keep-all}#ryLaunchGrid .tl-st.warn b{color:#B54708}
+#ryLaunchGrid .tl-now{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-bottom:10px}
+html body #ryLaunchGrid .tl-act{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px;padding:10px 12px 10px 16px;border:0!important;border-radius:16px!important;background:#EFF4FF;color:#111827;text-align:left;cursor:pointer}
+#ryLaunchGrid .tl-act:hover{background:#E1EAFF}
+#ryLaunchGrid .tl-cnt{flex:none;margin-left:auto;font-size:30px;font-weight:800;line-height:1;color:#155EEF;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+#ryLaunchGrid .tl-act.due{background:#FFFBEB}#ryLaunchGrid .tl-act.due .tl-cnt{color:#B54708}
+#ryLaunchGrid .tl-at{min-width:0}#ryLaunchGrid .tl-at b{display:block;font-size:15px;font-weight:700}#ryLaunchGrid .tl-at small{display:block;font-size:12px;color:#475467;line-height:1.35;margin-top:2px;word-break:keep-all;text-wrap:pretty}
+html body #ryLaunchGrid .tl-calm{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:52px;margin:0 0 10px;padding:0 16px;border:0!important;border-radius:12px!important;background:#F5F6F8;font-size:14px;color:#475467;cursor:pointer;text-align:left}#ryLaunchGrid .tl-calm b{color:#155EEF;font-weight:600}
+#ryLaunchGrid .tl-rc{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0 0 12px}#ryLaunchGrid .tl-rc>span{font-size:12px;font-weight:600;color:#667085;margin-right:2px}
+html body #ryLaunchGrid .tl-rc button{min-height:44px;padding:0 16px;border-radius:999px!important;border:1px solid #EDEEF0!important;background:#fff;font-size:13px;font-weight:600;color:#111827;cursor:pointer}
+#ryLaunchGrid .tl-g{margin-top:12px}#ryLaunchGrid .tl-g h4{margin:0 4px 6px;font-size:12px;font-weight:700;color:#667085}
+#ryLaunchGrid .tl-list{display:flex;flex-wrap:wrap;gap:6px}#ryLaunchGrid .tl-list>.tl-row{flex:1 1 230px}
+html body #ryLaunchGrid .tl-row{display:grid;grid-template-columns:32px minmax(0,1fr);align-items:center;gap:10px;min-height:56px;padding:8px 12px;border:1px solid #EDEEF0!important;border-radius:12px!important;background:#fff;text-align:left;cursor:pointer;color:#111827}
+#ryLaunchGrid .tl-row:hover{background:#F9FAFB;border-color:#D0D5DD!important}
+html body:not(#_):not(#_) #ryLaunchGrid button:focus-visible{outline:2px solid #155EEF!important;outline-offset:2px}
+#ryLaunchGrid .tl-ic{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:#F2F4F7;color:#475467}#ryLaunchGrid .tl-ic .ry-i{width:18px;height:18px;stroke-width:1.5}
+#ryLaunchGrid .tl-tx{min-width:0}#ryLaunchGrid .tl-n{display:block;font-size:14px;font-weight:600}
+#ryLaunchGrid .tl-v{display:block;font-size:12px;font-weight:500;color:#667085;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+#ryLaunchGrid .tl-empty{padding:16px 4px;font-size:14px;color:#475467;word-break:keep-all}
+#ryLaunch{scroll-margin-bottom:16px}
+html body:not(#_):not(#_) #ryLaunch:focus{outline:none!important}
+.ry-ln-dim.on{touch-action:none;overscroll-behavior:none}
+@media(max-width:767px){
+#ryLaunch::before{content:'';display:block;width:36px;height:5px;margin:-6px auto 8px;border-radius:3px;background:#D0D5DD}
+html:not(#q):not(#w):not(#e) body:not(#r) #ryLaunch{width:100%!important;border-radius:20px 20px 0 0!important}
+html:not(#q):not(#w):not(#e) body:not(#r) #ryLaunch .ry-ln-h{position:sticky;top:-12px;z-index:3;background:#fff;margin:0 -2px 6px;padding:8px 2px}
+html body #ryLaunchGrid .tl-search{top:56px}
+}
+@media(max-width:380px){html body #ryLaunchGrid .tl-rc button{padding:0 12px}}
+</style>
 </head>
 <body class="bg-slate-100 p-2.5 sm:p-5 text-slate-800 antialiased" onclick="closeDropdownIfOutside(event)">
     </div>
@@ -3699,13 +3747,13 @@ td .ry-uses{margin:4px 0 0}
           <svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg><span class="ry25-st-l">발주왕</span><span id="tabRejectBadge" class="subtab-badge hidden">0</span><span class="ry25-rk" aria-hidden="true"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg></span><span class="ry25-st-h">이달의 랭킹</span>
         </button>
         <button type="button" id="tabBtnMore" class="subtab ry-more-tile" aria-haspopup="dialog" aria-expanded="false" aria-controls="ryLaunch" onclick="ryLaunchOpen(event)">
-          <svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg><span class="ry25-st-l" id="tabMoreLabel">분석·기록</span><span class="ry-more-sub">재고확인 · 재주문 · 발주왕</span><span class="ry-more-dot" id="tabMoreDot" hidden aria-label="새 공지"></span>
+          <svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg><span class="ry25-st-l" id="tabMoreLabel">도구</span><span class="ry-more-sub">모든 도구 · 숫자</span><span class="ry-more-dot" id="tabMoreDot" hidden aria-label="새 공지"></span>
         </button>
       </div>
       </div>
       <div class="ry-ln-dim" id="ryLaunchDim" onclick="ryLaunchClose()"></div>
-      <div id="ryLaunch" class="ry-launch" role="dialog" aria-label="분석·기록" hidden>
-        <div class="ry-ln-h"><b>도구 · 분석</b><span class="ry-ln-sub">한곳에서 — 매일 챙길 것 · 기록·분석 · 상품 정리</span><button type="button" class="ry-ln-x" onclick="ryLaunchClose()" aria-label="닫기"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
+      <div id="ryLaunch" class="ry-launch" role="dialog" aria-label="도구" hidden>
+        <div class="ry-ln-h"><b>도구</b><span class="ry-ln-sub">지금 할 일 · 물류 숫자 · 모든 도구</span><button type="button" class="ry-ln-x" onclick="ryLaunchClose()" aria-label="닫기"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>
         <div id="ryLaunchGrid" class="ry-ln-grid"></div>
       </div>
     </div>
@@ -11577,7 +11625,7 @@ td .ry-uses{margin:4px 0 0}
       var on = !!RY_LAUNCH_VIEWS[tab];
       b.classList.toggle('active', on);
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
-      if (l) l.textContent = on ? RY_LAUNCH_VIEWS[tab] : '분석·기록';
+      if (l) l.textContent = on ? RY_LAUNCH_VIEWS[tab] : '도구';
       var dot = document.getElementById('tabMoreDot');
       if (dot) { var seen = ''; try { seen = localStorage.getItem('ry_nt_seen') || ''; } catch (e) {} dot.hidden = !((NT.latest && NT.latest.id && NT.latest.id !== seen) || (RF.data && rfGroups().now.length)); }
       if (tab === 'notices' && NT.latest) { try { localStorage.setItem('ry_nt_seen', NT.latest.id); } catch (e) {} if (dot) dot.hidden = true; }
@@ -11622,37 +11670,118 @@ td .ry-uses{margin:4px 0 0}
           .concat(scr && !scr.hidden ? [['scr', RYI.searchcheck, '하위 섹터 확인 필요', (scrN ? scrN + '개' : '확인'), '자동 분류가 자신 없던 상품의 하위 섹터 정하기']] : [])
           .concat(isAdmin ? [['pfauto', RYI.clipboard, '사진 자동 채우기', '문준 전용', '사진 없는 상품을 인터넷 사진으로']] : [])]];
     }
-    function ryLaunchRender() {
-      var box = document.getElementById('ryLaunchGrid');
-      if (!box) return;
-      var cur = currentTab, G = ryLaunchGroups();
-      box.innerHTML = G.map(function (g) {
-        return '<div class="ry-ln-sec"><p class="ry-ln-sh">' + escapeHtml(g[0]) + '</p><div class="ry-ln-cards">' + g[1].map(function (c) {
-          return '<button type="button" class="ry-ln-card' + (cur === c[0] ? ' on' : '') + '" data-k="' + c[0] + '" title="' + escapeHtml(c[4] || '') + '" onclick="ryLaunchGo(this.dataset.k)"><span class="ry-ln-ic">' + c[1] + '</span><span class="ry-ln-t"><b>' + escapeHtml(c[2]) + '</b><small>' + escapeHtml(c[3] || '') + '</small><em>' + escapeHtml(c[4] || '') + '</em></span></button>';
-        }).join('') + '</div></div>';
-      }).join('');
+    /* 1002 도구 패널 2차 — 물류관리자 대시보드 (검수 3종 반영)
+       ① 이번 주 숫자(입고·소요일·지연·반려) ② 지금 할 일(숫자 있는 것만) ③ 최근 ④ 4묶음(주문·상품·숫자·우리 팀), 할 일에 올라간 도구는 묶음에서 뺌
+       검색칸은 한 번만 그리고 아래(#tlBody)만 다시 그림 → 한글 조합·커서가 안 깨짐 */
+    var TL_RECENT_KEY = 'ry_tool_recent_v1', TL_Q = '', TL_LAST = '';
+    function tlDays(d) { try { var t = parseDateToTime(d); return t ? Math.floor((Date.now() - t) / 864e5) : null; } catch (e) { return null; } }
+    function tlStats() {   /* 검수 반영: 카드마다 기간을 적고, 휴일 몰림에 안 속게 '하루 평균'으로 비교 */
+      var day = 864e5, now = Date.now(), wk = {}, old = {};
+      (cachedHistoryItems || []).forEach(function (x) { var t = parseDateToTime(x.inboundDate); if (!t) return; var a = now - t, d = Math.floor(t / day); if (a < 7 * day) wk[d] = (wk[d] || 0) + 1; else if (a < 35 * day) old[d] = (old[d] || 0) + 1; });
+      function per(m) { var k = Object.keys(m), n = k.reduce(function (s, d) { return s + m[d]; }, 0); return { n: n, avg: k.length ? n / k.length : 0 }; }
+      var w = per(wk), o = per(old);
+      var ages = (cachedInboundItems || []).map(function (x) { return daysSince(effOrderDate(x)); }).filter(function (d) { return d != null; });
+      var late = ages.filter(function (d) { return d >= 7; }).length, soon = ages.filter(function (d) { return d >= 4 && d < 7; }).length;
+      var lt = LT.data && LT.data.overall, rj = RJA.data && RJA.data.totals, ltN = lt ? parseInt(lt.n, 10) || 0 : 0;
+      function wait(st) { return st.err ? '못 불러옴 · 눌러서 다시' : (st.loading ? '불러오는 중' : ''); }
+      return [
+        { k: 'history', n: '입고 완료 · 7일', big: w.n + '건', sub: o.avg ? '하루 ' + Math.round(w.avg) + '건 · 평소 ' + Math.round(o.avg) + '건' : '입고한 날 하루 ' + Math.round(w.avg) + '건' },
+        { k: 'lead', n: '입고 소요 · 90일', big: lt && lt.avg != null ? Number(lt.avg).toFixed(1) + '일' : '—', sub: lt && lt.avg != null ? '영업일 · ' + ltN + '건 기준' + (ltN < 20 ? ' (아직 적음)' : '') : (wait(LT) || '발주 → 입고'), tone: lt && ltN < 20 ? 'few' : '' },
+        { k: late ? 'delayed' : 'inbound', n: late ? '지연 · 7일 넘음' : '곧 지연', big: (late || soon) + '건', sub: late ? (soon ? '곧 지연 ' + soon + '건 더' : '7일 넘게 입고 대기') : (soon ? '4~6일째 입고 대기' : '4일 넘은 것 없음'), tone: late ? 'warn' : '' },
+        { k: 'rejstats', n: '반려율 · 90일', big: rj && rj.rate != null ? rj.rate + '%' : '—', sub: rj ? (parseInt(rj.rejects, 10) || 0) + ' / ' + (parseInt(rj.requests, 10) || 0) + '건 재고있음' : (wait(RJA) || '재고 있음 비율') }
+      ];
     }
+    function tlTools() {
+      var k = ryLaunchKpis(), isAdmin = (typeof PF_ADMIN !== 'undefined') && currentSelectedMember === PF_ADMIN;
+      var scr = document.getElementById('scrEntry'), scrN = parseInt((document.getElementById('scrCnt') || {}).textContent || '', 10) || 0, s15 = document.getElementById('s15Entry');
+      var sc = (cachedStockCheckItems || []).length, rg = (typeof rfGroups === 'function' && RF.data) ? rfGroups() : null, rNow = rg ? rg.now.length : 0;
+      var stN = (typeof ST !== 'undefined' && ST.data && ST.data.items) ? ST.data.items.filter(function (x) { return x.status !== '처리 중'; }).length : 0;
+      var tmb = document.getElementById('toolMoreBtn'), s15due = !!(tmb && tmb.classList.contains('s15-due'));
+      var s15last = s15 ? ((((s15.querySelector('small') || {}).textContent || '').match(/\d+\/\d+~\d+\/\d+/) || [''])[0]) : '';
+      var t = typeof sdToday === 'function' ? sdToday() : null, am = t ? [t.am.cn, t.am.jp].filter(Boolean) : [];
+      var T = [
+        { k: 'missed', g: 0, ic: RYI.bellring, n: '놓친 주문', v: '잘 팔리는데 안 시킨 것', kw: '재고 떨어짐 판매 품절 위험 마지막 입고' },
+        { k: 'reorder', g: 0, ic: RYI.rotate, n: '다시 시킬 때', v: rg ? (rNow ? '지금 ' + rNow + '개' : (rg.week.length ? '이번 주 ' + rg.week.length + '개' : '지금은 없음')) : '재주문 후보', cnt: rNow, act: rg && rg.week.length ? '이번 주 ' + rg.week.length + '개 더' : '주기상 지금 시킬 것', pri: 2, kw: '재주문 후보 주기 입고 완료' },
+        { k: 'stockCheck', g: 0, ic: RYI.listcheck, n: '재고 확인 요청', v: sc ? '오늘 ' + sc + '개' : '오늘 없음', cnt: sc, act: '약사가 돌려보냄 · 오늘', pri: 1, kw: '취소분 재고있음 반려 확인' }
+      ].concat(isAdmin && s15 && !s15.hidden ? [{ k: 's15', g: 0, ic: RYI.bars, n: '15일 판매량 엑셀', v: s15due ? '오늘 올릴 날' : (s15last ? s15last + ' 올림' : '올리기'), cnt: s15due ? 1 : 0, act: '올릴 날이에요', due: true, pri: 0, kw: 'POS 판매량 15일 업로드' }] : [])
+      .concat([
+        { k: 'stale', g: 1, ic: RYI.package, n: '창고 정리', v: stN ? '후보 ' + stN + '개' : '오래 안 시킨 것', cnt: stN, act: '오래 안 시킨 상품', pri: 4, kw: '재고 정리 할인 반품 폐기 소진 판매종료' },
+        { k: 'noph', g: 1, ic: RYI.camera, n: '사진 없는 상품', v: '찍어 넣기', kw: '사진 촬영 카메라 이미지' },
+        { k: 'dups', g: 1, ic: RYI.copy, n: '중복 정리', v: '이름 겹치는 상품', kw: '중복 합치기 두 줄' },
+        { k: 'catbrowse', g: 1, ic: RYI.folder, n: '카테고리 고치기', v: '분류 없음·기타', kw: '카테고리 분류 어린이 기타 섹터' }
+      ]).concat(scr && !scr.hidden ? [{ k: 'scr', g: 1, ic: RYI.layers, n: '하위 섹터 확인', v: scrN ? scrN + '개' : '확인', cnt: scrN, act: '분류가 애매한 상품', pri: 5, kw: '하위 섹터 분류 확인필요' }] : [])
+      .concat([{ k: 'sets', g: 1, ic: RYI.gift, n: '세트 · 용도 찾기', v: '세트 구성·용도별 상품', kw: '세트 용도 태그 보습 여드름' }])
+      .concat(isAdmin ? [{ k: 'pfauto', g: 1, ic: RYI.sparkles, n: '사진 자동 채우기', v: '문준 전용', kw: '사진 인터넷 자동' }] : [])
+      .concat([
+        { k: 'lead', g: 2, ic: RYI.timer, n: '입고 소요일', v: LT.data && LT.data.etaAccuracy ? '예상일 적중 ' + Math.round(Number(LT.data.etaAccuracy.withinPct) || 0) + '%' : '거래처·요일별', kw: '리드타임 발주 입고 걸린 날 거래처' },
+        { k: 'rejstats', g: 2, ic: RYI.ban, n: '반려 분석', v: k.rejstats + tlTopRej(), kw: '재고 있음 반려 과재고 반려율' },
+        { k: 'ranking', g: 2, ic: RYI.trophy, n: '발주왕', v: k.ranking, kw: '순위 랭킹 직원 성공' },
+        { k: 'srcard', g: 2, ic: RYI.search, n: '자주 찾는 상품', v: '검색 순위 · 결과 없음', kw: '검색 순위 수요 결과없음 새상품' },
+        { k: 'chcard', g: 2, ic: RYI.star, n: '캐릭터별 판매', v: '산리오·포켓몬…', kw: '캐릭터 산리오 포켓몬 브랜드 판매' },
+        { k: 'notices', g: 3, ic: NT_ICON.mega, n: '공지 보관함', v: '카톡 공지 · 증정품', kw: '카톡 공지 증정품 변경' },
+        { k: 'setduty', g: 3, ic: RYI.cal, n: '세트 담당표', v: am.length ? '오늘 오전 ' + am[0] + (am.length > 1 ? ' 외 ' + (am.length - 1) : '') : '이번 주', kw: '세트 담당 오전 오후 반차 주간 횟수' },
+        { k: 'roster', g: 3, ic: RYI.user, n: '근무표', v: '새 창으로 열기', kw: '근무 스케줄 시간표' },
+        { k: 'brief', g: 3, ic: RYI.note, n: '뷰티 브리핑', v: '날짜별 모아보기', kw: '아침 브리핑 뉴스 뷰티' }
+      ]);
+      return T;
+    }
+    function tlTopRej() { var c = ((RJA.data && RJA.data.byCategory) || []).filter(function (x) { return (parseInt(x.requests, 10) || 0) >= 5; }).sort(function (a, b) { return (Number(b.rate) || 0) - (Number(a.rate) || 0); })[0]; return c ? ' · ' + c.category + ' ' + rjaPct(c.rate) + '%' : ''; }
+    var TL_GROUPS = ['주문 챙기기', '상품 정리', '숫자 보기', '우리 팀'];
+    function tlRecent() { try { var r = JSON.parse(localStorage.getItem(TL_RECENT_KEY) || '[]'); return Array.isArray(r) ? r.filter(function (x) { return typeof x === 'string'; }) : []; } catch (e) { return []; } }
+    function tlPushRecent(k) { try { var r = tlRecent().filter(function (x) { return x !== k; }); r.unshift(k); localStorage.setItem(TL_RECENT_KEY, JSON.stringify(r.slice(0, 6))); } catch (e) {} }
+    function tlRow(t) { return '<button type="button" class="tl-row" data-k="' + t.k + '" onclick="ryLaunchGo(this.dataset.k)"><span class="tl-ic">' + t.ic + '</span><span class="tl-tx"><b class="tl-n">' + escapeHtml(t.n) + '</b><span class="tl-v">' + escapeHtml(t.v || '') + '</span></span></button>'; }
+    function tlActCount() { return tlTools().filter(function (t) { return t.cnt > 0; }).length; }
+    function tlBodyHtml() {
+      var T = tlTools(), q = TL_Q.replace(/\s+/g, '').toLowerCase(), h = '';
+      if (q) {
+        var hit = T.filter(function (t) { return (t.n + t.v + (t.kw || '') + (t.act || '')).replace(/\s+/g, '').toLowerCase().indexOf(q) !== -1; });
+        return hit.length ? '<div class="tl-list">' + hit.map(tlRow).join('') + '</div>' : '<p class="tl-empty">\'' + escapeHtml(TL_Q) + '\'에 맞는 도구가 없어요. 사진, 중복, 공지처럼 짧게 찾아보세요.</p>';
+      }
+      var acts = T.filter(function (t) { return t.cnt > 0; }).sort(function (a, b) { return (a.pri || 9) - (b.pri || 9); }), inAct = {}; acts.forEach(function (t) { inAct[t.k] = 1; });
+      h += acts.length ? '<div class="tl-now" aria-label="지금 할 일">' + acts.map(function (t) { return '<button type="button" class="tl-act' + (t.due ? ' due' : '') + '" data-k="' + t.k + '" onclick="ryLaunchGo(this.dataset.k)"><span class="tl-at"><b>' + escapeHtml(t.n) + '</b><small>' + escapeHtml(t.act || t.v) + '</small></span><span class="tl-cnt">' + (t.due ? '!' : t.cnt) + '</span><span class="tl-chev" aria-hidden="true">' + RYI.chevright + '</span></button>'; }).join('') + '</div>'
+        : '<button type="button" class="tl-calm" data-k="missed" onclick="ryLaunchGo(this.dataset.k)"><span>지금 바로 처리할 일은 없어요</span><b>놓친 주문 보기</b></button>';
+      h += '<div class="tl-stats" aria-label="이번 주 숫자">' + tlStats().map(function (x) { return '<button type="button" class="tl-st' + (x.tone ? ' ' + x.tone : '') + '" data-k="' + x.k + '" onclick="ryLaunchGo(this.dataset.k)"><small>' + x.n + '</small><b>' + x.big + '</b><span>' + escapeHtml(x.sub) + '</span></button>'; }).join('') + '</div>';
+      var rc = tlRecent().map(function (k) { return T.filter(function (t) { return t.k === k && !inAct[k]; })[0]; }).filter(Boolean).slice(0, 3);
+      if (rc.length) h += '<div class="tl-rc"><span>최근</span>' + rc.map(function (t) { return '<button type="button" data-k="' + t.k + '" onclick="ryLaunchGo(this.dataset.k)">' + escapeHtml(t.n) + '</button>'; }).join('') + '</div>';
+      h += TL_GROUPS.map(function (g, i) { var rows = T.filter(function (t) { return t.g === i && !inAct[t.k]; }); return rows.length ? '<section class="tl-g"><h4>' + g + '</h4><div class="tl-list">' + rows.map(tlRow).join('') + '</div></section>' : ''; }).join('');
+      return h;
+    }
+    function tlBodyRender(force) { var b = document.getElementById('tlBody'); if (!b) return; var h = tlBodyHtml(); if (!force && h === TL_LAST) return; TL_LAST = h; b.innerHTML = h; }
+    function ryLaunchRender() {
+      var box = document.getElementById('ryLaunchGrid'); if (!box) return;
+      box.innerHTML = '<label class="tl-search"><span class="tl-search-ic" aria-hidden="true">' + RYI.search + '</span><input id="tlQ" type="search" enterkeyhint="go" placeholder="도구 찾기 · 예: 사진, 중복, 공지" autocomplete="off" aria-label="도구 찾기"></label><div id="tlBody"></div>';
+      var q = document.getElementById('tlQ');
+      q.addEventListener('input', function () { TL_Q = q.value; tlBodyRender(); });
+      q.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.isComposing) { var f = document.querySelector('#tlBody .tl-row'); if (f) { e.preventDefault(); f.click(); } } });
+      TL_LAST = ''; tlBodyRender(true);
+    }
+    function tlEntrySync() { var sub = document.querySelector('#tabBtnMore .ry-more-sub'), n = 0; try { n = tlActCount(); } catch (e) {} if (sub) sub.textContent = n ? '할 일 ' + n + '개' : '모든 도구 · 숫자'; }
+    setInterval(tlEntrySync, 5000); setTimeout(tlEntrySync, 3000);
     function ryLaunchOpen(ev) {
       if (ev) ev.stopPropagation();
       var p = document.getElementById('ryLaunch');
       if (!p) return;
       if (!p.hidden) { ryLaunchClose(); return; }
       try { ltLoad(false); rjaLoad(false); } catch (e) {}
-      ryLaunchRender();
+      TL_Q = ''; ryLaunchRender();
       p.hidden = false;
+      p.setAttribute('aria-modal', 'true'); p.tabIndex = -1;
+      try { if (window.matchMedia('(min-width:768px)').matches) p.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {}
+      try { if (!window.matchMedia('(hover:hover)').matches) p.focus({ preventScroll: true }); } catch (e) {}   /* 폰: 키보드 안 띄우고 포커스만 패널 안으로 */   /* PC: 패널 아래가 화면 밖으로 잘리지 않게 */
       document.getElementById('ryLaunchDim').classList.add('on');
       var tbm = document.getElementById('tabBtnMore'); if (tbm) tbm.setAttribute('aria-expanded', 'true');
-      var f = p.querySelector('.ry-ln-card');
-      if (f) try { f.focus({ preventScroll: true }); } catch (e) {}
+      var f = document.getElementById('tlQ');
+      if (f && window.matchMedia('(hover:hover)').matches) try { f.focus({ preventScroll: true }); } catch (e) {}   /* PC 는 바로 타이핑 · 폰은 키보드가 화면을 가리지 않게 */
     }
     function ryLaunchClose() {
       var p = document.getElementById('ryLaunch');
       if (!p || p.hidden) return;
-      p.hidden = true;
+      p.hidden = true; TL_Q = '';
       document.getElementById('ryLaunchDim').classList.remove('on');
       var tbm2 = document.getElementById('tabBtnMore'); if (tbm2) tbm2.setAttribute('aria-expanded', 'false');
     }
     function ryLaunchGo(k) {
+      tlPushRecent(k); TL_Q = '';
       ryLaunchClose();
       if (k === 'stale') { openStale(); return; }
       if (k === 'setduty') { sdOpenWeek(); return; }
@@ -11668,6 +11797,7 @@ td .ry-uses{margin:4px 0 0}
       if (k === 'noph') { nophOpen(); return; }
       if (k === 'scr') { scrOpen(); return; }
       if (k === 'pfauto') { pfaOpen(); return; }
+      if (k === 'srcard' || k === 'chcard') { switchTab('ranking'); setTimeout(function () { var c = document.getElementById(k === 'srcard' ? 'srCard' : 'chCard'); if (c) window.scrollTo({ top: Math.max(0, c.getBoundingClientRect().top + window.scrollY - 12), behavior: 'smooth' }); }, 250); return; }
       switchTab(k);
       var v = document.getElementById(k + 'View');
       if (v) window.scrollTo({ top: Math.max(0, v.getBoundingClientRect().top + window.scrollY - 12), behavior: 'smooth' });
@@ -11677,8 +11807,7 @@ td .ry-uses{margin:4px 0 0}
     setInterval(function () {   /* 열려 있는 동안 숫자만 새로 (포커스는 그대로) */
       var p = document.getElementById('ryLaunch');
       if (!p || p.hidden) return;
-      var k = ryLaunchKpis();
-      p.querySelectorAll('.ry-ln-card').forEach(function (b) { var sm = b.querySelector('small'); if (sm && k[b.dataset.k] != null && sm.textContent !== k[b.dataset.k]) sm.textContent = k[b.dataset.k]; });
+      tlBodyRender();   /* 1002 바뀐 게 있을 때만 아래 칸을 다시 (검색칸은 그대로) */
     }, 1500);
   </script>
 <div class="ry-credit">성수레디영 물류센터 <span>·</span> planned &amp; built by <b>MunJun</b></div>
