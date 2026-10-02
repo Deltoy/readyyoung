@@ -4740,8 +4740,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     /* ===== 창고 정리 (0923) — 오래 주문 안 한 상품 정리. 결정은 문준 프로필만 ===== */
     var ST = { data: null, seg: 'todo', range: 'all', open: '', busy: {}, rev: 0, imgAsked: {}, changed: false };
     var ST_RANGES = [['all', '전체'], ['cand', '정리 후보'], ['m1', '1~2개월'], ['m2', '2~3개월'], ['m3', '3개월 이상'], ['none', '기록 없음 · 안 팔리는 순']];
-    var ST_DEC = { '유지': 'keep', '할인 소진': 'sale', '반품': 'ret', '폐기': 'dis', '본사 이벤트': 'hq', '샘플 제공': 'smp', '지점 이동': 'mv' };
-    var ST_DOING = { '할인 소진': '할인해서 다 팔아주세요', '반품': '반품 박스에 모아주세요', '폐기': '폐기함으로 옮겨주세요', '본사 이벤트': '「목록 복사」로 본사에 이벤트 제안 → 보낸 뒤 처리 완료', '샘플 제공': '샘플·증정으로 쓰고 다 쓰면 처리 완료', '지점 이동': '트랜드랩 › 재고 스왑에서 받는 지점 확인 → 보낸 뒤 처리 완료' };
+    var ST_DEC = { '유지': 'keep', '할인 소진': 'sale', '소진 후 판매종료': 'sale', '반품': 'ret', '폐기': 'dis', '본사 이벤트': 'hq', '샘플 제공': 'smp', '지점 이동': 'mv' };
+    var ST_DOING = { '할인 소진': '할인해서 다 팔아주세요', '소진 후 판매종료': '정가로 팔다가 다 팔리면 끝 · 재주문하지 않아요', '반품': '반품 박스에 모아주세요', '폐기': '폐기함으로 옮겨주세요', '본사 이벤트': '「목록 복사」로 본사에 이벤트 제안 → 보낸 뒤 처리 완료', '샘플 제공': '샘플·증정으로 쓰고 다 쓰면 처리 완료', '지점 이동': '트랜드랩 › 재고 스왑에서 받는 지점 확인 → 보낸 뒤 처리 완료' };
     function stBars(m) { m = m || [0, 0, 0]; var mx = Math.max(m[0], m[1], m[2], 1); return '<span class="st-bars" title="지지난달 · 지난달 · 이번 달 입고 수량">' + [m[2], m[1], m[0]].map(function (v) { return '<i style="height:' + Math.max(3, Math.round(v / mx * 16)) + 'px' + (v ? '' : ';opacity:.35') + '"></i>'; }).join('') + '<small>' + [m[2], m[1], m[0]].join('·') + '</small></span>'; }
     function stCopy() {
       var by = {}; ((ST.data && ST.data.items) || []).filter(function (x) { return x.status === '처리 중'; }).forEach(function (x) { (by[x.decision] = by[x.decision] || []).push(x); });
@@ -4815,7 +4815,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         '<p class="st-rule">한 달 넘게 주문하지 않은 상품이에요. 주문 진행 중이거나 숨긴 상품은 빠져요.'
         + (d.doneMonth ? ' <span class="st-month">이번 달 ' + d.doneMonth + '개 정리</span>' : '')
         + (admin ? '' : '<br><span class="st-staff">정리 결정은 ' + escapeHtml(d.admin) + ' 님만 할 수 있어요.</span>') + '</p>';
-      var disc = L.disc.concat(L.doing.filter(function (it) { return it.discontinued; })).concat(L.done.filter(function (it) { return it.decision === '할인 소진'; }));   /* 1001 소진 후 판매종료만 모아 보기 */
+      var disc = L.disc.concat(L.doing.filter(function (it) { return it.discontinued; })).concat(L.done.filter(function (it) { return it.decision === '할인 소진' || it.decision === '소진 후 판매종료'; }));   /* 1001 소진 후 판매종료만 모아 보기 */
       var segs = [['todo', '결정 전', L.todo.length], ['doing', '처리 중', L.doing.length], ['disc', '소진 후 판매종료', disc.length], ['done', '완료', L.done.length]];
       document.getElementById('stSeg').innerHTML = segs.map(function (g) {
         return '<button type="button" role="tab" aria-selected="' + (ST.seg === g[0]) + '" class="' + (ST.seg === g[0] ? 'on' : '') + '" data-k="' + g[0] + '" onclick="stSetSeg(this.dataset.k)">' + g[1] + ' <i>' + g[2] + '</i></button>';
@@ -4865,15 +4865,15 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         h += '<div class="st-decided"><span class="st-dec ' + (ST_DEC[it.decision] || '') + '">' + escapeHtml(it.decision) + '</span>'
           + (it.memo ? '<span class="st-memo">' + escapeHtml(it.memo) + '</span>' : '') + '<span class="st-by">' + escapeHtml(it.decidedAt) + '</span></div>'
           + '<div class="st-todo">' + (ST_DOING[it.decision] || '') + '</div>';
-        if (admin) h += '<div class="st-acts"><button type="button" class="st-primary" data-row="' + it.row + '" data-name="' + escapeHtml(it.name) + '" onclick="stComplete(this)"' + (busy ? ' disabled' : '') + '>' + (it.decision === '할인 소진' ? '다 팔렸어요 · 목록에서 빼기' : it.decision + ' 처리 완료') + '</button>'
+        if (admin) h += '<div class="st-acts"><button type="button" class="st-primary" data-row="' + it.row + '" data-name="' + escapeHtml(it.name) + '" onclick="stComplete(this)"' + (busy ? ' disabled' : '') + '>' + (it.decision === '할인 소진' || it.decision === '소진 후 판매종료' ? '다 팔렸어요 · 목록에서 빼기' : it.decision + ' 처리 완료') + '</button>'
           + '<button type="button" class="st-ghost" data-row="' + it.row + '" data-name="' + escapeHtml(it.name) + '" onclick="stUndo(this)"' + (busy ? ' disabled' : '') + '>되돌리기</button></div>';
       } else if (admin) {
         if (ST.open === key) {
           h += '<div class="st-pick" role="group" aria-label="정리 결정">'
             + '<input type="text" class="st-memo-in" id="stMemo-' + it.row + '" maxlength="80" placeholder="메모 (선택) · 먼저 적고 고르세요" autocomplete="off" aria-label="메모">'
-            + ['유지', '할인 소진', '반품', '폐기', '본사 이벤트', '샘플 제공', '지점 이동'].map(function (dcs) {
+            + ['유지', '할인 소진', '소진 후 판매종료', '반품', '폐기', '본사 이벤트', '샘플 제공', '지점 이동'].map(function (dcs) {
                 return '<button type="button" class="st-opt ' + ST_DEC[dcs] + '" data-row="' + it.row + '" data-name="' + escapeHtml(it.name) + '" data-dec="' + dcs + '" data-last="' + escapeHtml(it.lastOrder || '') + '" onclick="stDecide(this)"' + (busy ? ' disabled' : '') + '>' + dcs
-                  + '<small>' + ({ '유지': ST.data.keepDays + '일 뒤 다시 확인', '할인 소진': '다 팔고 끝', '반품': '공급사로', '폐기': '버리기', '본사 이벤트': '본사 마케팅에 제안', '샘플 제공': '샘플·증정', '지점 이동': '팔리는 지점으로' }[dcs] || '') + '</small></button>';
+                  + '<small>' + ({ '유지': ST.data.keepDays + '일 뒤 다시 확인', '할인 소진': '할인해서 다 팔고 끝', '소진 후 판매종료': '정가로 다 팔고 끝', '반품': '공급사로', '폐기': '버리기', '본사 이벤트': '본사 마케팅에 제안', '샘플 제공': '샘플·증정', '지점 이동': '팔리는 지점으로' }[dcs] || '') + '</small></button>';
               }).join('')
             + '<button type="button" class="st-cancel" onclick="stToggle(\'\')">취소</button></div>';
         } else {
@@ -4896,7 +4896,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     function stAgoText(it) { if (it.days < 0) return '주문 기록 없음'; var m = Math.floor(it.days / 30); return '마지막 주문 ' + (m >= 1 ? m + '개월' : it.days + '일') + ' 전'; }
     function stBasket(admin) {
       var c = stCands(); if (!c.length) return '';
-      var opts = ['할인 소진', '반품', '폐기', '본사 이벤트', '샘플 제공', '지점 이동'].map(function (d) { return '<option' + (d === '할인 소진' ? ' selected' : '') + '>' + d + '</option>'; }).join('');
+      var opts = ['할인 소진', '소진 후 판매종료', '반품', '폐기', '본사 이벤트', '샘플 제공', '지점 이동'].map(function (d) { return '<option' + (d === '할인 소진' ? ' selected' : '') + '>' + d + '</option>'; }).join('');
       return '<div class="st-bask"><b>정리 후보 ' + c.length + '개</b>'
         + (ST.range === 'cand' ? '' : '<button type="button" class="st-ghost" onclick="stSetRange(\'cand\')">후보만 보기</button>')
         + '<button type="button" class="st-ghost" onclick="stNotice()">카톡 공지 복사</button>'
@@ -4922,7 +4922,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     function stConfirmAll() {
       var c = stCands(), sel = document.getElementById('stBaskDec'), dec = sel ? sel.value : '할인 소진';
       if (!c.length) return;
-      if (!confirm('후보 ' + c.length + '개를 「' + dec + '」(으)로 확정할까요?\n' + (dec === '할인 소진' ? '상품에 「소진 후 판매종료」가 붙고, 다 팔리면 처리 중 탭에서 「다 팔렸어요」를 눌러 숨겨요.' : '처리 중 탭으로 옮겨져요.'))) return;
+      if (!confirm('후보 ' + c.length + '개를 「' + dec + '」(으)로 확정할까요?\n' + (dec === '할인 소진' || dec === '소진 후 판매종료' ? '상품에 「소진 후 판매종료」가 붙고, 다 팔리면 처리 중 탭에서 「다 팔렸어요」를 눌러 숨겨요.' : '처리 중 탭으로 옮겨져요.'))) return;
       stBatch('confirmCleanupCandidates', [dec, ''], function (r) { return (r.n || 0) + '개 확정 · 처리 중으로 옮겼어요' + (r.fail && r.fail.length ? ' · 실패 ' + r.fail.length + '개' : ''); });
     }
     function stCand(btn) {
