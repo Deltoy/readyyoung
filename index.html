@@ -6014,7 +6014,16 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       document.getElementById('npWho').textContent = (currentSelectedMember || '미선택') + ' 님 이름으로 등록돼요';
       document.getElementById('npDim').classList.add('on');
       document.getElementById('npSheet').classList.add('on');
+      NP_AI = { name: '', cat: '' }; npPrefetchCat();   /* 1002 폼 채우는 동안 자동 분류를 미리 받아 둔다 → 등록 때 기다리지 않음 */
+      var _nn = document.getElementById('npName'); _nn.oninput = function () { clearTimeout(NP_AI_T); NP_AI_T = setTimeout(npPrefetchCat, 700); };
       setTimeout(function () { document.getElementById('npName').focus(); }, 120);
+    }
+    var NP_AI = { name: '', cat: '' }, NP_AI_T = null;
+    function npPrefetchCat() {
+      var n = document.getElementById('npName').value.trim();
+      if (!n || n === NP_AI.name) return;
+      NP_AI = { name: n, cat: '' };
+      google.script.run.withSuccessHandler(function (r) { if (NP_AI.name === n) NP_AI.cat = (r && r.category) || ''; }).withFailureHandler(function () {}).classifyNewName(n);
     }
     function closeNewProduct() {
       document.getElementById('npDim').classList.remove('on');
@@ -6026,15 +6035,27 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       if (!name) { err.textContent = '상품명을 입력해주세요.'; err.classList.add('on'); return; }
       if (!currentSelectedMember) { err.textContent = '먼저 위에서 이름을 선택해주세요.'; err.classList.add('on'); return; }
       var btn = document.getElementById('npSave');
+      /* 1002 빠르게: 누르면 바로 창을 닫고 뒤에서 등록. 실패하면 적은 내용 그대로 창을 다시 연다 */
+      var ids = ['npName', 'npBox', 'npQty', 'npUnit', 'npNote', 'npSales15', 'npCat', 'npSub'], snap = {}; ids.forEach(function (k) { var el = document.getElementById(k); if (el) snap[k] = el.value; });
+      snap.req = document.getElementById('npRequest').checked; snap.photo = NP_PHOTO || '';
+      var cat0 = catJoin(document.getElementById('npCat').value, document.getElementById('npSub').value);
+      if (!cat0 && NP_AI.name === name && NP_AI.cat) cat0 = NP_AI.cat;
+      var reopen = function (msg) {
+        var sh = document.getElementById('npSheet');
+        if (!sh.classList.contains('on')) {
+          ids.forEach(function (k) { var el = document.getElementById(k); if (el && snap[k] != null) el.value = snap[k]; });
+          try { fillSubSel(document.getElementById('npSub'), snap.npCat, snap.npSub); document.getElementById('npSub').value = snap.npSub || ''; } catch (eS) {}
+          document.getElementById('npRequest').checked = snap.req; NP_PHOTO = snap.photo;
+          document.getElementById('npDim').classList.add('on'); sh.classList.add('on');
+        }
+        err.textContent = msg; err.classList.add('on'); showToast(name + ' 등록 못 했어요');
+      };
       btn.disabled = true; btn.textContent = '등록 중…';
+      closeNewProduct(); showToast('등록 중… ' + name + ' (다른 일 하셔도 돼요)', 8000);
       google.script.run
         .withSuccessHandler(function (res) {
           btn.disabled = false; btn.textContent = '등록하기';
-          if (!res || res.success === false) {
-            err.textContent = (res && res.message) ? res.message : '등록에 실패했어요.';
-            err.classList.add('on');
-            return;
-          }
+          if (!res || res.success === false) { reopen((res && res.message) ? res.message : '등록에 실패했어요.'); return; }
           if (res.requested) ry25TrackRequest(res.rowNumber, res.name, parseInt(document.getElementById('npQty').value, 10) || 1);   /* 0925: 하단 요약 바 */
           closeNewProduct();
           var extra = (res.category ? ' · ' + catLabel(res.category) : '') + (res.requested ? ' · 1차 검토로 들어갔어요' : '');
@@ -6046,8 +6067,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         })
         .withFailureHandler(function (e) {
           btn.disabled = false; btn.textContent = '등록하기';
-          err.textContent = '등록 실패 — 잠시 뒤 다시 시도해주세요.';
-          err.classList.add('on');
+          reopen('등록 실패 — 잠시 뒤 다시 시도해주세요.');
         })
         .addNewProduct({
           name: name,
@@ -6056,8 +6076,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           unit: document.getElementById('npUnit').value,
           note: document.getElementById('npNote').value.trim(),
           sales15: document.getElementById('npSales15').value.trim(),
-          category: catJoin(document.getElementById('npCat').value, document.getElementById('npSub').value),
-          photo: NP_PHOTO || '',
+          category: cat0,
+          photo: snap.photo,
           request: document.getElementById('npRequest').checked,
           requester: currentSelectedMember || ''
         });
