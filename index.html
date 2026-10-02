@@ -9374,10 +9374,18 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       document.querySelectorAll('#searchCardContainer input[id^="m-s-qty-"], #searchTableBody input[id^="s-qty-"]').forEach(function (el) { if (el.dataset.touched === '1' || el === foc) keep[el.id] = el.value; });
       try { if (focId) selS = [foc.selectionStart, foc.selectionEnd]; } catch (eS) { selS = null; }
       var top0 = focId ? foc.getBoundingClientRect().top : null;
+      /* 1002 기준 줄: 화면 위쪽에 보이던 첫 카드(행 번호)와 그 위치 → 다시 그린 뒤 같은 카드를 같은 자리에 (뒤에서 새로 받아 위쪽 카드 높이가 바뀌어도 보던 화면이 안 밀리게) */
+      var anc = null;
+      if (!focId && RY_LOCK_Y == null) { var hdr = 90; [].some.call(document.querySelectorAll('#searchCardContainer [data-r], #searchTableBody [data-r]'), function (c) { if (!c.offsetParent) return false; var r = c.getBoundingClientRect(); if (r.bottom > hdr) { anc = { row: c.getAttribute('data-r'), top: r.top }; return true; } return false; }); }
       renderSearchResults0(items);
       Object.keys(keep).forEach(function (id) { var el = document.getElementById(id); if (el) { el.value = keep[id]; el.dataset.touched = '1'; var m = id.match(/(\d+)$/); if (m && typeof ry25MarkPreset === 'function') ry25MarkPreset(+m[1]); } });
       var f2 = focId ? document.getElementById(focId) : null;
       if (f2) { try { f2.focus({ preventScroll: true }); if (selS) f2.setSelectionRange(selS[0], selS[1]); } catch (eF) {} var dy = f2.getBoundingClientRect().top - top0; if (Math.abs(dy) > 2) window.scrollBy(0, dy); }   /* 고치던 칸이 화면의 같은 자리에 오도록 */
+      else if (anc) {
+        var c2 = [].filter.call(document.querySelectorAll('#searchCardContainer [data-r="' + anc.row + '"], #searchTableBody [data-r="' + anc.row + '"]'), function (x) { return x.offsetParent; })[0];
+        if (c2) { var d2 = c2.getBoundingClientRect().top - anc.top; if (Math.abs(d2) > 1) window.scrollBy(0, d2); }
+        else if (Math.abs(window.scrollY - y) > 2) window.scrollTo(0, y);
+      }
       else if (Object.keys(keep).length && Math.abs(window.scrollY - y) > 2) window.scrollTo(0, y);
     }
     function renderSearchResults0(items) {
@@ -9406,7 +9414,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           : photoPlaceholderHtml(item.rowNumber, 'w-16 h-16 rounded-xl flex-shrink-0');
 
         const tr = document.createElement('tr');
-        tr.className = "hover:bg-slate-50 transition" + (isEnded(item) ? ' ry-endrow' : '');
+        tr.className = "hover:bg-slate-50 transition" + (isEnded(item) ? ' ry-endrow' : ''); tr.setAttribute('data-r', item.rowNumber);   /* 1002 다시 그릴 때 보던 줄 기준점 */
         tr.innerHTML = `
           <td class="p-2.5 text-center">${pcImgHtml}</td>
           <td class="p-3 font-bold text-slate-900 text-sm leading-relaxed">${escapeHtml(item.name)} ${endedBadge(item)}</td>
@@ -9437,7 +9445,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 
         const card = document.createElement('div');
         const canAct = item.status === 'IDLE' || item.status === 'DONE';
-        card.className = 'ry25-pc' + (item.justRequested ? ' is-req' : '') + (canAct ? '' : ' is-go') + (isEnded(item) ? ' ry-endrow' : '');
+        card.className = 'ry25-pc' + (item.justRequested ? ' is-req' : '') + (canAct ? '' : ' is-go') + (isEnded(item) ? ' ry-endrow' : ''); card.setAttribute('data-r', item.rowNumber);
         const qtyVal = escapeHtml(String(item.targetQty || '1').replace(/[^0-9]/g, '') || '1');
         const boxTxt = String(item.boxUnit == null ? '' : item.boxUnit).trim();
         card.innerHTML = `
