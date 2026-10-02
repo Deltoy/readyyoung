@@ -8021,21 +8021,30 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       DELAY_BUSY = true;
       google.script.run
         .withSuccessHandler(function (res) {
-          DELAY_BUSY = false; DELAY_AT = Date.now();
-          if (!res || !res.reasons) return;
+          DELAY_BUSY = false;
+          if (!res || !res.reasons) { delayRetry_(); return; }
+          DELAY_AT = Date.now(); DELAY_TRY = 0;
           var changed = JSON.stringify(res.reasons) !== JSON.stringify(DELAY_REASONS);
           DELAY_REASONS = res.reasons;
+          try { var _ta = document.getElementById('drText'); if (changed && DELAY_CUR && document.getElementById('drSheet').classList.contains('on') && !_ta.value.trim()) { var _r = delayReasonOf(DELAY_CUR); if (_r) { _ta.value = _r.text; document.getElementById('drSub').textContent = '발주 ' + (DELAY_CUR.orderDate || '-') + (effOrderDate(DELAY_CUR) !== DELAY_CUR.orderDate ? ' → 재주문 ' + effOrderDate(DELAY_CUR) : '') + ' · ' + daysSince(effOrderDate(DELAY_CUR)) + '일째'; } } } catch (eF) {}   /* 1002 창을 먼저 열었어도 늦게 온 이유를 채움(빈 칸으로 저장해 지워지는 것 방지) */
           if (changed) { renderInboundList(cachedInboundItems); try { renderDelayedList(); } catch (eD) {} }   /* 1001 지연 탭도 다시 — 늦은 이유(재주문 날짜)가 늦게 도착하면 지연 탭이 옛 날짜로 남던 문제 */
         })
-        .withFailureHandler(function () { DELAY_BUSY = false; DELAY_AT = Date.now(); })
+        .withFailureHandler(function () { DELAY_BUSY = false; delayRetry_(); })
         .getDelayReasons();
+    }
+    /* 1002 늦은 이유(재주문 날짜)를 한 번 못 받으면 2분 동안 옛 날짜로 '지연'에 남던 것(알룬정): 몇 초 뒤 다시, 최대 3번 */
+    var DELAY_TRY = 0;
+    function delayRetry_() {
+      DELAY_AT = Date.now();
+      if (DELAY_TRY >= 3) { DELAY_TRY = 0; return; }
+      DELAY_TRY++; setTimeout(function () { refreshDelayReasons(true); }, 4000 * DELAY_TRY);
     }
     // 늦었거나 곧 늦을 상품, 또는 이미 사유가 적힌 상품에만 보인다
     function delayReasonHtml(item) {
       var r = delayReasonOf(item), e = elapsedInfo(item);
       if (!r && !(e && (e.late || e.soon))) return '';
       return '<button type="button" class="ry-delay' + (r ? ' has' : '') + '" onclick="event.stopPropagation(); openDelayReason(' + item.rowNumber + ')">'
-        + RYI.clock + (r ? escapeHtml(r.text) + (r.editor ? ' <i>· ' + escapeHtml(r.editor) + '</i>' : '') : '늦는 이유 적기') + '</button>';
+        + RYI.clock + (r ? escapeHtml(r.text) + (r.editor ? ' <i>· ' + escapeHtml(r.editor) + '</i>' : '') : '늦는 이유 · 재발주') + '</button>';
     }
     function openDelayReason(rowNumber) {
       var item = (cachedInboundItems || []).filter(function (x) { return x.rowNumber === rowNumber; })[0];
@@ -8052,6 +8061,13 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     }
     function closeDelayReason() { document.getElementById('drDim').classList.remove('on'); document.getElementById('drSheet').classList.remove('on'); }
     function quickDelayReason(t) { var ta = document.getElementById('drText'), cur = ta.value.trim(); ta.value = cur ? (cur.indexOf(t) !== -1 ? cur : cur + ' · ' + t) : t; ta.focus(); }
+    /* 1002 지연 상품을 다시 주문했을 때: 한 번에 '재주문 M/D(오늘)'로 저장 → 오늘부터 다시 세서 7일 미입고에서 빠짐. 다른 날 했으면 글에서 날짜만 고쳐 저장 */
+    function drReorderToday() {
+      var d = new Date(), tag = '재주문 ' + (d.getMonth() + 1) + '/' + d.getDate(), ta = document.getElementById('drText');
+      var cur = ta.value.replace(/\s*·?\s*(재주문|재발주|다시\s*주문)\s*\d{1,2}\s*[\/.]\s*\d{1,2}\.?/g, '').replace(/\s+/g, ' ').trim();
+      ta.value = cur ? tag + ' · ' + cur : tag;   // 새 날짜를 맨 앞에 (날짜는 글에서 처음 나온 것을 씀)
+      saveDelayReasonUi();
+    }
     function saveDelayReasonUi() {
       var item = DELAY_CUR; if (!item) { closeDelayReason(); return; }
       var text = document.getElementById('drText').value.replace(/\s+/g, ' ').trim();
@@ -8066,7 +8082,9 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
           if (res.reason) DELAY_REASONS[delayKey(item)] = res.reason; else delete DELAY_REASONS[delayKey(item)];
           closeDelayReason();
           renderInboundList(cachedInboundItems);
-          showToast(res.reason ? '늦는 이유를 저장했어요. 입고완료하면 자동으로 지워져요' : '늦는 이유를 지웠어요', 3200);
+          try { renderDelayedList(); } catch (eD) {}   /* 1002 재주문 날짜면 지연 탭에서 바로 빠지게 */
+          var reo = res.reason && /재주문|재발주|다시\s*주문/.test(String(res.reason.text || text));
+          showToast(reo ? '재발주로 기록했어요 · ' + effOrderDate(item) + '부터 다시 세요' : res.reason ? '늦는 이유를 저장했어요. 입고완료하면 자동으로 지워져요' : '늦는 이유를 지웠어요', 3200);
         })
         .withFailureHandler(function () { fail('저장 실패 — 잠시 뒤 다시 시도해주세요.'); })
         .saveDelayReason(item.rowNumber, item.name, text, currentSelectedMember || '');
@@ -8509,7 +8527,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 
     // 🚨 지연: 발주 후 7일 이상 미입고 품목 (입고대기 중 오래된 것만 모아 보기)
     function renderDelayedList() {
-      refreshDelayReasons(false);
+      refreshDelayReasons(Date.now() - DELAY_AT > 30000);   /* 1002 지연 탭을 볼 때는 30초 지난 이유면 새로 받음 */
       const src = cachedInboundItems || [];
       const delayed = src
         .filter(it => { const d = daysSince(effOrderDate(it)); return d != null && d >= 7; })   /* 1001 재주문 날짜부터 다시 셈 */
@@ -11674,6 +11692,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
   <div class="np-err" id="drErr"></div>
   <div class="np-field"><label for="drText">입고가 늦는 이유</label>
     <textarea id="drText" rows="3" maxlength="200" placeholder="예: 제조사 생산 지연, 9월 말 출고 예정이라고 함"></textarea></div>
+  <button type="button" id="drReorder" onclick="drReorderToday()" style="display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:50px;margin:2px 0 10px;border:1.5px solid #155EEF;border-radius:14px;background:#fff;color:#155EEF;font-size:16px;font-weight:700;cursor:pointer">재발주했어요 · 오늘부터 다시 세기</button>
   <div class="inmemo-quick">
     <button type="button" onclick="quickDelayReason('공급사 품절')">공급사 품절</button>
     <button type="button" onclick="quickDelayReason('제조사 생산 지연')">제조사 생산 지연</button>
