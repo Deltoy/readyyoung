@@ -9237,7 +9237,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
     }
     /* 지금 화면이 아는 상태(탭 목록들) — 행 번호 → {st, x} */
     function ryLiveMap() {
-      var live = {}, put = function (arr, st) { (arr || []).forEach(function (x) { if (x && x.rowNumber) live[x.rowNumber] = { st: st, x: x }; }); };
+      var live = {}, put = function (arr, st) { (arr || []).forEach(function (x) { if (x && x.rowNumber && !x.isLog) live[x.rowNumber] = { st: st, x: x }; }); };   /* 1002 지난 입고 기록(isLog)은 지금 상태가 아님 */
       put(cachedHistoryItems, 'DONE'); put(cachedInboundItems, 'INBOUND'); put(cachedOrderItems, 'ORDER'); put(cachedReviewItems, 'REVIEW');
       return live;
     }
@@ -9251,7 +9251,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
       for (var i = 0; i < RY_CAT.items.length && out.length < 40; i++) { var it = RY_CAT.items[i]; if (hit(String(it._k || ''))) out.push(it); }
       /* 폰 목록은 최대 5분 전 것 → 지금 화면이 아는 상태 · 사진을 덮어씀 (방금 요청·승인·입고한 것도 바로 맞게) */
       var live = ryLiveMap();
-      return out.map(function (it) { var l = live[it.rowNumber]; return l ? ryLiveItem(it, l) : it; });
+      var nk = function (x) { return String(x || '').replace(/\s+/g, '').toLowerCase(); };
+      return out.map(function (it) { var l = live[it.rowNumber]; return l && nk(l.x.name) === nk(it.name) ? ryLiveItem(it, l) : it; });   /* 1002 행 번호만 같고 이름이 다르면(행이 밀림) 섞지 않음 — 와우에 센텔아크네 사진·입고완료가 붙던 것 */
     }
     /* 0929 전체 목록이 아직 없을 때: 이 기기에 이미 있는 탭 목록(1차검토·발주·입고대기·입고내역)에서 먼저 찾아 보여준다 */
     function ryListSearch(query) {
@@ -9579,7 +9580,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
         .withFailureHandler(function(err) {
           undo('재주문이 저장되지 않았어요. 다시 눌러 주세요.\n(' + (err && err.message ? err.message : err) + ')');
         })
-        .reorderReceivedItem(rowNumber, n, '개', currentSelectedMember);
+        .reorderReceivedItem(rowNumber, n, '개', currentSelectedMember, (src && src.name) || ryNameOf(rowNumber));
     }
 
     /* 1002 '소진 후 판매종료' 상품은 검색엔 남기되, 주문할 때 한 번 더 묻는다 (실수로 다시 들여오지 않게) */
