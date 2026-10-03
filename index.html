@@ -3538,6 +3538,14 @@ td .ry-uses{margin:4px 0 0}
 .ry-end.ry-hid{background:#F2F4F7;color:#344054;border-color:#D0D5DD}
 </style>
 <style>
+/* 1003 추천 발주 수량 */
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pre button.rec>span{background:#EEF4FF;border-color:#C7D7FE;color:#155EEF;font-weight:700;display:inline-flex;align-items:center;gap:4px}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pre button.rec.on>span{background:#155EEF;border-color:#155EEF;color:#fff}
+.ry25-pre button.rec .ry-i{width:14px;height:14px}
+html body .ry-rec-line{display:inline-flex;align-items:center;gap:4px;min-height:32px;margin-top:4px;padding:0 10px;border:0!important;border-radius:999px!important;background:#EEF4FF;color:#155EEF;font-size:13px;font-weight:600;cursor:pointer}
+.ry-rec-line .ry-i{width:14px;height:14px}.ry-rec-line span{color:#475467;font-weight:500}
+</style>
+<style>
 /* 1003 계절별 판매 */
 #msCard .ms-cov{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px;margin:8px 0}#msCard .ms-cov span{display:grid;place-items:center;height:28px;border-radius:8px;background:#F2F4F7;color:#98A2B3;font-size:11px;font-weight:600}#msCard .ms-cov span.on{background:#155EEF;color:#fff}
 #msCard .ms-up{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px}#msCard .ms-ym{display:flex;align-items:center;gap:6px;font-size:13px;color:#475467}#msCard .ms-ym input{min-height:44px;border:1px solid #EDEEF0;border-radius:12px;padding:0 10px;font-size:15px}
@@ -9636,7 +9644,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         const card = document.createElement('div');
         const canAct = item.status === 'IDLE' || item.status === 'DONE';
         card.className = 'ry25-pc' + (item.justRequested ? ' is-req' : '') + (canAct ? '' : ' is-go') + (isEnded(item) ? ' ry-endrow' : ''); card.setAttribute('data-r', item.rowNumber);
-        const qtyVal = escapeHtml(String(item.targetQty || '1').replace(/[^0-9]/g, '') || '1');
+        const _rec = ryRec(item), qtyVal = escapeHtml(String(_rec ? _rec.n : (String(item.targetQty || '1').replace(/[^0-9]/g, '') || '1')));   /* 1003 추천 수량을 미리 채움 */
         const boxTxt = String(item.boxUnit == null ? '' : item.boxUnit).trim();
         card.innerHTML = `
           <div class="ry25-pc-img">${ry25DotHtml(item)}${mImgHtml}</div>
@@ -10030,11 +10038,45 @@ html body #ryLaunchGrid .tl-search{top:56px}
       out.sort(function (a, b) { return a.n - b.n; });
       return out.slice(0, 3);
     }
+    /* ═══ 1003 추천 발주 수량 (사용자: AI·자동화 2번 — 주문 칸에 추천 수량을 미리 채움)
+       하루 판매(15일 판매 ÷ 15) × 계절 배수(월별 엑셀이 3달↑ 있을 때) × (입고 소요 + 2주) → 박스 단위로 올림 · 월 한도 넘지 않게
+       입고 소요 = 카테고리 평균(3건↑) 또는 전체 평균, 영업일 → 달력일(×1.4), 자료 없으면 3일 ═══ */
+    var REC_COVER = 14, REC_INIT = false;
+    function ryRecMult(name) {
+      var d = typeof MS !== 'undefined' && MS.data && MS.data.ok ? MS.data : null; if (!d || d.months.length < 3) return null;
+      var k = s15Key(name), it = d.items.filter(function (x) { return s15Key(x.n) === k; })[0]; if (!it) return null;
+      var nx = new Date(); nx.setDate(nx.getDate() + 21); var mm = nx.getMonth() + 1;   // 3주 뒤(입고·판매가 일어날 때)의 달
+      var tot = it.q.reduce(function (a, b) { return a + b; }, 0), avg = tot / d.months.length; if (!avg || tot < 20) return null;
+      var same = d.months.map(function (m, i) { return +m.slice(5) === mm ? it.q[i] : null; }).filter(function (v) { return v != null; });
+      if (!same.length) return null;
+      var x = same.reduce(function (a, b) { return a + b; }, 0) / same.length / avg; x = Math.max(0.7, Math.min(2.5, x));
+      return Math.abs(x - 1) < 0.15 ? null : { x: +x.toFixed(1), m: mm };
+    }
+    function ryRecLead(cat) {
+      var d = typeof LT !== 'undefined' && LT.data, top = String(cat || '').split('›')[0].trim(), c = d && (d.byCategory || []).filter(function (x) { return String(x.category || '').split('›')[0].trim() === top && (parseInt(x.n, 10) || 0) >= 3; })[0];
+      var v = c ? Number(c.avg) : d && d.overall ? Number(d.overall.avg) : NaN;
+      return isFinite(v) && v > 0 ? Math.max(1, Math.round(v * 1.4)) : 3;
+    }
+    function ryRec(item, cycleDays) {
+      if (!REC_INIT) { REC_INIT = true; try { ltLoad(false); } catch (e) {} try { msLoad(false); } catch (e) {} }
+      if (!item) return null;
+      var s15 = Number(String(item.sales15 == null ? '' : item.sales15).replace(/[^0-9.]/g, '')); if (!(s15 > 0)) return null;
+      var daily = s15 / 15, mult = ryRecMult(item.name), lead = ryRecLead(item.category), cover = cycleDays > 0 ? Math.max(7, Math.min(30, Math.round(cycleDays))) : REC_COVER;
+      var need = daily * (mult ? mult.x : 1) * (lead + cover), box = parseInt((String(item.boxUnit || '').match(/\d{1,5}/) || ['0'])[0], 10) || 0, isBox = item.unit === '박스';
+      var lim = (String(item.note || '').match(/월\s*(\d+)\s*개?\s*(제한|한도)/) || [])[1];
+      var n, how;
+      if (isBox) { if (!box) return null; n = Math.max(1, Math.ceil(need / box)); how = '박스(' + box + '개입)로 올림'; }
+      else { n = Math.max(1, Math.ceil(need)); if (box > 1 && n >= box * 0.6) { n = Math.ceil(n / box) * box; how = box + '개입 박스에 맞춤'; } }
+      var capped = false; if (lim && !isBox && n > +lim) { n = +lim; capped = true; }
+      return { n: n, unit: isBox ? '박스' : '개', why: '15일 ' + Math.round(s15) + '개 팔림 → 하루 ' + (Math.round(daily * 10) / 10) + '개' + (mult ? ' × ' + mult.m + '월 ' + mult.x + '배' : '') + ' × ' + (lead + cover) + '일(입고 ' + lead + '일 + ' + cover + '일치)' + (how ? ' · ' + how : '') + (capped ? ' · 월 ' + lim + '개 한도' : '') };
+    }
+    function ryRecWhy(row) { var it = (lastSearchResults || []).filter(function (x) { return x.rowNumber === row; })[0] || findItemByRow(row), r = ryRec(it); if (r) showToast('추천 ' + r.n + r.unit + ' · ' + r.why, 4200); }
     function ry25PresetHtml(item) {
-      var list = ry25Presets(item);
-      if (!list.length) return '';
-      var cur = parseInt(String(item.targetQty || '').replace(/[^0-9]/g, ''), 10) || 0;
-      return '<span class="ry25-pre" onclick="event.stopPropagation()">' + list.map(function (p) {
+      var list = item && item.unit === '박스' ? [] : ry25Presets(item), rec = ryRec(item);   /* 1003 박스 단위 상품에 '30개' 프리셋이 30박스로 들어가던 것 막음 */
+      if (!list.length && !rec) return '';
+      var cur = rec ? rec.n : parseInt(String(item.targetQty || '').replace(/[^0-9]/g, ''), 10) || 0;
+      return '<span class="ry25-pre" onclick="event.stopPropagation()">' + (rec ? '<button type="button" class="rec on" data-pre-row="' + item.rowNumber + '" data-n="' + rec.n + '" onclick="ry25SetQty(' + item.rowNumber + ', ' + rec.n + ');ryRecWhy(' + item.rowNumber + ')" title="' + escapeHtml(rec.why) + '"><span>' + RYI.sparkles + '추천 ' + rec.n + rec.unit + '</span></button>' : '')
+        + list.filter(function (p) { return !rec || p.n !== rec.n; }).map(function (p) {
         return '<button type="button" class="' + (p.best ? 'best' : '') + (p.n === cur ? ' on' : '') + '" data-pre-row="' + item.rowNumber + '" data-n="' + p.n + '"'
           + ' onclick="ry25SetQty(' + item.rowNumber + ', ' + p.n + ')" title="' + (p.best ? '이 수량부터 최저가' : '주문 단위') + '"><span>' + p.n + '개</span></button>';
       }).join('') + '</span>';
@@ -10247,13 +10289,14 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var row = parseInt(it.rowNumber, 10) || 0;
       var since = rfDaysSince(it.lastInbound), dl = rfNum(it.daysLeft), cyc = rfNum(it.avgCycleDays), s15 = rfNum(it.sales15);
       var unit = it.unit === '박스' ? '박스' : '개';
-      var qty = Math.max(1, parseInt(it.usualQty, 10) || 1);
+      var usual = Math.max(1, parseInt(it.usualQty, 10) || 1), _src = (function () { try { return findItemByRow(row) || ((typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) || []).filter(function (x) { return x.rowNumber === row; })[0] || {}; } catch (e) { return {}; } })(), rec = ryRec({ name: it.name, sales15: it.sales15, boxUnit: it.boxUnit || _src.boxUnit, unit: it.unit, note: it.note || _src.note, category: it.category || _src.category }, cyc), qty = rec ? rec.n : usual;   /* 1003 추천 수량 */
       var chip = dl == null ? '' : dl < 0 ? (-dl) + '일 지남' : dl === 0 ? '오늘 예정' : '예정 D-' + dl;
       var hint = group === 'stale' ? '<span class="ry25-rf-hint">안 파는 상품이면 [특이사항]에서 판매종료 표시</span>' : '';
       var img = it.imgUrl
         ? '<img src="' + escapeHtml(it.imgUrl) + '" referrerpolicy="no-referrer" data-row="' + row + '" loading="lazy" alt="" onerror="imgFallback(this)">'
         : '<div class="ry25-rf-noimg">' + RYI.pill + '</div>';
       var meta = ['마지막 입고 ' + (since == null ? '-' : since + '일 전'), cyc ? '평균 ' + cyc + '일 주기' : '입고 ' + (parseInt(it.cycles, 10) || 1) + '회', '15일 판매 ' + (s15 == null ? '-' : s15)];
+      var recLine = rec ? '<button type="button" class="ry-rec-line" onclick="showToast(this.dataset.w, 4200)" data-w="' + escapeHtml('추천 ' + rec.n + rec.unit + ' · ' + rec.why) + '">' + RYI.sparkles + '추천 <b>' + rec.n + rec.unit + '</b>' + (usual !== rec.n ? ' <span>· 평소 ' + usual + '</span>' : '') + '</button>' : '';
       var act = group === 'insufficient' ? '' :
         '<div class="ry25-rf-act">'
         + '<div class="ry25-step"><button type="button" aria-label="수량 1 줄이기" onclick="rfStep(' + row + ', -1)">' + RYI.minus + '</button>'
@@ -10265,7 +10308,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         + '<div class="ry25-rf-img">' + img + '</div>'
         + '<div class="ry25-rf-m"><b class="ry25-rf-n">' + escapeHtml(it.name) + '</b>'
         + '<span class="ry25-rf-meta">' + meta.map(escapeHtml).join(' · ') + '</span>'
-        + (chip ? '<span class="ry25-rf-chip ' + group + '">' + escapeHtml(chip) + '</span>' : '') + hint
+        + (chip ? '<span class="ry25-rf-chip ' + group + '">' + escapeHtml(chip) + '</span>' : '') + recLine + hint
         + '</div>' + act + '</div>';
     }
     function rfRender() {
