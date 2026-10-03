@@ -4750,11 +4750,14 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var before = item.note || '', beforeName = item.name, beforeCat = item.category || '', row = NOTE_ROW;
       if (text === before && newName === beforeName && newCat === beforeCat) { btn.disabled = false; btn.textContent = '저장하기'; closeNote(); showToast('바뀐 게 없어요'); return; }
       item.note = text; item.name = newName; item.category = newCat;   // 화면에 먼저 반영
+      ryPendAdd(row, beforeName, { name: newName, note: text, cat: newCat });
+      try { lmBusy[row] = 1; } catch (e) {}   // 1003 내 저장이 끝나기 전엔 월 한도 자동 꼬리표가 따로 덮어쓰지 않게
       /* 1003 사용자: 저장이 느림 → 서버 답을 기다리지 않고 바로 닫는다. 실패하면 되돌리고 입력한 내용 그대로 다시 열어준다 */
       btn.disabled = false; btn.textContent = '저장하기';
       closeNote(); renderAllViews();
       showToast(beforeName !== newName ? ('이름을 ' + newName + ' 으로 바꿨어요') : (newCat !== beforeCat && text === before) ? ('카테고리를 ' + newCat + ' (으)로 바꿨어요') : (text ? '특이사항을 저장했어요' : '특이사항을 비웠어요'));
       function undo(msg) {
+        ryPendDrop(row);
         item.note = before; item.name = beforeName; item.category = beforeCat; renderAllViews();
         showToast('저장 안 됐어요 · ' + msg);
         try {
@@ -4765,8 +4768,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
         } catch (e) {}
       }
       google.script.run
-        .withSuccessHandler(function (res) { if (!res || res.success === false) undo((res && res.message) ? res.message : '저장 실패'); })
-        .withFailureHandler(function () { undo('잠시 뒤 다시 시도해주세요.'); })
+        .withSuccessHandler(function (res) { try { delete lmBusy[row]; } catch (e) {} if (!res || res.success === false) undo((res && res.message) ? res.message : '저장 실패'); else renderAllViews(); })
+        .withFailureHandler(function () { try { delete lmBusy[row]; } catch (e) {} undo('잠시 뒤 다시 시도해주세요.'); })
         .updateProduct(row, beforeName, newName, text, currentSelectedMember || '', newCat);
     }
 
@@ -6358,8 +6361,32 @@ html body #ryLaunchGrid .tl-search{top:56px}
         .setMemberAvatar(who, face);
     }
 
+    /* 1003 사용자: '이미끝' 저장 후 새로고침하니 최종 발주에 또 뜸 — 시트엔 저장됐지만 새로고침 직후 '저장 전 화면 사본'(또는 아직 저장 중인 서버)이 보였음.
+       → 저장 중인 상품 수정을 3분 동안 기억해 두고, 새로 받은 자료가 아직 옛 값이면 내 수정으로 덮어 보여준다 (시트에 반영되면 자동으로 지움) */
+    var RY_PEND_KEY = 'ry_note_pending_v1';
+    function ryPendGet() { try { var o = JSON.parse(localStorage.getItem(RY_PEND_KEY) || '{}'); return o && typeof o === 'object' && !Array.isArray(o) ? o : {}; } catch (e) { return {}; } }
+    function ryPendSet(o) { try { localStorage.setItem(RY_PEND_KEY, JSON.stringify(o)); } catch (e) {} }
+    function ryPendAdd(row, oldName, p) { var o = ryPendGet(); o[row] = { old: oldName, name: p.name, note: p.note, cat: p.cat, t: Date.now() }; ryPendSet(o); }
+    function ryPendDrop(row) { var o = ryPendGet(); delete o[row]; ryPendSet(o); }
+    function ryPendApply(res) {
+      var o = ryPendGet(), keys = Object.keys(o), ch = false; if (!keys.length || !res) return;
+      keys.forEach(function (row) {
+        var p = o[row]; if (!p || Date.now() - p.t > 180000) { delete o[row]; ch = true; return; }
+        var hit = false;
+        ['reviewItems', 'orderItems', 'inboundItems', 'stockCheckItems'].forEach(function (k) {   // 입고 기록(history)은 지난 로그라 덮지 않음
+          (res[k] || []).forEach(function (it) {
+            if (String(it.rowNumber) !== String(row) || (it.name !== p.old && it.name !== p.name)) return;
+            hit = true;
+            if (String(it.note || '').indexOf(p.note) === 0 && it.name === p.name && (it.category || '') === (p.cat || '')) { delete o[row]; ch = true; return; }   // 시트에 반영됨 (뒤에 자동 꼬리표가 붙어도 반영으로 봄)
+            it.note = p.note; it.name = p.name; it.category = p.cat;
+          });
+        });
+      });
+      if (ch) ryPendSet(o);
+    }
     var _lastResJson = '';
     function applyDashboardData(res) {
+      try { ryPendApply(res); } catch (e) {}
       try {
         var _j = JSON.stringify(res);
         if (_j === _lastResJson) return;      // 바뀐 게 없으면 화면을 다시 그리지 않는다
@@ -6741,6 +6768,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         const savedData = localStorage.getItem('s_dashboard_cache_v7');
         if (savedData) {
           const parsed = JSON.parse(savedData);
+          try { ryPendApply(parsed); } catch (e) {}
           cachedReviewItems = parsed.reviewItems || [];
           cachedOrderItems = parsed.orderItems || [];
           cachedInboundItems = parsed.inboundItems || [];
@@ -7066,6 +7094,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function lmSaveNote(it, note, done) {
       if (lmBusy[it.rowNumber]) return; lmBusy[it.rowNumber] = 1;
       const before = it.note; it.note = note;
+      try { var pd = ryPendGet(); if (pd[it.rowNumber] && !it.isLog && (cachedHistoryItems || []).indexOf(it) < 0) { pd[it.rowNumber].note = note; ryPendSet(pd); } } catch (e) {}   // 1003 저장 중 수정에 자동 꼬리표도 이어 붙임(입고 기록 쪽 정리는 제외)
       google.script.run.withSuccessHandler(function (res) { delete lmBusy[it.rowNumber]; if (!res || res.success === false) { it.note = before; renderAllViews(); return; } done && done(); })
         .withFailureHandler(function () { delete lmBusy[it.rowNumber]; it.note = before; renderAllViews(); })
         .updateProduct(it.rowNumber, it.name, it.name, note, currentSelectedMember || '', it.category || '');
