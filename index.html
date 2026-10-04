@@ -3538,6 +3538,13 @@ td .ry-uses{margin:4px 0 0}
 .ry-end.ry-hid{background:#F2F4F7;color:#344054;border-color:#D0D5DD}
 </style>
 <style>
+/* 1004 뷰티 상식 6칸 */
+.mb-parts{display:grid;gap:8px;margin:12px 0 0}.mb-parts>div{display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;align-items:baseline;padding-top:8px;border-top:1px solid #EAECF0}
+.mb-parts dt{font-size:12px;font-weight:700;color:#155EEF}.mb-parts dd{margin:0;font-size:14px;line-height:1.55;color:#344054;word-break:keep-all}
+.mb-parts>div.say{background:#EFF4FF;border:0;border-radius:12px;padding:10px 12px;margin-top:4px}.mb-parts>div.say dd{color:#101828;font-weight:600}
+@media(max-width:420px){.mb-parts>div{grid-template-columns:1fr;gap:2px}}
+</style>
+<style>
 /* 1004 퀵버튼 6개: 폰에선 한 줄 가로 스크롤 (두 줄로 넘어가지 않게) */
 @media(max-width:600px){html body:not(#_):not(#_) .ry-tools{flex-wrap:nowrap!important;justify-content:flex-start!important;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin-right:-16px;padding-right:16px;scroll-snap-type:x proximity}
 html body:not(#_):not(#_) .ry-tools::-webkit-scrollbar{display:none}html body:not(#_):not(#_) .ry-tools>button{flex:none;white-space:nowrap;scroll-snap-align:start}}
@@ -12657,7 +12664,8 @@ function mbShow(r) {
         mbA(it.url, mbEsc(it.source || '기사') + ' 원문 보기 ' + MBI.ext, 'mb-src') + '</article>';
     }).join('') + '</div>');
   }
-  if (b.word && b.word.term) h += mbSec(MBI.bulb, '오늘의 뷰티 상식', '<div class="mb-box"><div class="mb-term">' + mbEsc(b.word.term) + '</div><p>' + mbEsc(b.word.explain) + '</p></div>');
+  if (b.word && b.word.term) h += mbSec(MBI.bulb, '오늘의 뷰티 상식', '<div class="mb-box"><div class="mb-term">' + mbEsc(b.word.term) + '</div><p>' + mbEsc(b.word.explain) + '</p>'
+    + (Array.isArray(b.word.parts) && b.word.parts.length ? '<dl class="mb-parts">' + b.word.parts.map(function (p) { return '<div class="' + (p.k === '손님께 이렇게' ? 'say' : '') + '"><dt>' + mbEsc(p.k) + '</dt><dd>' + mbEsc(p.v) + '</dd></div>'; }).join('') + '</dl>' : '') + '</div>');   /* 1004 6칸 자세히 */
   if (b.tip) h += mbSec(MBI.chat, '응대 팁', '<div class="mb-tip">' + mbEsc(b.tip) + '</div>');
   var br = b.brand;
   if (br && br.name) {
