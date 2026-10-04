@@ -3538,6 +3538,15 @@ td .ry-uses{margin:4px 0 0}
 .ry-end.ry-hid{background:#F2F4F7;color:#344054;border-color:#D0D5DD}
 </style>
 <style>
+/* 1004 1차 검토 15일 기준 수량 */
+html body:not(#_):not(#_) .ry-rec-fix{display:inline-flex;align-items:center;gap:4px;min-height:32px;margin-top:6px;padding:0 10px;border:0!important;border-radius:999px!important;background:#155EEF;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.ry-rec-fix .ry-i,.ry-rec-ok .ry-i{width:13px;height:13px}
+html body:not(#_):not(#_) .ry-rec-fix.m{max-width:100%;justify-content:center;padding:0 8px}
+.ry-rec-ok{display:inline-flex;align-items:center;gap:3px;margin-top:6px;font-size:12px;font-weight:600;color:#067647;white-space:nowrap}
+html body:not(#_):not(#_) .ry-rec-all{margin-left:auto;display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:0 14px;border:0!important;border-radius:999px!important;background:#155EEF;color:#fff;font-size:13px;font-weight:700;cursor:pointer}
+html body:not(#_):not(#_) .ry-rec-all[hidden]{display:none}
+</style>
+<style>
 /* 1004 뷰티 상식 6칸 */
 .mb-parts{display:grid;gap:8px;margin:12px 0 0}.mb-parts>div{display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;align-items:baseline;padding-top:8px;border-top:1px solid #EAECF0}
 .mb-parts dt{font-size:12px;font-weight:700;color:#155EEF}.mb-parts dd{margin:0;font-size:14px;line-height:1.55;color:#344054;word-break:keep-all}
@@ -3845,6 +3854,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         <div class="th-row">
           <span class="th-title"><span class="ry25-thi"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg></span>1단계 · 재고 검토 대기</span>
           <span class="th-count text-indigo-800" id="reviewSectionCount">0건</span>
+          <button type="button" id="ryRecAll" class="ry-rec-all" onclick="ryRecApplyAll()" hidden title="15일 판매 10개 이상 ×2, 10개 미만 10개">15일 기준으로 모두 맞추기 · <b>0</b>개</button>
         </div>
         <details class="tab-guide text-indigo-800">
           <summary>ⓘ 사용법 보기</summary>
@@ -7223,6 +7233,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       const countReview = document.getElementById('reviewSectionCount');
       if (badgeReview) badgeReview.innerText = pureReviewItems.length + '건';
       if (countReview) countReview.innerText = pureReviewItems.length + '건';
+      window.RV_PURE = pureReviewItems; try { setTimeout(ryRecHead, 0); } catch (e) {}
 
       if (pureReviewItems.length === 0) {
         if (reviewEmpty) reviewEmpty.classList.remove('hidden');
@@ -7729,6 +7740,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
       let numTargetQty = parseInt(String(item.targetQty).replace(/[^0-9]/g, ''), 10) || 1;
       let currentUnit = item.unit || '개';
 
+      const _rr = type === 'review' ? ryRec(item) : null, _rrDiff = _rr && (_rr.unit !== currentUnit || _rr.n !== numTargetQty);
+      const recFix = _rrDiff ? `<button type="button" class="ry-rec-fix" onclick="ryRecApply(${item.rowNumber}, ${_rr.n}, '${_rr.unit}')" title="${escapeHtml(_rr.why)}">${RYI.sparkles}15일 기준 ${_rr.n}${_rr.unit}로</button>` : (_rr ? `<span class="ry-rec-ok" title="${escapeHtml(_rr.why)}">${RYI.check}15일 기준</span>` : '');
       let qtyInputHtml = `
         <div class="ry25-qtybox">
           <input type="number" id="qty-${item.rowNumber}" value="${numTargetQty}"
@@ -7738,7 +7751,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
                   class="px-2 py-1 text-xs font-black rounded-lg border shadow-sm transition ${currentUnit === '박스' ? 'bg-indigo-600 text-white' : 'bg-blue-50 text-blue-700 border-blue-300'}">
             ${currentUnit}
           </button>
-        </div>
+        </div>${recFix}
       `;
 
       let actionButtons = '';
@@ -7839,7 +7852,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
                     class="px-2.5 py-1.5 text-xs font-black rounded-xl border shadow-sm transition ${currentUnit === '박스' ? 'bg-indigo-600 text-white' : 'bg-blue-50 text-blue-700 border-blue-300'}">
               ${currentUnit}
             </button>
-            </div>
+            </div>${type === 'review' ? (function () { const r = ryRec(item); if (!r) return ''; const d = r.unit !== currentUnit || r.n !== numTargetQty; return d ? `<button type="button" class="ry-rec-fix m" onclick="ryRecApply(${item.rowNumber}, ${r.n}, '${r.unit}')" title="${escapeHtml(r.why)}" aria-label="15일 기준 ${r.n}${r.unit}로 바꾸기">${RYI.sparkles}${r.n}${r.unit}로</button>` : `<span class="ry-rec-ok" title="${escapeHtml(r.why)}">${RYI.check}기준</span>`; })() : ''}
           </div>
         </section>
         <section class="ry-oc-photo">${imgHtml}</section>
@@ -9636,12 +9649,12 @@ html body #ryLaunchGrid .tl-search{top:56px}
           <td class="p-3 text-center">
             ${item.status === 'IDLE' ? `
               <div class="flex items-center justify-center gap-1">
-                <input type="number" id="s-qty-${item.rowNumber}" value="${item.targetQty || '1'}" class="w-10 text-center font-black text-xs border rounded py-1">
+                <input type="number" id="s-qty-${item.rowNumber}" value="${(ryRec(item) || {}).n || item.targetQty || '1'}" class="w-10 text-center font-black text-xs border rounded py-1">
                 <button onclick="handleSearchOrderRequest(${item.rowNumber}, false, this)" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-black shadow-xs transition">+ 요청</button>
               </div>
             ` : item.status === 'DONE' ? `
               <div class="flex items-center justify-center gap-1" onclick="event.stopPropagation()">
-                <input type="number" id="s-qty-${item.rowNumber}" value="${item.targetQty || '1'}" class="w-10 text-center font-black text-xs border rounded py-1">
+                <input type="number" id="s-qty-${item.rowNumber}" value="${(ryRec(item) || {}).n || item.targetQty || '1'}" class="w-10 text-center font-black text-xs border rounded py-1">
                 <button onclick="handleSearchReorder(${item.rowNumber}, false, this)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-black shadow-xs transition whitespace-nowrap">🔁 재주문</button>
                 <button type="button" onclick="goToItem(${item.rowNumber}, 'DONE')" class="text-[10px] text-blue-600 font-black whitespace-nowrap underline underline-offset-2 px-1" title="입고내역에서 이 상품의 기록 보기">기록 →</button>
               </div>${moSnoozeBtn(item)}
@@ -10071,18 +10084,35 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var v = c ? Number(c.avg) : d && d.overall ? Number(d.overall.avg) : NaN;
       return isFinite(v) && v > 0 ? Math.max(1, Math.round(v * 1.4)) : 3;
     }
+    /* 1004 사용자 규칙: 15일 판매 10개 이상 → ×2 (10개 → 20개), 10개 미만·기록 없음 → 10개. 직원은 수량을 몰라 그냥 요청하고, 1차 검토에서 물류관리자가 맞춤
+       박스 단위 상품은 박스 수로 올림 · 특이사항 '월 N개 제한'은 넘지 않음 · 계절 배수(월별 엑셀 3달↑)는 ×2 쪽에만 곱함 */
     function ryRec(item, cycleDays) {
-      if (!REC_INIT) { REC_INIT = true; try { ltLoad(false); } catch (e) {} try { msLoad(false); } catch (e) {} }
+      if (!REC_INIT) { REC_INIT = true; try { msLoad(false); } catch (e) {} }
       if (!item) return null;
-      var s15 = Number(String(item.sales15 == null ? '' : item.sales15).replace(/[^0-9.]/g, '')); if (!(s15 > 0)) return null;
-      var daily = s15 / 15, mult = ryRecMult(item.name), lead = ryRecLead(item.category), cover = cycleDays > 0 ? Math.max(7, Math.min(30, Math.round(cycleDays))) : REC_COVER;
-      var need = daily * (mult ? mult.x : 1) * (lead + cover), box = parseInt((String(item.boxUnit || '').match(/\d{1,5}/) || ['0'])[0], 10) || 0, isBox = item.unit === '박스';
-      var lim = (String(item.note || '').match(/월\s*(\d+)\s*개?\s*(제한|한도)/) || [])[1];
-      var n, how;
-      if (isBox) { if (!box) return null; n = Math.max(1, Math.ceil(need / box)); how = '박스(' + box + '개입)로 올림'; }
-      else { n = Math.max(1, Math.ceil(need)); if (box > 1 && n >= box * 0.6) { n = Math.ceil(n / box) * box; how = box + '개입 박스에 맞춤'; } }
-      var capped = false; if (lim && !isBox && n > +lim) { n = +lim; capped = true; }
-      return { n: n, unit: isBox ? '박스' : '개', why: '15일 ' + Math.round(s15) + '개 팔림 → 하루 ' + (Math.round(daily * 10) / 10) + '개' + (mult ? ' × ' + mult.m + '월 ' + mult.x + '배' : '') + ' × ' + (lead + cover) + '일(입고 ' + lead + '일 + ' + cover + '일치)' + (how ? ' · ' + how : '') + (capped ? ' · 월 ' + lim + '개 한도' : '') };
+      var raw = String(item.sales15 == null ? '' : item.sales15).replace(/[^0-9.]/g, ''), s15 = raw === '' ? null : Number(raw);
+      var mult = s15 >= 10 ? ryRecMult(item.name) : null, base = s15 >= 10 ? Math.ceil(s15 * 2 * (mult ? mult.x : 1)) : 10;
+      var box = parseInt((String(item.boxUnit || '').match(/\d{1,5}/) || ['0'])[0], 10) || 0, isBox = item.unit === '박스';
+      var lim = (String(item.note || '').match(/월\s*(\d+)\s*개?\s*(제한|한도)/) || [])[1], n = base, unit = '개', capped = false;
+      if (isBox) { if (!box) return null; n = Math.max(1, Math.ceil(base / box)); unit = '박스'; }
+      else if (lim && n > +lim) { n = +lim; capped = true; }
+      return { n: n, unit: unit, why: (s15 >= 10 ? '15일 ' + Math.round(s15) + '개 팔림 → ×2' + (mult ? ' × ' + mult.m + '월 ' + mult.x + '배' : '') + ' = ' + base + '개' : '15일 판매 ' + (s15 == null ? '기록 없음' : Math.round(s15) + '개') + ' → 10개 미만이라 기본 10개') + (isBox ? ' → ' + box + '개입 ' + n + '박스' : '') + (capped ? ' · 월 ' + lim + '개 한도' : '') };
+    }
+    function ryRecApply(row, n, unit) {   // 1차 검토: 15일 기준 수량으로 바꾸고 바로 저장 (단위가 다르면 단위도)
+      ['qty-', 'm-qty-'].forEach(function (p) { var i = document.getElementById(p + row); if (i) i.value = n; });
+      var cur = ((document.getElementById('unit-btn-' + row) || document.getElementById('m-unit-btn-' + row) || {}).innerText || '개').trim();
+      if (unit && cur !== unit) { try { toggleUnit(row); } catch (e) {} }
+      saveModifiedQtyAndUnit(row, document.getElementById('qty-' + row) || document.getElementById('m-qty-' + row));
+    }
+    function ryRecApplyAll() {
+      var list = (window.RV_PURE || cachedReviewItems || []).map(function (it) { var r = ryRec(it), q = parseInt(String(it.targetQty).replace(/[^0-9]/g, ''), 10) || 1; return r && (r.n !== q || r.unit !== (it.unit || '개')) ? [it, r] : null; }).filter(Boolean);
+      if (!list.length) { showToast('모두 15일 기준이에요'); return; }
+      list.forEach(function (p, k) { setTimeout(function () { ryRecApply(p[0].rowNumber, p[1].n, p[1].unit); }, k * 350); });
+      showToast(list.length + '개 상품을 15일 기준 수량으로 맞췄어요', 2600);
+    }
+    function ryRecHead() {
+      var b = document.getElementById('ryRecAll'); if (!b) return;
+      var n = (window.RV_PURE || cachedReviewItems || []).filter(function (it) { var r = ryRec(it), q = parseInt(String(it.targetQty).replace(/[^0-9]/g, ''), 10) || 1; return r && (r.n !== q || r.unit !== (it.unit || '개')); }).length;
+      b.hidden = !n; b.querySelector('b').textContent = n;
     }
     function ryRecWhy(row) { var it = (lastSearchResults || []).filter(function (x) { return x.rowNumber === row; })[0] || findItemByRow(row), r = ryRec(it); if (r) showToast('추천 ' + r.n + r.unit + ' · ' + r.why, 4200); }
     function ry25PresetHtml(item) {
