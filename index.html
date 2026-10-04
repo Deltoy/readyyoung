@@ -3538,6 +3538,11 @@ td .ry-uses{margin:4px 0 0}
 .ry-end.ry-hid{background:#F2F4F7;color:#344054;border-color:#D0D5DD}
 </style>
 <style>
+/* 1004 퀵버튼 6개: 폰에선 한 줄 가로 스크롤 (두 줄로 넘어가지 않게) */
+@media(max-width:600px){html body:not(#_):not(#_) .ry-tools{flex-wrap:nowrap!important;justify-content:flex-start!important;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin-right:-16px;padding-right:16px;scroll-snap-type:x proximity}
+html body:not(#_):not(#_) .ry-tools::-webkit-scrollbar{display:none}html body:not(#_):not(#_) .ry-tools>button{flex:none;white-space:nowrap;scroll-snap-align:start}}
+</style>
+<style>
 /* 1003 추천 발주 수량 */
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pre button.rec>span{background:#EEF4FF;border-color:#C7D7FE;color:#155EEF;font-weight:700;display:inline-flex;align-items:center;gap:4px}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pre button.rec.on>span{background:#155EEF;border-color:#155EEF;color:#fff}
@@ -3681,8 +3686,9 @@ html body #ryLaunchGrid .tl-search{top:56px}
       <div class="ry-tools">
         <button type="button" id="newProductBtn" onclick="openNewProduct()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>새 상품 등록</button>
         <button type="button" class="ry-ghost ry-quick" onclick="moOpen()" title="잘 팔리는데 재고가 떨어졌을 상품">놓친 주문</button>
-        <button type="button" class="ry-ghost ry-quick" onclick="openStale()" title="한 달 넘게 안 시킨 상품 정리">창고 정리</button>
         <button type="button" class="ry-ghost ry-quick" onclick="window.open('https://pallang-0258.github.io/seongsu/viewer.html', '_blank', 'noopener')" title="근무표를 새 창으로 열기">근무표</button>
+        <button type="button" class="ry-ghost ry-quick" onclick="ntOpen()" title="카톡 공지 보관함">공지</button>
+        <button type="button" class="ry-ghost ry-quick" onclick="mbOpenArchive()" title="날짜별 아침 뷰티 브리핑">뷰티 브리핑</button>
         <div class="ry-more">
           <div class="ry-more-menu" id="toolMoreMenu" role="menu" hidden>
             <button type="button" role="menuitem" onclick="closeToolMore(); openCatBrowse()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>카테고리별 보기<small>분류가 비었거나 기타인 상품 고치기</small></button>
