@@ -3545,6 +3545,10 @@ html body:not(#_):not(#_) .ry-rec-fix.m{max-width:100%;justify-content:center;pa
 .ry-rec-ok{display:inline-flex;align-items:center;gap:3px;margin-top:6px;font-size:12px;font-weight:600;color:#067647;white-space:nowrap}
 html body:not(#_):not(#_) .ry-rec-all{margin-left:auto;display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:0 14px;border:0!important;border-radius:999px!important;background:#155EEF;color:#fff;font-size:13px;font-weight:700;cursor:pointer}
 html body:not(#_):not(#_) .ry-rec-all[hidden]{display:none}
+html body:not(#_):not(#_) .ry-rec-all{white-space:nowrap;flex:none}html body:not(#_):not(#_) .ry-rec-all b{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#fff;color:#155EEF;font-size:12px}
+html:not(#q):not(#w):not(#e) body:not(#r) #reviewView .tab-head .th-row{flex-wrap:nowrap}html body:not(#_):not(#_) #reviewView .th-title{white-space:nowrap;min-width:0;flex:1 1 auto;overflow:hidden;text-overflow:ellipsis}#reviewView .th-count{flex:none}#reviewView .tt-t{min-width:0;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:400px){#reviewView .tt-opt{display:none}}
+@media(max-width:600px){html body:not(#_):not(#_) .ry-rec-all{min-height:34px;padding:0 10px;font-size:12.5px}html body:not(#_):not(#_) #reviewView .th-title{font-size:17px}#reviewView .tab-head:has(#ryRecAll:not([hidden])) .th-count{display:none}html:not(#q):not(#w):not(#e) body:not(#r) #reviewView .tab-head .th-row{gap:6px}}
 </style>
 <style>
 /* 1004 뷰티 상식 6칸 */
@@ -3852,9 +3856,9 @@ html body #ryLaunchGrid .tl-search{top:56px}
     <div id="reviewView" class="space-y-4">
       <div class="tab-head bg-indigo-50 border border-indigo-200 text-indigo-950 shadow-sm">
         <div class="th-row">
-          <span class="th-title"><span class="ry25-thi"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg></span>1단계 · 재고 검토 대기</span>
+          <span class="th-title"><span class="ry25-thi"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg></span><span class="tt-t">1단계 · <span class="tt-opt">재고 </span>검토 대기</span></span>
           <span class="th-count text-indigo-800" id="reviewSectionCount">0건</span>
-          <button type="button" id="ryRecAll" class="ry-rec-all" onclick="ryRecApplyAll()" hidden title="15일 판매 10개 이상 ×2, 10개 미만 10개">15일 기준으로 모두 맞추기 · <b>0</b>개</button>
+          <button type="button" id="ryRecAll" class="ry-rec-all" onclick="ryRecApplyAll()" hidden title="15일 판매 10개 이상 ×2, 10개 미만 10개 — 다른 것 모두 맞추기" aria-label="15일 기준으로 모두 맞추기">15일 기준 맞추기 <b>0</b></button>
         </div>
         <details class="tab-guide text-indigo-800">
           <summary>ⓘ 사용법 보기</summary>
