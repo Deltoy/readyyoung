@@ -9648,7 +9648,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       addEventListener('scroll', function () { var y = window.scrollY, d = y - lastY; if (Math.abs(d) > 60) { var now = Date.now(); jumps.unshift({ t: new Date().toTimeString().slice(0, 8), d: Math.round(d), y: Math.round(y), before: ev.filter(function (x) { return now - x[0] < 1500; }).map(function (x) { return x[1]; }).slice(-5) }); if (jumps.length > 8) jumps.pop(); draw(); } lastY = y; }, { passive: true });
       function draw() {
         if (!box) { box = document.createElement('div'); box.style.cssText = 'position:fixed;top:4px;right:4px;z-index:2147483647;max-width:300px;max-height:45vh;overflow:auto;background:rgba(17,24,39,.92);color:#fff;font:11px/1.35 -apple-system,sans-serif;padding:6px 8px;border-radius:10px;pointer-events:auto'; document.body.appendChild(box); }
-        box.innerHTML = '<b>화면 움직임 기록 (dbg)</b><br>' + jumps.map(function (j) { return j.t + ' ' + (j.d > 0 ? '아래로 ' : '위로 ') + Math.abs(j.d) + 'px → ' + j.y + '<br><span style="opacity:.75">' + j.before.map(function (b) { return String(b).replace(/</g, '&lt;'); }).join(' / ') + '</span>'; }).join('<hr style="border:0;border-top:1px solid #444;margin:3px 0">');
+        box.innerHTML = '<b>화면 움직임 기록 (dbg · 1006e)</b><br>' + jumps.map(function (j) { return j.t + ' ' + (j.d > 0 ? '아래로 ' : '위로 ') + Math.abs(j.d) + 'px → ' + j.y + '<br><span style="opacity:.75">' + j.before.map(function (b) { return String(b).replace(/</g, '&lt;'); }).join(' / ') + '</span>'; }).join('<hr style="border:0;border-top:1px solid #444;margin:3px 0">');
       }
       setTimeout(function () { note('기록 시작'); draw(); }, 500);
     })();
@@ -9657,7 +9657,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function ryHoldHeight() { var b = document.body; if (!b) return function () {}; var prev = b.style.minHeight, h = document.documentElement.scrollHeight; b.style.minHeight = h + 'px'; return function () { requestAnimationFrame(function () { requestAnimationFrame(function () { b.style.minHeight = prev; }); }); }; }
     (function () { ['renderAllViews', 'renderSearchResults0'].forEach(function (k) { var o = window[k]; if (typeof o !== 'function') return; window[k] = function () { var rel = ryHoldHeight(); try { return o.apply(this, arguments); } finally { rel(); } }; }); })();
     function ryRenderSearchSafe(items, q) {
-      if (RY_SR.q !== q || RY_SR.shown == null) { RY_SR.q = q; RY_SR.pend = null; clearTimeout(RY_SR.t); return renderSearchResults(items); }   // 새 검색어: 바로
+      if (RY_SR.q !== q || RY_SR.shown == null) { RY_SR.q = q; RY_SR.pend = null; clearTimeout(RY_SR.t); RY_SR.fresh = true; return renderSearchResults(items); }   // 새 검색어: 바로 (화면 위치 맞추기 없이)
       if (rySigSR(items) === RY_SR.shown) return;   // 줄·상태가 같으면 그대로 둔다 (사진 주소만 바뀐 경우 포함)
       if (ryBusySR()) { RY_SR.pend = items; clearTimeout(RY_SR.t); RY_SR.t = setTimeout(function () { var it = RY_SR.pend; RY_SR.pend = null; if (it && RY_SR.q === q) ryRenderSearchSafe(it, q); }, 1200); return; }
       renderSearchResults(items);
@@ -9671,6 +9671,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (full === RY_SR_FULL && ((document.getElementById('searchCardContainer') || {}).childElementCount || (document.getElementById('searchTableBody') || {}).childElementCount)) return;   // 똑같으면 그대로
       RY_SR_FULL = full;
       RY_SR.shown = rySigSR(items);
+      var fresh = !!RY_SR.fresh; RY_SR.fresh = false;
+      if (fresh) { renderSearchResults0(items); return; }   /* 1006 새 검색어: 예전 목록의 카드 위치에 맞춰 스크롤을 옮기지 않는다 (진단판: 검색창 누르자 scrollBy(0,641)로 아래로 튐) */
       var keep = {}, foc = document.activeElement, focId = foc && foc.id && /^(m-)?s-qty-/.test(foc.id) ? foc.id : '', selS = null, y = window.scrollY;
       document.querySelectorAll('#searchCardContainer input[id^="m-s-qty-"], #searchTableBody input[id^="s-qty-"]').forEach(function (el) { if (el.dataset.touched === '1' || el === foc) keep[el.id] = el.value; });
       try { if (focId) selS = [foc.selectionStart, foc.selectionEnd]; } catch (eS) { selS = null; }
