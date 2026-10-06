@@ -9606,7 +9606,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
 
     // keepFocus=true 면 (백스페이스로 다 지운 경우) 검색창 커서를 유지한다
     function clearGlobalSearch(keepFocus) {
-      RY_SR.q = ''; RY_SR.shown = null; RY_SR.pend = null; clearTimeout(RY_SR.t);   /* 1006 */
+      RY_SR.q = ''; RY_SR.shown = null; RY_SR.pend = null; clearTimeout(RY_SR.t); RY_SR_FULL = '';   /* 1006 */
       latestSearchRequestId++;
       const inputEl = document.getElementById('globalSearchInput');
       if (inputEl) inputEl.value = '';
@@ -9639,6 +9639,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
       ['scrollTo', 'scrollBy'].forEach(function (k) { var o = window[k]; window[k] = function () { note(k + '(' + [].slice.call(arguments).map(function (a) { return typeof a === 'object' ? JSON.stringify(a) : Math.round(a); }).join(',') + ') ← ' + who()); return o.apply(this, arguments); }; });
       var siv = Element.prototype.scrollIntoView; Element.prototype.scrollIntoView = function () { note('scrollIntoView #' + (this.id || this.className || this.tagName).toString().slice(0, 20) + ' ← ' + who()); return siv.apply(this, arguments); };
       var rs = window.renderSearchResults; if (typeof rs === 'function') window.renderSearchResults = function () { note('검색 다시 그림'); return rs.apply(this, arguments); };
+      var ra = window.renderAllViews; if (typeof ra === 'function') window.renderAllViews = function () { note('홈 다시 그림'); return ra.apply(this, arguments); };
+      var lastH = 0; setInterval(function () { var h = document.documentElement.scrollHeight; if (lastH && h < lastH - 300) note('페이지 높이 ' + lastH + '→' + h); lastH = h; }, 50);
       addEventListener('resize', function () { note('창 크기 ' + innerWidth + '×' + innerHeight); });
       if (window.visualViewport) visualViewport.addEventListener('resize', function () { note('키보드/화면 ' + Math.round(visualViewport.height)); });
       document.addEventListener('focusin', function (e) { note('포커스 ' + (e.target.id || e.target.tagName)); }, true);
@@ -9650,13 +9652,24 @@ html body #ryLaunchGrid .tl-search{top:56px}
       }
       setTimeout(function () { note('기록 시작'); draw(); }, 500);
     })();
+    /* 1006 화면 밀림(진단판으로 확인): 뒤에서 목록을 다시 그릴 때 잠깐 비워지면 페이지 높이가 줄어 브라우저가 스크롤을 위로 당겨 버린다(1,000px 넘게 '위로' 튐).
+       → 다시 그리는 동안엔 지금 페이지 높이를 최소 높이로 붙잡아 두고, 다 그린 다음 프레임에 놓는다 */
+    function ryHoldHeight() { var b = document.body; if (!b) return function () {}; var prev = b.style.minHeight, h = document.documentElement.scrollHeight; b.style.minHeight = h + 'px'; return function () { requestAnimationFrame(function () { requestAnimationFrame(function () { b.style.minHeight = prev; }); }); }; }
+    (function () { ['renderAllViews', 'renderSearchResults0'].forEach(function (k) { var o = window[k]; if (typeof o !== 'function') return; window[k] = function () { var rel = ryHoldHeight(); try { return o.apply(this, arguments); } finally { rel(); } }; }); })();
     function ryRenderSearchSafe(items, q) {
       if (RY_SR.q !== q || RY_SR.shown == null) { RY_SR.q = q; RY_SR.pend = null; clearTimeout(RY_SR.t); return renderSearchResults(items); }   // 새 검색어: 바로
       if (rySigSR(items) === RY_SR.shown) return;   // 줄·상태가 같으면 그대로 둔다 (사진 주소만 바뀐 경우 포함)
       if (ryBusySR()) { RY_SR.pend = items; clearTimeout(RY_SR.t); RY_SR.t = setTimeout(function () { var it = RY_SR.pend; RY_SR.pend = null; if (it && RY_SR.q === q) ryRenderSearchSafe(it, q); }, 1200); return; }
       renderSearchResults(items);
     }
+    /* 1006 진단판으로 확인: PC에서 검색 결과가 1~2초에 여러 번 똑같은 내용으로 다시 그려졌다(홈 갱신 renderAllViews 등 여러 곳이 부름).
+       그때마다 목록이 통째로 새로 만들어지며 페이지 높이·스크롤바가 흔들려 화면이 위로 튀었다 → 내용이 똑같으면 아예 다시 그리지 않는다 */
+    var RY_SR_FULL = '';
+    function ryFullSigSR(items) { return (currentSelectedMember || '') + '#' + (window.innerWidth >= 768 ? 'w' : 'n') + '#' + (items || []).map(function (x) { return [x.rowNumber, x.status, x.justRequested ? 1 : 0, x.name, x.note, x.targetQty, x.sales15, x.unit, x.boxUnit, x.category, x.imgUrl ? 1 : 0, x.hidden ? 1 : 0, x.memo, x.requester, x.inboundDate, x.orderDate].join('\u0001'); }).join('\u0002'); }
     function renderSearchResults(items) {
+      var full = ryFullSigSR(items);
+      if (full === RY_SR_FULL && ((document.getElementById('searchCardContainer') || {}).childElementCount || (document.getElementById('searchTableBody') || {}).childElementCount)) return;   // 똑같으면 그대로
+      RY_SR_FULL = full;
       RY_SR.shown = rySigSR(items);
       var keep = {}, foc = document.activeElement, focId = foc && foc.id && /^(m-)?s-qty-/.test(foc.id) ? foc.id : '', selS = null, y = window.scrollY;
       document.querySelectorAll('#searchCardContainer input[id^="m-s-qty-"], #searchTableBody input[id^="s-qty-"]').forEach(function (el) { if (el.dataset.touched === '1' || el === foc) keep[el.id] = el.value; });
