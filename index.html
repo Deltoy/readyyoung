@@ -3711,6 +3711,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         <button type="button" class="ry-ghost ry-quick" onclick="window.open('https://pallang-0258.github.io/seongsu/viewer.html', '_blank', 'noopener')" title="근무표를 새 창으로 열기">근무표</button>
         <button type="button" class="ry-ghost ry-quick" onclick="ntOpen()" title="카톡 공지 보관함">공지</button>
         <button type="button" class="ry-ghost ry-quick" onclick="mbOpenArchive()" title="날짜별 아침 뷰티 브리핑">뷰티 브리핑</button>
+        <button type="button" class="ry-ghost ry-quick" onclick="eduOpen()" title="제품 교육 자료 · 오늘의 3문제">교육 자료실<i id="eduDot" class="mb-dot edu-qdot" hidden aria-label="새 교육 자료"></i></button>
         <div class="ry-more">
           <div class="ry-more-menu" id="toolMoreMenu" role="menu" hidden>
             <button type="button" role="menuitem" onclick="closeToolMore(); openCatBrowse()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>카테고리별 보기<small>분류가 비었거나 기타인 상품 고치기</small></button>
@@ -9648,7 +9649,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         tr.className = "hover:bg-slate-50 transition" + (isEnded(item) ? ' ry-endrow' : ''); tr.setAttribute('data-r', item.rowNumber);   /* 1002 다시 그릴 때 보던 줄 기준점 */
         tr.innerHTML = `
           <td class="p-2.5 text-center">${pcImgHtml}</td>
-          <td class="p-3 font-bold text-slate-900 text-sm leading-relaxed">${escapeHtml(item.name)} ${endedBadge(item)}</td>
+          <td class="p-3 font-bold text-slate-900 text-sm leading-relaxed">${escapeHtml(item.name)} ${endedBadge(item)} ${typeof eduChip === 'function' ? eduChip(item.name) : ''}</td>
           <td class="p-3 text-center"><span class="px-2 py-0.5 rounded-full text-xs font-extrabold ${item.statusColor}">${item.statusLabel}</span></td>
           <td class="p-3 text-center font-black">${item.targetQty}${item.unit || '개'}</td>
           <td class="p-3 text-center text-xs text-slate-500">${catChip(item)}<br><button type="button" data-row="${item.rowNumber}" data-name="${escapeHtml(item.name)}" onclick="event.stopPropagation(); openNote(+this.dataset.row, this.dataset.name)" class="ry-note${item.note ? '' : ' empty'}${String(item.note || '').indexOf('소진 후 판매종료') !== -1 ? ' disc' : ''}" style="margin-top:4px">${item.note ? escapeHtml(item.note) + ' ' + RYI.pen : RYI.pen + '수정'}</button></td>
@@ -9688,6 +9689,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
               ${!item._mo && /^\d+(\.\d+)?$/.test(String(item.sales15 == null ? '' : item.sales15).trim()) ? `<span class="ry25-b" style="background:#EAF1FE;color:#1D4ED8" title="최근 15일 판매 수량">15일 판매 ${escapeHtml(String(item.sales15).trim())}개</span>` : ''}
               ${boxTxt ? `<span class="ry25-b">박스 ${escapeHtml(boxTxt)}${/^[0-9]+$/.test(boxTxt) ? '개' : ''}</span>` : ''}
               ${catChip(item)}
+              ${typeof eduChip === 'function' ? eduChip(item.name) : ''}
               ${item._mo ? moChips(item._mo) : (item.status === 'DONE' && item.inboundDate ? `<span class="ry25-pc-sub">입고 ${escapeHtml(item.inboundDate)}</span>` : '')}
             </div>
             <div class="ry25-pc-row" onclick="event.stopPropagation()">
@@ -11894,6 +11896,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           ['rejstats', RYI.searchcheck, '반려(재고 있음) 분석', k.rejstats, "'재고 있음'이 자주 나오는 품목 = 과재고 신호"],
           ['notices', NT_ICON.mega, '공지 보관함', k.notices, '카톡 공지 모아보기 · 증정품 변경'],
           ['brief', RYI.clipboard, '뷰티 브리핑 모아보기', '날짜별 목록', '아침 뷰티 브리핑(첫 화면 카드는 10~23시엔 숨김)'],
+          ['edu', RYI.bulb, '교육 자료실', '제품 공부', '브랜드 교육 슬라이드 · 손님 고민으로 찾기 · 오늘의 3문제'],
           ['setduty', RYI.cal, '세트 담당 주간표', k.setduty, '오전·오후 세트 담당, 반차도 포함'],
           ['roster', RYI.cal, '근무표', '새 창', '약국 근무표 보기']].concat(s15 && !s15.hidden ? [['s15', RYI.clipboard, '15일 판매량 엑셀', '마지막 ' + (((s15.querySelector('small') || {}).textContent || '').replace('판매량 통계 엑셀로 한 번에', '').trim() || '올리기'), 'POS 15일 판매량을 한 번에 넣기(문준)']] : [])],
         ['상품 정리', [
@@ -11956,7 +11959,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
         { k: 'notices', g: 3, ic: NT_ICON.mega, n: '공지 보관함', v: '카톡 공지 · 증정품', kw: '카톡 공지 증정품 변경' },
         { k: 'setduty', g: 3, ic: RYI.cal, n: '세트 담당표', v: am.length ? '오늘 오전 ' + am[0] + (am.length > 1 ? ' 외 ' + (am.length - 1) : '') : '이번 주', kw: '세트 담당 오전 오후 반차 주간 횟수' },
         { k: 'roster', g: 3, ic: RYI.user, n: '근무표', v: '새 창으로 열기', kw: '근무 스케줄 시간표' },
-        { k: 'brief', g: 3, ic: RYI.note, n: '뷰티 브리핑', v: '날짜별 모아보기', kw: '아침 브리핑 뉴스 뷰티' }
+        { k: 'brief', g: 3, ic: RYI.note, n: '뷰티 브리핑', v: '날짜별 모아보기', kw: '아침 브리핑 뉴스 뷰티' },
+        { k: 'edu', g: 3, ic: RYI.bulb, n: '교육 자료실', v: '제품 공부 · 오늘의 3문제', kw: '교육 공부 제품 성분 멘트 퀴즈 문제 오가나셀 더마알엑스 슬라이드 고민' }
       ]);
       return T;
     }
@@ -12025,6 +12029,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (k === 'missed') { moOpen(); return; }
       if (k === 'sets') { openSetPage(); return; }
       if (k === 'brief') { mbOpenArchive(); return; }
+      if (k === 'edu') { eduOpen(); return; }
       if (k === 'roster') { window.open('https://pallang-0258.github.io/seongsu/viewer.html', '_blank', 'noopener'); return; }
       if (k === 's15') { s15Open(); return; }
       if (k === 'catbrowse') { openCatBrowse(); return; }
@@ -12749,6 +12754,663 @@ function mbArchive() {
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !document.getElementById('mbReader').hidden) mbClose(); });
 document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') mbLoad(false); });
 setTimeout(function () { mbLoad(true); }, 2500);   // 목록 동기화 먼저, 브리핑은 조금 뒤 한 번 (서버 10분 캐시)
+</script>
+<!-- ==================== [1006 교육 자료실 (edu*)] 제품 교육 카드 · 고민으로 찾기 · 오늘의 3문제 ==================== -->
+<style>
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-qdot{margin-left:6px;vertical-align:middle}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-chip{display:inline-flex;align-items:center;gap:4px;min-height:28px;padding:0 10px;border:0;border-radius:999px;background:#EFF4FF;color:#155EEF;font-size:12px;font-weight:700;line-height:1;cursor:pointer;white-space:nowrap;vertical-align:middle}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-chip svg{width:13px;height:13px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-chip:active{transform:scale(.97)}
+html.edu-lock,html.edu-lock body{overflow:hidden!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-rd{position:fixed;inset:0;z-index:9000;background:#F6F7F9;color:#111827;display:flex;flex-direction:column;overscroll-behavior:contain;font-family:"Pretendard","Pretendard Variable",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;letter-spacing:-.01em}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-rd[hidden],html:not(#q):not(#w):not(#e) body:not(#r) .edu-zoom[hidden]{display:none!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-top{display:flex;align-items:center;gap:4px;padding:6px;padding-top:max(6px,env(safe-area-inset-top));border-bottom:1px solid #EAECF0;background:#fff}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-ic{width:44px;height:44px;display:grid;place-items:center;border:0;border-radius:12px;color:#111827;background:transparent;flex:none;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-ic:active{background:#F2F4F7}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-ic svg{width:22px;height:22px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-ic[hidden]{visibility:hidden;display:grid!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-top-t{flex:1;min-width:0;text-align:center;line-height:1.25}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-top-t b{display:block;font-size:16px;font-weight:700!important;color:#111827}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-top-t small{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#6B7280}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-base{padding:2px 7px;border-radius:999px;background:#F2F4F7;color:#475467;font-size:11px;font-weight:700}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-body{max-width:760px;margin:0 auto;padding:16px 16px calc(32px + env(safe-area-inset-bottom));font-size:15px;line-height:1.6;color:#374151;word-break:keep-all;overflow-wrap:anywhere}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-search{display:flex;align-items:center;gap:10px;height:52px;padding:0 6px 0 16px;border-radius:14px;background:#fff;border:1px solid #EAECF0;margin:0 0 12px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-search:focus-within{border-color:#155EEF;box-shadow:0 0 0 4px rgba(21,94,239,.12)}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-search>svg{width:20px;height:20px;color:#667085;flex:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-search input{flex:1;min-width:0;height:100%!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;outline:none!important;font-size:16px!important;color:#111827!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-search input::-webkit-search-cancel-button{display:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-search input::placeholder{color:#98A2B3}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-search .edu-ic{width:40px;height:40px;color:#667085}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-search .edu-ic svg{width:18px;height:18px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-quizb{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;margin:0 0 16px;padding:10px 12px 10px 14px;border:0;border-radius:20px;background:#155EEF;color:#fff;text-align:left;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-quizb:active{transform:scale(.99)}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-quizb .edu-qi{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.16);display:grid;place-items:center;flex:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-quizb .edu-qi svg{width:20px;height:20px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-quizb .edu-qt{flex:1;min-width:0;line-height:1.3}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-quizb .edu-qt b{display:block;font-size:16px;font-weight:700!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-quizb .edu-qt small{display:block;font-size:13px;opacity:.86;font-variant-numeric:tabular-nums}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-quizb .edu-go{display:inline-flex;align-items:center;gap:2px;min-height:40px;padding:0 10px 0 14px;border-radius:999px;background:#fff;color:#155EEF;font-size:14px;font-weight:700;flex:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-quizb .edu-go svg{width:16px;height:16px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-h{display:flex;align-items:baseline;gap:8px;margin:0 2px 8px;font-size:13px;font-weight:700!important;color:#475467}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-h small{font-size:12px;font-weight:500;color:#98A2B3}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 16px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-cc{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border:1px solid #EAECF0;border-radius:999px;background:#fff;color:#111827;font-size:14px;font-weight:600;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-cc i{font-style:normal;font-size:12px;font-weight:600;color:#98A2B3;font-variant-numeric:tabular-nums}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-cc[aria-pressed="true"]{background:#155EEF;border-color:#155EEF;color:#fff}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-cc[aria-pressed="true"] i{color:rgba(255,255,255,.8)}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -16px 12px;padding:0 16px;scroll-snap-type:x proximity}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-tabs::-webkit-scrollbar{display:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab{flex:none;min-height:40px;padding:0 14px;border:0;border-radius:12px;background:transparent;color:#475467;font-size:14px;font-weight:600;cursor:pointer;scroll-snap-align:start;white-space:nowrap}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab[aria-selected="true"]{background:#111827;color:#fff}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-grp,html:not(#q):not(#w):not(#e) body:not(#r) .edu-res-box{background:#fff;border:1px solid #EAECF0;border-radius:20px;padding:16px;margin:0 0 12px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-grp-h{display:flex;align-items:flex-start;gap:10px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-grp-h>div{flex:1;min-width:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-grp-k{display:block;font-size:12px;font-weight:600;color:#6B7280}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-grp h3{margin:2px 0 0;font-size:18px;line-height:1.35;font-weight:700!important;color:#111827;text-wrap:balance}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-grp-p{margin:8px 0 10px;font-size:14px;line-height:1.6;color:#475467}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-sb{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 12px;border:1px solid #EAECF0;border-radius:12px;background:#fff;color:#155EEF;font-size:13px;font-weight:600;cursor:pointer;flex:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-sb svg{width:16px;height:16px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-rows{display:flex;flex-direction:column;border-top:1px solid #F2F4F7}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-row{display:flex;align-items:center;gap:10px;width:100%;min-height:64px;padding:10px 2px;border:0;border-bottom:1px solid #F2F4F7;background:transparent;text-align:left;color:#111827;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-row:last-child{border-bottom:0;padding-bottom:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-row:active{background:#F9FAFB}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-row>svg{width:18px;height:18px;color:#98A2B3;flex:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-row-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-row-t b{font-size:15.5px;line-height:1.4;font-weight:700!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-row-k{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#6B7280}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-row-c{font-size:13.5px;line-height:1.45;color:#475467}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-tg{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-tg i{font-style:normal;font-size:12px;font-weight:600;line-height:1;padding:5px 8px;border-radius:999px;background:#F2F4F7;color:#344054}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-new{font-style:normal;font-size:11px;font-weight:700;line-height:1;padding:3px 6px;border-radius:6px;background:#FEF3F2;color:#D92D20}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-empty{padding:28px 8px;text-align:center;color:#6B7280;font-size:14px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-empty button{margin-top:10px;min-height:44px;padding:0 16px;border:0;border-radius:12px;background:#F2F4F7;color:#111827;font-weight:600;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-kick{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#155EEF}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-h1{margin:4px 0 0;font-size:23px;line-height:1.35;font-weight:800!important;color:#111827;text-wrap:balance}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-tagl{margin-top:4px;font-size:13.5px;font-weight:600;color:#6B7280}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-concept{margin:8px 0 0;font-size:16px;line-height:1.55;color:#344054}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-ment{margin:16px 0 12px;padding:14px 16px 16px;border-radius:20px;background:#EFF4FF;color:#1D3F99}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-ment-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-ment-h b{font-size:13px;font-weight:700!important;color:#155EEF}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-ment q{display:block;font-size:17px;line-height:1.6;font-weight:600;color:#102A6B;quotes:"“" "”"}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-copy{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border:0;border-radius:999px;background:#155EEF;color:#fff;font-size:13px;font-weight:700;cursor:pointer;flex:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-copy svg{width:15px;height:15px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-dl{margin:0;background:#fff;border:1px solid #EAECF0;border-radius:20px;padding:4px 16px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-dl>div{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;padding:12px 0;border-bottom:1px solid #F2F4F7}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-dl>div:last-child{border-bottom:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-dl dt{font-size:13px;font-weight:700;color:#6B7280;padding-top:2px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-dl dd{margin:0;font-size:15px;line-height:1.55;color:#111827;min-width:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-dl dd small{display:block;margin-top:4px;font-size:13px;color:#6B7280}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-ing{display:flex;flex-wrap:wrap;gap:6px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-ing button{min-height:36px;padding:0 12px;border:1px solid #D1E0FF;border-radius:999px;background:#fff;color:#1D3F99;font-size:13.5px;font-weight:600;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-ing button.tg{border-color:#EAECF0;background:#F9FAFB;color:#344054}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-acts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin:12px 0 0}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-acts.two{grid-template-columns:1fr 1fr}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 16px;border:1px solid #EAECF0;border-radius:14px;background:#fff;color:#111827;font-size:15px;font-weight:700;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-btn svg{width:18px;height:18px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-btn.pri{background:#155EEF;border-color:#155EEF;color:#fff}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-btn.wide{width:100%;margin-top:12px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-btn.del{color:#B42318}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-btn:disabled{opacity:.55}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-sec{margin-top:20px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-qprog{display:flex;align-items:center;gap:6px;margin:4px 0 12px;font-size:13px;font-weight:600;color:#6B7280;font-variant-numeric:tabular-nums}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-qprog i{width:28px;height:6px;border-radius:3px;background:#EAECF0}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-qprog i.on{background:#155EEF}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-qprog i.ok{background:#12B76A}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-qprog i.no{background:#F04438}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-qprog span{margin-left:auto}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-q{margin:0 0 14px;font-size:21px;line-height:1.45;font-weight:800!important;color:#111827;text-wrap:balance}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-opts{display:flex;flex-direction:column;gap:8px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-opt{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:10px 14px;border:1.5px solid #EAECF0;border-radius:16px;background:#fff;color:#111827;font-size:15.5px;font-weight:600;line-height:1.4;text-align:left;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-opt>i{width:28px;height:28px;border-radius:50%;background:#F2F4F7;color:#475467;display:grid;place-items:center;font-style:normal;font-size:13px;font-weight:700;flex:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-opt>span{flex:1;min-width:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-opt>svg{width:20px;height:20px;flex:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-opt.ok{border-color:#12B76A;background:#ECFDF3;color:#05603A}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-opt.ok>i{background:#12B76A;color:#fff}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-opt.no{border-color:#F04438;background:#FEF3F2;color:#912018}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-opt.no>i{background:#F04438;color:#fff}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-opt:disabled{cursor:default;opacity:1}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-fb{margin-top:12px;padding:14px 16px;border-radius:20px;background:#fff;border:1px solid #EAECF0}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-fb>b{display:block;font-size:16px;font-weight:800!important;color:#05603A}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-fb.no>b{color:#B42318}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-fb .edu-row{border-bottom:0;padding-bottom:0;min-height:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-res-box{text-align:center;padding:24px 16px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-res-box b{display:block;font-size:22px;font-weight:800!important;color:#111827}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-res-box small{display:block;margin-top:4px;font-size:14px;color:#6B7280}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-note{display:flex;gap:10px;align-items:flex-start;margin:0 0 12px;padding:12px 14px;border-radius:16px;background:#FFFAEB;color:#93370D;font-size:13.5px;line-height:1.5}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-note svg{width:18px;height:18px;flex:none;margin-top:1px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px;background:#fff;border:1px solid #EAECF0;border-radius:20px;padding:16px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-form label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:700;color:#475467;min-width:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-form .w{grid-column:1/-1}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-form input[type=text],html:not(#q):not(#w):not(#e) body:not(#r) .edu-form select,html:not(#q):not(#w):not(#e) body:not(#r) .edu-form textarea{width:100%;min-height:44px;padding:8px 12px!important;border:1px solid #D0D5DD!important;border-radius:12px!important;background:#fff!important;font-size:16px!important;font-weight:500;color:#111827!important;box-sizing:border-box;font-family:inherit}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-form textarea{min-height:88px;line-height:1.5;resize:vertical}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-form .edu-chips{margin:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-form .edu-cc{min-height:40px;font-size:13.5px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-up{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;grid-column:1/-1;padding:10px;border:1px dashed #B2CCFF;border-radius:16px;background:#F5F8FF}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-up img,html:not(#q):not(#w):not(#e) body:not(#r) .edu-up .ph{width:96px;height:54px;object-fit:cover;border-radius:10px;background:#EAECF0;flex:none;display:grid;place-items:center;color:#98A2B3}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-up .ph svg{width:20px;height:20px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-up span{flex:1 1 150px;min-width:0;font-size:13px;color:#475467;font-weight:500}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-up label{flex:1 0 auto;flex-direction:row;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 14px;border-radius:12px;background:#155EEF;color:#fff;font-size:14px;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-up label svg{width:16px;height:16px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-up input{position:absolute;width:1px;height:1px;opacity:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-zoom{position:fixed;inset:0;z-index:9100;background:#0B0D12;touch-action:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-zoom-st{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-zoom-st img{max-width:100%;max-height:100%;transform-origin:center;user-select:none;-webkit-user-drag:none;will-change:transform}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-zoom-x{position:absolute;top:max(10px,env(safe-area-inset-top));right:10px;width:44px;height:44px;border:0;border-radius:999px;background:rgba(255,255,255,.16);color:#fff;display:grid;place-items:center;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-zoom-x svg{width:22px;height:22px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-zoom-h{position:absolute;left:0;right:0;bottom:max(14px,env(safe-area-inset-bottom));text-align:center;font-size:13px;color:rgba(255,255,255,.7);pointer-events:none}
+@media(min-width:720px){
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-body{padding-top:24px}
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-hubtop{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:12px;align-items:start}
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-hubtop .edu-search{margin:0}
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-hubtop .edu-quizb{min-height:52px;padding:6px 6px 6px 10px;margin:0;border-radius:14px}
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-hubtop .edu-quizb .edu-qi{width:36px;height:36px}
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-hubtop .edu-quizb .edu-qt b{font-size:15px}
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-hubtop .edu-quizb .edu-qt small{font-size:12px}
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-hubtop+.edu-sec{margin-top:16px}
+}
+@media(max-width:719px){ html:not(#q):not(#w):not(#e) body:not(#r) .edu-hubtop+.edu-sec{margin-top:0} }
+@media(max-width:420px){
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-form{grid-template-columns:minmax(0,1fr)}
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-dl>div{grid-template-columns:76px minmax(0,1fr);gap:10px}
+}
+@media (prefers-reduced-motion:no-preference){ html:not(#q):not(#w):not(#e) body:not(#r) .edu-rd:not([hidden]){animation:mbIn .22s cubic-bezier(.2,.7,.3,1)} }
+</style>
+
+<div id="eduReader" class="edu-rd" hidden role="dialog" aria-modal="true" aria-label="교육 자료실">
+  <header class="edu-top">
+    <button type="button" class="edu-ic" onclick="eduBack()" aria-label="뒤로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+    <div class="edu-top-t"><b id="eduTopT">교육 자료실</b><small id="eduTopD"></small></div>
+    <button type="button" class="edu-ic" id="eduAddBtn" hidden onclick="eduForm('')" aria-label="자료 추가"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+  </header>
+  <div class="edu-scroll" id="eduScroll"><div class="edu-body" id="eduBody"></div></div>
+</div>
+<div id="eduZoom" class="edu-zoom" hidden role="dialog" aria-modal="true" aria-label="원본 슬라이드">
+  <div class="edu-zoom-st" id="eduZoomSt"><img id="eduZoomImg" alt="원본 슬라이드" referrerpolicy="no-referrer" draggable="false" onerror="eduImgErr(this)"></div>
+  <button type="button" class="edu-zoom-x" onclick="eduZoomClose()" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+  <div class="edu-zoom-h">두 손가락으로 확대 · 두 번 누르면 확대/원래대로</div>
+</div>
+<script type="application/json" id="eduSeed">{"version":"1006","groups":[{"id":"g1","slide":1,"brand":"더마알엑스","line":"클렌저","title":"오가나셀 클렌저 3종","intro":"오가나셀의 클렌저는 '피부 컨디션에 따라 골라 쓰는' 컨셉. 일반적인 세정 베이스에 여러 부가 성분을 상당히 많이 넣은 특징 (이것 때문에 가격이 비싼 듯). 시중 클렌저들은 세안에 초점이 맞추어져 있다면, 오가나셀은 세안 이후에 보습·진정 등의 효과를 유지하는 목적을 갖고 있다."},{"id":"g2","slide":2,"brand":"더마알엑스","line":"브이모드 부스터샷","title":"브이모드 부스터샷 300 · 600 · 1100","intro":"이것 역시 피부 상태에 따라 약한 것 ~ 강한 것(숫자)을 선택해서 쓴다. 세 제품은 완전히 다른 제품이 아니고, 동일한 플랫폼에 샷 수와 부가성분을 달리했다. 괄사가 달려 있는 제품은 리프팅 관리 가능."},{"id":"g3","slide":3,"brand":"더마알엑스","line":"스킨부스터","title":"스킨부스터 빨강 · 노랑 · 파랑","intro":"기본적으로 매우 순한 제품들이라, 민감피부에 추천 가능. 2개를 같이 써도 됨 (그러면 파랑을 베이스로 하고, 빨강·노랑 중에 선택하는 형식). 세럼과 크림을 한 번에 바르는 효과 — 화장품을 여러 개 쓰기 귀찮으신 분."},{"id":"g4","slide":4,"brand":"더마알엑스","line":"브이모드","title":"브이모드 하이드레이트 업 · 캄 다운","intro":"두 제품 모두 시술 후 사용 가능. 참고: 이해를 돕기 위한 비슷한 포지션의 제품들 — 토리든 다이브인 세럼, 레드 블레미쉬 앰플(사진)."},{"id":"g5","slide":5,"brand":"오가나셀","line":"바이오 액티옴","title":"바이오 액티옴 라인","intro":"나이아신아마이드, 세라마이드, 병풀 유래 성분, 히알루론산, 발효 성분, 아미노산을 베이스로 하고 있으며, 각 기본 역할 + 영양크림 느낌."},{"id":"g6","slide":6,"brand":"오가나셀","line":"펩타이드","title":"펩타이드 라인","intro":"앞의 바이오 액티옴보다 한 단계 더 집중·프리미엄. 주로 진정, 피부 장벽이 무너졌을 때 사용하는 느낌."}],"cards":[{"id":"derx-cleanser","slide":1,"brand":"더마알엑스","line":"클렌저","added":"2026-10-06","name":"더마알엑스 클렌저","aliases":["더마알엑스 클렌저"],"tag":"#ALL-IN-ONE 클렌저","concept":"피지와 각질이 신경 쓰일 때 · 호두껍질 딥클렌징","targets":["지성·각질"],"targetText":"지성 및 각질","ingredients":["호두껍질"],"compare":[],"ment":"피지와 각질이 신경 쓰일 때 쓰는 클렌저예요. 눈으로도 보이는 물리적 스크럽, 호두껍질이 들어 있어요.","usage":"클렌저 3종은 그날 피부 컨디션에 따라 골라 써요.","notes":"","price":"","facts":[["제형","젤 (Gel)"]],"q":"더마알엑스 클렌저"},{"id":"derx-hydrate-cleanser","slide":1,"brand":"더마알엑스","line":"클렌저","added":"2026-10-06","name":"더마알엑스 하이드레이트 클렌저","aliases":["하이드레이트 클렌저"],"tag":"#아쿠아필링 수분 클렌저","concept":"세안 후 촉촉함을 원할 때 · 다중 히알루론산 수분 클렌저","targets":["건성"],"targetText":"건성 · 촉촉한 클렌저","ingredients":["히알루론산"],"compare":[],"ment":"세정만 하는 제품이 아니라 수분·보습 컨셉을 강하게 넣은 클렌저예요. 다양한 형태의 히알루론산이 들어 있어요.","usage":"클렌저 3종은 그날 피부 컨디션에 따라 골라 써요.","notes":"","price":"","facts":[["제형","OXY : TUNE"],["성분","다양한 형태의 히알루론산"]]},{"id":"derx-calm-cleanser","slide":1,"brand":"더마알엑스","line":"클렌저","added":"2026-10-06","name":"더마알엑스 캄 액티브 클렌저","aliases":["캄 액티브 클렌저"],"tag":"#진정 모공 교정 클렌저","concept":"피부가 예민한 상태 · 판테놀·병풀 진정 클렌저","targets":["예민","모공"],"targetText":"매우 예민한 피부 · 순한 클렌저","ingredients":["판테놀","병풀"],"compare":[],"ment":"진정 케어를 컨셉으로 설계한 클렌저예요. 씻고 나면 진정 성분이 피부를 진정시켜 줘요.","usage":"클렌저 3종은 그날 피부 컨디션에 따라 골라 써요.","notes":"","price":"","facts":[["제형","OXY : TUNE"]]},{"id":"vmode-300","slide":2,"brand":"더마알엑스","line":"브이모드 부스터샷","added":"2026-10-06","name":"더마알엑스 브이모드 300 부스터샷","aliases":["브이모드 300 부스터샷","300 부스터샷"],"tag":"[300샷] 미백","concept":"미백 · 데일리 사용","targets":["칙칙함·잡티"],"targetText":"피부 칙칙함, 잡티, 미백 고민인 분","ingredients":["글루타티온","나이아신아마이드","트라넥삼산"],"compare":[],"ment":"피부가 칙칙하고 잡티, 미백이 고민이시면 300이에요. 고순도 글루타티온, 나이아신아마이드, 트라넥삼산이 들어 있고 매일 쓰는 데일리 강도예요.","usage":"300 → 600 → 1100 순으로 강해져요. 300은 데일리 사용.","notes":"","price":"80,500원 (정가 115,000원)","facts":[["스피큘","300"],["빈도(강도)","데일리 사용"],["성분","고순도 글루타티온 + 나이아신아마이드 + 트라넥삼산"]]},{"id":"vmode-600","slide":2,"brand":"더마알엑스","line":"브이모드 부스터샷","added":"2026-10-06","name":"더마알엑스 브이모드 600 부스터샷","aliases":["브이모드 600 부스터샷","600 부스터샷"],"tag":"[600샷] 물광피부","concept":"물광피부 · 중간 강도","targets":["탄력·주름"],"targetText":"탄력, 물광, 광채, 동안피부 원함","ingredients":["PDRN","콜라겐","히알루론산"],"compare":[],"ment":"탄력, 물광, 광채, 동안 피부를 원하시면 600이에요. 99% 고순도 PDRN, 200달톤 초저분자 콜라겐, 11종 히알루론산이 들어 있는 중간 강도예요.","usage":"300 → 600 → 1100 순으로 강해져요. 600은 중간 강도.","notes":"슬라이드 사진의 이름은 '600 부스터샷 리필'이에요.","price":"98,000원","facts":[["스피큘","600"],["빈도(강도)","중간 강도"],["성분","99% 고순도 PDRN + 200달톤 초저분자 콜라겐 + 11종 히알루론산"]]},{"id":"vmode-1100","slide":2,"brand":"더마알엑스","line":"브이모드 부스터샷","added":"2026-10-06","name":"더마알엑스 브이모드 1100 부스터샷","aliases":["브이모드 1100 부스터샷","1100 부스터샷"],"tag":"[1100샷] 안티에이징","concept":"안티에이징 · 집중 안티에이징","targets":["탄력·주름"],"targetText":"잔주름, 주름, 탄력 저하가 명확한 30대 후반~50대","ingredients":["레티놀","펩타이드","아세틸헥사펩타이드-8","노나펩타이드-1"],"compare":[],"ment":"잔주름, 주름, 탄력 저하가 확실히 보이는 30대 후반~50대 손님께는 1100이에요. 레티놀과 펩타이드가 들어 있어 주름과 탄력을 집중 관리해요.","usage":"300 → 600 → 1100 순으로 강해져요. 1100은 가장 강한 집중 안티에이징.","notes":"","price":"108,500원 (정가 155,000원)","facts":[["스피큘","1100 + 레티놀"],["빈도(강도)","집중 안티에이징"],["성분","레티놀 + 펩타이드(아세틸헥사펩타이드-8, 노나펩타이드-1 등) — 주름과 탄력"]]},{"id":"sb-red","slide":3,"brand":"더마알엑스","line":"스킨부스터","added":"2026-10-06","name":"더마알엑스 리바이탈 텐션 스킨부스터","aliases":["리바이탈 텐션 스킨부스터","스킨부스터 빨강","스킨부스터 RED"],"tag":"RED (탄력) · 01. 탄력-에이징","concept":"빨강 · 탄력 저하(안티에이징)","targets":["탄력·주름","예민"],"targetText":"탄력 저하 (안티에이징)","ingredients":["콜라겐","하이드롤라이즈드 콜라겐","흑효모 발효물","아데노신","레스베라트롤","판테놀"],"compare":["메디큐브 AGE-R 글로우·부스터 라인"],"ment":"세럼과 크림을 한 번에 바르는 효과예요. 탄력이 떨어져 고민이신 분께 빨강을 권해요. 콜라겐과 아데노신이 강조 성분이에요.","usage":"2개를 같이 쓸 때는 파랑을 베이스로 하고, 빨강·노랑 중에 골라요.","notes":"매우 순한 제품이라 민감피부에도 추천 가능.","price":"","facts":[["강조 성분","콜라겐, 하이드롤라이즈드 콜라겐, 흑효모 발효물, 아데노신, 레스베라트롤, 판테놀"]]},{"id":"sb-yellow","slide":3,"brand":"더마알엑스","line":"스킨부스터","added":"2026-10-06","name":"더마알엑스 코어 토닝 스킨부스터","aliases":["코어 토닝 스킨부스터","스킨부스터 노랑","스킨부스터 YELLOW"],"tag":"YELLOW (미백) · 02. 톤-에이징","concept":"노랑 · 칙칙한 피부, 잡티(미백)","targets":["칙칙함·잡티","예민"],"targetText":"칙칙한 피부, 잡티","ingredients":["나이아신아마이드","글루타티온","비타민C 유도체","황련 추출물","세라마이드","스쿠알란"],"compare":["코스알엑스 나이아신아마이드 세럼"],"ment":"세럼과 크림을 한 번에 바르는 효과예요. 피부가 칙칙하고 잡티가 고민이시면 노랑을 권해요. 나이아신아마이드, 글루타티온, 비타민C 유도체가 강조 성분이에요.","usage":"2개를 같이 쓸 때는 파랑을 베이스로 하고, 빨강·노랑 중에 골라요.","notes":"매우 순한 제품이라 민감피부에도 추천 가능.","price":"","facts":[["강조 성분","나이아신아마이드, 글루타티온, 비타민C 유도체, 황련 추출물, 세라마이드, 스쿠알란"]]},{"id":"sb-blue","slide":3,"brand":"더마알엑스","line":"스킨부스터","added":"2026-10-06","name":"더마알엑스 하이드라 볼륨 스킨부스터","aliases":["하이드라 볼륨 스킨부스터","스킨부스터 파랑","스킨부스터 BLUE"],"tag":"BLUE (건조) · 03. 수분-에이징","concept":"파랑 · 건성(건조)","targets":["건성","예민"],"targetText":"건성","ingredients":["히알루론산 복합체","판테놀","베타글루칸","폴리글루타믹애씨드","알란토인"],"compare":["토리든 다이브인 저분자 히알루론산 세럼"],"ment":"세럼과 크림을 한 번에 바르는 효과예요. 건조한 피부엔 파랑을 권해요. 히알루론산 복합체와 판테놀이 강조 성분이에요.","usage":"2개를 같이 쓸 때는 파랑을 베이스로 하고, 빨강·노랑 중에 골라요.","notes":"매우 순한 제품이라 민감피부에도 추천 가능.","price":"","facts":[["강조 성분","히알루론산 복합체, 판테놀, 베타글루칸, 폴리글루타믹애씨드, 알란토인"]]},{"id":"vmode-hydrate-up","slide":4,"brand":"더마알엑스","line":"브이모드","added":"2026-10-06","name":"더마알엑스 브이모드 하이드레이트 업","aliases":["브이모드 하이드레이트 업","하이드레이트업"],"tag":"수분 충전 · 장벽 강화 · 탄력","concept":"수분 충전, 장벽 강화, 탄력","targets":["시술 후","장벽 손상","건성"],"targetText":"시술 후 / 무너진 장벽 / 수분 공급","ingredients":["판테놀","올리고 히알루론산"],"compare":["토리든 다이브인 세럼"],"ment":"싼 수분제품 여러 개 바르느니, 보습에 필요한 성분을 한 제품에 제대로 담은 제품이에요.","usage":"시술 후에도 쓸 수 있어요.","notes":"건조함 때문에 여러 번 덧바르는 사람에게 좋음!","price":"","facts":[["Main 성분","판테놀, 올리고 히알루론산"]]},{"id":"vmode-calm","slide":4,"brand":"더마알엑스","line":"브이모드","added":"2026-10-06","name":"더마알엑스 브이모드 캄 다운","aliases":["브이모드 캄 다운","캄다운","브이모드 카밍 업","카밍업"],"tag":"진정 · 트러블 케어 · 붉은 기 완화","concept":"진정, 트러블 케어, 붉은 기 완화","targets":["시술 후","예민","트러블·붉은기"],"targetText":"시술 후 / 예민 / 달아오른 피부","ingredients":["마데카소사이드","어성초 PDRN","병풀","베타글루칸","세라마이드"],"compare":["레드 블레미쉬 앰플"],"ment":"예민해진 날에는 이것저것 덧바르기보다, 병풀, 마데카소사이드, 베타글루칸, 세라마이드로 피부를 편안하게 진정시키는 데 집중한 제품이에요.","usage":"시술 후에도 쓸 수 있어요.","notes":"제품 용기에는 'V-MODE CALMING UP'(카밍 업)이라고 적혀 있어요. 발주 목록 이름도 '브이모드 카밍 업'.","price":"","facts":[["Main 성분","마데카소사이드, 어성초 PDRN"]],"q":"브이모드 카밍 업"},{"id":"ba-toner","slide":5,"brand":"오가나셀","line":"바이오 액티옴","added":"2026-10-06","name":"바이오 액티옴 토너","aliases":["바이오액티옴 토너"],"tag":"기초 그 이상의 토너","concept":"기초 그 이상의 토너","targets":["건성"],"targetText":"수분 + 발효성분과 아미노산까지","ingredients":["발효 성분","아미노산"],"compare":[],"ment":"수분에 발효 성분과 아미노산까지 담은, 기초 그 이상의 토너예요.","usage":"","notes":"슬라이드의 '주요성분' 칸은 비어 있어요(-). 라인 공통 베이스: 나이아신아마이드, 세라마이드, 병풀 유래 성분, 히알루론산, 발효 성분, 아미노산.","price":"","facts":[]},{"id":"ba-cream","slide":5,"brand":"오가나셀","line":"바이오 액티옴","added":"2026-10-06","name":"바이오 액티옴 크림","aliases":["바이오액티옴 크림"],"tag":"고기능성 영양 크림","concept":"고기능성 영양 크림","targets":["건성","장벽 손상","예민","칙칙함·잡티"],"targetText":"보습, 장벽, 진정, 톤개선 한 번에","ingredients":["시어버터","나이아신아마이드","마데카소사이드","히알루론산 3종","아데노신"],"compare":[],"ment":"보습만 하는 크림을 찾으시면 저렴한 제품도 많지만, 이건 보습, 장벽, 진정, 톤 개선을 한 번에 해 줘요.","usage":"","notes":"","price":"","facts":[["주요 성분","시어버터, 나이아신아마이드, 마데카소사이드, 히알루론산 3종, 아데노신"]]},{"id":"ba-mask","slide":5,"brand":"오가나셀","line":"바이오 액티옴","added":"2026-10-06","name":"바이오 액티옴 마스크팩","aliases":["바이오액티옴 마스크","비타 토닝 하이드로겔 마스크"],"tag":"고기능 영양 팩","concept":"고기능 영양 팩","targets":[],"targetText":"중요한 날 전 피부 컨디션 관리","ingredients":["판테놀","나이아신아마이드","히알루론산","펩타이드"],"compare":[],"ment":"팩 하나에 판테놀이 약 1% 들어 있어요. 중요한 날 전에 피부 컨디션 관리용으로 좋아요.","usage":"중요한 날 전에.","notes":"사진 속 제품 이름은 'BIO ACTIOME VITA TONING HYDROGEL MASK'로 보여요.","price":"","facts":[["주요 성분","판테놀 10,010ppm (약 1%) + 나이아신아마이드 + 히알루론산 + 펩타이드"]]},{"id":"ba-sun","slide":5,"brand":"오가나셀","line":"바이오 액티옴","added":"2026-10-06","name":"바이오 액티옴 선크림","aliases":["바이오액티옴 선크림","바이오 액티옴 선스크린"],"tag":"스킨케어 가능 선크림","concept":"스킨케어 가능 선크림","targets":[],"targetText":"자외선 차단 + 데일리 스킨케어","ingredients":["나이아신아마이드","히알루론산","아데노신","토코페롤","비피다 발효용해물","아미노산"],"compare":[],"ment":"자외선 차단만 하는 선크림이 아니라, 데일리 스킨케어처럼 쓰는 선크림이에요.","usage":"","notes":"슬라이드의 마지막 성분은 '아미…'까지만 보여요(아미노산으로 보임).","price":"","facts":[["주요 성분","나이아신아마이드, 히알루론산, 아데노신, 토코페롤, 비피다 발효용해물, 아미…(잘림)"]]},{"id":"pep-cream","slide":6,"brand":"오가나셀","line":"펩타이드","added":"2026-10-06","name":"펩타이드 리커버리 크림","aliases":["펩타이드 크림"],"tag":"고보습 · 집중 영양 크림","concept":"피부가 지치고 건조해졌을 때 쓰는 고보습, 집중 영양 크림","targets":["건성","장벽 손상","트러블·붉은기"],"targetText":"건조, 가려움, 붉은기 (장벽 무너졌을 때!)","ingredients":["펩타이드","센텔라","세라마이드NP","판테놀"],"compare":[],"ment":"건조하고 가렵고 붉은기가 올라올 때, 장벽이 무너졌을 때 쓰는 고보습 집중 영양 크림이에요.","usage":"","notes":"","price":"","facts":[["주요 성분","펩타이드, 센텔라, 세라마이드NP, 판테놀"]]},{"id":"pep-pad","slide":6,"brand":"오가나셀","line":"펩타이드","added":"2026-10-06","name":"펩타이드 리커버리 세럼 패드","aliases":["펩타이드 패드"],"tag":"쿨링 진정 패드","concept":"자극받은 피부 빠르게 진정","targets":["예민"],"targetText":"쿨링 진정패드 (+보습)","ingredients":["센텔라","PDRN","판테놀"],"compare":[],"ment":"자극받은 피부를 빠르게 진정시키는 쿨링 진정 패드예요. 보습도 함께 돼요.","usage":"","notes":"","price":"","facts":[["주요 성분","센텔라, PDRN, 판테놀"]]}]}</script>
+<script>
+/*EDU-CORE-START*/
+/* 교육 자료실 계산부 — 화면과 상관없는 순수 함수 (scratchpad edu_test.js 가 이 구간만 잘라 node 로 검사) */
+var EDU_CONCERNS = ['지성·각질', '건성', '예민', '시술 후', '칙칙함·잡티', '탄력·주름', '장벽 손상', '트러블·붉은기', '모공'];
+var EDU_SYN = { '민감': '예민', '건조': '건성', '여드름': '트러블', '뾰루지': '트러블', '기미': '잡티', '미백': '칙칙', '시술': '시술후', '레이저': '시술후', '피지': '지성' };
+var EDU_BRAND_RE = /오가나셀|더마알엑스|oganacell|derx/g;
+function eduKey(s) { return String(s == null ? '' : s).toLowerCase().replace(/[^0-9a-z가-힣]/g, ''); }
+function eduNorm(s) { return eduKey(String(s == null ? '' : s).toLowerCase().replace(/\[[^\]]*\]|\([^)]*\)/g, ' ').replace(EDU_BRAND_RE, ' ')); }
+function eduHasBrand(s) { return /오가나셀|더마알엑스|oganacell|derx/i.test(String(s || '')); }
+/* 발주 목록 상품 이름 → 교육 카드. 띄어쓰기 · 대소문자 · [리필용] · (파랑) · 브랜드 머리말을 빼고 비교.
+   브랜드(오가나셀·더마알엑스)가 이름에 있으면 3글자 이상 겹침, 없으면 7글자 이상 겹쳐야 같은 상품으로 본다. 가장 길게 겹친 카드 하나 */
+function eduMatch(name, cards) {
+  var n = eduNorm(name), br = eduHasBrand(name), best = null, bl = 0;
+  if (!n) return null;
+  (cards || []).forEach(function (c) {
+    [c.name].concat(c.aliases || []).forEach(function (a) {
+      var k = eduNorm(a);
+      if (k && (n === k || (n.indexOf(k) !== -1 && k.length >= (br ? 3 : 7))) && k.length > bl) { bl = k.length; best = c; }
+    });
+  });
+  return best;
+}
+function eduShort(c) { return String(c && c.name || '').replace(/^(오가나셀|더마알엑스)\s*/, ''); }
+function eduHasIng(c, ing) { var k = eduKey(ing); return !!k && (c.ingredients || []).some(function (x) { var y = eduKey(x); return y && (y.indexOf(k) !== -1 || k.indexOf(y) !== -1); }); }
+function eduSearch(q, cards) {
+  var toks = String(q || '').split(/\s+/).map(eduKey).filter(Boolean);
+  if (!toks.length) return (cards || []).slice();
+  var out = [];
+  (cards || []).forEach(function (c, i) {
+    var nm = eduKey([c.name].concat(c.aliases || []).join(' ')), ing = eduKey((c.ingredients || []).join(' ')),
+      hay = eduKey([c.brand, c.line, c.tag, c.concept, c.targetText, c.ment, c.usage, c.notes].concat(c.targets || [], c.compare || [], (c.facts || []).map(function (f) { return f[1]; })).join(' ')), sc = 0;
+    var ok = toks.every(function (t) {
+      return [t].concat(EDU_SYN[t] ? [EDU_SYN[t]] : []).some(function (a) {
+        if (nm.indexOf(a) !== -1) { sc += 3; return true; }
+        if (ing.indexOf(a) !== -1) { sc += 2; return true; }
+        if (hay.indexOf(a) !== -1) { sc += 1; return true; }
+        return false;
+      });
+    });
+    if (ok) out.push({ c: c, s: sc, i: i });
+  });
+  return out.sort(function (a, b) { return b.s - a.s || a.i - b.i; }).map(function (x) { return x.c; });
+}
+function eduRng(seed) { var a = seed >>> 0; return function () { a = (a + 0x6D2B79F5) >>> 0; var t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function eduHash(s) { var h = 2166136261; s = String(s); for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function eduShuffle(a, r) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(r() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+/* 받침 따라 이/가 · 와/과 (영문·숫자는 읽는 소리로) */
+function eduJosa(w, a, b) {
+  var s = String(w).replace(/[\s)\]'"]+$/, ''), ch = s.slice(-1).toLowerCase(), c = ch.charCodeAt(0), has;
+  if (c >= 0xAC00 && c <= 0xD7A3) has = (c - 0xAC00) % 28 !== 0;
+  else if (/[0-9]/.test(ch)) has = '013678'.indexOf(ch) !== -1;
+  else if (/[a-z]/.test(ch)) has = 'lmnr'.indexOf(ch) !== -1;
+  else return w + a + '(' + b + ')';
+  return w + (has ? a : b);
+}
+/* 문제 틀: ① 고민 → 제품 ② 성분 → 제품 ③ 제품 → 성분 ④ 비교 제품 → 제품. 오답은 '정말 틀린 것'만 (고민·성분이 겹치면 오답 후보에서 뺌) */
+function eduQuizSpecs(cards) {
+  var S = [], ings = {};
+  cards.forEach(function (c) {
+    (c.targets || []).forEach(function (t) { S.push({ type: 'concern', tag: t, card: c }); });
+    (c.ingredients || []).forEach(function (x) { ings[x] = 1; });
+    if ((c.ingredients || []).length) S.push({ type: 'has', card: c });
+    (c.compare || []).forEach(function (x) { S.push({ type: 'cmp', cmp: x, card: c }); });
+  });
+  Object.keys(ings).forEach(function (x) { cards.forEach(function (c) { if ((c.ingredients || []).indexOf(x) !== -1) S.push({ type: 'ing', ing: x, card: c }); }); });
+  return S;
+}
+function eduQuizMake(sp, cards, r) {
+  var c = sp.card, wrong, q, opt = function (x) { return { t: eduShort(x), id: x.id }; };
+  var sameLineFirst = function (arr) { return eduShuffle(arr.filter(function (x) { return x.line === c.line; }), r).concat(eduShuffle(arr.filter(function (x) { return x.line !== c.line; }), r)); };
+  if (sp.type === 'concern') {
+    wrong = sameLineFirst(cards.filter(function (x) { return x !== c && (x.targets || []).indexOf(sp.tag) === -1; })).map(opt);
+    q = { q: sp.tag + ' 손님께 권할 제품은?', sub: '이 고민이 슬라이드의 타깃으로 적힌 제품을 골라요' };
+  } else if (sp.type === 'ing') {
+    wrong = sameLineFirst(cards.filter(function (x) { return x !== c && !eduHasIng(x, sp.ing); })).map(opt);
+    q = { q: eduJosa(sp.ing, '이', '가') + ' 들어간 제품은?', sub: '슬라이드의 성분 칸 기준이에요' };
+  } else if (sp.type === 'cmp') {
+    wrong = sameLineFirst(cards.filter(function (x) { return x !== c && (x.compare || []).indexOf(sp.cmp) === -1; })).map(opt);
+    q = { q: eduJosa(sp.cmp, '과', '와') + ' 비슷한 포지션의 제품은?', sub: '슬라이드의 비교 제품 기준이에요' };
+  } else {
+    var ans = c.ingredients[Math.floor(r() * c.ingredients.length)], seen = {};
+    wrong = eduShuffle(cards.filter(function (x) { return x !== c; }).reduce(function (a, x) { return a.concat(x.ingredients || []); }, []), r)
+      .filter(function (x) { var k = eduKey(x); if (seen[k] || !k) return false; seen[k] = 1; return !eduHasIng(c, x); }).map(function (x) { return { t: x, id: '' }; });
+    q = { q: eduShort(c) + '에 들어간 성분은?', sub: '나머지 셋은 이 제품 슬라이드에 없는 성분이에요' };
+    sp = { type: 'has', card: c, ans: ans };
+  }
+  var right = sp.type === 'has' ? { t: sp.ans, id: '' } : opt(c), seenT = {}; seenT[right.t] = 1;
+  wrong = wrong.filter(function (o) { if (seenT[o.t]) return false; seenT[o.t] = 1; return true; }).slice(0, 3);
+  if (wrong.length < 3) return null;
+  var opts = eduShuffle([right].concat(wrong), r);
+  return { type: sp.type, q: q.q, sub: q.sub, opts: opts, ans: opts.indexOf(right), card: c.id, key: sp.type + '|' + c.id + '|' + (sp.tag || sp.ing || sp.cmp || sp.ans) };
+}
+/* 오늘의 n문제: 같은 날 · 같은 회차면 모두 같은 문제 (seed = 날짜 + 회차). 문제 틀을 돌아가며, 같은 카드는 한 번만 */
+function eduQuiz(cards, seed, n) {
+  cards = (cards || []).filter(function (c) { return c && c.id && c.name; });
+  var r = eduRng(seed), by = {}, out = [], usedCard = {};
+  eduShuffle(eduQuizSpecs(cards), r).forEach(function (sp) { (by[sp.type] = by[sp.type] || []).push(sp); });
+  var types = eduShuffle(Object.keys(by), r);
+  for (var guard = 0; out.length < n && guard < 400; guard++) {
+    var t = types[guard % types.length], list = by[t];
+    if (!list || !list.length) { if (types.every(function (k) { return !by[k].length; })) break; continue; }
+    var sp = list.shift();
+    if (usedCard[sp.card.id]) continue;
+    var qq = eduQuizMake(sp, cards, r);
+    if (qq) { out.push(qq); usedCard[sp.card.id] = 1; }
+  }
+  return out;
+}
+/* 한국 시각 날짜 · 이번 주 월요일 0시 */
+function eduToday(ms) { return new Date((ms || Date.now()) + 9 * 3600000).toISOString().slice(0, 10); }
+function eduWeekStart(ms) { var d = new Date((ms || Date.now()) + 9 * 3600000), wd = (d.getUTCDay() + 6) % 7; return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - wd) - 9 * 3600000; }
+function eduIsNew(c, ms) { var a = Date.parse(String(c && c.added || '') + 'T00:00:00+09:00'); return !!a && (ms || Date.now()) - a < 7 * 864e5; }
+/*EDU-CORE-END*/
+
+var EDU = { data: null, src: '', q: '', concern: '', line: '', stack: [], quiz: null, stats: null, statsAt: 0, form: null, hubY: 0 };
+var EDU_I = {
+  book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>',
+  search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
+  x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>',
+  chev: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>',
+  quiz: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>',
+  copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>',
+  img: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>',
+  cart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>',
+  info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
+  up: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>'
+};
+var eduE = function (v) { return escapeHtml(v == null ? '' : String(v)); };
+function eduRun() { return typeof google !== 'undefined' && google.script && google.script.run; }
+function eduSeed() { if (!EDU._seed) { try { EDU._seed = JSON.parse(document.getElementById('eduSeed').textContent); } catch (e) { EDU._seed = { groups: [], cards: [] }; } } return EDU._seed; }
+/* 서버 자료가 비었으면(아직 안 올림) 앱에 들어 있는 기본 자료로 · 슬라이드 사진은 서버 묶음 것을 덧씌움 */
+function eduMerge(r) {
+  var s = eduSeed(), has = !!(r && Array.isArray(r.cards) && r.cards.length), gs = {};
+  s.groups.forEach(function (g) { gs[g.id] = Object.assign({}, g); });
+  ((r && r.groups) || []).forEach(function (g) { if (g && g.id) gs[g.id] = Object.assign({}, gs[g.id] || {}, g); });
+  var cards = (has ? r.cards : s.cards).slice().sort(function (a, b) { return (a.slide || 0) - (b.slide || 0); });
+  return { cards: cards, groups: Object.keys(gs).map(function (k) { return gs[k]; }).sort(function (a, b) { return (a.slide || 0) - (b.slide || 0); }), seed: !has };
+}
+function eduSet(d, src) { EDU.data = d; EDU.src = src; eduDotSync(); var rd = document.getElementById('eduReader'); if (rd && !rd.hidden && (EDU.stack[EDU.stack.length - 1] || {}).v !== 'form') eduRender(true); }
+function eduLoad(localOnly) {
+  if (!EDU.data) { var c = null; try { c = JSON.parse(localStorage.getItem('ry_edu_v1') || 'null'); } catch (e) {} eduSet(c && c.cards ? c : eduMerge(null), c && c.cards ? 'cache' : 'seed'); }
+  var run = eduRun();
+  if (localOnly) return;
+  if (!run || typeof run.getEdu !== 'function') return;   // 서버가 옛 버전 → 기본 자료 그대로
+  run.withSuccessHandler(function (r) {
+    if (!r || !r.ok) return;
+    var d = eduMerge(r);
+    try { if (d.seed) localStorage.removeItem('ry_edu_v1'); else localStorage.setItem('ry_edu_v1', JSON.stringify(d)); } catch (e) {}
+    eduSet(d, d.seed ? 'seed' : 'server');
+  }).withFailureHandler(function () {}).getEdu();
+}
+function eduCards() { return (EDU.data && EDU.data.cards) || []; }
+function eduGroup(slide) { return ((EDU.data && EDU.data.groups) || []).filter(function (g) { return g.slide === slide; })[0] || null; }
+function eduFind(id) { return eduCards().filter(function (c) { return c.id === id; })[0] || null; }
+function eduMe() { return typeof currentSelectedMember !== 'undefined' && currentSelectedMember && currentSelectedMember !== '미선택' ? currentSelectedMember : ''; }
+function eduCanEdit() { var m = eduMe(); return m === '문준' || m === '물류관리자' || (typeof memberTitle === 'function' && !!m && memberTitle(m) === '물류관리자'); }
+/* 새 자료 점: 7일 안에 들어온 카드가 있고, 아직 자료실을 안 열어 봤으면 */
+function eduNewest() { return eduCards().reduce(function (m, c) { return eduIsNew(c) && String(c.added) > m ? String(c.added) : m; }, ''); }
+function eduDotSync() { var d = document.getElementById('eduDot'), n = eduNewest(), seen = ''; try { seen = localStorage.getItem('ry_edu_seen') || ''; } catch (e) {} if (d) d.hidden = !(n && n > seen); }
+/* 발주 검색 결과에 붙는 '교육 자료' 칩 */
+function eduChip(name) {
+  var c = EDU.data ? eduMatch(name, eduCards()) : null;
+  return c ? '<button type="button" class="edu-chip" data-id="' + eduE(c.id) + '" onclick="event.stopPropagation(); eduOpenCard(this.dataset.id)" aria-label="' + eduE(eduShort(c)) + ' 교육 자료 보기">' + EDU_I.book + '교육 자료</button>' : '';
+}
+
+/* ── 화면 열고 닫기 · 뒤로 ── */
+function eduShow() {
+  var rd = document.getElementById('eduReader');
+  if (!rd.hidden) return;
+  rd.hidden = false; document.documentElement.classList.add('edu-lock');
+  try { var n = eduNewest(); if (n) localStorage.setItem('ry_edu_seen', n); } catch (e) {}
+  eduDotSync(); eduStatsLoad(false);
+  if (!EDU.loadedAt || Date.now() - EDU.loadedAt > 5 * 60000) { EDU.loadedAt = Date.now(); eduLoad(); }
+}
+function eduOpen() { eduShow(); EDU.stack = [{ v: 'hub' }]; eduRender(); }
+function eduOpenCard(id) { if (document.getElementById('eduReader').hidden) { eduShow(); EDU.stack = [{ v: 'hub' }]; } eduPush({ v: 'card', id: id }); }
+function eduPush(st) { var top = EDU.stack[EDU.stack.length - 1]; if (top && top.v === 'hub') EDU.hubY = document.getElementById('eduScroll').scrollTop; EDU.stack.push(st); eduRender(); }
+function eduBack() { if (EDU.stack.length > 1) { EDU.stack.pop(); eduRender(false, true); } else eduClose(); }
+function eduClose() { document.getElementById('eduReader').hidden = true; document.documentElement.classList.remove('edu-lock'); }
+function eduRender(keepScroll, back) {
+  var st = EDU.stack[EDU.stack.length - 1] || { v: 'hub' }, sc = document.getElementById('eduScroll'), y = sc.scrollTop;
+  document.getElementById('eduAddBtn').hidden = !(eduCanEdit() && st.v === 'hub');
+  if (st.v === 'card') eduCardView(st.id);
+  else if (st.v === 'quiz') eduQuizDraw();
+  else if (st.v === 'form') eduFormDraw(st.id);
+  else eduHub();
+  sc.scrollTop = keepScroll ? y : (back && st.v === 'hub' ? EDU.hubY : 0);
+}
+function eduTop(t, d) { document.getElementById('eduTopT').textContent = t; document.getElementById('eduTopD').innerHTML = d || ''; }
+
+/* ── 첫 화면: 검색 · 오늘의 3문제 · 고민 칩 · 라인 탭 · 목록 ── */
+function eduHub() {
+  var n = eduCards().length;
+  eduTop('교육 자료실', n + '개 제품' + (EDU.data && EDU.data.seed ? ' <span class="edu-base" title="서버에 올리기 전, 앱에 들어 있는 기본 자료예요">기본 자료</span>' : ''));
+  document.getElementById('eduBody').innerHTML =
+    '<div class="edu-hubtop"><label class="edu-search">' + EDU_I.search + '<input id="eduQ" type="search" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="제품 · 성분 · 고민 (예: 판테놀)" aria-label="교육 자료 검색"><button type="button" class="edu-ic" id="eduQx" hidden onclick="eduSetQ(\'\')" aria-label="검색어 지우기">' + EDU_I.x + '</button></label>'
+    + '<button type="button" class="edu-quizb" onclick="eduQuizStart(false)"><span class="edu-qi">' + EDU_I.quiz + '</span><span class="edu-qt"><b>오늘의 3문제</b><small id="eduRec">' + eduE(eduRecText()) + '</small></span><span class="edu-go">풀기' + EDU_I.chev + '</span></button></div>'
+    + '<section class="edu-sec"><h2 class="edu-h">손님 고민으로 찾기</h2><div class="edu-chips" id="eduChips" role="group" aria-label="손님 고민"></div></section>'
+    + '<div class="edu-tabs" id="eduTabs" role="tablist" aria-label="라인"></div><div id="eduList"></div>';
+  var q = document.getElementById('eduQ');
+  q.value = EDU.q;
+  /* 한글 조합 중 다시 그리지 않음: 검색칸은 그대로 두고 아래 목록만 바꾼다 (입력칸을 다시 만들면 '아누아아'처럼 글자가 겹침) */
+  q.addEventListener('input', function () { EDU.q = q.value; eduHubDraw(); });
+  q.addEventListener('keydown', function (e) { if (e.isComposing || e.keyCode === 229) return; if (e.key === 'Enter') { e.preventDefault(); q.blur(); } });
+  eduHubDraw();
+}
+function eduSetQ(v) { EDU.q = v; var q = document.getElementById('eduQ'); if (q) q.value = v; eduHubDraw(); }
+function eduSetConcern(t) { EDU.concern = EDU.concern === t ? '' : t; eduHubDraw(); var c = document.getElementById('eduChips'); if (c && EDU.concern) { var l = document.getElementById('eduList'); l && l.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } }
+function eduSetLine(l) { EDU.line = l; eduHubDraw(); }
+function eduRow(c) {
+  var tg = (c.targets || []).slice(0, 4);
+  return '<button type="button" class="edu-row" data-id="' + eduE(c.id) + '" onclick="eduOpenCard(this.dataset.id)"><span class="edu-row-t"><span class="edu-row-k">' + eduE(c.brand) + ' · ' + eduE(c.line) + (eduIsNew(c) ? '<i class="edu-new">새</i>' : '') + '</span><b>' + eduE(eduShort(c)) + '</b>'
+    + (c.concept ? '<span class="edu-row-c">' + eduE(c.concept) + '</span>' : '') + (tg.length ? '<span class="edu-tg">' + tg.map(function (t) { return '<i>' + eduE(t) + '</i>'; }).join('') + '</span>' : '') + '</span>' + EDU_I.chev + '</button>';
+}
+function eduSlideBtn(g) { return g && g.img ? '<button type="button" class="edu-sb" data-u="' + eduE(g.img) + '" onclick="eduZoomOpen(this.dataset.u)">' + EDU_I.img + '슬라이드</button>' : ''; }
+function eduHubDraw() {
+  var all = eduCards(), lines = [];
+  all.forEach(function (c) { if (c.line && lines.indexOf(c.line) === -1) lines.push(c.line); });
+  if (EDU.line && lines.indexOf(EDU.line) === -1) EDU.line = '';
+  var chips = document.getElementById('eduChips'), tabs = document.getElementById('eduTabs'), list = document.getElementById('eduList'), qx = document.getElementById('eduQx');
+  if (!list) return;
+  if (qx) qx.hidden = !EDU.q;
+  var cnt = {}; all.forEach(function (c) { (c.targets || []).forEach(function (t) { cnt[t] = (cnt[t] || 0) + 1; }); });
+  var cs = EDU_CONCERNS.filter(function (t) { return cnt[t]; }).concat(Object.keys(cnt).filter(function (t) { return EDU_CONCERNS.indexOf(t) === -1; }));
+  chips.innerHTML = cs.map(function (t) { var on = EDU.concern === t; return '<button type="button" class="edu-cc" aria-pressed="' + on + '" data-t="' + eduE(t) + '" onclick="eduSetConcern(this.dataset.t)">' + eduE(t) + '<i>' + cnt[t] + '</i></button>'; }).join('');
+  tabs.innerHTML = [''].concat(lines).map(function (l) { var on = EDU.line === l; return '<button type="button" role="tab" class="edu-tab" aria-selected="' + on + '" data-l="' + eduE(l) + '" onclick="eduSetLine(this.dataset.l)">' + eduE(l || '전체') + '</button>'; }).join('');
+  var hit = eduSearch(EDU.q, all).filter(function (c) { return (!EDU.concern || (c.targets || []).indexOf(EDU.concern) !== -1) && (!EDU.line || c.line === EDU.line); });
+  if (EDU.q || EDU.concern) {
+    var what = [EDU.concern ? EDU.concern + ' 손님' : '', EDU.q ? '‘' + EDU.q.trim() + '’' : '', EDU.line].filter(Boolean).join(' · ');
+    list.innerHTML = hit.length
+      ? '<section class="edu-grp"><h2 class="edu-h">' + eduE(what) + '<small>' + hit.length + '개</small></h2><div class="edu-rows">' + hit.map(eduRow).join('') + '</div></section>'
+      : '<div class="edu-empty">' + eduE(what) + '에 맞는 자료가 없어요.<br><button type="button" onclick="EDU.concern=\'\'; EDU.line=\'\'; eduSetQ(\'\')">조건 지우기</button></div>';
+    return;
+  }
+  var gs = ((EDU.data && EDU.data.groups) || []).slice(), slides = {};
+  hit.forEach(function (c) { (slides[c.slide] = slides[c.slide] || []).push(c); });
+  Object.keys(slides).forEach(function (s) { if (!gs.some(function (g) { return String(g.slide) === s; })) gs.push({ slide: +s, title: slides[s][0].line, brand: slides[s][0].brand }); });
+  list.innerHTML = gs.filter(function (g) { return slides[g.slide]; }).map(function (g) {
+    return '<section class="edu-grp"><div class="edu-grp-h"><div><span class="edu-grp-k">' + eduE(g.brand || '') + (g.slide ? ' · 슬라이드 ' + g.slide : '') + '</span><h3>' + eduE(g.title || '') + '</h3></div>' + eduSlideBtn(g) + '</div>'
+      + (g.intro ? '<p class="edu-grp-p">' + eduE(g.intro) + '</p>' : '') + '<div class="edu-rows">' + slides[g.slide].map(eduRow).join('') + '</div></section>';
+  }).join('') || '<div class="edu-empty">아직 자료가 없어요.</div>';
+}
+
+/* ── 카드 자세히 ── */
+function eduCardView(id) {
+  var c = eduFind(id);
+  if (!c) { eduTop('교육 자료', ''); document.getElementById('eduBody').innerHTML = '<div class="edu-empty">자료를 찾지 못했어요.<br><button type="button" onclick="eduBack()">돌아가기</button></div>'; return; }
+  var g = eduGroup(c.slide), sib = eduCards().filter(function (x) { return x.slide === c.slide && x.id !== c.id; }), row = function (k, v) { return v ? '<div><dt>' + k + '</dt><dd>' + v + '</dd></div>' : ''; };
+  eduTop(eduShort(c), eduE(c.line));
+  var h = '<div class="edu-kick">' + eduE(c.brand) + ' · ' + eduE(c.line) + (eduIsNew(c) ? '<i class="edu-new">새</i>' : '') + '</div><h1 class="edu-h1">' + eduE(c.name) + '</h1>'
+    + (c.tag && eduKey(c.tag) !== eduKey(c.concept) ? '<div class="edu-tagl">' + eduE(c.tag) + '</div>' : '') + (c.concept ? '<p class="edu-concept">' + eduE(c.concept) + '</p>' : '');
+  if (c.ment) h += '<div class="edu-ment"><div class="edu-ment-h"><b>응대 멘트</b><button type="button" class="edu-copy" onclick="eduCopy(this)">' + EDU_I.copy + '멘트 복사</button></div><q id="eduMent">' + eduE(c.ment) + '</q></div>';
+  h += '<dl class="edu-dl">'
+    + row('이런 손님께', ((c.targets || []).length ? '<div class="edu-ing">' + c.targets.map(function (t) { return '<button type="button" class="tg" data-t="' + eduE(t) + '" onclick="eduGoConcern(this.dataset.t)">' + eduE(t) + '</button>'; }).join('') + '</div>' : '') + (c.targetText ? '<small>' + eduE(c.targetText) + '</small>' : ''))
+    + row('핵심 성분', (c.ingredients || []).length ? '<div class="edu-ing">' + c.ingredients.map(function (x) { return '<button type="button" data-q="' + eduE(x) + '" onclick="eduGoSearch(this.dataset.q)" aria-label="' + eduE(x) + ' 들어간 제품 찾기">' + eduE(x) + '</button>'; }).join('') + '</div>' : '')
+    + row('비슷한 제품', eduE((c.compare || []).join(', ')))
+    + row('쓰는 법', eduE(c.usage))
+    + (c.facts || []).map(function (f) { return row(eduE(f[0]), eduE(f[1])); }).join('')
+    + row('가격', eduE(c.price))
+    + row('참고', eduE(c.notes))
+    + '</dl>';
+  h += '<div class="edu-acts">' + (g && g.img ? '<button type="button" class="edu-btn" data-u="' + eduE(g.img) + '" onclick="eduZoomOpen(this.dataset.u)">' + EDU_I.img + '원본 슬라이드 보기</button>' : '')
+    + '<button type="button" class="edu-btn pri" data-id="' + eduE(c.id) + '" onclick="eduOrderSearch(this.dataset.id)">' + EDU_I.cart + '이 상품 발주 검색</button></div>';
+  if (g && g.intro || sib.length) h += '<section class="edu-sec"><h2 class="edu-h">' + eduE(g && g.title || c.line) + ' 한눈에</h2><div class="edu-grp">' + (g && g.intro ? '<p class="edu-grp-p" style="margin-top:0">' + eduE(g.intro) + '</p>' : '') + (sib.length ? '<div class="edu-rows">' + sib.map(eduRow).join('') + '</div>' : '') + '</div></section>';
+  if (eduCanEdit()) h += '<div class="edu-acts two"><button type="button" class="edu-btn" data-id="' + eduE(c.id) + '" onclick="eduPush({ v: \'form\', id: this.dataset.id })">고치기</button><button type="button" class="edu-btn del" data-id="' + eduE(c.id) + '" onclick="eduDelete(this.dataset.id, this)">지우기</button></div>';
+  document.getElementById('eduBody').innerHTML = h;
+}
+function eduGoSearch(q) { EDU.q = q; EDU.concern = ''; EDU.line = ''; EDU.stack = [{ v: 'hub' }]; EDU.hubY = 0; eduRender(); }
+function eduGoConcern(t) { EDU.q = ''; EDU.concern = t; EDU.line = ''; EDU.stack = [{ v: 'hub' }]; EDU.hubY = 0; eduRender(); }
+function eduCopy(btn) {
+  var t = (document.getElementById('eduMent') || {}).textContent || '', done = function () { showToast('멘트를 복사했어요', 1400); };
+  try { navigator.clipboard.writeText(t).then(done, function () { eduCopy0(t) && done(); }); } catch (e) { if (eduCopy0(t)) done(); }
+}
+function eduCopy0(t) { var a = document.createElement('textarea'); a.value = t; a.setAttribute('readonly', ''); a.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(a); a.select(); var ok = false; try { ok = document.execCommand('copy'); } catch (e) {} a.remove(); return ok; }
+function eduOrderSearch(id) { var c = eduFind(id); if (!c) return; eduClose(); ntGoItem(c.q || eduShort(c)); }
+
+/* ── 오늘의 3문제 ── */
+function eduLocal() { try { var a = JSON.parse(localStorage.getItem('ry_edu_quiz') || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+function eduLocalSave(a) { try { localStorage.setItem('ry_edu_quiz', JSON.stringify(a.slice(-300))); } catch (e) {} }
+function eduRecText() {
+  var me = eduMe(), ws = eduWeekStart(), n = 0, ok = 0, srv = EDU.stats && EDU.stats.members;
+  if (srv) { var m = srv[me] || {}; n = +m.wn || 0; ok = +m.wok || 0; }
+  eduLocal().forEach(function (e) { if (e.m === me && e.t >= ws && (!srv || !e.s)) { n++; ok += e.c ? 1 : 0; } });
+  if (!me) return '이름을 고르면 내 기록이 남아요';
+  return n ? '이번 주 ' + n + '문제 · 정답 ' + ok : '이번 주 아직 안 풀었어요';
+}
+function eduRecSync() { var r = document.getElementById('eduRec'); if (r) r.textContent = eduRecText(); }
+function eduStatsLoad(force) {
+  var run = eduRun();
+  if (!run || typeof run.getEduStats !== 'function' || (!force && Date.now() - EDU.statsAt < 5 * 60000)) return;
+  EDU.statsAt = Date.now();
+  run.withSuccessHandler(function (r) { if (r && r.ok) { EDU.stats = r; eduRecSync(); } }).withFailureHandler(function () {}).getEduStats();
+}
+function eduSend(e) {
+  var run = eduRun();
+  if (!run || typeof run.logEduQuiz !== 'function') return;
+  run.withSuccessHandler(function (r) {
+    if (!r || !r.ok) return;
+    var a = eduLocal(); a.forEach(function (x) { if (x.t === e.t && x.id === e.id) x.s = 1; }); eduLocalSave(a);
+    if (EDU.stats && EDU.stats.members) { var m = EDU.stats.members[e.m] = EDU.stats.members[e.m] || { wn: 0, wok: 0, n: 0, ok: 0 }; m.wn++; m.wok += e.c; m.n++; m.ok += e.c; }
+    eduRecSync();
+  }).withFailureHandler(function () {}).logEduQuiz(e.m, e.id, !!e.c);
+}
+function eduQuizStart(more) {
+  var cards = eduCards();
+  EDU.qround = more ? (EDU.qround || 0) + 1 : 0;
+  var qs = eduQuiz(cards, eduHash(eduToday() + '#' + EDU.qround), 3);
+  if (!qs.length) { showToast('문제를 만들 자료가 부족해요', 1600); return; }
+  EDU.quiz = { qs: qs, i: 0, right: 0 };
+  var me = eduMe(), now = Date.now();   /* 못 보낸 기록은 다시 보내기 (낙관적 저장 · 실패하면 이 기기에만) */
+  eduLocal().filter(function (e) { return e.m === me && !e.s && now - e.t > 5000; }).slice(-10).forEach(eduSend);
+  var top = EDU.stack[EDU.stack.length - 1];
+  if (top && top.v === 'quiz') eduRender(); else eduPush({ v: 'quiz' });
+}
+function eduQuizDraw() {
+  var Z = EDU.quiz;
+  if (!Z) { EDU.stack.pop(); eduRender(); return; }
+  eduTop('오늘의 3문제', eduE(eduRecText()));
+  var B = document.getElementById('eduBody');
+  if (Z.i >= Z.qs.length) {
+    B.innerHTML = '<div class="edu-res-box"><b>' + Z.qs.length + '문제 중 ' + Z.right + '개 맞혔어요</b><small>' + eduE(eduRecText()) + '</small></div>'
+      + '<div class="edu-acts"><button type="button" class="edu-btn" onclick="eduBack()">자료실로</button><button type="button" class="edu-btn pri" onclick="eduQuizStart(true)">3문제 더 풀기</button></div>';
+    return;
+  }
+  var q = Z.qs[Z.i], done = q.picked != null, c = eduFind(q.card);
+  var h = '<div class="edu-qprog">' + Z.qs.map(function (x, k) { return '<i class="' + (x.picked != null ? (x.picked === x.ans ? 'ok' : 'no') : (k === Z.i ? 'on' : '')) + '"></i>'; }).join('') + '<span>' + (Z.i + 1) + ' / ' + Z.qs.length + '</span></div>'
+    + '<h1 class="edu-q">' + eduE(q.q) + '</h1><div class="edu-opts" role="group" aria-label="보기">'
+    + q.opts.map(function (o, k) { var cls = done ? (k === q.ans ? ' ok' : (k === q.picked ? ' no' : '')) : ''; return '<button type="button" class="edu-opt' + cls + '" data-k="' + k + '" onclick="eduPick(+this.dataset.k)"' + (done ? ' disabled' : '') + '><i>' + (k + 1) + '</i><span>' + eduE(o.t) + '</span>' + (done && k === q.ans ? EDU_I.check : '') + '</button>'; }).join('') + '</div>';
+  if (done) {
+    var ok = q.picked === q.ans;
+    h += '<div class="edu-fb' + (ok ? '' : ' no') + '" id="eduFb" aria-live="polite"><b>' + (ok ? '맞았어요' : '아쉬워요 · 정답은 ' + eduE(q.opts[q.ans].t)) + '</b>' + (c ? eduRow(c) : '') + '</div>'
+      + '<button type="button" class="edu-btn pri wide" onclick="eduNext()">' + (Z.i + 1 < Z.qs.length ? '다음 문제' : '결과 보기') + '</button>';
+  } else h += '<p class="edu-grp-p" style="margin-top:12px">' + eduE(q.sub || '') + '</p>';
+  B.innerHTML = h;
+}
+function eduPick(k) {
+  var Z = EDU.quiz, q = Z && Z.qs[Z.i];
+  if (!q || q.picked != null) return;
+  q.picked = k; var ok = k === q.ans; if (ok) Z.right++;
+  var e = { t: Date.now(), m: eduMe(), id: q.card, c: ok ? 1 : 0, s: 0 }, a = eduLocal(); a.push(e); eduLocalSave(a);
+  if (e.m) eduSend(e);
+  eduQuizDraw();
+  var fb = document.getElementById('eduFb'); if (fb) try { fb.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (x) {}
+}
+function eduNext() { EDU.quiz.i++; eduQuizDraw(); document.getElementById('eduScroll').scrollTop = 0; }
+
+/* ── 관리자: 자료 추가 · 고치기 · 지우기 (문준 · 물류관리자) ── */
+function eduForm(id) { eduPush({ v: 'form', id: id || '' }); }
+function eduFormDraw(id) {
+  if (!eduCanEdit()) { EDU.stack.pop(); eduRender(); return; }
+  var c = id ? eduFind(id) : null, gs = (EDU.data && EDU.data.groups) || [], F = EDU.form;
+  if (!F || F.id !== (id || '')) F = EDU.form = { id: id || '', slide: c ? c.slide : (gs[0] ? gs[0].slide : 1), img: '', busy: false, targets: (c && c.targets || []).slice() };
+  var g = F.slide === 'new' ? null : eduGroup(+F.slide), img = F.img || (g && g.img) || '', v = function (k) { return eduE(c && c[k] != null ? (Array.isArray(c[k]) ? c[k].join(', ') : c[k]) : ''); };
+  var lines = [], brands = ['오가나셀', '더마알엑스']; eduCards().forEach(function (x) { if (x.line && lines.indexOf(x.line) === -1) lines.push(x.line); if (x.brand && brands.indexOf(x.brand) === -1) brands.push(x.brand); });
+  eduTop(c ? '자료 고치기' : '자료 추가', c ? eduE(eduShort(c)) : '슬라이드 사진 → 카드');
+  document.getElementById('eduBody').innerHTML =
+    '<div class="edu-note">' + EDU_I.info + '<span>슬라이드 사진만 텔레그램으로 클로드에게 보내도 카드로 정리해 넣어 드려요. 여기서는 직접 올리고 고칠 수 있어요.</span></div>'
+    + '<div class="edu-form">'
+    + '<label class="w">어느 슬라이드 묶음인가요?<select id="ef_slide" onchange="eduFormKeep(); EDU.form.slide = this.value === \'new\' ? \'new\' : +this.value; EDU.form.img = \'\'; eduFormDraw(EDU.form.id)">' + gs.map(function (x) { return '<option value="' + x.slide + '"' + (String(F.slide) === String(x.slide) ? ' selected' : '') + '>슬라이드 ' + x.slide + ' · ' + eduE(x.title) + '</option>'; }).join('') + '<option value="new"' + (F.slide === 'new' ? ' selected' : '') + '>새 묶음 만들기</option></select></label>'
+    + (F.slide === 'new' ? '<label class="w">묶음 제목<input type="text" id="ef_gtitle" maxlength="80" placeholder="예: 펩타이드 라인"></label><label class="w">묶음 소개 (슬라이드 위쪽 설명)<textarea id="ef_gintro" maxlength="600"></textarea></label>' : '')
+    + '<div class="edu-up">' + (img ? '<img src="' + eduE(img) + '" alt="슬라이드" referrerpolicy="no-referrer" onerror="imgFallback(this)">' : '<span class="ph">' + EDU_I.img + '</span>') + '<span>' + (F.busy ? '올리는 중…' : img ? '이 묶음의 슬라이드 사진이에요. 바꾸려면 다시 올려요.' : '슬라이드 사진을 올리면 카드에서 원본으로 볼 수 있어요.') + '</span><label>' + EDU_I.up + '사진 올리기<input type="file" accept="image/*" onchange="eduUpload(this)"></label></div>'
+    + '<label>브랜드<input type="text" id="ef_brand" list="ef_brands" maxlength="30" value="' + (v('brand') || eduE(g && g.brand || '')) + '"></label><datalist id="ef_brands">' + brands.map(function (b) { return '<option value="' + eduE(b) + '">'; }).join('') + '</datalist>'
+    + '<label>라인<input type="text" id="ef_line" list="ef_lines" maxlength="40" value="' + (v('line') || eduE(g && g.line || '')) + '"></label><datalist id="ef_lines">' + lines.map(function (b) { return '<option value="' + eduE(b) + '">'; }).join('') + '</datalist>'
+    + '<label class="w">제품 이름 *<input type="text" id="ef_name" maxlength="80" value="' + v('name') + '" placeholder="예: 더마알엑스 캄 액티브 클렌저"></label>'
+    + '<label class="w">한 줄 컨셉<input type="text" id="ef_concept" maxlength="200" value="' + v('concept') + '"></label>'
+    + '<div class="w"><span style="display:block;font-size:13px;font-weight:700;color:#475467;margin-bottom:6px">손님 고민</span><div class="edu-chips" id="ef_tg">' + EDU_CONCERNS.concat(F.targets.filter(function (t) { return EDU_CONCERNS.indexOf(t) === -1; })).map(function (t) { return '<button type="button" class="edu-cc" aria-pressed="' + (F.targets.indexOf(t) !== -1) + '" data-t="' + eduE(t) + '" onclick="eduFormTg(this)">' + eduE(t) + '</button>'; }).join('') + '</div></div>'
+    + '<label class="w">고민 설명 (슬라이드의 Target 칸)<input type="text" id="ef_targetText" maxlength="200" value="' + v('targetText') + '"></label>'
+    + '<label class="w">핵심 성분 (쉼표로 나눠요)<input type="text" id="ef_ingredients" maxlength="600" value="' + v('ingredients') + '" placeholder="판테놀, 병풀"></label>'
+    + '<label class="w">비슷한 제품 (쉼표로)<input type="text" id="ef_compare" maxlength="300" value="' + v('compare') + '"></label>'
+    + '<label class="w">응대 멘트<textarea id="ef_ment" maxlength="600">' + v('ment') + '</textarea></label>'
+    + '<label class="w">쓰는 법<input type="text" id="ef_usage" maxlength="300" value="' + v('usage') + '"></label>'
+    + '<label class="w">참고<input type="text" id="ef_notes" maxlength="400" value="' + v('notes') + '"></label>'
+    + '<label>가격<input type="text" id="ef_price" maxlength="60" value="' + v('price') + '"></label>'
+    + '<label>발주 검색어<input type="text" id="ef_q" maxlength="60" value="' + v('q') + '" placeholder="비우면 제품 이름"></label>'
+    + '</div><button type="button" class="edu-btn pri wide" id="ef_save" onclick="eduSave(this)">' + (c ? '고친 내용 저장' : '자료 추가') + '</button>';
+  if (F.keep) { Object.keys(F.keep).forEach(function (k) { var el = document.getElementById(k); if (el) el.value = F.keep[k]; }); F.keep = null; }
+}
+function eduFormKeep() { var k = {}; [].forEach.call(document.querySelectorAll('.edu-form input[type=text], .edu-form textarea'), function (el) { if (el.id) k[el.id] = el.value; }); EDU.form.keep = k; }
+function eduFormTg(b) { var t = b.dataset.t, a = EDU.form.targets, i = a.indexOf(t); if (i === -1) a.push(t); else a.splice(i, 1); b.setAttribute('aria-pressed', String(i === -1)); }
+function eduUpload(inp) {
+  var f = inp.files && inp.files[0], F = EDU.form; inp.value = '';
+  if (!f || !F) return;
+  var run = eduRun();
+  if (!run || typeof run.uploadEduSlide !== 'function') { showToast('서버 파일(Code.gs)을 새로 배포한 뒤에 올릴 수 있어요', 2400); return; }
+  eduFormKeep(); F.busy = true; eduFormDraw(F.id);
+  resizeImageFile(f, 2000, 0.86).then(function (du) {
+    run.withSuccessHandler(function (r) { F.busy = false; if (r && r.ok && r.url) { F.img = r.url; showToast('슬라이드 사진을 올렸어요', 1400); } else showToast((r && r.message) || '사진을 올리지 못했어요', 2200); eduFormKeep(); eduFormDraw(F.id); })
+      .withFailureHandler(function () { F.busy = false; showToast('사진을 올리지 못했어요 · 서버 파일(Code.gs)을 새로 배포했는지 확인해 주세요', 2600); eduFormKeep(); eduFormDraw(F.id); })
+      .uploadEduSlide(du, (F.slide === 'new' ? '새묶음' : '슬라이드' + F.slide), eduMe());
+  }, function () { F.busy = false; showToast('사진을 읽지 못했어요', 1800); eduFormDraw(F.id); });
+}
+/* 서버가 아직 비어 있으면(기본 자료) 기본 자료 전체 + 이번 변경을 한 번에 올린다 → 그 뒤로는 서버가 원본 */
+function eduPayload(change, dropId) {
+  var d = EDU.data, out = [];
+  if (!d.seed) return change;
+  d.groups.forEach(function (g) { var x = change.filter(function (o) { return o.kind === 'group' && o.id === g.id; })[0]; out.push(x || Object.assign({ kind: 'group' }, g)); });
+  change.forEach(function (o) { if (o.kind === 'group' && !d.groups.some(function (g) { return g.id === o.id; })) out.push(o); });
+  d.cards.forEach(function (c) { if (c.id === dropId) return; var x = change.filter(function (o) { return o.kind !== 'group' && o.id === c.id; })[0]; out.push(x || c); });
+  change.forEach(function (o) { if (o.kind !== 'group' && !d.cards.some(function (c) { return c.id === o.id; })) out.push(o); });
+  return out;
+}
+function eduApply(list, dropId) {
+  var d = EDU.data, add = function (arr, o) { var i = arr.map(function (x) { return x.id; }).indexOf(o.id); if (i === -1) arr.push(o); else arr[i] = o; };
+  if (d.seed && list.length > 1) { d.cards = []; }
+  list.forEach(function (o) { if (o.kind === 'group') add(d.groups, o); else add(d.cards, o); });
+  if (dropId) d.cards = d.cards.filter(function (c) { return c.id !== dropId; });
+  d.cards.sort(function (a, b) { return (a.slide || 0) - (b.slide || 0); }); d.groups.sort(function (a, b) { return (a.slide || 0) - (b.slide || 0); });
+  d.seed = false; EDU.src = 'server';
+  try { localStorage.setItem('ry_edu_v1', JSON.stringify(d)); } catch (e) {}
+  eduDotSync();
+}
+function eduSave(btn) {
+  var F = EDU.form, val = function (k) { var el = document.getElementById('ef_' + k); return el ? el.value.trim() : ''; }, list = function (k) { return val(k).split(/[,\n]/).map(function (x) { return x.trim(); }).filter(Boolean); };
+  var orig = F.id ? eduFind(F.id) : null, name = val('name');
+  if (!name) { showToast('제품 이름을 적어 주세요', 1600); return; }
+  if (F.busy) { showToast('사진을 올리는 중이에요 · 잠시만요', 1600); return; }
+  var gs = EDU.data.groups, slide = F.slide === 'new' ? gs.reduce(function (m, g) { return Math.max(m, g.slide || 0); }, 0) + 1 : +F.slide, g0 = eduGroup(slide), change = [];
+  if (F.slide === 'new' || F.img) change.push({ kind: 'group', id: g0 ? g0.id : 'g' + slide, slide: slide, brand: g0 ? g0.brand : val('brand'), line: g0 ? g0.line : val('line'), title: g0 ? g0.title : (val('gtitle') || val('line') || name), intro: g0 ? g0.intro : val('gintro'), img: F.img || (g0 && g0.img) || '' });
+  var card = Object.assign({}, orig || {}, { id: orig ? orig.id : 'c' + Date.now().toString(36), slide: slide, brand: val('brand'), line: val('line'), name: name, concept: val('concept'), targets: F.targets.slice(), targetText: val('targetText'),
+    ingredients: list('ingredients'), compare: list('compare'), ment: val('ment'), usage: val('usage'), notes: val('notes'), price: val('price'), q: val('q'), added: orig && orig.added ? orig.added : eduToday() });
+  change.push(card);
+  var run = eduRun(), prev = setBtnBusy(btn, '저장 중…');
+  if (!run || typeof run.saveEduCard !== 'function') { restoreBtn(btn, prev); alert('서버 파일(Code.gs)을 새 버전으로 교체 · 배포한 뒤에 저장할 수 있어요.'); return; }
+  var payload = eduPayload(change);
+  run.withSuccessHandler(function (r) {
+    restoreBtn(btn, prev);
+    if (!r || !r.ok) { alert('저장하지 못했어요: ' + ((r && r.message) || '')); return; }
+    eduApply(payload); EDU.form = null; showToast(orig ? '고친 내용을 저장했어요' : '자료를 추가했어요', 1500);
+    EDU.stack.pop(); if (!orig) EDU.stack.push({ v: 'card', id: card.id }); eduRender();
+  }).withFailureHandler(function (e) { restoreBtn(btn, prev); alert('저장하지 못했어요. 서버 파일(Code.gs)을 새로 배포했는지 확인해 주세요.\n' + (e && e.message ? e.message : '')); })
+    .saveEduCard(Array.isArray(payload) && payload.length === 1 ? payload[0] : payload, eduMe());
+}
+function eduDelete(id, btn) {
+  var c = eduFind(id), run = eduRun();
+  if (!c || !eduCanEdit() || !confirm('‘' + eduShort(c) + '’ 자료를 지울까요?')) return;
+  if (!run) return;
+  var prev = setBtnBusy(btn, '지우는 중…'), seed = EDU.data.seed;
+  var done = function (r) { restoreBtn(btn, prev); if (!r || !r.ok) { alert('지우지 못했어요: ' + ((r && r.message) || '')); return; } eduApply(seed ? eduPayload([], id) : [], id); showToast('자료를 지웠어요', 1400); EDU.stack = [{ v: 'hub' }]; eduRender(); };
+  var fail = function () { restoreBtn(btn, prev); alert('지우지 못했어요. 서버 파일(Code.gs)을 새로 배포했는지 확인해 주세요.'); };
+  if (seed) run.withSuccessHandler(done).withFailureHandler(fail).saveEduCard(eduPayload([], id), eduMe());
+  else run.withSuccessHandler(done).withFailureHandler(fail).deleteEduCard(id, eduMe());
+}
+
+/* ── 원본 슬라이드: 전체 화면 + 두 손가락 확대 (앱이 화면 확대를 막아 두어서 직접 구현) ── */
+var EZ = { s: 1, x: 0, y: 0, p: {}, d0: 0, s0: 1, lt: 0, mv: 0 };
+function ezSet() { var i = document.getElementById('eduZoomImg'); if (EZ.s <= 1) { EZ.s = 1; EZ.x = 0; EZ.y = 0; } i.style.transform = 'translate(' + EZ.x + 'px,' + EZ.y + 'px) scale(' + EZ.s + ')'; }
+function eduZoomOpen(u) { var z = document.getElementById('eduZoom'), i = document.getElementById('eduZoomImg'); i.removeAttribute('data-try'); i.src = u; EZ.s = 1; ezSet(); z.hidden = false; }
+function eduZoomClose() { document.getElementById('eduZoom').hidden = true; }
+function eduImgErr(img) {   /* 드라이브 사진: 썸네일 주소(큰 크기) → 크기 지정 주소 → 안내 */
+  var m = String(img.src).match(/\/d\/([A-Za-z0-9_-]+)/) || String(img.src).match(/[?&]id=([A-Za-z0-9_-]+)/), t = +(img.getAttribute('data-try') || 0);
+  var plan = m ? ['https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w2000', 'https://lh3.googleusercontent.com/d/' + m[1] + '=s2000'] : [];
+  if (t < plan.length) { img.setAttribute('data-try', String(t + 1)); img.src = plan[t]; return; }
+  showToast('슬라이드 사진을 불러오지 못했어요', 1800);
+}
+(function () {
+  var st = document.getElementById('eduZoomSt');
+  if (!st) return;
+  var dist = function () { var k = Object.keys(EZ.p); if (k.length < 2) return 0; var a = EZ.p[k[0]], b = EZ.p[k[1]]; return Math.hypot(a.x - b.x, a.y - b.y); };
+  st.addEventListener('pointerdown', function (e) { try { st.setPointerCapture(e.pointerId); } catch (x) {} EZ.p[e.pointerId] = { x: e.clientX, y: e.clientY }; EZ.mv = 0; if (Object.keys(EZ.p).length === 2) { EZ.d0 = dist(); EZ.s0 = EZ.s; } });
+  st.addEventListener('pointermove', function (e) {
+    var o = EZ.p[e.pointerId]; if (!o) return;
+    var dx = e.clientX - o.x, dy = e.clientY - o.y; EZ.mv += Math.abs(dx) + Math.abs(dy); o.x = e.clientX; o.y = e.clientY;
+    if (Object.keys(EZ.p).length >= 2) { if (EZ.d0) { EZ.s = Math.min(5, Math.max(1, EZ.s0 * dist() / EZ.d0)); ezSet(); } }
+    else if (EZ.s > 1) { EZ.x += dx; EZ.y += dy; ezSet(); }
+  });
+  var up = function (e) {
+    var was = Object.keys(EZ.p).length; delete EZ.p[e.pointerId];
+    if (was === 1 && EZ.mv < 10) { var now = Date.now(); if (now - EZ.lt < 320) { EZ.s = EZ.s > 1 ? 1 : 2.5; EZ.x = 0; EZ.y = 0; ezSet(); EZ.lt = 0; } else EZ.lt = now; }
+  };
+  st.addEventListener('pointerup', up); st.addEventListener('pointercancel', up);
+  st.addEventListener('wheel', function (e) { e.preventDefault(); EZ.s = Math.min(5, Math.max(1, EZ.s * (1 - e.deltaY * 0.002))); ezSet(); }, { passive: false });
+})();
+document.addEventListener('keydown', function (e) {
+  if (e.key !== 'Escape') return;
+  var z = document.getElementById('eduZoom'), rd = document.getElementById('eduReader');
+  if (z && !z.hidden) eduZoomClose(); else if (rd && !rd.hidden) eduBack();
+});
+eduLoad(true);   // 기본 자료로 바로 (점 표시) · 서버는 조금 뒤 한 번
+setTimeout(function () { EDU.loadedAt = Date.now(); eduLoad(); }, 5000);
 </script>
 </body>
 </html>
