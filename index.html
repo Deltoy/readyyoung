@@ -9630,6 +9630,26 @@ html body #ryLaunchGrid .tl-search{top:56px}
     ['pointerdown', 'touchstart', 'focusin'].forEach(function (ev) { document.addEventListener(ev, function (e) { if (e.target && e.target.closest && e.target.closest('#searchResultView')) RY_SR.touch = Date.now(); }, { capture: true, passive: true }); });
     function ryBusySR() { var a = document.activeElement; return Date.now() - RY_SR.touch < 2500 || !!(a && /^(m-)?s-qty-/.test(a.id || '')); }
     function rySigSR(items) { return (items || []).map(function (x) { return x.rowNumber + ':' + x.status + ':' + (x.justRequested ? 1 : 0); }).join('|'); }
+    /* 1006 화면 밀림 진단: 주소 끝에 ?dbg=1 → 오른쪽 위 작은 기록판에 '화면이 크게 움직인 순간'과 바로 전에 일어난 일(다시 그림·키보드 크기 변화·포커스·스크롤 호출)을 남긴다. 평소엔 꺼져 있음 */
+    (function () {
+      if (!/[?&]dbg=1/.test(location.search)) return;
+      var ev = [], jumps = [], lastY = window.scrollY, box = null;
+      var note = function (t) { ev.push([Date.now(), t]); if (ev.length > 30) ev.shift(); };
+      var who = function () { try { return (new Error().stack.split('\n')[3] || '').trim().replace(/^at\s+/, '').replace(/\s*\(.*$/, '').slice(0, 30); } catch (e) { return ''; } };
+      ['scrollTo', 'scrollBy'].forEach(function (k) { var o = window[k]; window[k] = function () { note(k + '(' + [].slice.call(arguments).map(function (a) { return typeof a === 'object' ? JSON.stringify(a) : Math.round(a); }).join(',') + ') ← ' + who()); return o.apply(this, arguments); }; });
+      var siv = Element.prototype.scrollIntoView; Element.prototype.scrollIntoView = function () { note('scrollIntoView #' + (this.id || this.className || this.tagName).toString().slice(0, 20) + ' ← ' + who()); return siv.apply(this, arguments); };
+      var rs = window.renderSearchResults; if (typeof rs === 'function') window.renderSearchResults = function () { note('검색 다시 그림'); return rs.apply(this, arguments); };
+      addEventListener('resize', function () { note('창 크기 ' + innerWidth + '×' + innerHeight); });
+      if (window.visualViewport) visualViewport.addEventListener('resize', function () { note('키보드/화면 ' + Math.round(visualViewport.height)); });
+      document.addEventListener('focusin', function (e) { note('포커스 ' + (e.target.id || e.target.tagName)); }, true);
+      document.addEventListener('pointerdown', function (e) { note('터치 ' + (e.target.id || e.target.className || e.target.tagName).toString().slice(0, 18)); }, true);
+      addEventListener('scroll', function () { var y = window.scrollY, d = y - lastY; if (Math.abs(d) > 60) { var now = Date.now(); jumps.unshift({ t: new Date().toTimeString().slice(0, 8), d: Math.round(d), y: Math.round(y), before: ev.filter(function (x) { return now - x[0] < 1500; }).map(function (x) { return x[1]; }).slice(-5) }); if (jumps.length > 8) jumps.pop(); draw(); } lastY = y; }, { passive: true });
+      function draw() {
+        if (!box) { box = document.createElement('div'); box.style.cssText = 'position:fixed;top:4px;right:4px;z-index:2147483647;max-width:300px;max-height:45vh;overflow:auto;background:rgba(17,24,39,.92);color:#fff;font:11px/1.35 -apple-system,sans-serif;padding:6px 8px;border-radius:10px;pointer-events:auto'; document.body.appendChild(box); }
+        box.innerHTML = '<b>화면 움직임 기록 (dbg)</b><br>' + jumps.map(function (j) { return j.t + ' ' + (j.d > 0 ? '아래로 ' : '위로 ') + Math.abs(j.d) + 'px → ' + j.y + '<br><span style="opacity:.75">' + j.before.map(function (b) { return String(b).replace(/</g, '&lt;'); }).join(' / ') + '</span>'; }).join('<hr style="border:0;border-top:1px solid #444;margin:3px 0">');
+      }
+      setTimeout(function () { note('기록 시작'); draw(); }, 500);
+    })();
     function ryRenderSearchSafe(items, q) {
       if (RY_SR.q !== q || RY_SR.shown == null) { RY_SR.q = q; RY_SR.pend = null; clearTimeout(RY_SR.t); return renderSearchResults(items); }   // 새 검색어: 바로
       if (rySigSR(items) === RY_SR.shown) return;   // 줄·상태가 같으면 그대로 둔다 (사진 주소만 바뀐 경우 포함)
