@@ -3516,6 +3516,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 </style>
 <style>
 /* 1002 세트 담당 이달 횟수 */
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-p .sdc-c{flex:none;margin-left:auto;padding-left:3px;font-size:10px;font-weight:700;font-style:normal;line-height:14px;font-variant-numeric:tabular-nums;opacity:.75}
+html:not(#q):not(#w):not(#e) body:not(#r) .sdc-lg .sdc-c{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;padding:0 4px;border-radius:8px;font-size:11px;font-weight:700;background:#F2F4F7;color:#374151}
 .sdm{margin-top:14px;border-top:1px solid #ececf0;padding-top:12px}
 .sdm-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}.sdm-top b{font-size:15px}
 .sdm-lg{display:flex;align-items:center;gap:6px;font-size:12px;color:#6e6e73}.sdm-lg i{display:inline-block;width:12px;height:8px;border-radius:3px;margin-left:6px}
@@ -11375,7 +11377,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var sn = {}, seen = {};   /* 폰은 이름 두 글자(정예선 → 예선), 겹치면 전체 이름 */
       g.people.forEach(function (p) { var t = /^[가-힣]{3}$/.test(p.name) ? p.name.slice(1) : p.name; sn[p.name] = t; seen[t] = (seen[t] || 0) + 1; });
       g.people.forEach(function (p) { if (seen[sn[p.name]] > 1) sn[p.name] = p.name; });
-      var pill = function (p, s) { return '<i class="sdc-p ' + s + ' ' + tm(p) + (p.name === SD.gp ? ' hit' : p.name === me ? ' me' : '') + '"><span class="sdc-s">' + escapeHtml(sn[p.name]) + '</span><span class="sdc-l">' + escapeHtml(p.name) + '</span></i>'; };
+      var nth = {};   /* 1006 이름 뒤 숫자 = 이달 몇 번째 담당인지 (예정 칸은 예정 순번) */
+      var pill = function (p, s, n) { return '<i class="sdc-p ' + s + ' ' + tm(p) + (p.name === SD.gp ? ' hit' : p.name === me ? ' me' : '') + '"><span class="sdc-s">' + escapeHtml(sn[p.name]) + '</span><span class="sdc-l">' + escapeHtml(p.name) + '</span>' + (n ? '<b class="sdc-c" aria-label="이달 ' + n + '번째">' + n + '</b>' : '') + '</i>'; };
       var byTeam = function (a, b) { return (a.team === 'jp') - (b.team === 'jp'); };
       var nms = function (a) { return a.map(function (p) { return p.name; }).join('·') || '없음'; };
       var h = '', anyPlan = false, hits = 0, lead = (g.firstDow + 6) % 7;
@@ -11385,14 +11388,15 @@ html body #ryLaunchGrid .tl-search{top:56px}
         var ds = g.month + '-' + (k < 9 ? '0' : '') + (k + 1), am = [], pm = [];
         g.people.forEach(function (p) { var c = p.cells.charAt(k); if (c === 'a') am.push(p); else if (c === 'p') pm.push(p); });
         am.sort(byTeam); pm.sort(byTeam);
+        var ord = {}; am.concat(pm).forEach(function (p) { nth[p.name] = (nth[p.name] || 0) + 1; ord[p.name] = nth[p.name]; });
         var plan = k > g.uptoIdx && k !== ti, hit = SD.gp && am.concat(pm).some(function (p) { return p.name === SD.gp; });
         if (plan && am.length + pm.length) anyPlan = true;
         if (hit) hits++;
         var cls = 'sdc-d' + (k === ti ? ' now' : plan ? ' plan' : k < g.startIdx ? ' pre' : '') + (hit ? ' hit' : '');
-        var inner = '<span class="sdc-n">' + (k + 1) + '</span>' + am.map(function (p) { return pill(p, 'am'); }).join('') + pm.map(function (p) { return pill(p, 'pm'); }).join('');
+        var inner = '<span class="sdc-n">' + (k + 1) + '</span>' + am.map(function (p) { return pill(p, 'am', ord[p.name]); }).join('') + pm.map(function (p) { return pill(p, 'pm', ord[p.name]); }).join('');
         h += card[ds] ? '<button type="button" class="' + cls + '" data-d="' + ds + '" onclick="sdCalGo(this.dataset.d)" aria-label="' + escapeHtml((k + 1) + '일' + (plan ? ' 예정' : '') + ' 오전 ' + nms(am) + ', 오후 ' + nms(pm) + ' · 그날 카드로') + '">' + inner + '</button>' : '<div class="' + cls + '">' + inner + '</div>';
       }
-      var lg = '<div class="sdc-lg"><span><i class="sdc-dot cn"></i>중국어</span><span><i class="sdc-dot jp"></i>일본어</span><span><i class="sdc-k am">오전</i><i class="sdc-k pm">오후</i></span>' + (anyPlan ? '<span><i class="sdc-k plan">점선</i>예정</span>' : '') + '</div>';
+      var lg = '<div class="sdc-lg"><span><i class="sdc-dot cn"></i>중국어</span><span><i class="sdc-dot jp"></i>일본어</span><span><i class="sdc-k am">오전</i><i class="sdc-k pm">오후</i></span>' + (anyPlan ? '<span><i class="sdc-k plan">점선</i>예정</span>' : '') + '<span><b class="sdc-c">2</b>이달 몇 번째</span></div>';
       return '<div class="sdc-bar">' + seg + lg + '</div>'
         + (SD.gp ? '<button type="button" class="sdc-who" onclick="sdGv(\'cal\', \'\')">' + escapeHtml(SD.gp) + ' 담당일 ' + hits + '일 표시 중' + RYI.x + '</button>' : '')
         + '<div class="sdc">' + h + '</div>' + sdMonthSummary(g);
