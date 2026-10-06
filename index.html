@@ -12,7 +12,7 @@
       set0.apply(this, arguments);
       if (k === 's_selected_member' && v && this === window.localStorage) {
         var q = new URLSearchParams(location.search);
-        if (q.get('me') !== String(v)) { q.set('me', String(v)); q.delete('k'); history.replaceState(null, '', location.pathname + '?' + q.toString() + location.hash); }
+        if (q.get('me') !== String(v)) { q.set('me', String(v)); q.delete('k'); history.replaceState(history.state, '', location.pathname + '?' + q.toString() + location.hash); }
       }
     };
   } catch (e) {}
@@ -3711,7 +3711,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         <button type="button" class="ry-ghost ry-quick" onclick="window.open('https://pallang-0258.github.io/seongsu/viewer.html', '_blank', 'noopener')" title="근무표를 새 창으로 열기">근무표</button>
         <button type="button" class="ry-ghost ry-quick" onclick="ntOpen()" title="카톡 공지 보관함">공지</button>
         <button type="button" class="ry-ghost ry-quick" onclick="mbOpenArchive()" title="날짜별 아침 뷰티 브리핑">뷰티 브리핑</button>
-        <button type="button" class="ry-ghost ry-quick" onclick="eduOpen()" title="제품 교육 자료 · 오늘의 3문제">교육 자료실<i id="eduDot" class="mb-dot edu-qdot" hidden aria-label="새 교육 자료"></i></button>
+        <button type="button" class="ry-ghost ry-quick" onclick="eduOpen()" title="제품 교육 자료">교육 자료실<i id="eduDot" class="mb-dot edu-qdot" hidden aria-label="새 교육 자료"></i></button>
         <div class="ry-more">
           <div class="ry-more-menu" id="toolMoreMenu" role="menu" hidden>
             <button type="button" role="menuitem" onclick="closeToolMore(); openCatBrowse()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>카테고리별 보기<small>분류가 비었거나 기타인 상품 고치기</small></button>
@@ -5782,29 +5782,40 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function ryShortPlaceholder() { var g = document.getElementById('globalSearchInput'); if (!g) return; if (!g.dataset.ph) g.dataset.ph = g.getAttribute('placeholder') || ''; g.setAttribute('placeholder', window.innerWidth < 520 ? '품목 검색 · 예: 용각산, 판콜' : g.dataset.ph); }
     ryShortPlaceholder(); window.addEventListener('resize', ryShortPlaceholder);
 
-    /* ═════ 뒤로가기 = 방금 보던 앞 화면으로 (0921) ═════
-       열려 있는 층(큰 사진 · 창 · 세트 상세 · 세트 화면)과 지나온 탭 수만큼 브라우저 기록을 쌓아 두고,
-       뒤로가기(popstate)가 오면 맨 위 층부터 하나씩 닫는다. 기록 API 가 막힌 환경이면 아무 일도 하지 않는다(지금과 동일). */
-    var RY_NAV = { pushed: 0, ignore: 0, ready: false, busy: false, tabs: [], ok: true };
+    /* ═════ 뒤로가기 = 맨 위 층 하나 닫기 (0921 · 1006c 모든 층으로) ═════
+       지금 열린 층(다른 탭 · 검색 결과 · 세트 화면 · 도구 패널 · 브리핑 · 교육 자료실 · 창 · 사진 확대)을 화면에서 세어
+       그 수만큼 브라우저 기록을 맞춰 둔다(기록마다 {ry:깊이}). 뒤로가기가 오면 그 깊이가 될 때까지 위에서부터 닫는다.
+       X · 바깥 누름으로 닫으면 다음 맞춤 때 기록을 되감는다. 홈에서 아무것도 안 열려 있으면 브라우저 기본(앱 나가기).
+       탭: 홈 → 다른 탭은 한 칸, 다른 탭끼리는 바꿔 끼움 → 어느 탭에서든 뒤로 = 홈. 기록 API 가 막힌 곳이면 아무 일도 안 함. */
+    var RY_NAV = { pushed: 0, goAt: 0, ready: false, busy: false, tabs: [], ok: true };
     var RY_SHEET_CLOSE = { noteSheet: 'closeNote', npSheet: 'closeNewProduct', dupSheet: 'closeDuplicates', cbSheet: 'closeCatBrowse', infoSheet: 'closeInfo', inMemoSheet: 'closeInMemo',
-                           seSheet: 'closeSetEdit', teSheet: 'closeTagEdit', avaSheet: 'closeAvaPicker', phSheet: 'closePhotoChoice', drSheet: 'closeDelayReason', rejSheet: 'closeRejects' };
-    function ryOpenSheets() { return [].filter.call(document.querySelectorAll('.ava-sheet.on'), function (e) { return true; }); }
-    function ryLayers() {
+                           seSheet: 'closeSetEdit', teSheet: 'closeTagEdit', avaSheet: 'closeAvaPicker', phSheet: 'closePhotoChoice', drSheet: 'closeDelayReason', rejSheet: 'closeRejects',
+                           stSheet: 'closeStale', ntSheet: 'ntClosePaste', sdSheet: 'sdCloseWeek', sdPk: 'sdPkClose', pfaSheet: 'pfaClose', s15Sheet: 's15Close' };
+    function ryOpenSheets() { return [].slice.call(document.querySelectorAll('.ava-sheet.on')); }
+    function ryShown(id) { var e = document.getElementById(id); return !!e && !e.hidden; }
+    function ryLayers() {   /* 아래 → 위 순서 */
       var L = [];
-      for (var i = 1; i < RY_NAV.tabs.length; i++) L.push('tab');
+      if (RY_NAV.tabs.length > 1) L.push('tab');
+      var sv = document.getElementById('searchResultView'); if (sv && !sv.classList.contains('hidden')) L.push('search');   /* 검색 결과 · 놓친 주문 */
       var sp = document.getElementById('setPage');
       if (sp && sp.classList.contains('on')) { L.push('setpage'); if (typeof SP !== 'undefined' && SP.view === 'detail') L.push('setdetail'); }
+      if (ryShown('ryLaunch')) L.push('launch');
+      if (ryShown('mbReader')) { L.push('mb'); if (typeof MB !== 'undefined' && MB.view === 'archive' && MB.cur) L.push('mb'); }
+      if (ryShown('scrDim')) L.push('scr');
+      if (ryShown('nophDim')) L.push('noph');
+      if (ryShown('eduReader')) { var n = typeof EDU !== 'undefined' && EDU.stack ? Math.max(1, EDU.stack.length) : 1; while (n--) L.push('edu'); }   /* 자료실 → 카드 → … */
+      if (ryShown('eduZoom')) L.push('eduzoom');
       ryOpenSheets().forEach(function (e) { L.push('sheet:' + e.id); });
       var ov = document.getElementById('imgPreviewOverlay'); if (ov && ov.classList.contains('open')) L.push('preview');
       var z = document.getElementById('spPhotoWrap'); if (z && z.classList.contains('zoom')) L.push('zoom');
       return L;
     }
     function rySync() {
-      if (!RY_NAV.ok || RY_NAV.busy) return;
+      if (!RY_NAV.ok || RY_NAV.busy || Date.now() - RY_NAV.goAt < 1500) return;   /* 되감는 중이면 그 popstate 를 기다린다 */
       var want = ryLayers().length;
       try {
-        while (RY_NAV.pushed < want) { history.pushState({ ry: RY_NAV.pushed + 1 }, ''); RY_NAV.pushed++; }
-        if (RY_NAV.pushed > want) { var n = RY_NAV.pushed - want; RY_NAV.ignore += 1; RY_NAV.pushed = want; history.go(-n); }
+        while (RY_NAV.pushed < want) { RY_NAV.pushed++; history.pushState({ ry: RY_NAV.pushed }, ''); }
+        if (RY_NAV.pushed > want) { RY_NAV.goAt = Date.now(); history.go(want - RY_NAV.pushed); RY_NAV.pushed = want; }
       } catch (e) { RY_NAV.ok = false; }
     }
     function ryCloseTop() {
@@ -5819,20 +5830,28 @@ html body #ryLaunchGrid .tl-search{top:56px}
           if (fn && typeof window[fn] === 'function') window[fn]();
           else { var el = document.getElementById(id); if (el) el.classList.remove('on'); var dim = el && el.previousElementSibling; if (dim && dim.classList.contains('ava-dim')) dim.classList.remove('on'); }
         }
+        else if (top === 'eduzoom') eduZoomClose();
+        else if (top === 'edu') eduBack();
+        else if (top === 'noph') nophClose();
+        else if (top === 'scr') scrClose();
+        else if (top === 'mb') mbBack();
+        else if (top === 'launch') ryLaunchClose();
         else if (top === 'setdetail' || top === 'setpage') spBack();
-        else if (top === 'tab') { RY_NAV.tabs.pop(); RY_NAV._sw(RY_NAV.tabs[RY_NAV.tabs.length - 1]); window.scrollTo(0, 0); }
+        else if (top === 'search') clearGlobalSearch();
+        else if (top === 'tab') { RY_NAV.tabs = [RY_NAV.tabs[0]]; RY_NAV._sw(RY_NAV.tabs[0]); window.scrollTo(0, 0); }
       } catch (e) {}
       RY_NAV.busy = false;
       return true;
     }
     try { history.scrollRestoration = 'manual'; } catch (e) {}   /* 1002 창 닫을 때 뒤로가기 기록이 '창 열 때 위치'로 화면을 되돌리던 것(사진 확대·메모): 화면 위치는 앱이 직접 지킨다 */
-    window.addEventListener('popstate', function () {
-      if (RY_NAV.ignore > 0) { RY_NAV.ignore--; return; }
-      if (RY_NAV.pushed > 0) RY_NAV.pushed--;
-      ryCloseTop();
-      setTimeout(rySync, 0);      // 닫기를 거절했다면(작성 중 확인 등) 기록을 다시 맞춘다
+    try { if (history.state && history.state.ry) history.replaceState(null, ''); } catch (e) {}   /* 새로 고침: 남은 깊이 표시는 지우고 0 에서 시작 */
+    window.addEventListener('popstate', function (e) {
+      var d = e.state && e.state.ry > 0 ? e.state.ry : 0;
+      RY_NAV.goAt = 0; RY_NAV.pushed = d;
+      for (var n = ryLayers().length, i = 0; n > d && i < 20; i++) { ryCloseTop(); var m = ryLayers().length; if (m >= n) break; n = m; }   /* 닫기를 거절하면(작성 중 확인 등) 멈춤 */
+      setTimeout(rySync, 0);      // 기록을 화면에 다시 맞춘다
     });
-    // 탭 이동도 '지나온 화면'으로 기억한다
+    // 탭 이동: 홈 ↔ 다른 탭만 기록 한 칸
     (function () {
       if (typeof switchTab !== 'function') return;
       RY_NAV._sw = switchTab;
@@ -5840,9 +5859,9 @@ html body #ryLaunchGrid .tl-search{top:56px}
         var before = currentTab;
         RY_NAV._sw(tab);
         if (RY_NAV.busy) return;
-        if (!RY_NAV.tabs.length) RY_NAV.tabs = [before];
         if (!RY_NAV.ready) { RY_NAV.tabs = [currentTab]; return; }        // 처음 열릴 때 자동으로 탭이 바뀌는 것은 세지 않는다
-        if (currentTab !== RY_NAV.tabs[RY_NAV.tabs.length - 1]) { RY_NAV.tabs.push(currentTab); if (RY_NAV.tabs.length > 8) RY_NAV.tabs.shift(); }
+        var home = RY_NAV.tabs[0] || before;
+        RY_NAV.tabs = currentTab === home ? [home] : [home, currentTab];
         setTimeout(rySync, 0);
       };
       window.switchTab = switchTab;
@@ -11896,7 +11915,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           ['rejstats', RYI.searchcheck, '반려(재고 있음) 분석', k.rejstats, "'재고 있음'이 자주 나오는 품목 = 과재고 신호"],
           ['notices', NT_ICON.mega, '공지 보관함', k.notices, '카톡 공지 모아보기 · 증정품 변경'],
           ['brief', RYI.clipboard, '뷰티 브리핑 모아보기', '날짜별 목록', '아침 뷰티 브리핑(첫 화면 카드는 10~23시엔 숨김)'],
-          ['edu', RYI.bulb, '교육 자료실', '제품 공부', '브랜드 교육 슬라이드 · 손님 고민으로 찾기 · 오늘의 3문제'],
+          ['edu', RYI.bulb, '교육 자료실', '제품 공부', '브랜드 교육 슬라이드 · 손님 고민으로 찾기'],
           ['setduty', RYI.cal, '세트 담당 주간표', k.setduty, '오전·오후 세트 담당, 반차도 포함'],
           ['roster', RYI.cal, '근무표', '새 창', '약국 근무표 보기']].concat(s15 && !s15.hidden ? [['s15', RYI.clipboard, '15일 판매량 엑셀', '마지막 ' + (((s15.querySelector('small') || {}).textContent || '').replace('판매량 통계 엑셀로 한 번에', '').trim() || '올리기'), 'POS 15일 판매량을 한 번에 넣기(문준)']] : [])],
         ['상품 정리', [
@@ -11960,7 +11979,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         { k: 'setduty', g: 3, ic: RYI.cal, n: '세트 담당표', v: am.length ? '오늘 오전 ' + am[0] + (am.length > 1 ? ' 외 ' + (am.length - 1) : '') : '이번 주', kw: '세트 담당 오전 오후 반차 주간 횟수' },
         { k: 'roster', g: 3, ic: RYI.user, n: '근무표', v: '새 창으로 열기', kw: '근무 스케줄 시간표' },
         { k: 'brief', g: 3, ic: RYI.note, n: '뷰티 브리핑', v: '날짜별 모아보기', kw: '아침 브리핑 뉴스 뷰티' },
-        { k: 'edu', g: 3, ic: RYI.bulb, n: '교육 자료실', v: '제품 공부 · 오늘의 3문제', kw: '교육 공부 제품 성분 멘트 퀴즈 문제 오가나셀 더마알엑스 슬라이드 고민' }
+        { k: 'edu', g: 3, ic: RYI.bulb, n: '교육 자료실', v: '제품 공부 · 고민으로 찾기', kw: '교육 공부 제품 성분 멘트 오가나셀 더마알엑스 슬라이드 고민' }
       ]);
       return T;
     }
@@ -12755,7 +12774,7 @@ document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !d
 document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') mbLoad(false); });
 setTimeout(function () { mbLoad(true); }, 2500);   // 목록 동기화 먼저, 브리핑은 조금 뒤 한 번 (서버 10분 캐시)
 </script>
-<!-- ==================== [1006 교육 자료실 (edu*)] 제품 교육 카드 · 고민으로 찾기 · 오늘의 3문제 ==================== -->
+<!-- ==================== [1006 교육 자료실 (edu*)] 제품 교육 카드 · 고민으로 찾기 ==================== -->
 <style>
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-qdot{margin-left:6px;vertical-align:middle}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-chip{display:inline-flex;align-items:center;gap:4px;min-height:28px;padding:0 10px;border:0;border-radius:999px;background:#EFF4FF;color:#155EEF;font-size:12px;font-weight:700;line-height:1;cursor:pointer;white-space:nowrap;vertical-align:middle}
@@ -12783,15 +12802,6 @@ html:not(#q):not(#w):not(#e) body:not(#r) .edu-search input::-webkit-search-canc
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-search input::placeholder{color:#98A2B3}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-search .edu-ic{width:40px;height:40px;color:#667085}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-search .edu-ic svg{width:18px;height:18px}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-quizb{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;margin:0 0 16px;padding:10px 12px 10px 14px;border:0;border-radius:20px;background:#155EEF;color:#fff;text-align:left;cursor:pointer}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-quizb:active{transform:scale(.99)}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-quizb .edu-qi{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.16);display:grid;place-items:center;flex:none}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-quizb .edu-qi svg{width:20px;height:20px}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-quizb .edu-qt{flex:1;min-width:0;line-height:1.3}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-quizb .edu-qt b{display:block;font-size:16px;font-weight:700!important}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-quizb .edu-qt small{display:block;font-size:13px;opacity:.86;font-variant-numeric:tabular-nums}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-quizb .edu-go{display:inline-flex;align-items:center;gap:2px;min-height:40px;padding:0 10px 0 14px;border-radius:999px;background:#fff;color:#155EEF;font-size:14px;font-weight:700;flex:none}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-quizb .edu-go svg{width:16px;height:16px}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-h{display:flex;align-items:baseline;gap:8px;margin:0 2px 8px;font-size:13px;font-weight:700!important;color:#475467}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-h small{font-size:12px;font-weight:500;color:#98A2B3}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 16px}
@@ -12803,7 +12813,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .edu-tabs{display:flex;gap:6px;overflo
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-tabs::-webkit-scrollbar{display:none}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab{flex:none;min-height:40px;padding:0 14px;border:0;border-radius:12px;background:transparent;color:#475467;font-size:14px;font-weight:600;cursor:pointer;scroll-snap-align:start;white-space:nowrap}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab[aria-selected="true"]{background:#111827;color:#fff}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-grp,html:not(#q):not(#w):not(#e) body:not(#r) .edu-res-box{background:#fff;border:1px solid #EAECF0;border-radius:20px;padding:16px;margin:0 0 12px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-grp{background:#fff;border:1px solid #EAECF0;border-radius:20px;padding:16px;margin:0 0 12px}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-grp-h{display:flex;align-items:flex-start;gap:10px}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-grp-h>div{flex:1;min-width:0}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-grp-k{display:block;font-size:12px;font-weight:600;color:#6B7280}
@@ -12853,30 +12863,6 @@ html:not(#q):not(#w):not(#e) body:not(#r) .edu-btn.wide{width:100%;margin-top:12
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-btn.del{color:#B42318}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-btn:disabled{opacity:.55}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-sec{margin-top:20px}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-qprog{display:flex;align-items:center;gap:6px;margin:4px 0 12px;font-size:13px;font-weight:600;color:#6B7280;font-variant-numeric:tabular-nums}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-qprog i{width:28px;height:6px;border-radius:3px;background:#EAECF0}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-qprog i.on{background:#155EEF}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-qprog i.ok{background:#12B76A}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-qprog i.no{background:#F04438}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-qprog span{margin-left:auto}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-q{margin:0 0 14px;font-size:21px;line-height:1.45;font-weight:800!important;color:#111827;text-wrap:balance}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-opts{display:flex;flex-direction:column;gap:8px}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-opt{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:10px 14px;border:1.5px solid #EAECF0;border-radius:16px;background:#fff;color:#111827;font-size:15.5px;font-weight:600;line-height:1.4;text-align:left;cursor:pointer}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-opt>i{width:28px;height:28px;border-radius:50%;background:#F2F4F7;color:#475467;display:grid;place-items:center;font-style:normal;font-size:13px;font-weight:700;flex:none}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-opt>span{flex:1;min-width:0}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-opt>svg{width:20px;height:20px;flex:none}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-opt.ok{border-color:#12B76A;background:#ECFDF3;color:#05603A}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-opt.ok>i{background:#12B76A;color:#fff}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-opt.no{border-color:#F04438;background:#FEF3F2;color:#912018}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-opt.no>i{background:#F04438;color:#fff}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-opt:disabled{cursor:default;opacity:1}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-fb{margin-top:12px;padding:14px 16px;border-radius:20px;background:#fff;border:1px solid #EAECF0}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-fb>b{display:block;font-size:16px;font-weight:800!important;color:#05603A}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-fb.no>b{color:#B42318}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-fb .edu-row{border-bottom:0;padding-bottom:0;min-height:0}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-res-box{text-align:center;padding:24px 16px}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-res-box b{display:block;font-size:22px;font-weight:800!important;color:#111827}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-res-box small{display:block;margin-top:4px;font-size:14px;color:#6B7280}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-note{display:flex;gap:10px;align-items:flex-start;margin:0 0 12px;padding:12px 14px;border-radius:16px;background:#FFFAEB;color:#93370D;font-size:13.5px;line-height:1.5}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-note svg{width:18px;height:18px;flex:none;margin-top:1px}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px;background:#fff;border:1px solid #EAECF0;border-radius:20px;padding:16px}
@@ -12901,12 +12887,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .edu-zoom-x svg{width:22px;height:22px
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-zoom-h{position:absolute;left:0;right:0;bottom:max(14px,env(safe-area-inset-bottom));text-align:center;font-size:13px;color:rgba(255,255,255,.7);pointer-events:none}
 @media(min-width:720px){
   html:not(#q):not(#w):not(#e) body:not(#r) .edu-body{padding-top:24px}
-  html:not(#q):not(#w):not(#e) body:not(#r) .edu-hubtop{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:12px;align-items:start}
   html:not(#q):not(#w):not(#e) body:not(#r) .edu-hubtop .edu-search{margin:0}
-  html:not(#q):not(#w):not(#e) body:not(#r) .edu-hubtop .edu-quizb{min-height:52px;padding:6px 6px 6px 10px;margin:0;border-radius:14px}
-  html:not(#q):not(#w):not(#e) body:not(#r) .edu-hubtop .edu-quizb .edu-qi{width:36px;height:36px}
-  html:not(#q):not(#w):not(#e) body:not(#r) .edu-hubtop .edu-quizb .edu-qt b{font-size:15px}
-  html:not(#q):not(#w):not(#e) body:not(#r) .edu-hubtop .edu-quizb .edu-qt small{font-size:12px}
   html:not(#q):not(#w):not(#e) body:not(#r) .edu-hubtop+.edu-sec{margin-top:16px}
 }
 @media(max-width:719px){ html:not(#q):not(#w):not(#e) body:not(#r) .edu-hubtop+.edu-sec{margin-top:0} }
@@ -12954,7 +12935,6 @@ function eduMatch(name, cards) {
   return best;
 }
 function eduShort(c) { return String(c && c.name || '').replace(/^(오가나셀|더마알엑스)\s*/, ''); }
-function eduHasIng(c, ing) { var k = eduKey(ing); return !!k && (c.ingredients || []).some(function (x) { var y = eduKey(x); return y && (y.indexOf(k) !== -1 || k.indexOf(y) !== -1); }); }
 function eduSearch(q, cards) {
   var toks = String(q || '').split(/\s+/).map(eduKey).filter(Boolean);
   if (!toks.length) return (cards || []).slice();
@@ -12974,84 +12954,17 @@ function eduSearch(q, cards) {
   });
   return out.sort(function (a, b) { return b.s - a.s || a.i - b.i; }).map(function (x) { return x.c; });
 }
-function eduRng(seed) { var a = seed >>> 0; return function () { a = (a + 0x6D2B79F5) >>> 0; var t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
-function eduHash(s) { var h = 2166136261; s = String(s); for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
-function eduShuffle(a, r) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(r() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
-/* 받침 따라 이/가 · 와/과 (영문·숫자는 읽는 소리로) */
-function eduJosa(w, a, b) {
-  var s = String(w).replace(/[\s)\]'"]+$/, ''), ch = s.slice(-1).toLowerCase(), c = ch.charCodeAt(0), has;
-  if (c >= 0xAC00 && c <= 0xD7A3) has = (c - 0xAC00) % 28 !== 0;
-  else if (/[0-9]/.test(ch)) has = '013678'.indexOf(ch) !== -1;
-  else if (/[a-z]/.test(ch)) has = 'lmnr'.indexOf(ch) !== -1;
-  else return w + a + '(' + b + ')';
-  return w + (has ? a : b);
-}
-/* 문제 틀: ① 고민 → 제품 ② 성분 → 제품 ③ 제품 → 성분 ④ 비교 제품 → 제품. 오답은 '정말 틀린 것'만 (고민·성분이 겹치면 오답 후보에서 뺌) */
-function eduQuizSpecs(cards) {
-  var S = [], ings = {};
-  cards.forEach(function (c) {
-    (c.targets || []).forEach(function (t) { S.push({ type: 'concern', tag: t, card: c }); });
-    (c.ingredients || []).forEach(function (x) { ings[x] = 1; });
-    if ((c.ingredients || []).length) S.push({ type: 'has', card: c });
-    (c.compare || []).forEach(function (x) { S.push({ type: 'cmp', cmp: x, card: c }); });
-  });
-  Object.keys(ings).forEach(function (x) { cards.forEach(function (c) { if ((c.ingredients || []).indexOf(x) !== -1) S.push({ type: 'ing', ing: x, card: c }); }); });
-  return S;
-}
-function eduQuizMake(sp, cards, r) {
-  var c = sp.card, wrong, q, opt = function (x) { return { t: eduShort(x), id: x.id }; };
-  var sameLineFirst = function (arr) { return eduShuffle(arr.filter(function (x) { return x.line === c.line; }), r).concat(eduShuffle(arr.filter(function (x) { return x.line !== c.line; }), r)); };
-  if (sp.type === 'concern') {
-    wrong = sameLineFirst(cards.filter(function (x) { return x !== c && (x.targets || []).indexOf(sp.tag) === -1; })).map(opt);
-    q = { q: sp.tag + ' 손님께 권할 제품은?', sub: '이 고민이 슬라이드의 타깃으로 적힌 제품을 골라요' };
-  } else if (sp.type === 'ing') {
-    wrong = sameLineFirst(cards.filter(function (x) { return x !== c && !eduHasIng(x, sp.ing); })).map(opt);
-    q = { q: eduJosa(sp.ing, '이', '가') + ' 들어간 제품은?', sub: '슬라이드의 성분 칸 기준이에요' };
-  } else if (sp.type === 'cmp') {
-    wrong = sameLineFirst(cards.filter(function (x) { return x !== c && (x.compare || []).indexOf(sp.cmp) === -1; })).map(opt);
-    q = { q: eduJosa(sp.cmp, '과', '와') + ' 비슷한 포지션의 제품은?', sub: '슬라이드의 비교 제품 기준이에요' };
-  } else {
-    var ans = c.ingredients[Math.floor(r() * c.ingredients.length)], seen = {};
-    wrong = eduShuffle(cards.filter(function (x) { return x !== c; }).reduce(function (a, x) { return a.concat(x.ingredients || []); }, []), r)
-      .filter(function (x) { var k = eduKey(x); if (seen[k] || !k) return false; seen[k] = 1; return !eduHasIng(c, x); }).map(function (x) { return { t: x, id: '' }; });
-    q = { q: eduShort(c) + '에 들어간 성분은?', sub: '나머지 셋은 이 제품 슬라이드에 없는 성분이에요' };
-    sp = { type: 'has', card: c, ans: ans };
-  }
-  var right = sp.type === 'has' ? { t: sp.ans, id: '' } : opt(c), seenT = {}; seenT[right.t] = 1;
-  wrong = wrong.filter(function (o) { if (seenT[o.t]) return false; seenT[o.t] = 1; return true; }).slice(0, 3);
-  if (wrong.length < 3) return null;
-  var opts = eduShuffle([right].concat(wrong), r);
-  return { type: sp.type, q: q.q, sub: q.sub, opts: opts, ans: opts.indexOf(right), card: c.id, key: sp.type + '|' + c.id + '|' + (sp.tag || sp.ing || sp.cmp || sp.ans) };
-}
-/* 오늘의 n문제: 같은 날 · 같은 회차면 모두 같은 문제 (seed = 날짜 + 회차). 문제 틀을 돌아가며, 같은 카드는 한 번만 */
-function eduQuiz(cards, seed, n) {
-  cards = (cards || []).filter(function (c) { return c && c.id && c.name; });
-  var r = eduRng(seed), by = {}, out = [], usedCard = {};
-  eduShuffle(eduQuizSpecs(cards), r).forEach(function (sp) { (by[sp.type] = by[sp.type] || []).push(sp); });
-  var types = eduShuffle(Object.keys(by), r);
-  for (var guard = 0; out.length < n && guard < 400; guard++) {
-    var t = types[guard % types.length], list = by[t];
-    if (!list || !list.length) { if (types.every(function (k) { return !by[k].length; })) break; continue; }
-    var sp = list.shift();
-    if (usedCard[sp.card.id]) continue;
-    var qq = eduQuizMake(sp, cards, r);
-    if (qq) { out.push(qq); usedCard[sp.card.id] = 1; }
-  }
-  return out;
-}
-/* 한국 시각 날짜 · 이번 주 월요일 0시 */
+/* 한국 시각 날짜 */
 function eduToday(ms) { return new Date((ms || Date.now()) + 9 * 3600000).toISOString().slice(0, 10); }
-function eduWeekStart(ms) { var d = new Date((ms || Date.now()) + 9 * 3600000), wd = (d.getUTCDay() + 6) % 7; return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - wd) - 9 * 3600000; }
 function eduIsNew(c, ms) { var a = Date.parse(String(c && c.added || '') + 'T00:00:00+09:00'); return !!a && (ms || Date.now()) - a < 7 * 864e5; }
 /*EDU-CORE-END*/
 
-var EDU = { data: null, src: '', q: '', concern: '', line: '', stack: [], quiz: null, stats: null, statsAt: 0, form: null, hubY: 0 };
+var EDU = { data: null, src: '', q: '', concern: '', line: '', stack: [], form: null, hubY: 0 };
 var EDU_I = {
   book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>',
   search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
   x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>',
   chev: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>',
-  quiz: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>',
   copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>',
   img: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>',
   cart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>',
@@ -13103,7 +13016,7 @@ function eduShow() {
   if (!rd.hidden) return;
   rd.hidden = false; document.documentElement.classList.add('edu-lock');
   try { var n = eduNewest(); if (n) localStorage.setItem('ry_edu_seen', n); } catch (e) {}
-  eduDotSync(); eduStatsLoad(false);
+  eduDotSync();
   if (!EDU.loadedAt || Date.now() - EDU.loadedAt > 5 * 60000) { EDU.loadedAt = Date.now(); eduLoad(); }
 }
 function eduOpen() { eduShow(); EDU.stack = [{ v: 'hub' }]; eduRender(); }
@@ -13115,20 +13028,19 @@ function eduRender(keepScroll, back) {
   var st = EDU.stack[EDU.stack.length - 1] || { v: 'hub' }, sc = document.getElementById('eduScroll'), y = sc.scrollTop;
   document.getElementById('eduAddBtn').hidden = !(eduCanEdit() && st.v === 'hub');
   if (st.v === 'card') eduCardView(st.id);
-  else if (st.v === 'quiz') eduQuizDraw();
   else if (st.v === 'form') eduFormDraw(st.id);
   else eduHub();
   sc.scrollTop = keepScroll ? y : (back && st.v === 'hub' ? EDU.hubY : 0);
 }
 function eduTop(t, d) { document.getElementById('eduTopT').textContent = t; document.getElementById('eduTopD').innerHTML = d || ''; }
 
-/* ── 첫 화면: 검색 · 오늘의 3문제 · 고민 칩 · 라인 탭 · 목록 ── */
+/* ── 첫 화면: 검색 · 고민 칩 · 라인 탭 · 목록 ── */
 function eduHub() {
   var n = eduCards().length;
   eduTop('교육 자료실', n + '개 제품' + (EDU.data && EDU.data.seed ? ' <span class="edu-base" title="서버에 올리기 전, 앱에 들어 있는 기본 자료예요">기본 자료</span>' : ''));
   document.getElementById('eduBody').innerHTML =
     '<div class="edu-hubtop"><label class="edu-search">' + EDU_I.search + '<input id="eduQ" type="search" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="제품 · 성분 · 고민 (예: 판테놀)" aria-label="교육 자료 검색"><button type="button" class="edu-ic" id="eduQx" hidden onclick="eduSetQ(\'\')" aria-label="검색어 지우기">' + EDU_I.x + '</button></label>'
-    + '<button type="button" class="edu-quizb" onclick="eduQuizStart(false)"><span class="edu-qi">' + EDU_I.quiz + '</span><span class="edu-qt"><b>오늘의 3문제</b><small id="eduRec">' + eduE(eduRecText()) + '</small></span><span class="edu-go">풀기' + EDU_I.chev + '</span></button></div>'
+    + '</div>'
     + '<section class="edu-sec"><h2 class="edu-h">손님 고민으로 찾기</h2><div class="edu-chips" id="eduChips" role="group" aria-label="손님 고민"></div></section>'
     + '<div class="edu-tabs" id="eduTabs" role="tablist" aria-label="라인"></div><div id="eduList"></div>';
   var q = document.getElementById('eduQ');
@@ -13207,76 +13119,6 @@ function eduCopy(btn) {
 }
 function eduCopy0(t) { var a = document.createElement('textarea'); a.value = t; a.setAttribute('readonly', ''); a.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(a); a.select(); var ok = false; try { ok = document.execCommand('copy'); } catch (e) {} a.remove(); return ok; }
 function eduOrderSearch(id) { var c = eduFind(id); if (!c) return; eduClose(); ntGoItem(c.q || eduShort(c)); }
-
-/* ── 오늘의 3문제 ── */
-function eduLocal() { try { var a = JSON.parse(localStorage.getItem('ry_edu_quiz') || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
-function eduLocalSave(a) { try { localStorage.setItem('ry_edu_quiz', JSON.stringify(a.slice(-300))); } catch (e) {} }
-function eduRecText() {
-  var me = eduMe(), ws = eduWeekStart(), n = 0, ok = 0, srv = EDU.stats && EDU.stats.members;
-  if (srv) { var m = srv[me] || {}; n = +m.wn || 0; ok = +m.wok || 0; }
-  eduLocal().forEach(function (e) { if (e.m === me && e.t >= ws && (!srv || !e.s)) { n++; ok += e.c ? 1 : 0; } });
-  if (!me) return '이름을 고르면 내 기록이 남아요';
-  return n ? '이번 주 ' + n + '문제 · 정답 ' + ok : '이번 주 아직 안 풀었어요';
-}
-function eduRecSync() { var r = document.getElementById('eduRec'); if (r) r.textContent = eduRecText(); }
-function eduStatsLoad(force) {
-  var run = eduRun();
-  if (!run || typeof run.getEduStats !== 'function' || (!force && Date.now() - EDU.statsAt < 5 * 60000)) return;
-  EDU.statsAt = Date.now();
-  run.withSuccessHandler(function (r) { if (r && r.ok) { EDU.stats = r; eduRecSync(); } }).withFailureHandler(function () {}).getEduStats();
-}
-function eduSend(e) {
-  var run = eduRun();
-  if (!run || typeof run.logEduQuiz !== 'function') return;
-  run.withSuccessHandler(function (r) {
-    if (!r || !r.ok) return;
-    var a = eduLocal(); a.forEach(function (x) { if (x.t === e.t && x.id === e.id) x.s = 1; }); eduLocalSave(a);
-    if (EDU.stats && EDU.stats.members) { var m = EDU.stats.members[e.m] = EDU.stats.members[e.m] || { wn: 0, wok: 0, n: 0, ok: 0 }; m.wn++; m.wok += e.c; m.n++; m.ok += e.c; }
-    eduRecSync();
-  }).withFailureHandler(function () {}).logEduQuiz(e.m, e.id, !!e.c);
-}
-function eduQuizStart(more) {
-  var cards = eduCards();
-  EDU.qround = more ? (EDU.qround || 0) + 1 : 0;
-  var qs = eduQuiz(cards, eduHash(eduToday() + '#' + EDU.qround), 3);
-  if (!qs.length) { showToast('문제를 만들 자료가 부족해요', 1600); return; }
-  EDU.quiz = { qs: qs, i: 0, right: 0 };
-  var me = eduMe(), now = Date.now();   /* 못 보낸 기록은 다시 보내기 (낙관적 저장 · 실패하면 이 기기에만) */
-  eduLocal().filter(function (e) { return e.m === me && !e.s && now - e.t > 5000; }).slice(-10).forEach(eduSend);
-  var top = EDU.stack[EDU.stack.length - 1];
-  if (top && top.v === 'quiz') eduRender(); else eduPush({ v: 'quiz' });
-}
-function eduQuizDraw() {
-  var Z = EDU.quiz;
-  if (!Z) { EDU.stack.pop(); eduRender(); return; }
-  eduTop('오늘의 3문제', eduE(eduRecText()));
-  var B = document.getElementById('eduBody');
-  if (Z.i >= Z.qs.length) {
-    B.innerHTML = '<div class="edu-res-box"><b>' + Z.qs.length + '문제 중 ' + Z.right + '개 맞혔어요</b><small>' + eduE(eduRecText()) + '</small></div>'
-      + '<div class="edu-acts"><button type="button" class="edu-btn" onclick="eduBack()">자료실로</button><button type="button" class="edu-btn pri" onclick="eduQuizStart(true)">3문제 더 풀기</button></div>';
-    return;
-  }
-  var q = Z.qs[Z.i], done = q.picked != null, c = eduFind(q.card);
-  var h = '<div class="edu-qprog">' + Z.qs.map(function (x, k) { return '<i class="' + (x.picked != null ? (x.picked === x.ans ? 'ok' : 'no') : (k === Z.i ? 'on' : '')) + '"></i>'; }).join('') + '<span>' + (Z.i + 1) + ' / ' + Z.qs.length + '</span></div>'
-    + '<h1 class="edu-q">' + eduE(q.q) + '</h1><div class="edu-opts" role="group" aria-label="보기">'
-    + q.opts.map(function (o, k) { var cls = done ? (k === q.ans ? ' ok' : (k === q.picked ? ' no' : '')) : ''; return '<button type="button" class="edu-opt' + cls + '" data-k="' + k + '" onclick="eduPick(+this.dataset.k)"' + (done ? ' disabled' : '') + '><i>' + (k + 1) + '</i><span>' + eduE(o.t) + '</span>' + (done && k === q.ans ? EDU_I.check : '') + '</button>'; }).join('') + '</div>';
-  if (done) {
-    var ok = q.picked === q.ans;
-    h += '<div class="edu-fb' + (ok ? '' : ' no') + '" id="eduFb" aria-live="polite"><b>' + (ok ? '맞았어요' : '아쉬워요 · 정답은 ' + eduE(q.opts[q.ans].t)) + '</b>' + (c ? eduRow(c) : '') + '</div>'
-      + '<button type="button" class="edu-btn pri wide" onclick="eduNext()">' + (Z.i + 1 < Z.qs.length ? '다음 문제' : '결과 보기') + '</button>';
-  } else h += '<p class="edu-grp-p" style="margin-top:12px">' + eduE(q.sub || '') + '</p>';
-  B.innerHTML = h;
-}
-function eduPick(k) {
-  var Z = EDU.quiz, q = Z && Z.qs[Z.i];
-  if (!q || q.picked != null) return;
-  q.picked = k; var ok = k === q.ans; if (ok) Z.right++;
-  var e = { t: Date.now(), m: eduMe(), id: q.card, c: ok ? 1 : 0, s: 0 }, a = eduLocal(); a.push(e); eduLocalSave(a);
-  if (e.m) eduSend(e);
-  eduQuizDraw();
-  var fb = document.getElementById('eduFb'); if (fb) try { fb.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (x) {}
-}
-function eduNext() { EDU.quiz.i++; eduQuizDraw(); document.getElementById('eduScroll').scrollTop = 0; }
 
 /* ── 관리자: 자료 추가 · 고치기 · 지우기 (문준 · 물류관리자) ── */
 function eduForm(id) { eduPush({ v: 'form', id: id || '' }); }

@@ -8,7 +8,7 @@
       set0.apply(this, arguments);
       if (k === 's_selected_member' && v && this === window.localStorage) {
         var q = new URLSearchParams(location.search);
-        if (q.get('me') !== String(v)) { q.set('me', String(v)); q.delete('k'); history.replaceState(null, '', location.pathname + '?' + q.toString() + location.hash); }
+        if (q.get('me') !== String(v)) { q.set('me', String(v)); q.delete('k'); history.replaceState(history.state, '', location.pathname + '?' + q.toString() + location.hash); }
       }
     };
   } catch (e) {}
