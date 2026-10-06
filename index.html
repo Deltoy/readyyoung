@@ -9556,8 +9556,10 @@ html body #ryLaunchGrid .tl-search{top:56px}
 
           const resCount = document.getElementById('searchResultCount');
           if (resCount) resCount.innerText = `총 ${mapped.length}건 검색됨`;
+          /* 1006 같은 검색어를 뒤에서 다시 받아 그릴 때: 방금 '요청됨'으로 바꾼 줄은 그대로 유지 */
+          if (RY_SR.q === query) mapped.forEach(function (m) { var o = (lastSearchResults || []).find(function (x) { return x.rowNumber === m.rowNumber && x.justRequested; }); if (o) { m.justRequested = true; m.status = o.status; m.statusLabel = o.statusLabel; m.statusColor = o.statusColor; m.targetQty = o.targetQty; } });
           lastSearchResults = mapped;
-          renderSearchResults(mapped);
+          ryRenderSearchSafe(mapped, query);
           if (mapped.length) ry25RememberSoon(query);
           srLogSoon(query);   /* 1002 자주 찾는 상품 순위용 기록 */
       };
@@ -9604,6 +9606,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
 
     // keepFocus=true 면 (백스페이스로 다 지운 경우) 검색창 커서를 유지한다
     function clearGlobalSearch(keepFocus) {
+      RY_SR.q = ''; RY_SR.shown = null; RY_SR.pend = null; clearTimeout(RY_SR.t);   /* 1006 */
       latestSearchRequestId++;
       const inputEl = document.getElementById('globalSearchInput');
       if (inputEl) inputEl.value = '';
@@ -9620,7 +9623,21 @@ html body #ryLaunchGrid .tl-search{top:56px}
 
     /* 1002 검색 결과는 0.4초·3~5초(서버 전체 결과) 두세 번 다시 그려진다 → 그 사이 고친 수량·커서·스크롤이 날아가 화면이 튀던 문제.
        다시 그릴 때 사용자가 바꾼 수량 칸 값과 포커스, 스크롤 위치를 그대로 되살린다 */
+    /* 1006 화면 밀림 수정: 검색하면 결과가 몇 초 안에 2~4번 다시 그려진다(폰 목록 → 상품 목록 새로 받기 → 서버 확인).
+       그때 수량 칸을 누르거나 요청 버튼을 누르려던 손가락 아래에서 목록이 새로 만들어져 화면이 밀리고 누른 게 빗나갔다.
+       → 같은 검색어의 뒤늦은 결과는 ① 줄·상태가 같으면 다시 그리지 않고 ② 다르면 사용자가 목록을 만지는 중(2.5초 안 터치·수량 칸 입력 중)엔 미뤘다가 손을 뗀 뒤 그린다 */
+    var RY_SR = { q: '', shown: null, touch: 0, pend: null, t: null };
+    ['pointerdown', 'touchstart', 'focusin'].forEach(function (ev) { document.addEventListener(ev, function (e) { if (e.target && e.target.closest && e.target.closest('#searchResultView')) RY_SR.touch = Date.now(); }, { capture: true, passive: true }); });
+    function ryBusySR() { var a = document.activeElement; return Date.now() - RY_SR.touch < 2500 || !!(a && /^(m-)?s-qty-/.test(a.id || '')); }
+    function rySigSR(items) { return (items || []).map(function (x) { return x.rowNumber + ':' + x.status + ':' + (x.justRequested ? 1 : 0); }).join('|'); }
+    function ryRenderSearchSafe(items, q) {
+      if (RY_SR.q !== q || RY_SR.shown == null) { RY_SR.q = q; RY_SR.pend = null; clearTimeout(RY_SR.t); return renderSearchResults(items); }   // 새 검색어: 바로
+      if (rySigSR(items) === RY_SR.shown) return;   // 줄·상태가 같으면 그대로 둔다 (사진 주소만 바뀐 경우 포함)
+      if (ryBusySR()) { RY_SR.pend = items; clearTimeout(RY_SR.t); RY_SR.t = setTimeout(function () { var it = RY_SR.pend; RY_SR.pend = null; if (it && RY_SR.q === q) ryRenderSearchSafe(it, q); }, 1200); return; }
+      renderSearchResults(items);
+    }
     function renderSearchResults(items) {
+      RY_SR.shown = rySigSR(items);
       var keep = {}, foc = document.activeElement, focId = foc && foc.id && /^(m-)?s-qty-/.test(foc.id) ? foc.id : '', selS = null, y = window.scrollY;
       document.querySelectorAll('#searchCardContainer input[id^="m-s-qty-"], #searchTableBody input[id^="s-qty-"]').forEach(function (el) { if (el.dataset.touched === '1' || el === foc) keep[el.id] = el.value; });
       try { if (focId) selS = [foc.selectionStart, foc.selectionEnd]; } catch (eS) { selS = null; }
