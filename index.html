@@ -10099,9 +10099,11 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var mult = s15 >= 10 && !tight ? ryRecMult(item.name) : null, base = tight ? Math.max(1, Math.ceil(s15)) : s15 >= 10 ? Math.ceil(s15 * 2 * (mult ? mult.x : 1)) : 10;
       var box = parseInt((String(item.boxUnit || '').match(/\d{1,5}/) || ['0'])[0], 10) || 0, isBox = item.unit === '박스';
       var lim = (String(item.note || '').match(/월\s*(\d+)\s*개?\s*(제한|한도)/) || [])[1], n = base, unit = '개', capped = false;
+      var r10 = false;
       if (isBox) { if (!box) return null; n = Math.max(1, Math.ceil(base / box)); unit = '박스'; }
-      else if (lim && n > +lim) { n = +lim; capped = true; }
-      return { n: n, unit: unit, why: (tight ? '15일 ' + Math.round(s15) + '개 팔림 → 창고 공간 품목이라 15일치 그대로 = ' + base + '개' : s15 >= 10 ? '15일 ' + Math.round(s15) + '개 팔림 → ×2' + (mult ? ' × ' + mult.m + '월 ' + mult.x + '배' : '') + ' = ' + base + '개' : '15일 판매 ' + (s15 == null ? '기록 없음' : Math.round(s15) + '개') + ' → 10개 미만이라 기본 10개') + (isBox ? ' → ' + box + '개입 ' + n + '박스' : '') + (capped ? ' · 월 ' + lim + '개 한도' : '') };
+      else { if (n % 10) { n = Math.ceil(n / 10) * 10; r10 = true; }   // 1006 사용자: 낱개 수량은 무조건 십 단위로 끝나게 (34 → 40)
+        if (lim && n > +lim) { n = +lim; capped = true; r10 = false; } }
+      return { n: n, unit: unit, why: (tight ? '15일 ' + Math.round(s15) + '개 팔림 → 창고 공간 품목이라 15일치 그대로 = ' + base + '개' : s15 >= 10 ? '15일 ' + Math.round(s15) + '개 팔림 → ×2' + (mult ? ' × ' + mult.m + '월 ' + mult.x + '배' : '') + ' = ' + base + '개' : '15일 판매 ' + (s15 == null ? '기록 없음' : Math.round(s15) + '개') + ' → 10개 미만이라 기본 10개') + (isBox ? ' → ' + box + '개입 ' + n + '박스' : '') + (r10 ? ' → 십 단위로 올림 ' + n + '개' : '') + (capped ? ' · 월 ' + lim + '개 한도' : '') };
     }
     function ryRecApply(row, n, unit) {   // 1차 검토: 15일 기준 수량으로 바꾸고 바로 저장 (단위가 다르면 단위도)
       ['qty-', 'm-qty-'].forEach(function (p) { var i = document.getElementById(p + row); if (i) i.value = n; });
