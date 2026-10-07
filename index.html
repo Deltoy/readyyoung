@@ -3538,7 +3538,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .sdc-lg .sdc-c{display:inline-flex;ali
 <style>
 /* 1002 용도 · 취급안함 */
 .ry-uses{display:inline-flex;align-items:center;min-height:24px;margin:4px 0 0 4px;padding:2px 9px;border-radius:999px;background:#EFF4FF;color:#1849A9;font-size:12px;font-weight:600;line-height:1.3;vertical-align:middle;max-width:100%}
-td .ry-uses{margin:4px 0 0}
+td .ry-uses{margin:4px 0 0;white-space:normal;box-sizing:border-box;word-break:keep-all;overflow-wrap:anywhere}   /* 1007 칸 밖(재고있음 버튼 쪽)으로 넘치던 용도 칩 → 칸 안에서 줄바꿈 */
+html body td:has(>.ry-cat){white-space:normal!important}html body td>.ry-cat{white-space:normal!important;max-width:100%;box-sizing:border-box}   /* 1007 분류·용도 칩이 한 줄에 안 들어가면 다음 줄로 (칸이 줄바꿈 금지라 옆 칸 버튼 위로 넘쳤다) */
 .ry-end.ry-hid{background:#F2F4F7;color:#344054;border-color:#D0D5DD}
 </style>
 <style>
@@ -9639,7 +9640,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     (function () {
       if (!/[?&]dbg=1/.test(location.search)) return;
       var ev = [], jumps = [], lastY = window.scrollY, box = null;
-      var note = function (t) { ev.push([Date.now(), t]); if (ev.length > 30) ev.shift(); };
+      var note = function (t) { ev.push([Date.now(), t]); if (ev.length > 30) ev.shift(); }; window.__ryNote = note;
       var who = function () { try { return (new Error().stack.split('\n')[3] || '').trim().replace(/^at\s+/, '').replace(/\s*\(.*$/, '').slice(0, 30); } catch (e) { return ''; } };
       ['scrollTo', 'scrollBy'].forEach(function (k) { var o = window[k]; window[k] = function () { note(k + '(' + [].slice.call(arguments).map(function (a) { return typeof a === 'object' ? JSON.stringify(a) : Math.round(a); }).join(',') + ') ← ' + who()); return o.apply(this, arguments); }; });
       var siv = Element.prototype.scrollIntoView; Element.prototype.scrollIntoView = function () { note('scrollIntoView #' + (this.id || this.className || this.tagName).toString().slice(0, 20) + ' ← ' + who()); return siv.apply(this, arguments); };
@@ -9653,7 +9654,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       addEventListener('scroll', function () { var y = window.scrollY, d = y - lastY; if (Math.abs(d) > 60) { var now = Date.now(); jumps.unshift({ t: new Date().toTimeString().slice(0, 8), d: Math.round(d), y: Math.round(y), before: ev.filter(function (x) { return now - x[0] < 1500; }).map(function (x) { return x[1]; }).slice(-5) }); if (jumps.length > 8) jumps.pop(); draw(); } lastY = y; }, { passive: true });
       function draw() {
         if (!box) { box = document.createElement('div'); box.style.cssText = 'position:fixed;top:4px;right:4px;z-index:2147483647;max-width:300px;max-height:45vh;overflow:auto;background:rgba(17,24,39,.92);color:#fff;font:11px/1.35 -apple-system,sans-serif;padding:6px 8px;border-radius:10px;pointer-events:auto'; document.body.appendChild(box); }
-        box.innerHTML = '<b>화면 움직임 기록 (dbg · 1007c)</b><br>' + jumps.map(function (j) { return j.t + ' ' + (j.d > 0 ? '아래로 ' : '위로 ') + Math.abs(j.d) + 'px → ' + j.y + '<br><span style="opacity:.75">' + j.before.map(function (b) { return String(b).replace(/</g, '&lt;'); }).join(' / ') + '</span>'; }).join('<hr style="border:0;border-top:1px solid #444;margin:3px 0">');
+        box.innerHTML = '<b>화면 움직임 기록 (dbg · 1007d)</b><br>' + jumps.map(function (j) { return j.t + ' ' + (j.d > 0 ? '아래로 ' : '위로 ') + Math.abs(j.d) + 'px → ' + j.y + '<br><span style="opacity:.75">' + j.before.map(function (b) { return String(b).replace(/</g, '&lt;'); }).join(' / ') + '</span>'; }).join('<hr style="border:0;border-top:1px solid #444;margin:3px 0">');
       }
       setTimeout(function () { note('기록 시작'); draw(); }, 500);
     })();
@@ -9662,9 +9663,27 @@ html body #ryLaunchGrid .tl-search{top:56px}
     /* 1007 어디를 누르든 화면 밀림 0: 세트담당 접기·목록 다시 그림·사진 열고 닫기 등으로 페이지가 짧아지면 브라우저가 스크롤을 위로 끌어올렸다(누르려던 게 빗나감).
        → 보이지 않는 1px 받침을 '지금 보는 화면 아래 끝'에 두어 페이지가 그보다 짧아지지 않게 한다. 위로 스크롤하면 받침도 따라 올라가고, 탭을 바꾸거나 검색을 닫을 땐 놓는다 */
     function ryFloor() { var f = document.getElementById('ryFloor'); if (!f) { f = document.createElement('div'); f.id = 'ryFloor'; f.setAttribute('aria-hidden', 'true'); f.style.cssText = 'position:absolute;left:0;width:1px;height:1px;pointer-events:none;visibility:hidden'; document.documentElement.appendChild(f); } f.style.display = ''; f.style.top = Math.max(0, Math.ceil(window.scrollY + window.innerHeight) - 1) + 'px'; }
-    function ryFloorRelease() { var f = document.getElementById('ryFloor'); if (f) f.style.display = 'none'; requestAnimationFrame(ryFloor); }
+    function ryFloorRelease() { if (window.ryAllowScroll) ryAllowScroll(); var f = document.getElementById('ryFloor'); if (f) f.style.display = 'none'; requestAnimationFrame(ryFloor); }
     window.addEventListener('scroll', ryFloor, { passive: true }); window.addEventListener('resize', ryFloor);
     function ryHoldHeight() { ryFloor(); return function () {}; }
+    /* 1007d 누른 자리 고정: 받침으로도 남은 '이유 모를' 밀림(늘 y=180 으로 감)까지 막는다. 누른 뒤 1.5초 안에 사용자가 굴리거나 끌지 않았는데
+       화면이 움직여 누른 것이 40px 넘게 자리를 옮기면, 누른 것이 원래 있던 자리로 되돌린다. 코드가 일부러 옮기는 것(scrollTo·scrollIntoView·뒤로 가기·탭 이동)은 그대로 둔다 */
+    (function () {
+      var P = null, allow = 0, userAt = 0, by = window.scrollBy.bind(window), mark = function () { allow = Date.now(); };
+      window.ryAllowScroll = mark;
+      ['scrollTo', 'scrollBy', 'scroll'].forEach(function (k) { var o = window[k]; window[k] = function () { mark(); return o.apply(this, arguments); }; });
+      var siv = Element.prototype.scrollIntoView; Element.prototype.scrollIntoView = function () { mark(); return siv.apply(this, arguments); };
+      window.addEventListener('popstate', mark);
+      ['wheel', 'touchmove'].forEach(function (ev) { window.addEventListener(ev, function () { userAt = Date.now(); P = null; }, { capture: true, passive: true }); });
+      window.addEventListener('keydown', function (e) { if (/^(PageUp|PageDown|Home|End|ArrowUp|ArrowDown| )$/.test(e.key) && !/^(INPUT|TEXTAREA|SELECT)$/.test((e.target || {}).tagName || '')) { userAt = Date.now(); P = null; } }, true);
+      window.addEventListener('pointerdown', function (e) { var t = e.target; if (!t || !t.getBoundingClientRect || t === document.documentElement || t === document.body) { P = null; return; } P = { el: t, top: t.getBoundingClientRect().top, y: window.scrollY, at: Date.now() }; }, { capture: true, passive: true });
+      window.addEventListener('scroll', function () {
+        if (!P) return; var now = Date.now(); if (now - P.at > 1500) { P = null; return; } if (now - allow < 1200 || now - userAt < 400) return;
+        var r = P.el.isConnected ? P.el.getBoundingClientRect() : null, d = r && (r.width || r.height) ? r.top - P.top : P.y - window.scrollY > 60 ? P.y - window.scrollY : 0;
+        if (r && !(r.width || r.height)) d = 0;   // 누른 것이 사라졌으면(다른 화면) 건드리지 않음
+        if (Math.abs(d) > 40) { if (window.__ryNote) window.__ryNote('자리 되돌림 ' + Math.round(d) + 'px'); by(0, d); }
+      }, { passive: true });
+    })();
     (function () { ['renderAllViews', 'renderSearchResults0'].forEach(function (k) { var o = window[k]; if (typeof o !== 'function') return; window[k] = function () { var rel = ryHoldHeight(); try { return o.apply(this, arguments); } finally { rel(); } }; }); })();
     function ryRenderSearchSafe(items, q) {
       if (RY_SR.q !== q || RY_SR.shown == null) { RY_SR.q = q; RY_SR.pend = null; clearTimeout(RY_SR.t); RY_SR.fresh = true; return renderSearchResults(items); }   // 새 검색어: 바로 (화면 위치 맞추기 없이)
