@@ -9650,7 +9650,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       addEventListener('scroll', function () { var y = window.scrollY, d = y - lastY; if (Math.abs(d) > 60) { var now = Date.now(); jumps.unshift({ t: new Date().toTimeString().slice(0, 8), d: Math.round(d), y: Math.round(y), before: ev.filter(function (x) { return now - x[0] < 1500; }).map(function (x) { return x[1]; }).slice(-5) }); if (jumps.length > 8) jumps.pop(); draw(); } lastY = y; }, { passive: true });
       function draw() {
         if (!box) { box = document.createElement('div'); box.style.cssText = 'position:fixed;top:4px;right:4px;z-index:2147483647;max-width:300px;max-height:45vh;overflow:auto;background:rgba(17,24,39,.92);color:#fff;font:11px/1.35 -apple-system,sans-serif;padding:6px 8px;border-radius:10px;pointer-events:auto'; document.body.appendChild(box); }
-        box.innerHTML = '<b>화면 움직임 기록 (dbg · 1006f)</b><br>' + jumps.map(function (j) { return j.t + ' ' + (j.d > 0 ? '아래로 ' : '위로 ') + Math.abs(j.d) + 'px → ' + j.y + '<br><span style="opacity:.75">' + j.before.map(function (b) { return String(b).replace(/</g, '&lt;'); }).join(' / ') + '</span>'; }).join('<hr style="border:0;border-top:1px solid #444;margin:3px 0">');
+        box.innerHTML = '<b>화면 움직임 기록 (dbg · 1007a)</b><br>' + jumps.map(function (j) { return j.t + ' ' + (j.d > 0 ? '아래로 ' : '위로 ') + Math.abs(j.d) + 'px → ' + j.y + '<br><span style="opacity:.75">' + j.before.map(function (b) { return String(b).replace(/</g, '&lt;'); }).join(' / ') + '</span>'; }).join('<hr style="border:0;border-top:1px solid #444;margin:3px 0">');
       }
       setTimeout(function () { note('기록 시작'); draw(); }, 500);
     })();
@@ -9738,13 +9738,11 @@ html body #ryLaunchGrid .tl-search{top:56px}
                 <button onclick="handleSearchReorder(${item.rowNumber}, false, this)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-black shadow-xs transition whitespace-nowrap">🔁 재주문</button>
                 <button type="button" onclick="goToItem(${item.rowNumber}, 'DONE')" class="text-[10px] text-blue-600 font-black whitespace-nowrap underline underline-offset-2 px-1" title="입고내역에서 이 상품의 기록 보기">기록 →</button>
               </div>${moSnoozeBtn(item)}
-            ` : item.justRequested ? '<span class="px-2 py-1 rounded-lg text-xs font-black bg-indigo-100 text-indigo-800 whitespace-nowrap">✓ 요청됨</span>' : '<span class="text-xs text-blue-600 font-black">바로가기 →</span>'}
+            ` : item.justRequested ? '<span class="px-2 py-1 rounded-lg text-xs font-black bg-indigo-100 text-indigo-800 whitespace-nowrap">✓ 요청됨</span>' : '<span class="ry-go text-xs text-blue-600 font-black" style="cursor:pointer">바로가기 →</span>'}
           </td>
         `;
         if (item.status !== 'IDLE' && item.status !== 'DONE') {   // 입고완료 상품은 여기서 바로 재주문 (줄 전체 클릭으로 이동하지 않음)
-          tr.style.cursor = 'pointer';
-          tr.title = '눌러서 해당 목록의 이 상품으로 이동';
-          tr.addEventListener('click', function() { goToItem(item.rowNumber, item.status); });
+          tr.addEventListener('click', function(e) { if (e.target.closest('.ry-go')) goToItem(item.rowNumber, item.status); });   /* 1007 '바로가기'만 이동 */
         }
         if (tbody) tbody.appendChild(tr);
 
@@ -9784,12 +9782,12 @@ html body #ryLaunchGrid .tl-search{top:56px}
               : `<button type="button" class="ry25-go dark" onclick="handleSearchReorder(${item.rowNumber}, true, this)">${RYI.rotate}재주문</button>`}
           </div>` : `
           <div class="ry25-pc-act">
-            <span class="ry25-link${item.justRequested ? ' done' : ''}">${item.justRequested ? RYI.check + '요청됨 · 1차 검토로 이동' : '이 상품으로 이동'}${RYI.chevright}</span>
+            <span class="ry25-link${item.justRequested ? ' done' : ''}" role="button" style="cursor:pointer">${item.justRequested ? RYI.check + '요청됨 · 1차 검토로 이동' : '이 상품으로 이동'}${RYI.chevright}</span>
           </div>`}
         `;
         if (item.status !== 'IDLE' && item.status !== 'DONE') {
-          card.style.cursor = 'pointer';
-          card.addEventListener('click', function() { goToItem(item.rowNumber, item.status); });
+          /* 1007 화면 밀림: 카드 아무 데나 누르면 검색이 닫히고 다른 탭으로 넘어가 화면이 위로 튀었다(요청 직후 같은 자리 다시 누를 때 특히) → '이동' 글자를 눌렀을 때만 이동 */
+          card.addEventListener('click', function(e) { if (e.target.closest('.ry25-link')) goToItem(item.rowNumber, item.status); });
         }
         if (cardContainer) cardContainer.appendChild(card);
       });
