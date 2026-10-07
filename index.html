@@ -7044,7 +7044,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
     }
 
     function switchTab(tab) {
-      if (tab !== currentTab && typeof ryFloorRelease === "function") ryFloorRelease();   /* 1007 다른 탭으로 갈 땐 받침을 놓는다 */
+      /* 1007b 탭 버튼이 화면에 보이는 채로 누른 거면 받침 유지(화면 그대로, 새 목록이 아래에 나옴) — 탭이 화면 밖일 때만 놓는다 */
+      if (tab !== currentTab && typeof ryFloorRelease === "function" && ![].some.call(document.querySelectorAll('[id^="tabBtn"]'), function (b) { var r = b.getBoundingClientRect(); return r.height && r.bottom > 0 && r.top < innerHeight; })) ryFloorRelease();
       currentTab = tab;
       dismissKeyboard();
       
@@ -9652,7 +9653,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       addEventListener('scroll', function () { var y = window.scrollY, d = y - lastY; if (Math.abs(d) > 60) { var now = Date.now(); jumps.unshift({ t: new Date().toTimeString().slice(0, 8), d: Math.round(d), y: Math.round(y), before: ev.filter(function (x) { return now - x[0] < 1500; }).map(function (x) { return x[1]; }).slice(-5) }); if (jumps.length > 8) jumps.pop(); draw(); } lastY = y; }, { passive: true });
       function draw() {
         if (!box) { box = document.createElement('div'); box.style.cssText = 'position:fixed;top:4px;right:4px;z-index:2147483647;max-width:300px;max-height:45vh;overflow:auto;background:rgba(17,24,39,.92);color:#fff;font:11px/1.35 -apple-system,sans-serif;padding:6px 8px;border-radius:10px;pointer-events:auto'; document.body.appendChild(box); }
-        box.innerHTML = '<b>화면 움직임 기록 (dbg · 1007b)</b><br>' + jumps.map(function (j) { return j.t + ' ' + (j.d > 0 ? '아래로 ' : '위로 ') + Math.abs(j.d) + 'px → ' + j.y + '<br><span style="opacity:.75">' + j.before.map(function (b) { return String(b).replace(/</g, '&lt;'); }).join(' / ') + '</span>'; }).join('<hr style="border:0;border-top:1px solid #444;margin:3px 0">');
+        box.innerHTML = '<b>화면 움직임 기록 (dbg · 1007c)</b><br>' + jumps.map(function (j) { return j.t + ' ' + (j.d > 0 ? '아래로 ' : '위로 ') + Math.abs(j.d) + 'px → ' + j.y + '<br><span style="opacity:.75">' + j.before.map(function (b) { return String(b).replace(/</g, '&lt;'); }).join(' / ') + '</span>'; }).join('<hr style="border:0;border-top:1px solid #444;margin:3px 0">');
       }
       setTimeout(function () { note('기록 시작'); draw(); }, 500);
     })();
