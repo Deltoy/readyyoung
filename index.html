@@ -13018,6 +13018,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .edu-pt:active{background:#F2F4F7}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-pt:focus-visible,html:not(#q):not(#w):not(#e) body:not(#r) .edu-br:focus-visible,html:not(#q):not(#w):not(#e) body:not(#r) .edu-row:focus-visible{outline:2px solid #155EEF;outline-offset:2px;border-radius:12px}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-pt>span:empty{display:block;margin:0!important;padding:0}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-pt-h{display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-pt-img{width:44px;height:44px;object-fit:contain;border-radius:10px;background:#fff;border:1px solid #EAECF0;flex:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-photo{margin:0 0 10px}html:not(#q):not(#w):not(#e) body:not(#r) .edu-photo-i{display:block;width:120px;height:120px;object-fit:contain;border-radius:16px;background:#fff;border:1px solid #EAECF0;padding:6px;box-sizing:border-box}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-pt-h b{font-size:16px;line-height:1.4;font-weight:700!important;min-width:0}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-pt-c{margin-top:4px;font-size:13.5px;line-height:1.5;color:#475467}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-pt-r{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-top:10px;font-size:13px;line-height:1.45;color:#344054}
@@ -13300,6 +13302,21 @@ function eduLoad(localOnly) {
 }
 function eduCards() { return (EDU.data && EDU.data.cards) || []; }
 function eduGroup(slide) { return ((EDU.data && EDU.data.groups) || []).filter(function (g) { return g.slide === slide; })[0] || null; }
+/* 1007 MJ: 교육 자료에 제품 사진 — 물류앱 상품 목록(RY_CAT)에서 이 카드와 이어지는 상품의 사진을 쓴다 (카드에 img 가 있으면 그것 먼저) */
+function eduPhoto(c) {
+  if (!c) return '';
+  if (c.img) return c.img;
+  var items = (typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) || [];
+  if (!EDU._ph || EDU._phN !== items.length || EDU._phC !== eduCards().length) {
+    var m = {}, cards = eduCards();
+    var old = {};   // 판매종료·리필 상품 사진은 다른 사진이 없을 때만
+    items.forEach(function (it) { if (!it || !it.imgUrl) return; var hit = eduMatch(it.name, cards); if (!hit) return; if (/판매종료|sku\s*제외|리필/i.test(it.name + ' ' + (it.note || ''))) { if (!old[hit.id]) old[hit.id] = it.imgUrl; } else if (!m[hit.id]) m[hit.id] = it.imgUrl; });
+    for (var k in old) if (!m[k]) m[k] = old[k];
+    EDU._ph = m; EDU._phN = items.length; EDU._phC = cards.length;
+  }
+  return EDU._ph[c.id] || '';
+}
+function eduImg(c, cls) { var u = eduPhoto(c); return u ? '<img class="' + cls + '" src="' + eduE(u) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">' : ''; }
 function eduFind(id) { return eduCards().filter(function (c) { return c.id === id; })[0] || null; }
 function eduMe() { return typeof currentSelectedMember !== 'undefined' && currentSelectedMember && currentSelectedMember !== '미선택' ? currentSelectedMember : ''; }
 function eduCanEdit() { var m = eduMe(); return m === '문준' || m === '물류관리자' || (typeof memberTitle === 'function' && !!m && memberTitle(m) === '물류관리자'); }
@@ -13443,7 +13460,7 @@ function eduTile(c, df, n, allNew) {
   var mk = eduMark(c), dn = eduDone()[c.id], tg = (c.targets || []).slice(0, 4), ing = n > 1 ? df.only : (c.ingredients || []).slice(0, 3);
   var mark = mk ? (mk.color ? '<i class="edu-sw ' + mk.color + '" aria-hidden="true"></i>' : '<i class="edu-num" aria-hidden="true">' + eduE(mk.num) + '</i>') : '';
   return '<button type="button" class="edu-pt" data-id="' + eduE(c.id) + '" onclick="eduOpenCard(this.dataset.id)">'
-    + '<span class="edu-pt-h">' + mark + '<b>' + eduE(eduShort(c)) + '</b>' + (!allNew && eduIsNew(c) ? '<i class="edu-new">새</i>' : '') + (dn ? '<i class="edu-done" title="공부했어요">' + EDU_I.check + '</i>' : '') + '</span>'
+    + '<span class="edu-pt-h">' + eduImg(c, 'edu-pt-img') + mark + '<b>' + eduE(eduShort(c)) + '</b>' + (!allNew && eduIsNew(c) ? '<i class="edu-new">새</i>' : '') + (dn ? '<i class="edu-done" title="공부했어요">' + EDU_I.check + '</i>' : '') + '</span>'
     + '<span class="edu-pt-c">' + eduE(c.concept || c.tag || '') + '</span>'
     + '<span class="edu-pt-r">' + (tg.length ? '<em>손님</em>' + tg.map(function (t) { return '<i>' + eduE(t) + '</i>'; }).join('') : c.targetText ? '<em>손님</em><span>' + eduE(c.targetText) + '</span>' : '') + '</span>'
     + '<span class="edu-pt-r ing">' + (ing.length ? (n > 1 ? '<em class="edu-only">이 제품에만 든 성분</em>' : '<em>성분</em>') + ing.map(function (t) { return '<i>' + eduE(t) + '</i>'; }).join('') : '') + '</span>'
@@ -13521,7 +13538,8 @@ function eduCardView(id) {
   var g = eduGroup(c.slide), sib = eduCards().filter(function (x) { return x.brand === c.brand && x.line === c.line && x.id !== c.id; }), row = function (k, v) { return v ? '<div><dt>' + k + '</dt><dd>' + v + '</dd></div>' : ''; };
   var sim = eduSimilar(c, eduCards(), EDU._ingIx, 4), dn = !!eduDone()[c.id];
   eduTop(eduShort(c), eduE(c.brand) + ' · ' + eduE(c.line));
-  var h = '<div class="edu-kick"><button type="button" class="edu-kb" data-b="' + eduE(c.brand) + '" onclick="eduGoBrand(this.dataset.b)" aria-label="' + eduE(c.brand) + ' 브랜드 전체 보기">' + eduE(c.brand) + EDU_I.chev + '</button>' + eduE(c.line) + (eduIsNew(c) ? '<i class="edu-new">새</i>' : '') + '</div><h1 class="edu-h1">' + eduE(c.name) + '</h1>'
+  var ph = eduImg(c, 'edu-photo-i');
+  var h = (ph ? '<div class="edu-photo">' + ph + '</div>' : '') + '<div class="edu-kick"><button type="button" class="edu-kb" data-b="' + eduE(c.brand) + '" onclick="eduGoBrand(this.dataset.b)" aria-label="' + eduE(c.brand) + ' 브랜드 전체 보기">' + eduE(c.brand) + EDU_I.chev + '</button>' + eduE(c.line) + (eduIsNew(c) ? '<i class="edu-new">새</i>' : '') + '</div><h1 class="edu-h1">' + eduE(c.name) + '</h1>'
     + (c.tag && eduKey(c.tag) !== eduKey(c.concept) ? '<div class="edu-tagl">' + eduE(c.tag) + '</div>' : '') + (c.concept ? '<p class="edu-concept">' + eduE(c.concept) + '</p>' : '');
   if (c.ment) h += '<div class="edu-ment"><div class="edu-ment-h"><b>응대 멘트</b><button type="button" class="edu-copy" onclick="eduCopy(this)">' + EDU_I.copy + '멘트 복사</button></div><q id="eduMent">' + eduE(c.ment) + '</q></div>';
   /* 1007e 순서: 꼭 알 것(손님·성분·가격) → 발주 검색 → 비슷한 우리 제품 → 같은 라인 차이 → 더 알아두기 → 공부 체크 */
