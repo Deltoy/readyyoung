@@ -14102,6 +14102,7 @@ function eduCardView(id) {
     + row('가격', eduE(c.price))
     + '</dl>';
   if (!med) h += care;
+  h += eduTermsHtml(c);
   h += '<div class="edu-acts"><button type="button" class="edu-btn pri" data-id="' + eduE(c.id) + '" onclick="eduOrderSearch(this.dataset.id)">' + EDU_I.cart + '이 상품 발주 검색</button>'
     + (g && g.img ? '<button type="button" class="edu-btn" data-u="' + eduE(g.img) + '" onclick="eduZoomOpen(this.dataset.u)">' + EDU_I.img + '원본 슬라이드 보기</button>' : '') + '</div>';
   var six = eduSymIx(), cIts = six.of[c.id] || [], cSyms = eduCardSyms(c, six), cKind = eduKind(cIts[0], c);   /* 1008b 같은 증상 · 다른 종류 보조 제품 (규칙표 EDU_COMBO) */
@@ -14120,6 +14121,34 @@ function eduCardView(id) {
   h += '<button type="button" class="edu-btn edu-dn wide" aria-pressed="' + dn + '" data-id="' + eduE(c.id) + '" onclick="eduToggleDone(this.dataset.id, this)">' + EDU_I.check + '<span>' + (dn ? '공부했어요' : '다 봤으면 공부 체크') + '</span></button>';
   if (eduCanEdit() && !eduIsDraft(c)) h += '<div class="edu-acts two"><button type="button" class="edu-btn" data-id="' + eduE(c.id) + '" onclick="eduPush({ v: \'form\', id: this.dataset.id })">고치기</button><button type="button" class="edu-btn del" data-id="' + eduE(c.id) + '" onclick="eduDelete(this.dataset.id, this)">지우기</button></div>';
   document.getElementById('eduBody').innerHTML = h;
+}
+/* 1008 MJ '파라벤·페녹시에탄올 무첨가가 무슨 뜻인지도' → 제품 자료에 나온 표시 문구를 쉬운 말로 풀어 준다. m = 뜻, s = 손님께 한 줄, c = 오해하기 쉬운 점 */
+var EDU_TERMS = [
+  { re: /파라벤/, t: '파라벤 무첨가', m: '파라벤은 화장품이 상하지 않게 넣는 방부제 종류(메틸·프로필파라벤 등)예요. 무첨가 = 이 계열 방부제를 넣지 않았다는 뜻이에요.', s: '방부제 중 파라벤 계열은 넣지 않은 제품이에요.', c: '방부제가 아예 없다는 뜻은 아니에요. 식약처 기준 안의 파라벤은 허용 성분이라 위험 성분이라고 말하면 안 돼요.' },
+  { re: /페녹시에탄올/, t: '페녹시에탄올 무첨가', m: '페녹시에탄올은 파라벤 대신 가장 많이 쓰는 방부제예요(식약처 사용 한도 1%). 무첨가 = 이것도 넣지 않았다는 뜻이에요.', s: '많이 쓰는 방부제 두 가지(파라벤·페녹시에탄올)를 다 뺀 제품이에요.', c: '대신 보습 겸 보존 역할 성분(예: 1,2-헥산다이올)으로 지키는 경우가 많아요. 개봉 후 사용기한·보관법을 더 잘 지키라고 안내해요.' },
+  { re: /(인공\s?)?향료\s?(무첨가|무)|무향/, t: '향료 무첨가 · 무향', m: '향을 내려고 따로 넣는 향료를 넣지 않았다는 뜻이에요. 향료는 피부 자극·알레르기 원인이 되기도 해요.', s: '향을 따로 넣지 않아서 예민한 피부도 부담이 적어요.', c: '원료 자체 냄새는 날 수 있어요.' },
+  { re: /(타르\s?)?색소\s?무첨가|인공\s?색소/, t: '색소 무첨가', m: '색을 내려고 넣는 합성(타르) 색소를 넣지 않았다는 뜻이에요.', s: '색을 내는 합성 색소를 넣지 않았어요.', c: '원료 색이 그대로 보일 수 있어요.' },
+  { re: /알코올\s?(무첨가|프리)|에탄올\s?(무첨가|프리)/, t: '알코올(에탄올) 무첨가', m: '산뜻함·빠른 흡수를 위해 넣는 에탄올을 넣지 않았다는 뜻이에요. 건조·따가움에 예민한 손님이 찾아요.', s: '건조하게 만들 수 있는 에탄올을 넣지 않았어요.', c: '세틸·세테아릴알코올 같은 지방알코올은 다른 성분(보습·제형용)이라 들어 있어도 이 표시와 맞아요.' },
+  { re: /실리콘\s?(무첨가|프리)|디메치콘\s?무첨가/, t: '실리콘 무첨가', m: '발림을 매끄럽게 하는 실리콘(디메치콘 등)을 넣지 않았다는 뜻이에요.', s: '실리콘 없이 만든 제품이에요.', c: '실리콘이 피부에 해롭다는 근거는 약해요. 취향 차이로 안내해요.' },
+  { re: /미네랄\s?오일\s?무첨가/, t: '미네랄오일 무첨가', m: '석유에서 정제한 보습 오일(미네랄오일)을 넣지 않았다는 뜻이에요.', s: '미네랄오일 없이 만든 제품이에요.', c: '화장품용 미네랄오일은 정제돼 안전하게 쓰여요. 위험하다고 말하지 않아요.' },
+  { re: /설페이트\s?(무첨가|프리|free)|\bSLS\b|\bSLES\b/i, t: '설페이트 무첨가', m: '거품이 많이 나는 세정 성분(SLS·SLES)을 넣지 않았다는 뜻이에요. 순한 세정 제품 표시로 많이 써요.', s: '자극이 강할 수 있는 설페이트 계면활성제를 뺀 순한 세정제예요.', c: '다른 세정 성분은 들어 있어요. 거품이 적을 수 있어요.' },
+  { re: /\d+\s?무첨가/, t: 'n무첨가 (예: 10무첨가)', m: '정해진 성분 n가지를 넣지 않았다는 회사 자체 표시예요. 무엇을 뺐는지는 제품마다 달라요.', s: '빼낸 성분 목록은 상자 뒷면에서 같이 확인해 드릴게요.', c: '공식 인증 기준이 아니라 회사마다 목록이 달라요.' },
+  { re: /저자극\s?(테스트|시험|임상)|피부\s?(과\s?)?(테스트|자극\s?시험)|첩포/, t: '저자극·피부 테스트 완료', m: '사람 피부에 붙여 보는 시험(첩포 시험)에서 자극이 낮게 나왔다는 뜻이에요.', s: '피부 자극 시험을 거친 제품이에요.', c: '모든 사람에게 자극이 없다는 보장은 아니에요. 처음엔 귀 뒤·팔 안쪽에 먼저 써 보시라고 안내해요.' },
+  { re: /논\s?코메도|넌\s?코메도|non-?comedo/i, t: '논코메도제닉', m: '모공을 막아 여드름(좁쌀)을 만드는지 보는 시험을 통과했다는 뜻이에요.', s: '모공을 잘 막지 않는지 시험한 제품이에요.', c: '여드름이 안 난다는 보장은 아니에요.' },
+  { re: /약산성/, t: '약산성', m: '피부 표면과 비슷한 산도(pH 약 4.5~6.5)로 만들었다는 뜻이에요. 세안 뒤 당김이 덜해요.', s: '피부와 비슷한 약산성이라 세안 후 덜 당겨요.', c: '' },
+  { re: /비건/, t: '비건', m: '동물성 원료를 쓰지 않고 동물 실험을 하지 않았다는 뜻이에요(인증 기관마다 기준이 조금 달라요).', s: '동물성 원료 없이 만든 비건 제품이에요.', c: '비건이 순하다는 뜻은 아니에요.' },
+  { re: /EWG/i, t: 'EWG 그린 등급', m: '미국 민간 환경단체(EWG)가 매긴 성분 등급이에요.', s: 'EWG라는 단체 기준으로 낮은 위험 등급을 받은 성분이에요.', c: '국내 식약처 공식 기준이 아니에요. 등급이 없거나 자료가 적은 성분도 그린으로 보일 수 있어요.' }
+];
+function eduTermsOf(c) {
+  if (/의약품|의약외품/.test(c.pkind || '')) return [];   // 약 성분명(콘드로이친설페이트 등)에 잘못 걸리지 않게 화장품·용품만
+  var txt = [c.tag, c.concept, c.targetText, c.ment, c.notes, c.claim].concat(c.ingredients || [], (c.facts || []).map(function (f) { return f[0] + ' ' + f[1]; })).join(' ');
+  return EDU_TERMS.filter(function (x) { return x.re.test(txt); });
+}
+function eduTermsHtml(c) {
+  var ts = eduTermsOf(c); if (!ts.length) return '';
+  return '<section class="edu-sec"><h2 class="edu-h">표시 문구 풀이<small>제품에 적힌 말이 무슨 뜻인지</small></h2><dl class="edu-dl">' + ts.map(function (x) {
+    return '<div><dt>' + eduE(x.t) + '</dt><dd>' + eduE(x.m) + '<small>손님께: ' + eduE(x.s) + '</small>' + (x.c ? '<small>주의: ' + eduE(x.c) + '</small>' : '') + '</dd></div>';
+  }).join('') + '</dl></section>';
 }
 /* ── 관리자: AI 초안 확인 목록 (신고 많은 것 먼저) ── */
 function eduReviewView() {
