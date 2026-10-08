@@ -9518,10 +9518,29 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var sold = /품절/.test(ryNoRc(l.x.note)) && (l.st === 'ORDER' || l.st === 'REVIEW');
       return Object.assign({}, it, { status: sold ? 'SOLDOUT' : l.st, imgUrl: l.x.imgUrl || it.imgUrl, note: l.x.note != null ? l.x.note : it.note, targetQty: l.x.targetQty || it.targetQty, requester: l.x.requester || it.requester });
     }
+    /* 1008 MJ '이름이 정확히 안 떠올라도 브랜드 + 종류만으로': 붙여 쓴 '릴리이브샴푸' → '릴리이브 샴푸', 한 글자 틀린 브랜드 '릴리브' → '릴리이브' 로 한 번 더 찾는다 */
+    function ryBrands() {
+      if (RY_CAT._brands) return RY_CAT._brands;
+      var m = {}; RY_CAT.items.forEach(function (it) { var w = String(it.name || '').split('\n')[0].trim().split(/\s+/)[0].toLowerCase(); if (w && w.length >= 2 && !/^\d/.test(w)) m[w] = 1; var mk = String(it.maker || '').trim().toLowerCase(); if (mk.length >= 2 && !/없음/.test(mk)) m[mk.replace(/\s+/g, '')] = 1; });
+      return (RY_CAT._brands = Object.keys(m).sort(function (a, b) { return b.length - a.length; }));
+    }
+    function ryNear(a, b) {   // 글자 하나 빠짐·더함·바뀜까지 (3글자 이상만)
+      if (a === b) return true; if (Math.min(a.length, b.length) < 3 || Math.abs(a.length - b.length) > 1) return false;
+      var i = 0, j = 0, e = 0; while (i < a.length && j < b.length) { if (a[i] === b[j]) { i++; j++; continue; } if (++e > 1) return false; if (a.length > b.length) i++; else if (b.length > a.length) j++; else { i++; j++; } }
+      return e + (a.length - i) + (b.length - j) <= 1;
+    }
+    function ryQueryAlts(query) {
+      var q = String(query).trim().toLowerCase(), w = q.split(/\s+/), bs = ryBrands(), alts = [];
+      if (w.length === 1) bs.forEach(function (b) { if (alts.length < 3 && q.length > b.length + 1 && q.indexOf(b) === 0) alts.push(b + ' ' + q.slice(b.length)); });   // 붙여 쓴 브랜드+종류
+      var b0 = bs.filter(function (b) { return ryNear(w[0], b); }).slice(0, 2);
+      b0.forEach(function (b) { if (b !== w[0]) alts.push([b].concat(w.slice(1)).join(' ')); });   // 브랜드 오타
+      return alts;
+    }
     function ryCatSearch(query) {
       if (!RY_CAT || !RY_CAT.items) return null;
       var hit = ryHitFn(query), out = [];
       for (var i = 0; i < RY_CAT.items.length && out.length < 40; i++) { var it = RY_CAT.items[i]; if (hit(String(it._k || ''))) out.push(it); }
+      if (!out.length) ryQueryAlts(query).some(function (a) { var h2 = ryHitFn(a); for (var j = 0; j < RY_CAT.items.length && out.length < 40; j++) { var it2 = RY_CAT.items[j]; if (h2(String(it2._k || ''))) out.push(it2); } return out.length; });
       /* 폰 목록은 최대 5분 전 것 → 지금 화면이 아는 상태 · 사진을 덮어씀 (방금 요청·승인·입고한 것도 바로 맞게) */
       var live = ryLiveMap();
       var nk = function (x) { return String(x || '').replace(/\s+/g, '').toLowerCase(); };
@@ -11987,7 +12006,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         ['매일 챙길 것', [
           ['missed', RYI.trend || RYI.bellring, '놓친 주문 찾기', mo, '잘 팔리는데 재고가 떨어졌을 상품 — 마지막 입고 ÷ 하루 판매로 추정'],
           ['reorder', RYI.bellring, '재주문 후보', k.reorder, '입고 완료 뒤 다시 시킬 때가 된 상품'],
-          ['stockCheck', RYI.searchcheck, '재고 확인 요청', k.stockCheck, "약사가 '재고 있음'으로 돌려보낸 건 — 오늘 확인"],
+          ['stockCheck', RYI.searchcheck, '재고 확인 요청', k.stockCheck, "물류관리자가 '재고 있음'으로 돌려보낸 건 — 오늘 확인"],
           ['stale', RYI.package, '창고 정리', k.stale, '한 달 넘게 안 시킨 상품 → 유지·할인·반품·폐기·본사 이벤트·샘플·지점 이동']]],
         ['기록 · 분석', [
           ['lead', RYI.timer, '입고 소요일', k.lead, '발주 → 입고까지 걸린 영업일'],
@@ -12038,7 +12057,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var T = [
         { k: 'missed', g: 0, ic: RYI.bellring, n: '놓친 주문', v: '잘 팔리는데 안 시킨 것', kw: '재고 떨어짐 판매 품절 위험 마지막 입고' },
         { k: 'reorder', g: 0, ic: RYI.rotate, n: '다시 시킬 때', v: rg ? (rNow ? '지금 ' + rNow + '개' : (rg.week.length ? '이번 주 ' + rg.week.length + '개' : '지금은 없음')) : '재주문 후보', cnt: rNow, act: rg && rg.week.length ? '이번 주 ' + rg.week.length + '개 더' : '주기상 지금 시킬 것', pri: 2, kw: '재주문 후보 주기 입고 완료' },
-        { k: 'stockCheck', g: 0, ic: RYI.listcheck, n: '재고 확인 요청', v: sc ? '오늘 ' + sc + '개' : '오늘 없음', cnt: sc, act: '약사가 돌려보냄 · 오늘', pri: 1, kw: '취소분 재고있음 반려 확인' }
+        { k: 'stockCheck', g: 0, ic: RYI.listcheck, n: '재고 확인 요청', v: sc ? '오늘 ' + sc + '개' : '오늘 없음', cnt: sc, act: '물류관리자가 돌려보냄 · 오늘', pri: 1, kw: '취소분 재고있음 반려 확인' }
       ].concat(isAdmin && s15 && !s15.hidden ? [{ k: 's15', g: 0, ic: RYI.bars, n: '15일 판매량 엑셀', v: s15due ? '오늘 올릴 날' : (s15last ? s15last + ' 올림' : '올리기'), cnt: s15due ? 1 : 0, act: '올릴 날이에요', due: true, pri: 0, kw: 'POS 판매량 15일 업로드' }] : [])
       .concat([
         { k: 'stale', g: 1, ic: RYI.package, n: '창고 정리', v: stN ? '후보 ' + stN + '개' : '오래 안 시킨 것', cnt: stN, act: '오래 안 시킨 상품', pri: 4, kw: '재고 정리 할인 반품 폐기 소진 판매종료' },
