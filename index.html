@@ -9677,7 +9677,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       addEventListener('scroll', function () { var y = window.scrollY, d = y - lastY; if (Math.abs(d) > 60) { var now = Date.now(); jumps.unshift({ t: new Date().toTimeString().slice(0, 8), d: Math.round(d), y: Math.round(y), before: ev.filter(function (x) { return now - x[0] < 1500; }).map(function (x) { return x[1]; }).slice(-5) }); if (jumps.length > 8) jumps.pop(); draw(); } lastY = y; }, { passive: true });
       function draw() {
         if (!box) { box = document.createElement('div'); box.style.cssText = 'position:fixed;top:4px;right:4px;z-index:2147483647;max-width:300px;max-height:45vh;overflow:auto;background:rgba(17,24,39,.92);color:#fff;font:11px/1.35 -apple-system,sans-serif;padding:6px 8px;border-radius:10px;pointer-events:auto'; document.body.appendChild(box); }
-        box.innerHTML = '<b>화면 움직임 기록 (dbg · 1007d)</b><br>' + jumps.map(function (j) { return j.t + ' ' + (j.d > 0 ? '아래로 ' : '위로 ') + Math.abs(j.d) + 'px → ' + j.y + '<br><span style="opacity:.75">' + j.before.map(function (b) { return String(b).replace(/</g, '&lt;'); }).join(' / ') + '</span>'; }).join('<hr style="border:0;border-top:1px solid #444;margin:3px 0">');
+        box.innerHTML = '<b>화면 움직임 기록 (dbg · 1008)</b><br>' + jumps.map(function (j) { return j.t + ' ' + (j.d > 0 ? '아래로 ' : '위로 ') + Math.abs(j.d) + 'px → ' + j.y + '<br><span style="opacity:.75">' + j.before.map(function (b) { return String(b).replace(/</g, '&lt;'); }).join(' / ') + '</span>'; }).join('<hr style="border:0;border-top:1px solid #444;margin:3px 0">');
       }
       setTimeout(function () { note('기록 시작'); draw(); }, 500);
     })();
@@ -9685,7 +9685,19 @@ html body #ryLaunchGrid .tl-search{top:56px}
        → 다시 그리는 동안엔 지금 페이지 높이를 최소 높이로 붙잡아 두고, 다 그린 다음 프레임에 놓는다 */
     /* 1007 어디를 누르든 화면 밀림 0: 세트담당 접기·목록 다시 그림·사진 열고 닫기 등으로 페이지가 짧아지면 브라우저가 스크롤을 위로 끌어올렸다(누르려던 게 빗나감).
        → 보이지 않는 1px 받침을 '지금 보는 화면 아래 끝'에 두어 페이지가 그보다 짧아지지 않게 한다. 위로 스크롤하면 받침도 따라 올라가고, 탭을 바꾸거나 검색을 닫을 땐 놓는다 */
-    function ryFloor() { var f = document.getElementById('ryFloor'); if (!f) { f = document.createElement('div'); f.id = 'ryFloor'; f.setAttribute('aria-hidden', 'true'); f.style.cssText = 'position:absolute;left:0;width:1px;height:1px;pointer-events:none;visibility:hidden'; document.documentElement.appendChild(f); } f.style.display = ''; f.style.top = Math.max(0, Math.ceil(window.scrollY + window.innerHeight) - 1) + 'px'; }
+    /* 1008 진짜 원인(진단판 캡처 2장): 검색창에 커서가 남은 채 결과를 내려 보다가 다른 곳을 누르면, 키보드가 마지막 글자를 확정하며 '입력'이 한 번 더 일어나고
+       브라우저가 커서 있는 검색창을 화면에 보이게 하려고 맨 위(y≈180)로 끌어올렸다 → 누르려던 게 빗나감. 코드가 부른 스크롤이 아니라 브라우저 기본 동작이라 지금까지 받침·자리 되돌림으로 못 막았음.
+       → 검색창 밖을 누르는 '순간'(손가락이 닿자마자, 화면이 움직이기 전) 검색창에서 커서를 뺀다. 키보드가 닫히며 화면 높이가 커져도 잘리지 않게 받침은 '키보드 없을 때 높이' 기준 */
+    var RY_VH = { w: window.innerWidth, h: window.innerHeight };
+    function ryVhMax() { if (window.innerWidth !== RY_VH.w) RY_VH = { w: window.innerWidth, h: window.innerHeight }; if (window.innerHeight > RY_VH.h) RY_VH.h = window.innerHeight; return RY_VH.h; }
+    ['touchstart', 'pointerdown'].forEach(function (ev) {
+      document.addEventListener(ev, function (e) {
+        var a = document.activeElement; if (!a || a.id !== 'globalSearchInput') return;
+        var t = e.target; if (t && t.closest && t.closest('#globalSearchInput, #clearSearchBtn, .ry25-kbd')) return;
+        try { a.blur(); } catch (eB) {}
+      }, { capture: true, passive: true });
+    });
+    function ryFloor() { var f = document.getElementById('ryFloor'); if (!f) { f = document.createElement('div'); f.id = 'ryFloor'; f.setAttribute('aria-hidden', 'true'); f.style.cssText = 'position:absolute;left:0;width:1px;height:1px;pointer-events:none;visibility:hidden'; document.documentElement.appendChild(f); } f.style.display = ''; f.style.top = Math.max(0, Math.ceil(window.scrollY + ryVhMax()) - 1) + 'px'; }
     function ryFloorRelease() { if (window.ryAllowScroll) ryAllowScroll(); var f = document.getElementById('ryFloor'); if (f) f.style.display = 'none'; requestAnimationFrame(ryFloor); }
     window.addEventListener('scroll', ryFloor, { passive: true }); window.addEventListener('resize', ryFloor);
     function ryHoldHeight() { ryFloor(); return function () {}; }
