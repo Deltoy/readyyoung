@@ -9929,7 +9929,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       const baseNote = String(src.note || '').replace(/\[요청자:[^\]]*\]/g, '').replace(/\[검수요청[^\]]*\]/g, '').replace(/\[발주승인\]/g, '').trim();
       cachedReviewItems.unshift({
         rowNumber: rowNumber, name: src.name, imgUrl: src.imgUrl || '', targetQty: String(n), unit: unit || '개',
-        boxUnit: src.boxUnit || '', note: baseNote,
+        boxUnit: src.boxUnit || '', note: baseNote, category: src.category || '', uses: src.uses || [],   /* 1008 바로 보여 주는 줄에도 분류 (빠져서 '분류 없음'으로 승인·발주 탭까지 따라갔음) */
         sales15: src.sales15 || '-', requester: currentSelectedMember, isCheckRequested: false, checkRequester: ''
       });
       renderAllViews();
