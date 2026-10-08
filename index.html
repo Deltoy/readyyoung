@@ -13504,6 +13504,7 @@ function eduHub() {
 function eduSetQ(v) { EDU.q = v; var q = document.getElementById('eduQ'); if (q) q.value = v; eduHubDraw(); }
 function eduSetConcern(t) { EDU.concern = EDU.concern === t ? '' : t; eduHubDraw(); document.getElementById('eduScroll').scrollTop = 0; }
 function eduRow(c, rn) {
+  if (typeof rn !== 'number' || !eduReps(c.id).length) rn = 0;   /* 1008 고민 칩 누르면 멈춤: map(eduRow) 의 순번이 신고 수로 들어가 없는 신고를 읽다 오류 */
   var tg = (c.targets || []).slice(0, 4), dn = eduDone()[c.id];
   return '<button type="button" class="edu-row" data-id="' + eduE(c.id) + '" onclick="eduOpenCard(this.dataset.id)"><span class="edu-row-t"><span class="edu-row-k">' + eduE(c.brand) + ' · ' + eduE(c.line) + eduAiBadge(c) + (rn ? '<i class="edu-rep-n">신고 ' + rn + '</i>' : '') + (eduIsNew(c) && !eduAllNew(c.brand) && !eduIsDraft(c) ? '<i class="edu-new">새</i>' : '') + (dn ? '<i class="edu-done" title="공부했어요">' + EDU_I.check + '</i>' : '') + '</span><b>' + eduE(eduShort(c)) + '</b>'
     + (c.concept ? '<span class="edu-row-c">' + eduE(c.concept) + '</span>' : '') + (rn ? '<span class="edu-why">' + eduE(eduReps(c.id)[0].by + ' · ' + eduReps(c.id)[0].text) + '</span>' : '') + (tg.length ? '<span class="edu-tg">' + tg.map(function (t) { return '<i>' + eduE(t) + '</i>'; }).join('') + '</span>' : '') + '</span>' + EDU_I.chev + '</button>';
@@ -13555,7 +13556,7 @@ function eduHubDraw() {
   list.innerHTML = (q ? '' : eduChipsHtml(all))
     + (bHit.length ? '<section class="edu-sec first"><h2 class="edu-h">브랜드<small>' + bHit.length + '곳</small></h2><div class="edu-list">' + bHit.map(eduBrandRow).join('') + '</div></section>' : '')
     + (iHit.length ? '<section class="edu-sec first"><h2 class="edu-h">성분<small>' + iHit.length + '개</small></h2><div class="edu-list">' + iHit.map(function (it) { return eduIngRow(it); }).join('') + '</div></section>' : '')
-    + (hit.length ? '<section class="edu-sec first"><h2 class="edu-h">' + (bHit.length || iHit.length ? '제품' : eduE(what)) + '<small>' + hit.length + '개</small></h2><div class="edu-list">' + hit.map(eduRow).join('') + '</div></section>'
+    + (hit.length ? '<section class="edu-sec first"><h2 class="edu-h">' + (bHit.length || iHit.length ? '제품' : eduE(what)) + '<small>' + hit.length + '개</small></h2><div class="edu-list">' + hit.map(function (c) { return eduRow(c); }).join('') + '</div></section>'
       : bHit.length || iHit.length ? '' : '<div class="edu-empty">' + eduE(what) + '에 맞는 자료가 없어요.<br><button type="button" onclick="EDU.concern=\'\'; eduSetQ(\'\')">조건 지우기</button></div>');
 }
 
