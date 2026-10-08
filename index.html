@@ -2306,6 +2306,9 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry25-step>button .ry-i{width:18px;hei
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-step>input{width:64px!important;height:44px!important;min-height:44px!important;border:0!important;background:transparent!important;text-align:center!important;font-size:18px!important;font-weight:700!important;color:var(--z-ink)!important;padding:0!important;border-radius:8px!important;-moz-appearance:textfield;box-shadow:none!important}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-step>input::-webkit-outer-spin-button,html:not(#q):not(#w):not(#e) body:not(#r) .ry25-step>input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-step>input:focus{outline:2px solid var(--z-pri)!important;outline-offset:0!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-sunit{min-width:52px;height:44px;padding:0 10px;border-radius:12px;border:1px solid var(--z-line2);background:#fff;color:var(--z-ink);font-size:15px;font-weight:700;cursor:pointer;flex:none;margin:0 auto 0 8px}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-sunit.box{background:var(--ry-warn-soft,#FFF4E5);border-color:#F2B66D;color:#9A3412}
+html:not(#q):not(#w):not(#e) body:not(#r) #searchTableBody .ry25-sunit{min-width:40px;height:30px;font-size:12px;padding:0 6px;border-radius:8px}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-go{min-height:50px!important;padding:0 20px!important;border-radius:14px!important;border:0!important;font-size:15px!important;font-weight:700!important;display:inline-flex!important;align-items:center;justify-content:center;gap:7px;white-space:nowrap;cursor:pointer;background:var(--z-pri)!important;color:#fff!important;box-shadow:0 6px 16px rgba(26,106,255,.28)!important}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-go:hover{background:var(--z-pri-d)!important}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-go.dark{background:var(--z-ink)!important;box-shadow:0 6px 16px rgba(17,24,39,.2)!important}
@@ -9724,12 +9727,14 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (fresh) { renderSearchResults0(items); return; }   /* 1006 새 검색어: 예전 목록의 카드 위치에 맞춰 스크롤을 옮기지 않는다 (진단판: 검색창 누르자 scrollBy(0,641)로 아래로 튐) */
       var keep = {}, foc = document.activeElement, focId = foc && foc.id && /^(m-)?s-qty-/.test(foc.id) ? foc.id : '', selS = null, y = window.scrollY;
       document.querySelectorAll('#searchCardContainer input[id^="m-s-qty-"], #searchTableBody input[id^="s-qty-"]').forEach(function (el) { if (el.dataset.touched === '1' || el === foc) keep[el.id] = el.value; });
+      var keepU = {}; document.querySelectorAll('.ry25-sunit[data-touched="1"]').forEach(function (b) { keepU[b.id] = b.dataset.u; });   /* 1008 고른 개/박스도 다시 그릴 때 유지 */
       try { if (focId) selS = [foc.selectionStart, foc.selectionEnd]; } catch (eS) { selS = null; }
       var top0 = focId ? foc.getBoundingClientRect().top : null;
       /* 1002 기준 줄: 화면 위쪽에 보이던 첫 카드(행 번호)와 그 위치 → 다시 그린 뒤 같은 카드를 같은 자리에 (뒤에서 새로 받아 위쪽 카드 높이가 바뀌어도 보던 화면이 안 밀리게) */
       var anc = null;
       if (!focId && RY_LOCK_Y == null) { var hdr = 90; [].some.call(document.querySelectorAll('#searchCardContainer [data-r], #searchTableBody [data-r]'), function (c) { if (!c.offsetParent) return false; var r = c.getBoundingClientRect(); if (r.bottom > hdr) { anc = { row: c.getAttribute('data-r'), top: r.top }; return true; } return false; }); }
       renderSearchResults0(items);
+      Object.keys(keepU).forEach(function (id) { var b = document.getElementById(id); if (b && b.dataset.u !== keepU[id]) { var m = id.match(/(\d+)$/); if (m) rySToggleUnit(+m[1], true); } });
       Object.keys(keep).forEach(function (id) { var el = document.getElementById(id); if (el) { el.value = keep[id]; el.dataset.touched = '1'; var m = id.match(/(\d+)$/); if (m && typeof ry25MarkPreset === 'function') ry25MarkPreset(+m[1]); } });
       var f2 = focId ? document.getElementById(focId) : null;
       if (f2) { try { f2.focus({ preventScroll: true }); if (selS) f2.setSelectionRange(selS[0], selS[1]); } catch (eF) {} var dy = f2.getBoundingClientRect().top - top0; if (Math.abs(dy) > 2) window.scrollBy(0, dy); }   /* 고치던 칸이 화면의 같은 자리에 오도록 */
@@ -9776,12 +9781,12 @@ html body #ryLaunchGrid .tl-search{top:56px}
           <td class="p-3 text-center">
             ${item.status === 'IDLE' ? `
               <div class="flex items-center justify-center gap-1">
-                <input type="number" id="s-qty-${item.rowNumber}" value="${(ryRec(item) || {}).n || item.targetQty || '1'}" class="w-10 text-center font-black text-xs border rounded py-1">
+                <input type="number" id="s-qty-${item.rowNumber}" value="${(ryRec(item) || {}).n || item.targetQty || '1'}" class="w-10 text-center font-black text-xs border rounded py-1">${rySUnitBtn(item, '')}
                 <button onclick="handleSearchOrderRequest(${item.rowNumber}, false, this)" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-black shadow-xs transition">+ 요청</button>
               </div>
             ` : item.status === 'DONE' ? `
               <div class="flex items-center justify-center gap-1" onclick="event.stopPropagation()">
-                <input type="number" id="s-qty-${item.rowNumber}" value="${(ryRec(item) || {}).n || item.targetQty || '1'}" class="w-10 text-center font-black text-xs border rounded py-1">
+                <input type="number" id="s-qty-${item.rowNumber}" value="${(ryRec(item) || {}).n || item.targetQty || '1'}" class="w-10 text-center font-black text-xs border rounded py-1">${rySUnitBtn(item, '')}
                 <button onclick="handleSearchReorder(${item.rowNumber}, false, this)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-black shadow-xs transition whitespace-nowrap">🔁 재주문</button>
                 <button type="button" onclick="goToItem(${item.rowNumber}, 'DONE')" class="text-[10px] text-blue-600 font-black whitespace-nowrap underline underline-offset-2 px-1" title="입고내역에서 이 상품의 기록 보기">기록 →</button>
               </div>${moSnoozeBtn(item)}
@@ -9824,6 +9829,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
               <input type="number" inputmode="numeric" id="m-s-qty-${item.rowNumber}" value="${qtyVal}" aria-label="요청 수량" oninput="ry25MarkPreset(${item.rowNumber})">
               <button type="button" aria-label="수량 1 늘리기" onclick="ry25Step(${item.rowNumber}, 1)">${RYI.plus}</button>
             </div>
+            ${rySUnitBtn(item, 'm-')}
             ${item.status === 'IDLE'
               ? `<button type="button" class="ry25-go" onclick="handleSearchOrderRequest(${item.rowNumber}, true, this)">${RYI.plus}주문 요청</button>`
               : `<button type="button" class="ry25-go dark" onclick="handleSearchReorder(${item.rowNumber}, true, this)">${RYI.rotate}재주문</button>`}
@@ -9917,12 +9923,12 @@ html body #ryLaunchGrid .tl-search{top:56px}
         if (sView && !sView.classList.contains('hidden')) renderSearchResults(lastSearchResults);
       } catch (e) { try { loadAllData(true, false, true); } catch (e2) {} }
     }
-    function optimisticAddToReview(rowNumber, src, n) {
+    function optimisticAddToReview(rowNumber, src, n, unit) {
       if (!src || cachedReviewItems.some(it => it.rowNumber === rowNumber)) return;
       /* 0928 요청자는 요청자 배지로만 보여 줌 — 특이사항에 '[요청자:이름]' 을 붙이지 않는다 (붙이면 메모 고칠 때 시트에 저장돼 계속 나옴) */
       const baseNote = String(src.note || '').replace(/\[요청자:[^\]]*\]/g, '').replace(/\[검수요청[^\]]*\]/g, '').replace(/\[발주승인\]/g, '').trim();
       cachedReviewItems.unshift({
-        rowNumber: rowNumber, name: src.name, imgUrl: src.imgUrl || '', targetQty: String(n), unit: '개',
+        rowNumber: rowNumber, name: src.name, imgUrl: src.imgUrl || '', targetQty: String(n), unit: unit || '개',
         boxUnit: src.boxUnit || '', note: baseNote,
         sales15: src.sales15 || '-', requester: currentSelectedMember, isCheckRequested: false, checkRequester: ''
       });
@@ -9931,18 +9937,19 @@ html body #ryLaunchGrid .tl-search{top:56px}
     }
 
     // 입고완료된 상품 재주문 (검색 결과 / 입고내역에서)
-    function reorderItem(rowNumber, n, src, btnEl) {
+    function reorderItem(rowNumber, n, src, btnEl, unit) {
+      unit = unit === '박스' ? '박스' : '개';
       if (!checkMemberSelectedOrAlert()) return;
       const key = 'reorder-' + rowNumber;
       if (inFlight.has(key)) return;
       if (!Number.isFinite(n) || n <= 0 || n > 99999) { alert('수량을 1~99999 사이 숫자로 입력해 주세요.'); return; }
-      if (!confirm(`[${src && src.name ? src.name : '이 상품'}] 을(를) ${n}개 다시 주문 요청할까요?\n(이전 입고 기록은 📅 입고내역에 그대로 남습니다)`)) return;
+      if (!confirm(`[${src && src.name ? src.name : '이 상품'}] 을(를) ${n}${unit} 다시 주문 요청할까요?\n(이전 입고 기록은 📅 입고내역에 그대로 남습니다)`)) return;
       inFlight.add(key);
       /* 1002 빠르게: 바로 보여 주고 뒤에서 저장, 실패하면 되돌림 */
       const snap = ryReqSnap(rowNumber);
       const hist = cachedHistoryItems.find(it => it.rowNumber === rowNumber && !it.isLog);
       if (hist) hist.isLog = true;            // 현재 행 기록은 이제 '지난 기록'으로 표시
-      optimisticAddToReview(rowNumber, src || hist, n);
+      optimisticAddToReview(rowNumber, src || hist, n, unit);
       markSearchResultRequested(rowNumber, n);   // 검색 중이면 검색 결과 유지
       ry25TrackRequest(rowNumber, (src && src.name) || ry25NameOf(rowNumber), n);   /* 0925: 하단 요약 바 */
       showToast('✓ ' + currentSelectedMember + ' 님 재주문 요청 (1차 검토)');
@@ -9956,7 +9963,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         .withFailureHandler(function(err) {
           undo('재주문이 저장되지 않았어요. 다시 눌러 주세요.\n(' + (err && err.message ? err.message : err) + ')');
         })
-        .reorderReceivedItem(rowNumber, n, '개', currentSelectedMember, (src && src.name) || ryNameOf(rowNumber));
+        .reorderReceivedItem(rowNumber, n, unit, currentSelectedMember, (src && src.name) || ryNameOf(rowNumber));
     }
 
     /* 1002 '소진 후 판매종료' 상품은 검색엔 남기되, 주문할 때 한 번 더 묻는다 (실수로 다시 들여오지 않게) */
@@ -9970,7 +9977,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       const input = document.getElementById((isMobile ? 'm-s-qty-' : 's-qty-') + rowNumber);
       const n = parseInt(input ? input.value.trim() : '1', 10);
       const src = lastSearchResults.find(it => it.rowNumber === rowNumber);
-      reorderItem(rowNumber, n, src, btnEl);
+      reorderItem(rowNumber, n, src, btnEl, rySUnit(rowNumber));
     }
 
     function handleHistoryReorder(rowNumber, btnEl) {
@@ -9991,14 +9998,15 @@ html body #ryLaunchGrid .tl-search{top:56px}
       const raw = input ? input.value.trim() : '1';
       const n = parseInt(raw, 10);
       if (!Number.isFinite(n) || n <= 0 || n > 99999) { alert('수량을 1~99999 사이 숫자로 입력해 주세요.'); return; }
+      const u = rySUnit(rowNumber);
 
       inFlight.add(key);
       /* 1002 빠르게: 서버를 기다리지 않고 바로 '요청됨'으로 보여 주고 뒤에서 저장. 실패하면 되돌리고 알림 */
       const snap = ryReqSnap(rowNumber), nm0 = ryNameOf(rowNumber);
-      optimisticAddToReview(rowNumber, lastSearchResults.find(it => it.rowNumber === rowNumber), n);
+      optimisticAddToReview(rowNumber, lastSearchResults.find(it => it.rowNumber === rowNumber), n, u);
       markSearchResultRequested(rowNumber, n);   // 검색 결과·검색어 유지, 이 줄만 '요청됨'으로
       ry25TrackRequest(rowNumber, ry25NameOf(rowNumber), n);   /* 0925: 하단 요약 바 */
-      showToast('✓ ' + currentSelectedMember + ' 님 주문 요청 (1차 검토) · 이어서 다른 상품도 요청할 수 있어요');
+      showToast('✓ ' + currentSelectedMember + ' 님 ' + n + u + ' 주문 요청 (1차 검토) · 이어서 다른 상품도 요청할 수 있어요');
 
       google.script.run
         .withSuccessHandler(function(res) {
@@ -10011,7 +10019,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           ryReqUndo(rowNumber, snap);
           alert('주문 요청이 저장되지 않았어요. 다시 눌러 주세요.\n(' + (err && err.message ? err.message : err) + ')');
         })
-        .requestOrderFromDashboard(rowNumber, n, '개', currentSelectedMember, nm0);
+        .requestOrderFromDashboard(rowNumber, n, u, currentSelectedMember, nm0);
     }
 
     // 오늘 입고된 것만 모아 카톡에 붙여넣을 글로 만든다
@@ -10263,13 +10271,28 @@ html body #ryLaunchGrid .tl-search{top:56px}
         b.classList.toggle('on', parseInt(b.getAttribute('data-n'), 10) === v);
       });
     }
+    /* 1008 MJ '검색했을 때 박스로 요청하는 건 박스로': 검색 결과에서도 개/박스를 고른다. 기본 = 상품에 저장된 단위(박스 상품은 박스) · 추천 n박스가 n개로 들어가던 것 막음 */
+    function rySItem(row) { return (lastSearchResults || []).find(function (x) { return x.rowNumber === row; }) || null; }
+    function rySUnit(row) { var b = document.getElementById('m-s-unit-btn-' + row) || document.getElementById('s-unit-btn-' + row); if (b && b.dataset.u) return b.dataset.u; var it = rySItem(row); return it && it.unit === '박스' ? '박스' : '개'; }
+    function rySPer(item) { return parseInt((String(item && item.boxUnit || '').match(/\d{1,5}/) || ['0'])[0], 10) || 0; }
+    function rySUnitBtn(item, pre) {
+      var u = item.unit === '박스' ? '박스' : '개', per = rySPer(item);
+      if (u !== '박스' && !per) return '';   // 박스 입수를 모르는 낱개 상품은 고를 게 없음
+      return '<button type="button" class="ry25-sunit' + (u === '박스' ? ' box' : '') + '" id="' + pre + 's-unit-btn-' + item.rowNumber + '" data-u="' + u + '" aria-label="요청 단위 (지금 ' + u + ') — 눌러서 바꾸기" title="' + (per ? '1박스 = ' + per + '개' : '박스 입수 모름') + '" onclick="event.stopPropagation(); rySToggleUnit(' + item.rowNumber + ')">' + u + '</button>';
+    }
+    function rySToggleUnit(row, quiet) {
+      var nu = rySUnit(row) === '박스' ? '개' : '박스', per = rySPer(rySItem(row));
+      ['m-s-unit-btn-', 's-unit-btn-'].forEach(function (k) { var b = document.getElementById(k + row); if (b) { b.dataset.u = nu; b.dataset.touched = '1'; b.textContent = nu; b.classList.toggle('box', nu === '박스'); b.setAttribute('aria-label', '요청 단위 (지금 ' + nu + ') — 눌러서 바꾸기'); } });
+      var inp = document.getElementById('m-s-qty-' + row) || document.getElementById('s-qty-' + row), v = inp ? parseInt(inp.value, 10) || 0 : 0;
+      if (!quiet) showToast(nu === '박스' ? (v || 1) + '박스로 요청해요' + (per ? ' (= ' + (v || 1) * per + '개)' : '') : (v || 1) + '개로 요청해요', 1800);
+    }
     function ry25SetQty(rowNumber, n) {
       var inp = document.getElementById('m-s-qty-' + rowNumber);
       if (inp) inp.dataset.touched = '1';
       if (!inp) return;
       inp.value = String(n);
       ry25MarkPreset(rowNumber);
-      showToast('수량을 ' + n + '개로 맞췄어요', 1500);
+      showToast('수량을 ' + n + rySUnit(rowNumber) + '로 맞췄어요', 1500);
     }
     function ry25Step(rowNumber, d) {
       var inp = document.getElementById('m-s-qty-' + rowNumber);
@@ -10280,7 +10303,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       v = Math.max(1, Math.min(99999, v + d));
       inp.value = String(v);
       ry25MarkPreset(rowNumber);
-      showToast('수량 ' + v + '개', 900);
+      showToast('수량 ' + v + rySUnit(rowNumber), 900);
     }
 
     /* 재고 점: 서버가 재고 수량(stock)을 주면 그걸로, 없으면 주문 진행 상태로 표시 */
