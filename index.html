@@ -5810,7 +5810,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (ryShown('mbReader')) { L.push('mb'); if (typeof MB !== 'undefined' && MB.view === 'archive' && MB.cur) L.push('mb'); }
       if (ryShown('scrDim')) L.push('scr');
       if (ryShown('nophDim')) L.push('noph');
-      if (ryShown('eduReader')) { var n = typeof EDU !== 'undefined' && EDU.stack ? Math.max(1, EDU.stack.length) + (typeof eduHubF === 'function' && eduHubF() ? 1 : 0) : 1; while (n--) L.push('edu'); }   /* 자료실 → 카드 → … */
+      if (ryShown('eduReader')) { var n = typeof EDU !== 'undefined' && EDU.stack ? Math.max(1, EDU.stack.length) + (typeof eduHubF === 'function' ? +eduHubF() || 0 : 0) : 1; while (n--) L.push('edu'); }   /* 자료실 → 카드 → … */
       if (ryShown('eduZoom')) L.push('eduzoom');
       ryOpenSheets().forEach(function (e) { L.push('sheet:' + e.id); });
       var ov = document.getElementById('imgPreviewOverlay'); if (ov && ov.classList.contains('open')) L.push('preview');
@@ -12943,10 +12943,6 @@ html:not(#q):not(#w):not(#e) body:not(#r) .edu-cc{display:inline-flex;align-item
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-cc i{font-style:normal;font-size:12px;font-weight:600;color:#98A2B3;font-variant-numeric:tabular-nums}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-cc[aria-pressed="true"]{background:#155EEF;border-color:#155EEF;color:#fff}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-cc[aria-pressed="true"] i{color:rgba(255,255,255,.8)}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -16px 12px;padding:0 16px;scroll-snap-type:x proximity}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-tabs::-webkit-scrollbar{display:none}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab{flex:none;min-height:40px;padding:0 14px;border:0;border-radius:12px;background:transparent;color:#475467;font-size:14px;font-weight:600;cursor:pointer;scroll-snap-align:start;white-space:nowrap}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab[aria-selected="true"]{background:#111827;color:#fff}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-grp{background:#fff;border:1px solid #EAECF0;border-radius:20px;padding:16px;margin:0 0 12px}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-grp-h{display:flex;align-items:flex-start;gap:10px}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-grp-h>div{flex:1;min-width:0}
@@ -13280,6 +13276,61 @@ html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-sr,html:not(#q):not(#w
 html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-cb{border-radius:16px!important}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-sr:focus-visible,html:not(#q):not(#w):not(#e) body:not(#r) .edu-cb:focus-visible{outline:2px solid #155EEF;outline-offset:2px}
 @media(max-width:419px){ html:not(#q):not(#w):not(#e) body:not(#r) .edu-sr{gap:10px} html:not(#q):not(#w):not(#e) body:not(#r) .edu-rk{min-width:18px;font-size:13px} html:not(#q):not(#w):not(#e) body:not(#r) .edu-ph{width:48px;height:48px} }
+/* 1009 교육 첫 화면: 4칸(약·몸 증상 · 피부 고민 · 브랜드 · 공부) → 고른 칸만. 증상 = 아이콘 타일, 브랜드·공부 = 칩 3개 + 나머지 수 */
+html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-ai-row{display:inline-flex!important;align-items:center;gap:8px;width:auto!important;max-width:100%;min-height:44px!important;padding:0 14px!important;margin:12px 0 0;border:1px solid #FEDF89!important;border-radius:999px!important;background:#FFFAEB!important;color:#B54708!important;font-size:13.5px;line-height:1.3;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-ai-row svg{width:16px;height:16px;flex:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-ai-row b{font-weight:700!important;white-space:nowrap}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-ai-row span{color:#93370D;font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0 16px}
+html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-tab{display:flex!important;align-items:center;gap:10px;min-width:0;min-height:60px!important;padding:8px 10px!important;border:1px solid #EDEEF0!important;border-radius:20px!important;background:#fff!important;color:#111827!important;text-align:left;cursor:pointer;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab-i{width:38px;height:38px;flex:none;display:grid;place-items:center;border-radius:12px;background:#EFF4FF;color:#155EEF}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab-i svg,html:not(#q):not(#w):not(#e) body:not(#r) .edu-st-i svg{width:22px;height:22px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab[data-k="피부"] .edu-tab-i{background:#FDF2FA;color:#C11574}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab[data-k="brand"] .edu-tab-i{background:#FFF6ED;color:#C4320A}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab[data-k="study"] .edu-tab-i{background:#ECFDF3;color:#067647}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab-t{display:flex;flex-direction:column;min-width:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab-t b{font-size:16px;line-height:1.3;font-weight:700!important;white-space:nowrap}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab-t small{font-size:12.5px;line-height:1.35;font-weight:500;color:#667085;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-tab[aria-selected="true"]{background:#155EEF!important;border-color:#155EEF!important;color:#fff!important;box-shadow:0 4px 12px rgba(21,94,239,.22)}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab[aria-selected="true"] .edu-tab-i{background:rgba(255,255,255,.18)!important;color:#fff!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab[aria-selected="true"] .edu-tab-t small{color:rgba(255,255,255,.88)}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab-hint{margin:0 2px 10px;font-size:13px;line-height:1.5;color:#667085}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-stg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-st{display:flex!important;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;min-height:108px!important;padding:14px!important;border:1px solid #EDEEF0!important;border-radius:20px!important;background:#fff!important;color:#111827!important;text-align:left;cursor:pointer;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-st-i{width:40px;height:40px;flex:none;display:grid;place-items:center;margin-bottom:8px;border-radius:12px;background:#EFF4FF;color:#155EEF}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-st.skin .edu-st-i{background:#FDF2FA;color:#C11574}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-st b{font-size:15.5px;line-height:1.35;font-weight:700!important;word-break:keep-all;overflow-wrap:anywhere}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-st small{font-size:13px;line-height:1.4;font-weight:500;color:#667085;font-variant-numeric:tabular-nums}
+html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-st.more{background:#F9FAFB!important;border-style:dashed!important;border-color:#D0D5DD!important;box-shadow:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-st.more .edu-st-i{background:#F2F4F7;color:#475467}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-btg{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-bt{display:flex!important;align-items:flex-start;gap:12px;width:100%;min-width:0;min-height:72px!important;padding:14px!important;border:1px solid #EDEEF0!important;border-radius:20px!important;background:#fff!important;color:#111827!important;text-align:left;cursor:pointer;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-bt .edu-mono{width:44px;height:44px;border-radius:12px;font-size:19px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-bt-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-bt-t b{display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-size:16px;line-height:1.35;font-weight:700!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-bt-l{font-size:13px;line-height:1.45;color:#667085;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-bt-x{display:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-bt-x i{display:block;flex:0 1 auto;min-width:0;height:30px;padding:0 10px;border:1px solid #EAECF0;border-radius:999px;font-style:normal;font-size:12.5px;font-weight:600;line-height:28px;color:#475467;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-bt-x i small{margin-left:4px;font-size:12px;color:#667085;font-variant-numeric:tabular-nums}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-bt-x i.n{flex:none;background:#F2F4F7;border-color:#F2F4F7;color:#475467}
+@media(max-width:429px){ html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-st{min-height:96px!important;padding:12px!important} html:not(#q):not(#w):not(#e) body:not(#r) .edu-st-i{width:36px;height:36px;margin-bottom:6px} }
+@media(min-width:430px){ html:not(#q):not(#w):not(#e) body:not(#r) .edu-stg{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media(min-width:560px){
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-btg{grid-template-columns:repeat(2,minmax(0,1fr))}
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-bt-l{display:none}
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-bt-x{display:flex;gap:6px;margin-top:6px;min-width:0;overflow:hidden}
+}
+@media(min-width:720px){
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-tabs{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+  html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-tab{min-height:68px!important;padding:12px!important;gap:12px}
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab-i{width:42px;height:42px}
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-stg{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-btg{gap:10px}
+}
+@media(min-width:1100px){
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-stg{grid-template-columns:repeat(5,minmax(0,1fr))}
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-btg:not(.two){grid-template-columns:repeat(3,minmax(0,1fr))}
+}
 </style>
 
 <div id="eduReader" class="edu-rd" hidden role="dialog" aria-modal="true" aria-label="교육 자료실">
@@ -13585,7 +13636,10 @@ function eduSymIndex(items, cards) {
   (items || []).forEach(function (it) { var c = eduMatch(it.name, cards); if (c) { card[it.rowNumber] = c; (of[c.id] = of[c.id] || []).push(it); } });
   return { card: card, of: of };
 }
-function eduSymOf(n) { return EDU_SYMS.filter(function (s) { return s.n === n; })[0] || { n: n, g: '피부', cat: [], uses: [] }; }
+function eduSymOf(n) { return EDU_SYMS.filter(function (s) { return s.n === n; })[0] || { n: n, g: eduSymG(n), cat: [], uses: [] }; }
+/* 1009 카드에만 있는 고민(감기 · 빈혈 · 임신 준비 …)도 몸/피부로 바르게: 상담 가이드 그룹 → 없으면 이름으로.
+   ponytail: 이름 규칙은 어림 — 새 고민이 엉뚱한 칸에 가면 EDU_SYMS 에 한 줄 추가 */
+function eduSymG(n) { var gd = typeof eduGuideFor === 'function' ? eduGuideFor(n) : null; if (gd && (gd.group === '몸' || gd.group === '피부')) return gd.group; return /감기|기침|열|설사|장염|탈수|피로|빈혈|임신|어린이|수면|면역|소화|변비/.test(n) ? '몸' : '피부'; }
 function eduSymHit(sym, it, card) {
   return eduCatIn(it, sym.cat) || (it.uses || []).some(function (u) { return sym.uses.indexOf(u) !== -1; }) || !!(card && (card.targets || []).indexOf(sym.n) !== -1);
 }
@@ -13803,13 +13857,14 @@ function eduShow() {
   eduDotSync();
   if (!EDU.loadedAt || Date.now() - EDU.loadedAt > 5 * 60000) { EDU.loadedAt = Date.now(); eduLoad(); }
 }
-function eduOpen() { eduShow(); EDU.stack = [{ v: 'hub' }]; EDU.q = ''; EDU.concern = ''; EDU.symN = 10; EDU.symC = 0; eduRender(); }   /* 1008 열 때는 늘 첫 화면 (지난 검색 · 고민 칩 X) */
+function eduOpen() { eduShow(); EDU.stack = [{ v: 'hub' }]; EDU.q = ''; EDU.concern = ''; EDU.symN = 10; EDU.symC = 0; EDU.symMore = 0; EDU.tab = eduTabSaved(); eduRender(); }   /* 1008 열 때는 늘 첫 화면 (지난 검색 · 고민 칩 X) */
 function eduOpenCard(id) { if (document.getElementById('eduReader').hidden) { eduShow(); EDU.stack = [{ v: 'hub' }]; } eduPush({ v: 'card', id: id }); }
 /* 층마다 보던 위치(y)를 기억 → 뒤로 오면 그 자리. 층 수 = 뒤로가기 기록 수 (ryLayers 가 EDU.stack 길이로 셈) */
 function eduPush(st) { var top = EDU.stack[EDU.stack.length - 1]; if (top) top.y = document.getElementById('eduScroll').scrollTop; EDU.rep = ''; EDU.stack.push(st); eduRender(); }
 /* 1008 자료실 첫 화면에서 고민 칩 · 검색어 = 뒤로가기 한 층 → 뒤로 = 걸러보기 풀고 첫 화면, 한 번 더 = 닫기 */
-function eduHubF() { return !!(String(EDU.q || '').trim() || EDU.concern); }
-function eduBack() { EDU.rep = ''; if (EDU.stack.length > 1) { EDU.stack.pop(); eduRender(false, true); } else if (eduHubF()) { EDU.q = ''; EDU.concern = ''; eduRender(); } else eduClose(); }
+/* 1009 첫 화면 칸(약·몸 증상 기본)이 기본이 아니면 한 층 더 → 뒤로 = 걸러보기 풀기 → 기본 칸 → 닫기 */
+function eduHubF() { return (String(EDU.q || '').trim() || EDU.concern ? 1 : 0) + (EDU.tab && EDU.tab !== '몸' ? 1 : 0); }
+function eduBack() { EDU.rep = ''; if (EDU.stack.length > 1) { EDU.stack.pop(); eduRender(false, true); } else if (String(EDU.q || '').trim() || EDU.concern) { EDU.q = ''; EDU.concern = ''; eduRender(); } else if (EDU.tab && EDU.tab !== '몸') eduSetTab('몸'); else eduClose(); }
 function eduClose() { document.getElementById('eduReader').hidden = true; document.documentElement.classList.remove('edu-lock'); }
 function eduOpenBrand(b) { eduPush({ v: 'brand', b: b }); }
 /* 카드 → 브랜드: 바로 아래 층이 그 브랜드면 뒤로(층이 쌓이지 않게) */
@@ -13818,7 +13873,7 @@ function eduOpenIng(id) { eduIngs(); if (eduIng(id)) eduPush({ v: 'ing', id: id 
 function eduRender(keepScroll, back) {
   var st = EDU.stack[EDU.stack.length - 1] || { v: 'hub' }, sc = document.getElementById('eduScroll'), y = sc.scrollTop;
   document.getElementById('eduAddBtn').hidden = !(eduCanEdit() && (st.v === 'hub' || st.v === 'brand'));
-  document.getElementById('eduBody').classList.toggle('wide', st.v === 'brand' || st.v === 'dict' || st.v === 'guides');
+  document.getElementById('eduBody').classList.toggle('wide', st.v === 'brand' || st.v === 'dict' || st.v === 'guides' || st.v === 'hub');
   if (st.v === 'card') eduCardView(st.id);
   else if (st.v === 'form') eduFormDraw(st.id);
   else if (st.v === 'brand') eduBrandView(st.b);
@@ -13848,6 +13903,8 @@ function eduDoneN(cards) { var d = eduDone(); return cards.filter(function (c) {
 function eduHub() {
   var n = eduCards().length, nb = eduAllBrands().length;
   eduTop('교육 자료실', '브랜드 ' + nb + ' · 제품 ' + n + (EDU.data && EDU.data.seed ? ' <span class="edu-base" title="서버에 올리기 전, 앱에 들어 있는 기본 자료예요">기본 자료</span>' : ''));
+  var q0 = document.getElementById('eduQ');
+  if (q0 && document.getElementById('eduList')) { if (q0.value !== EDU.q) q0.value = EDU.q; eduHubDraw(); return; }   /* 1009 이미 첫 화면이면 검색칸은 그대로 두고 아래만 (한글 조합 · 화면 튐 방지) */
   document.getElementById('eduBody').innerHTML =
     '<div class="edu-hubtop"><label class="edu-search">' + EDU_I.search + '<input id="eduQ" type="search" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="브랜드 · 제품 · 성분 · 고민" aria-label="교육 자료 검색"><button type="button" class="edu-ic" id="eduQx" hidden onclick="eduSetQ(\'\')" aria-label="검색어 지우기">' + EDU_I.x + '</button></label>'
     + '</div><div id="eduList"></div>';
@@ -13890,27 +13947,111 @@ function eduHubDraw() {
   if (!list) return;
   if (qx) qx.hidden = !EDU.q;
   eduIngs(); eduCatWait();
-  if (!q && !EDU.concern) {
-    var bs = eduAllBrands(), ni = eduIngs().length, dr = eduDrafts(), nr = ((EDU.data && EDU.data.reports) || []).length;
-    list.innerHTML = (eduAdminSure() && (dr.cards.length || dr.ings.length) ? '<section class="edu-sec first"><div class="edu-list"><button type="button" class="edu-br" data-review="1" onclick="eduPush({ v: \'review\' })"><span class="edu-mono ai" aria-hidden="true">' + EDU_I.spark + '</span><span class="edu-br-t"><b>AI 초안 확인' + (nr ? '<i class="edu-rep-n">확인할 신고 ' + nr + '건</i>' : '') + '</b><span class="edu-br-m">제품 ' + dr.cards.length + ' · 성분 ' + dr.ings.length + ' 확인 대기</span></span>' + EDU_I.chev + '</button></div></section>' : '')
-      + eduChipsHtml()
-      + (ni || eduGuides().length ? '<section class="edu-sec"><h2 class="edu-h">공부</h2><div class="edu-list">' + (ni ? '<button type="button" class="edu-br" data-dict="1" onclick="eduPush({ v: \'dict\' })"><span class="edu-mono ing" aria-hidden="true">' + EDU_I.flask + '</span><span class="edu-br-t"><b>성분 사전</b><span class="edu-br-m">성분 ' + ni + '개 · 무슨 성분인지 · 손님께 한 줄</span><span class="edu-br-l">' + eduKindCounts().map(function (k) { return eduE(k[0]); }).join(' · ') + '</span></span><span class="edu-br-x" aria-hidden="true">' + eduKindCounts().map(function (k) { return '<i>' + eduE(k[0]) + '<small>' + k[1] + '</small></i>'; }).join('') + '</span>' + EDU_I.chev + '</button>' : '') + eduGuideRow() + '</div></section>' : '')
-      + '<section class="edu-sec first"><h2 class="edu-h">브랜드<small>' + bs.length + '곳</small></h2>'
-      + (bs.length ? '<div class="edu-list">' + bs.map(eduBrandRow).join('') + '</div>' : '<div class="edu-empty">아직 자료가 없어요.</div>') + '</section>';
-    return;
-  }
-  if (!q && EDU.concern) { list.innerHTML = eduSymDraw(); eduStripFocus(); return; }
+  if (!q && !EDU.concern) { eduPut(list, eduHomeHtml()); return; }
+  if (!q && EDU.concern) { eduPut(list, eduSymDraw()); eduStripFocus(); return; }
   var hit = eduSearch(q, all).filter(function (c) { return !EDU.concern || (c.targets || []).indexOf(EDU.concern) !== -1; });
   var bHit = q && !EDU.concern ? eduAllBrands().filter(function (B) { var k = eduKey(B.name); return q.split(/\s+/).map(eduKey).filter(Boolean).some(function (t) { return k.indexOf(t) !== -1; }); }) : [];
   var iHit = q && !EDU.concern ? eduIngSearch(q, eduIngs()) : [];
   var what = [EDU.concern ? EDU.concern + ' 손님' : '', q ? '‘' + q + '’' : ''].filter(Boolean).join(' · ');
-  list.innerHTML = (q ? '' : eduChipsHtml())
+  eduPut(list, (q ? '' : eduChipsHtml())
     + (bHit.length ? '<section class="edu-sec first"><h2 class="edu-h">브랜드<small>' + bHit.length + '곳</small></h2><div class="edu-list">' + bHit.map(eduBrandRow).join('') + '</div></section>' : '')
     + (iHit.length ? '<section class="edu-sec first"><h2 class="edu-h">성분<small>' + iHit.length + '개</small></h2><div class="edu-list">' + iHit.map(function (it) { return eduIngRow(it); }).join('') + '</div></section>' : '')
     + (hit.length ? '<section class="edu-sec first"><h2 class="edu-h">' + (bHit.length || iHit.length ? '제품' : eduE(what)) + '<small>' + hit.length + '개</small></h2><div class="edu-list">' + hit.map(function (c) { return eduRow(c); }).join('') + '</div></section>'
-      : bHit.length || iHit.length ? '' : '<div class="edu-empty">' + eduE(what) + '에 맞는 자료가 없어요.<br><button type="button" onclick="EDU.concern=\'\'; eduSetQ(\'\')">조건 지우기</button></div>');
+      : bHit.length || iHit.length ? '' : '<div class="edu-empty">' + eduE(what) + '에 맞는 자료가 없어요.<br><button type="button" onclick="EDU.concern=\'\'; eduSetQ(\'\')">조건 지우기</button></div>'));
 }
 
+/* ── 1009 첫 화면 4칸 (MJ: 카테고리가 딱 나눠져 바로 보이게) — 약·몸 증상 · 피부 고민 · 브랜드 · 공부. 고른 칸은 기기에 기억 ── */
+var EDU_TABS = [['몸', '약·몸 증상'], ['피부', '피부 고민'], ['brand', '브랜드'], ['study', '공부']];
+function eduTabSaved() { var t = ''; try { t = localStorage.getItem('ry_edu_tab') || ''; } catch (e) {} return EDU_TABS.some(function (x) { return x[0] === t; }) ? t : '몸'; }
+function eduSetTab(k) { EDU.tab = k; EDU.symMore = 0; try { localStorage.setItem('ry_edu_tab', k); } catch (e) {} eduHubDraw(); var sc = document.getElementById('eduScroll'), tb = document.getElementById('eduTabs'); if (sc && tb && sc.scrollTop > tb.offsetTop) sc.scrollTop = tb.offsetTop; }
+function eduSvg(d) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>'; }
+var EDU_SI = {   /* lucide 모양 (stroke 1.5) */
+  pill: '<path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/>',
+  thermo: '<path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/>',
+  soup: '<path d="M12 21a9 9 0 0 0 9-9H3a9 9 0 0 0 9 9Z"/><path d="M7 21h10"/><path d="M19.5 12 22 6"/><path d="M16.25 3c.27.1.8.53.75 1.36-.06.83-.93 1.2-1 2.02-.05.78.34 1.24.73 1.62"/><path d="M11.25 3c.27.1.8.53.74 1.36-.05.83-.93 1.2-.98 2.02-.06.78.33 1.24.72 1.62"/><path d="M6.25 3c.27.1.8.53.75 1.36-.06.83-.93 1.2-1 2.02-.05.78.34 1.24.74 1.62"/>',
+  waves: '<path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>',
+  wind: '<path d="M12.8 19.6A2 2 0 1 0 14 16H2"/><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2"/><path d="M9.8 4.4A2 2 0 1 1 11 8H2"/>',
+  dumbbell: '<path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"/><path d="m2.5 21.5 1.4-1.4"/><path d="m20.1 3.9 1.4-1.4"/><path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"/><path d="m9.6 14.4 4.8-4.8"/>',
+  bandage: '<path d="M10 10.01h.01"/><path d="M10 14.01h.01"/><path d="M14 10.01h.01"/><path d="M14 14.01h.01"/><path d="M18 6v12"/><path d="M6 6v12"/><rect x="2" y="6" width="20" height="12" rx="2"/>',
+  drop: '<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',
+  eye: '<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/>',
+  moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+  zap: '<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>',
+  heart: '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+  smile: '<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01"/><path d="M15 9h.01"/>',
+  pulse: '<path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/>',
+  sprout: '<path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/>',
+  glass: '<path d="M8 22h8"/><path d="M7 10h10"/><path d="M12 15v7"/><path d="M12 15a5 5 0 0 0 5-5c0-2-.5-4-2-8H9c-1.5 4-2 6-2 8a5 5 0 0 0 5 5Z"/>',
+  ban: '<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/>',
+  drops: '<path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
+  leaf: '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>',
+  syringe: '<path d="m18 2 4 4"/><path d="m17 7 3-3"/><path d="M19 9 8.7 19.3c-1 1-2.5 1-3.4 0l-.6-.6c-1-1-1-2.5 0-3.4L15 5"/><path d="m9 11 4 4"/><path d="m5 19-3 3"/><path d="m14 4 6 6"/>',
+  spark: '<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/>',
+  gem: '<path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/>',
+  shield: '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>',
+  flame: '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+  grip: '<circle cx="12" cy="5" r="1"/><circle cx="19" cy="5" r="1"/><circle cx="5" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="12" cy="19" r="1"/><circle cx="19" cy="19" r="1"/><circle cx="5" cy="19" r="1"/>',
+  gift: '<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/>',
+  baby: '<path d="M9 12h.01"/><path d="M15 12h.01"/><path d="M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5"/><path d="M19 6.3a9 9 0 0 1 1.8 3.9 2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1"/>',
+  cross: '<path d="M11 2a2 2 0 0 0-2 2v5H4a2 2 0 0 0-2 2v2c0 1.1.9 2 2 2h5v5c0 1.1.9 2 2 2h2a2 2 0 0 0 2-2v-5h5a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-5V4a2 2 0 0 0-2-2h-2z"/>',
+  tag: '<path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/>',
+  book: '<path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>'
+};
+/* 이름 → 아이콘 (위에서 처음 맞는 것). 없으면 몸=십자 · 피부=반짝 */
+var EDU_SYM_IC = [[/감기|기침/, 'pill'], [/해열|진통|열/, 'thermo'], [/소화|위장|장염/, 'soup'], [/변비|지사|설사/, 'waves'], [/비염|알레르기/, 'wind'], [/파스|근육|관절/, 'dumbbell'], [/상처|화상/, 'bandage'],
+  [/피부외용/, 'drop'], [/안약|눈/, 'eye'], [/수면|멀미/, 'moon'], [/피로|자양|빈혈/, 'zap'], [/여성|비뇨|임신/, 'heart'], [/구강|구내염/, 'smile'], [/치질|정맥/, 'pulse'], [/탈모/, 'sprout'], [/숙취/, 'glass'],
+  [/구충|금연/, 'ban'], [/탈수/, 'drop'], [/어린이/, 'baby'], [/지성|각질/, 'drops'], [/건성|푸석/, 'sun'], [/예민/, 'leaf'], [/시술/, 'syringe'], [/칙칙|잡티|광채/, 'spark'], [/탄력|주름|안티에이징/, 'gem'],
+  [/장벽/, 'shield'], [/트러블|붉은/, 'flame'], [/모공/, 'grip'], [/선물/, 'gift']];
+function eduSymIco(x) { var k = (EDU_SYM_IC.filter(function (r) { return r[0].test(x.n); })[0] || [0, x.g === '몸' ? 'cross' : 'spark'])[1]; return eduSvg(EDU_SI[k]); }
+function eduSymTile(x) {
+  return '<button type="button" class="edu-st ' + (x.g === '몸' ? 'body' : 'skin') + '" data-t="' + eduE(x.n) + '" onclick="eduSetConcern(this.dataset.t)"><span class="edu-st-i" aria-hidden="true">' + eduSymIco(x) + '</span>'
+    + '<b>' + eduE(x.n) + '</b><small>' + (x.cnt ? '상품 ' + x.cnt : '상담 가이드') + '</small></button>';
+}
+/* 상품 2개 이하 고민은 '더보기' 뒤로 (상품 수 많은 순 · 같으면 원래 순서) */
+function eduSymGrid(g) {
+  var xs = eduSymList().filter(function (x) { return x.g === g; }).map(function (x, i) { x.i = i; return x; }).sort(function (a, b) { return b.cnt - a.cnt || a.i - b.i; });
+  var top = xs.filter(function (x) { return x.cnt > 2; }), low = xs.filter(function (x) { return x.cnt <= 2; });
+  if (!top.length) { top = low; low = []; }
+  return '<p class="edu-tab-hint">누르면 상담 멘트 · 물어볼 것 · 우리 약국 많이 팔린 순이 나와요</p><div class="edu-stg" role="group" aria-label="' + (g === '몸' ? '약·몸 증상' : '피부 고민') + '">' + top.concat(EDU.symMore ? low : []).map(eduSymTile).join('')
+    + (low.length ? '<button type="button" class="edu-st more" aria-expanded="' + !!EDU.symMore + '" onclick="EDU.symMore = EDU.symMore ? 0 : 1; eduHubDraw()"><span class="edu-st-i" aria-hidden="true">' + eduSvg(EDU.symMore ? '<path d="m18 15-6-6-6 6"/>' : '<path d="m6 9 6 6 6-6"/>') + '</span><b>' + (EDU.symMore ? '접기' : '더보기 (' + low.length + ')') + '</b><small>' + (EDU.symMore ? '상품 적은 고민 숨기기' : '상품 2개 이하 고민') + '</small></button>' : '') + '</div>';
+}
+/* 브랜드 · 공부 타일: 이름 · 한 줄 설명 · 칩 3개 + 나머지 수 (폰은 칩 대신 글 한 줄) */
+function eduHomeTile(attrs, ico, title, meta, names, chips) {
+  return '<button type="button" class="edu-bt" ' + attrs + '>' + ico + '<span class="edu-bt-t"><b>' + title + '</b><span class="edu-br-m">' + meta + '</span>'
+    + (names.length ? '<span class="edu-bt-l">' + names.map(eduE).join(' · ') + '</span><span class="edu-bt-x" aria-hidden="true">' + chips.slice(0, 3).join('') + (chips.length > 3 ? '<i class="n">+' + (chips.length - 3) + '</i>' : '') + '</span>' : '') + '</span></button>';
+}
+function eduBrandTile(B) {
+  var bc = [].concat.apply([], B.lines.map(function (l) { return l.cards; })), dn = eduDoneN(bc), aiN = bc.filter(eduIsDraft).length;
+  var few = B.n <= 3, names = few ? bc.map(eduShort) : B.lines.map(function (l) { return l.line; });
+  return eduHomeTile('data-b="' + eduE(B.name) + '" onclick="eduOpenBrand(this.dataset.b)"', eduMono(B.name), eduE(B.name) + eduNewBadge(B),
+    '제품 ' + B.n + ' · 라인 ' + B.lines.length + (dn ? ' · 공부 ' + dn + '/' + B.n : '') + (aiN ? ' · AI 초안 ' + aiN : ''), names,
+    few ? names.map(function (t) { return '<i>' + eduE(t) + '</i>'; }) : B.lines.slice().sort(function (a, b) { return b.cards.length - a.cards.length; }).map(function (l) { return '<i>' + eduE(l.line) + '<small>' + l.cards.length + '</small></i>'; }));
+}
+function eduTabsHtml() {
+  var L = eduSymList(), bn = eduAllBrands().length, ni = eduIngs().length, gn = eduGuides().length;
+  var ic = { '몸': EDU_SI.pill, '피부': EDU_SI.spark, brand: EDU_SI.tag, study: EDU_SI.book };
+  var sub = { '몸': '증상 ' + L.filter(function (x) { return x.g === '몸'; }).length, '피부': '고민 ' + L.filter(function (x) { return x.g !== '몸'; }).length, brand: bn + '곳', study: '성분 ' + ni + ' · 고민 ' + gn };
+  return '<div class="edu-tabs" id="eduTabs" role="tablist" aria-label="교육 자료 종류">' + EDU_TABS.map(function (t) {
+    return '<button type="button" role="tab" class="edu-tab" data-k="' + t[0] + '" aria-selected="' + (EDU.tab === t[0]) + '" onclick="eduSetTab(this.dataset.k)"><span class="edu-tab-i" aria-hidden="true">' + eduSvg(ic[t[0]]) + '</span><span class="edu-tab-t"><b>' + t[1] + '</b><small>' + sub[t[0]] + '</small></span></button>';
+  }).join('') + '</div>';
+}
+function eduHomeHtml() {
+  var tab = EDU.tab || (EDU.tab = eduTabSaved()), dr = eduDrafts(), nr = ((EDU.data && EDU.data.reports) || []).length, body = '';
+  if (tab === 'brand') { var bs = eduAllBrands(); body = bs.length ? '<div class="edu-btg">' + bs.map(eduBrandTile).join('') + '</div>' : '<div class="edu-empty">아직 자료가 없어요.</div>'; }
+  else if (tab === 'study') {
+    var ni = eduIngs().length, gs = eduGuides(), kc = eduKindCounts().sort(function (a, b) { return b[1] - a[1]; });
+    body = '<div class="edu-btg two">'
+      + (ni ? eduHomeTile('data-dict="1" onclick="eduPush({ v: \'dict\' })"', '<span class="edu-mono ing" aria-hidden="true">' + EDU_I.flask + '</span>', '성분 사전', '성분 ' + ni + '개 · 무슨 성분인지 · 손님께 한 줄', kc.map(function (k) { return k[0]; }), kc.map(function (k) { return '<i>' + eduE(k[0]) + '<small>' + k[1] + '</small></i>'; })) : '')
+      + (gs.length ? eduHomeTile('data-guides="1" onclick="eduPush({ v: \'guides\' })"', '<span class="edu-mono gd" aria-hidden="true">' + EDU_I.chat + '</span>', '고민별 상담 공부', '고민 ' + gs.length + '개 · 물어볼 것 · 30초 멘트 · 약사 안내 기준', gs.map(function (g) { return g.name; }), gs.map(function (g) { return '<i>' + eduE(g.name) + '</i>'; })) : '')
+      + '</div>';
+  }
+  else body = eduSymGrid(tab);
+  return (eduAdminSure() && (dr.cards.length || dr.ings.length) ? '<button type="button" class="edu-ai-row" data-review="1" onclick="eduPush({ v: \'review\' })">' + EDU_I.spark + '<b>AI 초안 확인</b><span>제품 ' + dr.cards.length + ' · 성분 ' + dr.ings.length + '</span>' + (nr ? '<i class="edu-rep-n">신고 ' + nr + '</i>' : '') + EDU_I.chev + '</button>' : '')
+    + eduTabsHtml() + '<section class="edu-tabp" role="tabpanel" aria-label="' + EDU_TABS.filter(function (t) { return t[0] === tab; })[0][1] + '">' + body + '</section>';
+}
+/* 같은 내용이면 다시 그리지 않음 (뒤에서 자료가 다시 와도 화면이 튀지 않게) */
+function eduPut(el, h) { if (el._h !== h) { el.innerHTML = h; el._h = h; } }
 /* ── 1008b 증상으로 찾기: 증상 칩 → 상담 가이드 · 교육 자료 · 우리 약국 많이 팔린 순 · 같이 권하면 좋은 조합 ── */
 function eduCatItems() { return (typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) || []; }
 /* 새 기기: 상품 목록(RY_CAT)이 아직 없으면 받아 오고, 오면 증상 칩·목록을 다시 그림 (2초마다 최대 1분) */
@@ -13942,6 +14083,7 @@ function eduSymList() {
 function eduChipsHtml() {
   var L = eduSymList(), on = EDU.concern;
   if (on && !L.some(function (x) { return x.n === on; })) L.unshift({ n: on, g: '피부', cnt: 0 });
+  if (on) { var og = eduSymOf(on).g; L = L.filter(function (x) { return x.n === on || (x.g === og && x.cnt > 2); }); }   /* 1009 고른 증상과 같은 칸(몸/피부)만 · 상품 2개 이하는 뺌 → 칩 벽 X */
   var chip = function (x) { return '<button type="button" class="edu-cc" aria-pressed="' + (on === x.n) + '" data-t="' + eduE(x.n) + '" onclick="eduSetConcern(this.dataset.t)">' + eduE(x.n) + (x.cnt ? '<i>' + x.cnt + '</i>' : '') + '</button>'; };
   if (on) return '<div class="edu-strip" id="eduChips" role="group" aria-label="증상 바꾸기">' + L.map(chip).join('') + '</div>';
   var grp = function (g, t) { var xs = L.filter(function (x) { return x.g === g; }); return xs.length ? '<h3 class="edu-sh">' + t + '</h3><div class="edu-chips" role="group" aria-label="' + t + '">' + xs.map(chip).join('') + '</div>' : ''; };
