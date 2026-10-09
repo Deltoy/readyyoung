@@ -3956,6 +3956,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
             <svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><span>지연 상품 복사 (카톡용)</span>
             <span id="lateShareCount" class="ry-lateshare-n">0</span>
           </button>
+          <button type="button" id="locSortBtn" onclick="locSortToggle()" aria-pressed="false" title="창고 위치(구역-선반-칸) 걷는 순서로 · 위치 없는 상품은 맨 아래"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg><span>위치 순</span></button>
           <div id="leadStatLine" class="hidden inline-flex items-center gap-1 bg-white/70 border border-emerald-200 rounded-lg px-2 py-1 text-[11px] text-emerald-900 font-semibold"></div>
         </div>
         <details class="tab-guide text-emerald-800">
@@ -4539,7 +4540,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     var END_TAG = '판매종료';
     function isEnded(item) { return !!(item && String(item.note || '').indexOf(END_TAG) !== -1); }
     function ryNoRc(s) { return String(s == null ? '' : s).replace(/〔품절 재확인[^〕]*〕/g, ' ').replace(/\s{2,}/g, ' ').trim(); }   // 0929 품절 재확인 안내 토막은 품절 판정에서 뺀다
-    function endedBadge(item) { return (isHiddenItem(item) ? '<span class="ry-end ry-hid">' + RYI.octx + '취급안함</span>' : '') + (isEnded(item) ? '<span class="ry-end">' + RYI.octx + '판매종료</span>' : '') + (String(item && item.note || '').indexOf('〔품절 재확인') !== -1 ? '<span class="ry-rc" title="품절이 풀렸는지 확인 후 주문해 주세요"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/></svg>품절 30일 · 다시 확인해 주세요</span>' : '') + infoBtn(item); }
+    function endedBadge(item) { return (typeof locBadge === 'function' ? locBadge(item) : '') + (isHiddenItem(item) ? '<span class="ry-end ry-hid">' + RYI.octx + '취급안함</span>' : '') + (isEnded(item) ? '<span class="ry-end">' + RYI.octx + '판매종료</span>' : '') + (String(item && item.note || '').indexOf('〔품절 재확인') !== -1 ? '<span class="ry-rc" title="품절이 풀렸는지 확인 후 주문해 주세요"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/></svg>품절 30일 · 다시 확인해 주세요</span>' : '') + infoBtn(item); }
 
     /* ===== 상품 정보 AI 메모 (0920) ===== */
     function infoBtn(item) {
@@ -4706,6 +4707,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       document.getElementById('noteDiscBtn').hidden = !_inCycle; document.getElementById('noteDiscHint').hidden = !_inCycle;
       noteNewCatShow(false);
       document.getElementById('noteText').value = item.note || '';
+      try { document.getElementById('noteLoc').value = locOf(item); } catch (eLoc) {}
       var err = document.getElementById('noteErr'); err.textContent = ''; err.classList.remove('on');
       document.getElementById('noteDim').classList.add('on');
       document.getElementById('noteSheet').classList.add('on');
@@ -4802,13 +4804,18 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (newName === NOTE_NAME_SHOWN.trim()) newName = NOTE_NAME0;   // 이름을 안 건드렸으면 줄바꿈 포함 원래 이름 유지
       var err = document.getElementById('noteErr');
       if (!newName) { err.textContent = '상품명은 비울 수 없어요.'; err.classList.add('on'); return; }
+      /* 1009 창고 위치 (이름으로 저장 · 이름을 바꾸면 위치도 새 이름으로 옮김) */
+      var locOld = typeof locOf === 'function' ? locOf(item) : '', locNew = typeof locNorm === 'function' ? locNorm(document.getElementById('noteLoc').value) : locOld;
+      if (locNew === null) { err.textContent = '창고 위치는 A-03-2 처럼 (구역 A~H · 선반 01~99 · 칸 1~9)'; err.classList.add('on'); return; }
+      var locList = newName !== item.name && (locOld || locNew) ? [{ name: item.name, row: NOTE_ROW, loc: '' }, { name: newName, row: NOTE_ROW, loc: locNew }] : locNew !== locOld ? [{ name: item.name, row: NOTE_ROW, loc: locNew }] : [];
       var btn = document.getElementById('noteSave');
       btn.disabled = true; btn.textContent = '저장 중…';
       var newCat = document.getElementById('noteCat').value;
       if (newCat === NOTE_NEWCAT) newCat = NOTE_CAT_PREV;
       newCat = catJoin(newCat, document.getElementById('noteSub').value);   // 0930 '대분류 › 하위'
       var before = item.note || '', beforeName = item.name, beforeCat = item.category || '', row = NOTE_ROW;
-      if (text === before && newName === beforeName && newCat === beforeCat) { btn.disabled = false; btn.textContent = '저장하기'; closeNote(); showToast('바뀐 게 없어요'); return; }
+      if (text === before && newName === beforeName && newCat === beforeCat) { btn.disabled = false; btn.textContent = '저장하기'; closeNote(); if (locList.length) { locSave(locList); showToast(locNew ? '창고 위치를 ' + locNew + ' 로 저장했어요' : '창고 위치를 지웠어요'); } else showToast('바뀐 게 없어요'); return; }
+      if (locList.length) locSave(locList);
       item.note = text; item.name = newName; item.category = newCat;   // 화면에 먼저 반영
       ryPendAdd(row, beforeName, { name: newName, note: text, cat: newCat });
       try { lmBusy[row] = 1; } catch (e) {}   // 1003 내 저장이 끝나기 전엔 월 한도 자동 꼬리표가 따로 덮어쓰지 않게
@@ -5803,6 +5810,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (ryShown('mbReader')) { L.push('mb'); if (typeof MB !== 'undefined' && MB.view === 'archive' && MB.cur) L.push('mb'); }
       if (ryShown('scrDim')) L.push('scr');
       if (ryShown('nophDim')) L.push('noph');
+      var _ld = document.getElementById('locDim'); if (_ld && _ld.classList.contains('on')) L.push('loc');   /* 1009 창고 위치 넣기 */
       if (ryShown('eduReader')) { var n = typeof EDU !== 'undefined' && EDU.stack ? Math.max(1, EDU.stack.length) + (typeof eduHubF === 'function' ? +eduHubF() || 0 : 0) : 1; while (n--) L.push('edu'); }   /* 자료실 → 카드 → … */
       if (ryShown('eduZoom')) L.push('eduzoom');
       ryOpenSheets().forEach(function (e) { L.push('sheet:' + e.id); });
@@ -5833,6 +5841,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         else if (top === 'eduzoom') eduZoomClose();
         else if (top === 'edu') eduBack();
         else if (top === 'noph') nophClose();
+        else if (top === 'loc') locClose();
         else if (top === 'scr') scrClose();
         else if (top === 'mb') mbBack();
         else if (top === 'launch') ryLaunchClose();
@@ -8330,6 +8339,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       refreshDelayReasons(false);
       // 주문(발주)일자가 오래된 것부터 위로 정렬 — 날짜 없는 항목은 맨 아래
       const allItems = (items || []).slice().sort((a, b) => {
+        if (typeof LOC_SORT !== 'undefined' && LOC_SORT) { const lc = locCmp(a, b); if (lc) return lc; }   /* 1009 위치 순: 걷는 순서 · 위치 없는 것은 맨 아래 */
         const ta = parseDateToTime(a.orderDate), tb = parseDateToTime(b.orderDate);
         if (ta == null && tb == null) return 0;
         if (ta == null) return 1;
@@ -9419,6 +9429,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
             _dataVer = v;
             setSyncBadge('changed');
             loadAllData(false, true);                           // 바뀐 경우에만 목록 갱신
+            try { locLoad(true); } catch (eL) {}                // 1009 다른 폰에서 넣은 창고 위치도
             try { if (RY_CAT && Date.now() - (RY_CAT.t || 0) > 60000) { RY_CAT.t = 0; ryCatLoad(true); } } catch (eC) {}   // 1001 새 상품·사진이 다른 기기에서 바뀌어도 1분 안에 검색에 반영
           }
         })
@@ -9476,6 +9487,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           if (!r || !r.ok || !Array.isArray(r.items)) return;
           RY_CAT = { v: String(r.v), t: Date.now(), items: r.items };
           ryCatSave();
+          try { var _rd = document.getElementById('eduReader'); if (_rd && !_rd.hidden && typeof eduHubDraw === 'function') eduHubDraw(); if (typeof locIsOpen === 'function' && locIsOpen()) locDrawList(); } catch (eR) {}   /* 1009 목록이 오면 자료실 증상 칸 · 창고 위치 화면도 바로 (2초 기다리지 않게) */
           var q =(document.getElementById('globalSearchInput') || {}).value;
           if (q && q.trim() && !document.getElementById('searchResultView').classList.contains('hidden')) executeServerSearch(q.trim());
         })
@@ -12048,6 +12060,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       ].concat(isAdmin && s15 && !s15.hidden ? [{ k: 's15', g: 0, ic: RYI.bars, n: '15일 판매량 엑셀', v: s15due ? '오늘 올릴 날' : (s15last ? s15last + ' 올림' : '올리기'), cnt: s15due ? 1 : 0, act: '올릴 날이에요', due: true, pri: 0, kw: 'POS 판매량 15일 업로드' }] : [])
       .concat([
         { k: 'stale', g: 1, ic: RYI.package, n: '창고 정리', v: stN ? '후보 ' + stN + '개' : '오래 안 시킨 것', cnt: stN, act: '오래 안 시킨 상품', pri: 4, kw: '재고 정리 할인 반품 폐기 소진 판매종료' },
+        { k: 'loc', g: 1, ic: typeof LOC_I !== 'undefined' ? LOC_I.pin : RYI.package, n: '창고 위치 넣기', v: typeof LOC !== 'undefined' && Object.keys(LOC.map).length ? Object.keys(LOC.map).length + '개 넣음 · 구역-선반-칸' : '구역-선반-칸 (예: A-03-2)', kw: '창고 위치 선반 구역 칸 자리 진열 로케이션 찾기' },
         { k: 'noph', g: 1, ic: RYI.camera, n: '사진 없는 상품', v: '찍어 넣기', kw: '사진 촬영 카메라 이미지' },
         { k: 'dups', g: 1, ic: RYI.copy, n: '중복 정리', v: '이름 겹치는 상품', kw: '중복 합치기 두 줄' },
         { k: 'catbrowse', g: 1, ic: RYI.folder, n: '카테고리 고치기', v: '분류 없음·기타', kw: '카테고리 분류 어린이 기타 섹터' }
@@ -12140,6 +12153,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (k === 'catbrowse') { openCatBrowse(); return; }
       if (k === 'dups') { openDuplicates(); return; }
       if (k === 'noph') { nophOpen(); return; }
+      if (k === 'loc') { locOpen(); return; }
       if (k === 'scr') { scrOpen(); return; }
       if (k === 'pfauto') { pfaOpen(); return; }
       if (k === 'srcard' || k === 'chcard' || k === 'mscard') { switchTab('ranking'); setTimeout(function () { var c = document.getElementById(k === 'srcard' ? 'srCard' : k === 'mscard' ? 'msCard' : 'chCard'); if (c) window.scrollTo({ top: Math.max(0, c.getBoundingClientRect().top + window.scrollY - 12), behavior: 'smooth' }); }, 250); return; }
@@ -12208,6 +12222,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
 <div class="ava-sheet" id="noteSheet" role="dialog" aria-label="특이사항">
   <div class="ava-head"><b>상품 수정</b><button type="button" onclick="closeNote()">닫기</button></div>
   <div class="np-field"><label>상품명</label><input type="text" id="noteName" placeholder="상품명"></div>
+  <div class="np-field"><label for="noteLoc">창고 위치</label><input type="text" id="noteLoc" placeholder="예: A-03-2" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" onblur="var v = locNorm(this.value); if (v) this.value = v;"><div class="np-loc-h">구역 A~H · 선반 01~99 · 칸 위에서 1~9 — a3-2 처럼 쳐도 돼요 · 비우면 지워요</div></div>
   <div class="np-field"><label for="noteCat">카테고리</label><div class="cat-2"><select id="noteCat" onchange="noteCatChange()"></select><select id="noteSub" aria-label="하위 섹터" style="display:none"></select></div>
     <div class="cb-add note-newcat" id="noteNewCatRow" hidden>
       <input type="text" id="noteNewCat" maxlength="12" placeholder="새 카테고리 이름 (예: 비품)" autocomplete="off" aria-label="새 카테고리 이름" onkeydown="if(event.key==='Enter'&&!event.isComposing){event.preventDefault();addNoteCat();}">
@@ -12618,6 +12633,263 @@ html:not(#q):not(#w):not(#e) body:not(#r) .s15b b{font-size:15px;font-weight:800
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b{background:#F2F4F7}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b.s15-t1{background:#F5F6F8;color:#111827}html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b.s15-t2{background:#EEF4FF;color:#155EEF}html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b.s15-t3{background:#155EEF;color:#fff}html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b.s15-z{color:#98A2B3}
 </style>
+<style>
+/* 1009 창고 위치 — 넣기 화면(#locDim) · 위치 배지(.ry-loc) */
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-loc{display:inline-flex;align-items:center;gap:2px;margin-left:4px;padding:1px 7px 1px 5px;border-radius:999px;background:#EFF4FF;color:#155EEF;font-size:11.5px;font-weight:700;line-height:1.5;white-space:nowrap;vertical-align:middle;font-variant-numeric:tabular-nums;letter-spacing:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-loc svg{width:12px;height:12px;flex:none}
+html:not(#q):not(#w):not(#e) body:not(#r) #locDim{display:none;position:fixed;inset:0;z-index:9000;background:#F5F6F8;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;font-family:inherit;color:#111827}
+html:not(#q):not(#w):not(#e) body:not(#r) #locDim.on{display:block}
+html:not(#q):not(#w):not(#e) body:not(#r) #locDim button{font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+html:not(#q):not(#w):not(#e) body:not(#r) #locDim button:focus-visible,html:not(#q):not(#w):not(#e) body:not(#r) #locDim input:focus-visible{outline:2px solid #155EEF!important;outline-offset:2px}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-top{position:sticky;top:0;z-index:2;background:#fff;border-bottom:1px solid #EDEEF0;padding:10px 12px 12px;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-wrap{max-width:760px;margin:0 auto}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-h{display:flex;align-items:center;gap:10px;min-height:48px}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-now{flex:1;min-width:0;display:flex;align-items:baseline;gap:10px}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-now small{font-size:13px;font-weight:600;color:#667085;white-space:nowrap}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-now b{font-size:30px;line-height:1.1;font-weight:800!important;color:#155EEF;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+html:not(#q):not(#w):not(#e) body:not(#r) #locDim .lc-x{flex:none;min-width:44px;min-height:44px!important;padding:0 14px!important;border:1px solid #EDEEF0!important;border-radius:999px!important;background:#fff!important;color:#344054!important;font-size:14px;font-weight:600}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-zones{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:2px;margin-top:8px}
+html:not(#q):not(#w):not(#e) body:not(#r) #locDim .lc-z,html:not(#q):not(#w):not(#e) body:not(#r) #locDim .lc-lv{min-height:44px!important;padding:0!important;border:1px solid #EDEEF0!important;border-radius:12px!important;background:#fff!important;color:#111827!important;font-size:17px;font-weight:700}
+html:not(#q):not(#w):not(#e) body:not(#r) #locDim .lc-z[aria-pressed="true"],html:not(#q):not(#w):not(#e) body:not(#r) #locDim .lc-lv[aria-pressed="true"]{background:#155EEF!important;border-color:#155EEF!important;color:#fff!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-row2{display:flex;align-items:center;gap:8px;margin-top:8px}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-step{display:flex;align-items:center;gap:4px;flex:1;min-width:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-step>span{font-size:13px;font-weight:700;color:#475467;white-space:nowrap;margin-right:2px}
+html:not(#q):not(#w):not(#e) body:not(#r) #locDim .lc-step button{flex:none;width:44px;min-height:44px!important;padding:0!important;border:1px solid #EDEEF0!important;border-radius:12px!important;background:#F9FAFB!important;color:#111827!important;display:grid;place-items:center}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-step button svg{width:20px;height:20px}
+html:not(#q):not(#w):not(#e) body:not(#r) #locDim .lc-step input{flex:1;min-width:0;width:100%;height:44px;border:1px solid #D0D5DD;border-radius:12px;background:#fff;text-align:center;font-size:20px;font-weight:800;color:#111827;font-variant-numeric:tabular-nums;padding:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-lvs{display:none;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px;flex:1}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-body{padding:12px 12px 120px}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-search{position:relative;display:block}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-search svg{position:absolute;left:14px;top:50%;width:20px;height:20px;transform:translateY(-50%);color:#98A2B3;pointer-events:none}
+html:not(#q):not(#w):not(#e) body:not(#r) #locDim .lc-search input{width:100%;height:52px;padding:0 44px 0 44px;border:1px solid #EDEEF0;border-radius:20px;background:#fff;font-size:16px;color:#111827;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+html:not(#q):not(#w):not(#e) body:not(#r) #locDim .lc-qx{position:absolute;right:4px;top:4px;width:44px;min-height:44px!important;padding:0!important;border:0!important;background:transparent!important;color:#667085!important;display:grid;place-items:center}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:10px 0}
+html:not(#q):not(#w):not(#e) body:not(#r) #locDim .lc-tab{min-height:44px!important;padding:4px 6px!important;border:1px solid #EDEEF0!important;border-radius:12px!important;background:#fff!important;color:#344054!important;font-size:14px;font-weight:700;line-height:1.25}
+html:not(#q):not(#w):not(#e) body:not(#r) #locDim .lc-tab small{display:block;font-size:12px;font-weight:600;color:#667085;font-variant-numeric:tabular-nums}
+html:not(#q):not(#w):not(#e) body:not(#r) #locDim .lc-tab[aria-selected="true"]{background:#111827!important;border-color:#111827!important;color:#fff!important}
+html:not(#q):not(#w):not(#e) body:not(#r) #locDim .lc-tab[aria-selected="true"] small{color:rgba(255,255,255,.8)}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-sum{margin:2px 2px 8px;font-size:13px;font-weight:600;color:#475467;font-variant-numeric:tabular-nums}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-list{display:flex;flex-direction:column;gap:6px}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-it{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid #EDEEF0;border-radius:20px;padding:6px}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-it.just{border-color:#155EEF;box-shadow:0 0 0 2px rgba(21,94,239,.15)}
+html:not(#q):not(#w):not(#e) body:not(#r) #locDim .lc-go{flex:1;min-width:0;display:flex!important;align-items:center;gap:12px;min-height:60px!important;padding:2px 6px!important;border:0!important;border-radius:14px!important;background:transparent!important;color:#111827!important;text-align:left}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-ph{flex:none;width:48px;height:48px;border-radius:12px;background:#F2F4F7;overflow:hidden;display:grid;place-items:center;color:#98A2B3}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-ph{position:relative} html:not(#q):not(#w):not(#e) body:not(#r) .lc-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#fff}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-ph svg{width:20px;height:20px}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-t b{font-size:15px;line-height:1.35;font-weight:700!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all;overflow-wrap:anywhere}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-m{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;font-size:12.5px;color:#667085;font-variant-numeric:tabular-nums}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-m .ry-loc{margin-left:0;font-size:12.5px}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-m em{font-style:normal;color:#B42318;font-weight:700}
+html:not(#q):not(#w):not(#e) body:not(#r) #locDim .lc-rm{flex:none;width:44px;min-height:44px!important;padding:0!important;border:1px solid #EDEEF0!important;border-radius:12px!important;background:#fff!important;color:#B42318!important;display:grid;place-items:center}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-rm svg{width:18px;height:18px}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-empty{background:#fff;border:1px solid #EDEEF0;border-radius:20px;padding:20px 16px;text-align:center;font-size:14px;color:#475467;line-height:1.6}
+html:not(#q):not(#w):not(#e) body:not(#r) #locDim .lc-more{width:100%;min-height:48px!important;margin-top:8px;border:1px solid #EDEEF0!important;border-radius:14px!important;background:#fff!important;color:#155EEF!important;font-size:14px;font-weight:700}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-bar{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:3;max-width:736px;margin:0 auto;display:flex;align-items:center;gap:8px;padding:6px 6px 6px 16px;border-radius:16px;background:#111827;color:#fff;font-size:15px;font-weight:600;box-shadow:0 8px 24px rgba(16,24,40,.25)}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-bar[hidden]{display:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-bar span{flex:1;min-width:0}
+html:not(#q):not(#w):not(#e) body:not(#r) #locDim .lc-bar button{flex:none;min-height:44px!important;padding:0 16px!important;border:0!important;border-radius:12px!important;background:#fff!important;color:#155EEF!important;font-size:15px;font-weight:800}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-hint{margin:2px 2px 0;font-size:12.5px;color:#667085}
+html:not(#q):not(#w):not(#e) body:not(#r) .lc-btn{display:inline-flex;align-items:center;gap:4px}
+html:not(#q):not(#w):not(#e) body:not(#r) #locSortBtn{display:inline-flex;align-items:center;gap:4px;min-height:32px;padding:0 10px;border:1px solid #A7F3D0!important;border-radius:999px!important;background:#fff;color:#065F46;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+html:not(#q):not(#w):not(#e) body:not(#r) #locSortBtn svg{width:13px;height:13px}
+html:not(#q):not(#w):not(#e) body:not(#r) #locSortBtn[aria-pressed="true"]{background:#065F46;border-color:#065F46!important;color:#fff}
+html:not(#q):not(#w):not(#e) body:not(#r) .np-loc-h{margin-top:4px;font-size:12px;color:#667085}
+@media(min-width:720px){
+  html:not(#q):not(#w):not(#e) body:not(#r) .lc-lvs{display:grid} html:not(#q):not(#w):not(#e) body:not(#r) .lc-step.lv{display:none} html:not(#q):not(#w):not(#e) body:not(#r) .lc-step:not(.lv){flex:none;width:200px}
+  html:not(#q):not(#w):not(#e) body:not(#r) .lc-it{padding:8px}
+}
+@media(min-width:900px){
+  html:not(#q):not(#w):not(#e) body:not(#r) .lc-wrap{max-width:960px} html:not(#q):not(#w):not(#e) body:not(#r) .lc-bar{max-width:936px}
+  html:not(#q):not(#w):not(#e) body:not(#r) .lc-list{display:flex;flex-direction:row;flex-wrap:wrap;gap:8px} html:not(#q):not(#w):not(#e) body:not(#r) .lc-list>.lc-it{flex:1 1 calc(50% - 4px);min-width:0}
+}
+</style>
+<div id="locDim" role="dialog" aria-modal="true" aria-label="창고 위치 넣기">
+  <div class="lc-top"><div class="lc-wrap">
+    <div class="lc-h"><div class="lc-now"><small>지금 칸</small><b id="locNow">A-01-1</b></div><button type="button" class="lc-x" onclick="locClose()">닫기</button></div>
+    <div class="lc-zones" id="locZones" role="group" aria-label="구역"></div>
+    <div class="lc-row2">
+      <div class="lc-step"><span>선반</span><button type="button" onclick="locStep('s', -1)" aria-label="선반 번호 줄이기"></button><input id="locShelf" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" aria-label="선반 번호 (01~99)" onchange="locShelfInput(this.value)" onkeydown="if (event.key === 'Enter') this.blur();"><button type="button" onclick="locStep('s', 1)" aria-label="선반 번호 늘리기"></button></div>
+      <div class="lc-step lv"><span>칸</span><button type="button" onclick="locStep('l', -1)" aria-label="칸 줄이기"></button><input id="locLevel" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" aria-label="칸 (위에서 1~9)" onchange="locLevelInput(this.value)" onkeydown="if (event.key === 'Enter') this.blur();"><button type="button" onclick="locStep('l', 1)" aria-label="칸 늘리기"></button></div>
+      <div class="lc-lvs" id="locLvs" role="group" aria-label="칸 (위에서부터)"></div>
+    </div>
+  </div></div>
+  <div class="lc-body"><div class="lc-wrap">
+    <label class="lc-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="locQ" type="search" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="상품 찾기 · 누르면 지금 칸에 넣어요" aria-label="상품 찾기"><button type="button" class="lc-qx" id="locQx" hidden onclick="locSetQ('')" aria-label="검색어 지우기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></label>
+    <div class="lc-tabs" role="tablist" aria-label="보기">
+      <button type="button" class="lc-tab" role="tab" data-v="search" onclick="locView('search')">찾기<small id="locTabS">이름으로</small></button>
+      <button type="button" class="lc-tab" role="tab" data-v="slot" onclick="locView('slot')">이 칸 상품<small id="locTabC">0개</small></button>
+      <button type="button" class="lc-tab" role="tab" data-v="none" onclick="locView('none')">위치 없음<small id="locTabN">0개</small></button>
+    </div>
+    <div id="locList"></div>
+  </div></div>
+  <div class="lc-bar" id="locBar" hidden role="status"><span id="locBarT"></span><button type="button" id="locBarU" onclick="locUndo()">되돌리기</button></div>
+</div>
+<script>
+/* ═══ 1009 창고 위치 (구역-선반-칸 · 예: A-03-2) — 서버 getLocations / saveLocations · 열쇠는 상품 이름(공백 빼고 소문자) ═══
+   구역 A~H(A = 입구 쪽) · 선반 01~99(마주 보는 선반: 왼쪽 홀수 · 오른쪽 짝수 → A-01 과 A-02 가 마주 봄) · 칸 = 위에서부터 1~9
+   위치 순 = 걷는 순서: 구역 → 마주 보는 선반 쌍((n+1)>>1) → 선반 → 칸 */
+var LOC = { map: {}, at: 0, busy: false, z: 'A', s: 1, l: 1, q: '', view: 'search', just: {}, undo: null, barT: 0, n: 60 };
+try { var _lc0 = JSON.parse(localStorage.getItem('ry_loc_v1') || 'null'); if (_lc0 && _lc0.map) LOC.map = _lc0.map; } catch (e) {}
+try { var _ls0 = JSON.parse(localStorage.getItem('ry_loc_slot') || 'null'); if (_ls0 && /^[A-H]$/.test(_ls0.z)) { LOC.z = _ls0.z; LOC.s = Math.min(99, Math.max(1, +_ls0.s || 1)); LOC.l = Math.min(9, Math.max(1, +_ls0.l || 1)); } } catch (e) {}
+var LOC_SORT = false; try { LOC_SORT = localStorage.getItem('ry_in_locsort') === '1'; } catch (e) {}
+var LOC_I = {
+  pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>',
+  minus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg>',
+  plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>',
+  x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>',
+  box: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 7.703 4.734a2 2 0 0 0 2.004 0L20.7 7"/></svg>'
+};
+/** 'a3-2' · 'A-3-2' · 'A032' → 'A-03-2' · 비우면 '' · 못 읽으면 null (서버 normLoc_ 와 같은 규칙) */
+function locNorm(s) {
+  var t = String(s == null ? '' : s).toUpperCase().replace(/[\s\-‐-―−–—_.·\/]+/g, '-').replace(/^-+|-+$/g, '');
+  if (!t) return '';
+  var m = t.match(/^([A-H])-?(\d{1,2})-?([1-9])$/);
+  if (!m || !+m[2]) return null;
+  return m[1] + '-' + ('0' + +m[2]).slice(-2) + '-' + m[3];
+}
+function locKey(name) { return String(name || '').replace(/\s+/g, '').toLowerCase(); }
+function locOf(item) { var r = item && LOC.map[locKey(item.name)]; return r && r.loc || ''; }
+function locSortKey(code) { var m = /^([A-H])-(\d{2})-([1-9])$/.exec(code || ''); if (!m) return '~'; var n = +m[2]; return m[1] + ('0' + ((n + 1) >> 1)).slice(-2) + m[2] + m[3]; }
+function locCmp(a, b) { var x = locSortKey(locOf(a)), y = locSortKey(locOf(b)); return x < y ? -1 : x > y ? 1 : 0; }
+function locBadge(item) { var c = locOf(item); return c ? '<span class="ry-loc" title="창고 위치 (구역-선반-칸)">' + LOC_I.pin + c + '</span>' : ''; }
+function locSlot() { return LOC.z + '-' + ('0' + LOC.s).slice(-2) + '-' + LOC.l; }
+function locPersist() { try { localStorage.setItem('ry_loc_v1', JSON.stringify({ map: LOC.map })); } catch (e) {} }
+/* 받기: 앱 열고 3초 뒤 · 자료 번호가 바뀌면 · 넣기 화면 열 때 */
+function locLoad(force) {
+  if (LOC.busy || typeof google === 'undefined' || !google.script || !google.script.run) return;
+  if (!force && Date.now() - LOC.at < 120000) return;
+  LOC.busy = true;
+  google.script.run.withSuccessHandler(function (r) {
+    LOC.busy = false; if (!r || !r.ok || !r.map) return;
+    LOC.at = Date.now();
+    var ch = JSON.stringify(r.map) !== JSON.stringify(LOC.map);
+    LOC.map = r.map; locPersist();
+    if (ch) locAfterChange();
+  }).withFailureHandler(function () { LOC.busy = false; }).getLocations();
+}
+setTimeout(function () { locLoad(false); }, 3000);
+/* 위치가 바뀌면: 목록 배지 · 넣기 화면만 (검색칸은 그대로) */
+function locAfterChange() {
+  try { if (typeof renderAllViews === 'function') renderAllViews(); } catch (e) {}
+  if (locIsOpen()) locDraw();
+}
+/* 저장 (낙관적): 화면에 먼저 반영 → 서버가 거절하면 되돌림. list = [{name,row,loc}] */
+function locSave(list, done) {
+  var me = typeof currentSelectedMember !== 'undefined' ? currentSelectedMember || '' : '';
+  list.forEach(function (x) { var k = locKey(x.name); x.prev = (LOC.map[k] || {}).loc || ''; if (x.loc) LOC.map[k] = { loc: x.loc, by: me, at: '방금' }; else delete LOC.map[k]; });
+  locPersist(); locAfterChange();
+  var back = function (xs, msg) { xs.forEach(function (x) { var k = locKey(x.name); if (x.prev) LOC.map[k] = { loc: x.prev, by: '', at: '' }; else delete LOC.map[k]; }); locPersist(); locAfterChange(); showToast('위치 저장 안 됐어요 · ' + msg, 3200); };
+  if (typeof google === 'undefined' || !google.script || !google.script.run) { back(list, '서버에 못 붙었어요'); return; }
+  google.script.run.withSuccessHandler(function (r) {
+    if (!r || !r.ok) { back(list, (r && r.message) || '잠시 뒤 다시'); return; }
+    var bad = list.filter(function (x, i) { return r.results && r.results[i] && !r.results[i].ok; });
+    if (bad.length) back(bad, (r.results.filter(function (y) { return !y.ok; })[0] || {}).message || '확인 필요');
+    if (done) done(r);
+  }).withFailureHandler(function () { back(list, '잠시 뒤 다시 해 주세요'); })
+    .saveLocations(list.map(function (x) { return { name: x.name, row: x.row, loc: x.loc }; }), me);
+}
+/* ── 넣기 화면 ── */
+function locIsOpen() { var d = document.getElementById('locDim'); return !!d && d.classList.contains('on'); }
+function locOpen() {
+  var d = document.getElementById('locDim'); if (!d) return;
+  d.classList.add('on'); document.documentElement.classList.add('mb-lock');
+  if (typeof ryCatLoad === 'function') ryCatLoad(false);
+  locLoad(true);
+  if (!LOC._wired) {
+    LOC._wired = 1;
+    var q = document.getElementById('locQ');
+    /* 한글 조합 중 다시 그리지 않음: 검색칸은 그대로 두고 아래 목록만 */
+    q.addEventListener('input', function () { LOC.q = q.value; LOC.n = 60; document.getElementById('locQx').hidden = !q.value; if (LOC.q.trim() && LOC.view !== 'search') locView('search', true); else locDrawList(); });
+    q.addEventListener('keydown', function (e) { if (e.isComposing || e.keyCode === 229) return; if (e.key === 'Enter') { e.preventDefault(); q.blur(); } });
+    document.querySelectorAll('#locDim .lc-step button').forEach(function (b, i) { b.innerHTML = i % 2 ? LOC_I.plus : LOC_I.minus; });
+  }
+  locDraw();
+  if (!LOC._cw && !(typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items)) { var n = 0; LOC._cw = setInterval(function () { if ((typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) || ++n > 30) { clearInterval(LOC._cw); LOC._cw = 0; if (locIsOpen()) locDraw(); } }, 2000); }
+}
+function locClose() { var d = document.getElementById('locDim'); if (d) d.classList.remove('on'); document.documentElement.classList.remove('mb-lock'); locBar(''); }
+function locSlotSave() { try { localStorage.setItem('ry_loc_slot', JSON.stringify({ z: LOC.z, s: LOC.s, l: LOC.l })); } catch (e) {} }
+function locSetSlot(z, s, l) { if (z) LOC.z = z; if (s) LOC.s = Math.min(99, Math.max(1, s)); if (l) LOC.l = Math.min(9, Math.max(1, l)); locSlotSave(); locDraw(); }
+function locStep(k, d) { if (k === 's') locSetSlot('', LOC.s + d, 0); else locSetSlot('', 0, LOC.l + d); }
+function locShelfInput(v) { var n = parseInt(String(v).replace(/\D/g, ''), 10); locSetSlot('', n >= 1 && n <= 99 ? n : LOC.s, 0); }
+function locLevelInput(v) { var n = parseInt(String(v).replace(/\D/g, ''), 10); locSetSlot('', 0, n >= 1 && n <= 9 ? n : LOC.l); }
+function locView(v, keepQ) { LOC.view = v; LOC.just = {}; LOC.n = 60; if (!keepQ && v !== 'search') { /* 검색어는 남겨 둠 */ } locDrawList(); }
+function locSetQ(v) { var q = document.getElementById('locQ'); q.value = v; LOC.q = v; document.getElementById('locQx').hidden = !v; locDrawList(); }
+/* 슬롯 표시(위) — 같은 내용이면 다시 안 그림 */
+function locDraw() {
+  var code = locSlot(), now = document.getElementById('locNow'); if (!now) return;
+  now.textContent = code;
+  var zh = 'ABCDEFGH'.split('').map(function (z) { return '<button type="button" class="lc-z" aria-pressed="' + (z === LOC.z) + '" onclick="locSetSlot(\'' + z + '\', 0, 0)">' + z + '</button>'; }).join('');
+  var zs = document.getElementById('locZones'); if (zs._h !== zh) { zs.innerHTML = zh; zs._h = zh; }
+  var lh = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (l) { return '<button type="button" class="lc-lv" aria-pressed="' + (l === LOC.l) + '" onclick="locSetSlot(\'\', 0, ' + l + ')" aria-label="칸 ' + l + '">' + l + '</button>'; }).join('');
+  var lv = document.getElementById('locLvs'); if (lv._h !== lh) { lv.innerHTML = lh; lv._h = lh; }
+  var sh = document.getElementById('locShelf'), le = document.getElementById('locLevel'), s2 = ('0' + LOC.s).slice(-2);
+  if (document.activeElement !== sh && sh.value !== s2) sh.value = s2;
+  if (document.activeElement !== le && le.value !== String(LOC.l)) le.value = String(LOC.l);
+  locDrawList();
+}
+function locItems() {
+  var items = (typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) || [];
+  return items.filter(function (it) { return it && it.name && !(typeof isHiddenItem === 'function' && isHiddenItem(it)); });
+}
+function locRow(it, rm) {
+  var c = locOf(it), s15 = parseFloat(String(it.sales15 == null ? '' : it.sales15).replace(/[^0-9.]/g, '')), k = locKey(it.name);
+  return '<div class="lc-it' + (LOC.just[k] ? ' just' : '') + '"><button type="button" class="lc-go" data-r="' + it.rowNumber + '" data-n="' + escapeHtml(it.name) + '" onclick="locAssign(+this.dataset.r, this.dataset.n)">'
+    + '<span class="lc-ph" aria-hidden="true">' + LOC_I.box + (it.imgUrl ? '<img src="' + escapeHtml(it.imgUrl) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">' : '') + '</span>'
+    + '<span class="lc-t"><b>' + escapeHtml(String(it.name).replace(/\s*\n\s*/g, ' ')) + '</b><span class="lc-m">' + (c ? locBadge(it) : '<em>위치 없음</em>') + (isFinite(s15) ? '<span>15일 ' + s15 + '개</span>' : '') + '</span></span></button>'
+    + (rm ? '<button type="button" class="lc-rm" data-r="' + it.rowNumber + '" data-n="' + escapeHtml(it.name) + '" onclick="locRemove(+this.dataset.r, this.dataset.n)" aria-label="' + escapeHtml(String(it.name)) + ' 위치 지우기">' + LOC_I.x + '</button>' : '') + '</div>';
+}
+function locDrawList() {
+  var el = document.getElementById('locList'); if (!el) return;
+  var all = locItems(), code = locSlot(), q = String(LOC.q || '').trim(), h = '';
+  var inSlot = all.filter(function (it) { return locOf(it) === code; });
+  var none = all.filter(function (it) { return !locOf(it) || LOC.just[locKey(it.name)]; });
+  var noneN = all.filter(function (it) { return !locOf(it); }).length;
+  document.getElementById('locTabC').textContent = inSlot.length + '개';
+  document.getElementById('locTabN').textContent = noneN + '개';
+  document.getElementById('locTabS').textContent = q ? '‘' + (q.length > 6 ? q.slice(0, 6) + '…' : q) + '’' : '이름으로';
+  document.querySelectorAll('#locDim .lc-tab').forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.v === LOC.view)); });
+  if (!all.length) h = '<div class="lc-empty">상품 목록을 받는 중이에요 · 잠시만요</div>';
+  else if (LOC.view === 'slot') h = '<p class="lc-sum">' + code + ' 에 넣은 상품 ' + inSlot.length + '개</p>' + (inSlot.length ? '<div class="lc-list">' + inSlot.sort(function (a, b) { return String(a.name).localeCompare(String(b.name), 'ko'); }).map(function (it) { return locRow(it, true); }).join('') + '</div>' : '<div class="lc-empty">아직 이 칸에 넣은 상품이 없어요.<br>찾기나 위치 없음에서 누르면 여기로 들어와요.</div>');
+  else if (LOC.view === 'none') {
+    none.sort(function (a, b) { return (parseFloat(b.sales15) || 0) - (parseFloat(a.sales15) || 0); });
+    h = '<p class="lc-sum">위치 없음 ' + noneN + ' / 전체 ' + all.length + ' · 15일 판매 많은 순 · 누르면 ' + code + '</p>'
+      + (none.length ? '<div class="lc-list">' + none.slice(0, LOC.n).map(function (it) { return locRow(it, false); }).join('') + '</div>' + (none.length > LOC.n ? '<button type="button" class="lc-more" onclick="LOC.n += 60; locDrawList()">더 보기 (' + (none.length - LOC.n) + '개 더)</button>' : '') : '<div class="lc-empty">모든 상품에 위치가 있어요.</div>');
+  } else {
+    var hit = q ? (typeof ryCatSearch === 'function' ? ryCatSearch(q) || [] : []).filter(function (it) { return !(typeof isHiddenItem === 'function' && isHiddenItem(it)); }) : [];
+    h = q ? (hit.length ? '<p class="lc-sum">‘' + escapeHtml(q) + '’ ' + hit.length + '개 · 누르면 ' + code + '</p><div class="lc-list">' + hit.map(function (it) { return locRow(it, false); }).join('') + '</div>' : '<div class="lc-empty">‘' + escapeHtml(q) + '’ 에 맞는 상품이 없어요.</div>')
+      : '<div class="lc-empty">상품 이름 일부를 치고, 나온 줄을 누르면 <b>' + code + '</b> 에 들어가요.<br>칸은 바꾸기 전까지 그대로예요.</div>';
+  }
+  if (el._h !== h) { el.innerHTML = h; el._h = h; }
+}
+function locFindItem(row, name) {
+  var all = locItems(); return all.filter(function (x) { return x.rowNumber === row && x.name === name; })[0] || all.filter(function (x) { return x.name === name; })[0] || { rowNumber: row, name: name };
+}
+function locAssign(row, name) {
+  var it = locFindItem(row, name), code = locSlot(), prev = locOf(it);
+  if (prev === code) { locBar(code + ' 에 이미 있어요', null); return; }
+  LOC.just[locKey(it.name)] = 1;
+  locSave([{ name: it.name, row: it.rowNumber, loc: code }]);
+  locBar(code + ' 에 넣었어요' + (prev ? ' (전: ' + prev + ')' : ''), { name: it.name, row: it.rowNumber, loc: prev });
+}
+function locRemove(row, name) {
+  var it = locFindItem(row, name), prev = locOf(it); if (!prev) return;
+  locSave([{ name: it.name, row: it.rowNumber, loc: '' }]);
+  locBar(prev + ' 에서 뺐어요', { name: it.name, row: it.rowNumber, loc: prev });
+}
+function locBar(t, undo) {
+  var b = document.getElementById('locBar'); if (!b) return;
+  clearTimeout(LOC.barT); LOC.undo = undo || null;
+  if (!t) { b.hidden = true; return; }
+  document.getElementById('locBarT').textContent = t; document.getElementById('locBarU').hidden = !undo; b.hidden = false;
+  LOC.barT = setTimeout(function () { b.hidden = true; LOC.undo = null; }, 6000);
+}
+function locUndo() { var u = LOC.undo; if (!u) return; locSave([{ name: u.name, row: u.row, loc: u.loc }]); locBar(u.loc ? u.loc + ' 로 되돌렸어요' : '되돌렸어요 · 위치 없음', null); }
+/* 입고대기 '위치 순' */
+function locSortToggle() { LOC_SORT = !LOC_SORT; try { localStorage.setItem('ry_in_locsort', LOC_SORT ? '1' : '0'); } catch (e) {} locSortBtnSync(); try { renderInboundList(cachedInboundItems); } catch (e) {} }
+function locSortBtnSync() { var b = document.getElementById('locSortBtn'); if (b) { b.setAttribute('aria-pressed', String(LOC_SORT)); b.querySelector('span').textContent = LOC_SORT ? '위치 순 보는 중' : '위치 순'; } }
+setTimeout(locSortBtnSync, 0);
+</script>
 <div id="nophDim" hidden role="dialog" aria-modal="true" aria-label="사진 없는 상품 찍기" style="display:none;position:fixed;inset:0;z-index:9000;background:var(--ry-bg,#f5f6f8);overflow:auto;-webkit-overflow-scrolling:touch">
   <div style="position:sticky;top:0;background:#fff;border-bottom:1px solid #e5e7eb;padding:12px 16px;display:flex;align-items:center;gap:10px;z-index:1"><b style="font-size:17px;flex:1">사진 없는 상품 찍기 <span id="nophCnt" style="color:#6b7280;font-weight:600;font-size:14px"></span></b><button type="button" onclick="nophClose()" style="min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #e5e7eb;background:#fff;font-weight:700">닫기</button></div>
   <div style="padding:8px 16px;color:#6b7280;font-size:13px">📷 를 누르면 카메라가 열리고, 찍으면 바로 저장돼요. 저장된 상품은 목록에서 사라져요.</div>
