@@ -3546,17 +3546,10 @@ html body td:has(>.ry-cat){white-space:normal!important}html body td>.ry-cat{whi
 .ry-end.ry-hid{background:#F2F4F7;color:#344054;border-color:#D0D5DD}
 </style>
 <style>
-/* 1004 1차 검토 15일 기준 수량 */
-html body:not(#_):not(#_) .ry-rec-fix{display:inline-flex;align-items:center;gap:4px;min-height:32px;margin-top:6px;padding:0 10px;border:0!important;border-radius:999px!important;background:#155EEF;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
-.ry-rec-fix .ry-i,.ry-rec-ok .ry-i{width:13px;height:13px}
-html body:not(#_):not(#_) .ry-rec-fix.m{max-width:100%;justify-content:center;padding:0 8px}
-.ry-rec-ok{display:inline-flex;align-items:center;gap:3px;margin-top:6px;font-size:12px;font-weight:600;color:#067647;white-space:nowrap}
-html body:not(#_):not(#_) .ry-rec-all{margin-left:auto;display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:0 14px;border:0!important;border-radius:999px!important;background:#155EEF;color:#fff;font-size:13px;font-weight:700;cursor:pointer}
-html body:not(#_):not(#_) .ry-rec-all[hidden]{display:none}
-html body:not(#_):not(#_) .ry-rec-all{white-space:nowrap;flex:none}html body:not(#_):not(#_) .ry-rec-all b{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#fff;color:#155EEF;font-size:12px}
+/* 1004 1차 검토 머리줄 (1009 MJ: 15일 기준 수량 규칙은 뺌 — 수량은 직접 판단) */
 html:not(#q):not(#w):not(#e) body:not(#r) #reviewView .tab-head .th-row{flex-wrap:nowrap}html body:not(#_):not(#_) #reviewView .th-title{white-space:nowrap;min-width:0;flex:1 1 auto;overflow:hidden;text-overflow:ellipsis}#reviewView .th-count{flex:none}#reviewView .tt-t{min-width:0;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:400px){#reviewView .tt-opt{display:none}}
-@media(max-width:600px){html body:not(#_):not(#_) .ry-rec-all{min-height:34px;padding:0 10px;font-size:12.5px}html body:not(#_):not(#_) #reviewView .th-title{font-size:17px}#reviewView .tab-head:has(#ryRecAll:not([hidden])) .th-count{display:none}html:not(#q):not(#w):not(#e) body:not(#r) #reviewView .tab-head .th-row{gap:6px}}
+@media(max-width:600px){html body:not(#_):not(#_) #reviewView .th-title{font-size:17px}html:not(#q):not(#w):not(#e) body:not(#r) #reviewView .tab-head .th-row{gap:6px}}
 </style>
 <style>
 /* 1004 뷰티 상식 6칸 */
@@ -3572,11 +3565,6 @@ html body:not(#_):not(#_) .ry-tools::-webkit-scrollbar{display:none}html body:no
 </style>
 <style>
 /* 1003 추천 발주 수량 */
-html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pre button.rec>span{background:#EEF4FF;border-color:#C7D7FE;color:#155EEF;font-weight:700;display:inline-flex;align-items:center;gap:4px}
-html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pre button.rec.on>span{background:#155EEF;border-color:#155EEF;color:#fff}
-.ry25-pre button.rec .ry-i{width:14px;height:14px}
-html body .ry-rec-line{display:inline-flex;align-items:center;gap:4px;min-height:32px;margin-top:4px;padding:0 10px;border:0!important;border-radius:999px!important;background:#EEF4FF;color:#155EEF;font-size:13px;font-weight:600;cursor:pointer}
-.ry-rec-line .ry-i{width:14px;height:14px}.ry-rec-line span{color:#475467;font-weight:500}
 </style>
 <style>
 /* 1003 계절별 판매 */
@@ -3867,7 +3855,6 @@ html body #ryLaunchGrid .tl-search{top:56px}
         <div class="th-row">
           <span class="th-title"><span class="ry25-thi"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg></span><span class="tt-t">1단계 · <span class="tt-opt">재고 </span>검토 대기</span></span>
           <span class="th-count text-indigo-800" id="reviewSectionCount">0건</span>
-          <button type="button" id="ryRecAll" class="ry-rec-all" onclick="ryRecApplyAll()" hidden title="15일 판매 10개 이상 ×2, 10개 미만 10개 — 다른 것 모두 맞추기" aria-label="15일 기준으로 모두 맞추기">15일 기준 맞추기 <b>0</b></button>
         </div>
         <details class="tab-guide text-indigo-800">
           <summary>ⓘ 사용법 보기</summary>
@@ -7268,7 +7255,6 @@ html body #ryLaunchGrid .tl-search{top:56px}
       const countReview = document.getElementById('reviewSectionCount');
       if (badgeReview) badgeReview.innerText = pureReviewItems.length + '건';
       if (countReview) countReview.innerText = pureReviewItems.length + '건';
-      window.RV_PURE = pureReviewItems; try { setTimeout(ryRecHead, 0); } catch (e) {}
 
       if (pureReviewItems.length === 0) {
         if (reviewEmpty) reviewEmpty.classList.remove('hidden');
@@ -7775,8 +7761,6 @@ html body #ryLaunchGrid .tl-search{top:56px}
       let numTargetQty = parseInt(String(item.targetQty).replace(/[^0-9]/g, ''), 10) || 1;
       let currentUnit = item.unit || '개';
 
-      const _rr = type === 'review' ? ryRec(item) : null, _rrDiff = _rr && (_rr.unit !== currentUnit || _rr.n !== numTargetQty);
-      const recFix = _rrDiff ? `<button type="button" class="ry-rec-fix" onclick="ryRecApply(${item.rowNumber}, ${_rr.n}, '${_rr.unit}')" title="${escapeHtml(_rr.why)}">${RYI.sparkles}15일 기준 ${_rr.n}${_rr.unit}로</button>` : (_rr ? `<span class="ry-rec-ok" title="${escapeHtml(_rr.why)}">${RYI.check}15일 기준</span>` : '');
       let qtyInputHtml = `
         <div class="ry25-qtybox">
           <input type="number" id="qty-${item.rowNumber}" value="${numTargetQty}"
@@ -7786,7 +7770,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
                   class="px-2 py-1 text-xs font-black rounded-lg border shadow-sm transition ${currentUnit === '박스' ? 'bg-indigo-600 text-white' : 'bg-blue-50 text-blue-700 border-blue-300'}">
             ${currentUnit}
           </button>
-        </div>${recFix}
+        </div>
       `;
 
       let actionButtons = '';
@@ -7887,7 +7871,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
                     class="px-2.5 py-1.5 text-xs font-black rounded-xl border shadow-sm transition ${currentUnit === '박스' ? 'bg-indigo-600 text-white' : 'bg-blue-50 text-blue-700 border-blue-300'}">
               ${currentUnit}
             </button>
-            </div>${type === 'review' ? (function () { const r = ryRec(item); if (!r) return ''; const d = r.unit !== currentUnit || r.n !== numTargetQty; return d ? `<button type="button" class="ry-rec-fix m" onclick="ryRecApply(${item.rowNumber}, ${r.n}, '${r.unit}')" title="${escapeHtml(r.why)}" aria-label="15일 기준 ${r.n}${r.unit}로 바꾸기">${RYI.sparkles}${r.n}${r.unit}로</button>` : `<span class="ry-rec-ok" title="${escapeHtml(r.why)}">${RYI.check}기준</span>`; })() : ''}
+            </div>
           </div>
         </section>
         <section class="ry-oc-photo">${imgHtml}</section>
@@ -9793,12 +9777,12 @@ html body #ryLaunchGrid .tl-search{top:56px}
           <td class="p-3 text-center">
             ${item.status === 'IDLE' ? `
               <div class="flex items-center justify-center gap-1">
-                <input type="number" id="s-qty-${item.rowNumber}" value="${(ryRec(item) || {}).n || item.targetQty || '1'}" class="w-10 text-center font-black text-xs border rounded py-1">${rySUnitBtn(item, '')}
+                <input type="number" id="s-qty-${item.rowNumber}" value="${item.targetQty || '1'}" class="w-10 text-center font-black text-xs border rounded py-1">${rySUnitBtn(item, '')}
                 <button onclick="handleSearchOrderRequest(${item.rowNumber}, false, this)" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-black shadow-xs transition">+ 요청</button>
               </div>
             ` : item.status === 'DONE' ? `
               <div class="flex items-center justify-center gap-1" onclick="event.stopPropagation()">
-                <input type="number" id="s-qty-${item.rowNumber}" value="${(ryRec(item) || {}).n || item.targetQty || '1'}" class="w-10 text-center font-black text-xs border rounded py-1">${rySUnitBtn(item, '')}
+                <input type="number" id="s-qty-${item.rowNumber}" value="${item.targetQty || '1'}" class="w-10 text-center font-black text-xs border rounded py-1">${rySUnitBtn(item, '')}
                 <button onclick="handleSearchReorder(${item.rowNumber}, false, this)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-black shadow-xs transition whitespace-nowrap">🔁 재주문</button>
                 <button type="button" onclick="goToItem(${item.rowNumber}, 'DONE')" class="text-[10px] text-blue-600 font-black whitespace-nowrap underline underline-offset-2 px-1" title="입고내역에서 이 상품의 기록 보기">기록 →</button>
               </div>${moSnoozeBtn(item)}
@@ -9813,7 +9797,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         const card = document.createElement('div');
         const canAct = item.status === 'IDLE' || item.status === 'DONE';
         card.className = 'ry25-pc' + (item.justRequested ? ' is-req' : '') + (canAct ? '' : ' is-go') + (isEnded(item) ? ' ry-endrow' : ''); card.setAttribute('data-r', item.rowNumber);
-        const _rec = ryRec(item), qtyVal = escapeHtml(String(_rec ? _rec.n : (String(item.targetQty || '1').replace(/[^0-9]/g, '') || '1')));   /* 1003 추천 수량을 미리 채움 */
+        const qtyVal = escapeHtml(String(item.targetQty || '1').replace(/[^0-9]/g, '') || '1');
         const boxTxt = String(item.boxUnit == null ? '' : item.boxUnit).trim();
         card.innerHTML = `
           <div class="ry25-pc-img">${ry25DotHtml(item)}${mImgHtml}</div>
@@ -10192,87 +10176,26 @@ html body #ryLaunchGrid .tl-search{top:56px}
       showToast('“' + q + '” 다시 검색해요', 1600);
     }
 
-    /* 수량 프리셋: 특이사항의 '주문단위 20개' · '20개부터' · '60개부터 최저가' · 1박스 입수량(boxUnit) */
+    /* 1009 수량 칩 (최대 2개): 1박스(입수량 · 없으면 특이사항 '주문단위 N') · 최저수량(MJ 말로 '최저' — 최저가 아님)
+       최저 = '60개 최저' · '60개 최저가' · '60개부터 최저가' · '최저수량 60' · '최저 60개' · '60개부터' */
     function ry25Presets(item) {
-      var note = String((item && item.note) || '');
-      var unit = 0, best = 0, m, re = /(\d{1,5})\s*개\s*(?:이상\s*)?부터([^,·\/\n]{0,14})/g;
-      m = note.match(/주문\s*단위\s*[:：]?\s*(\d{1,5})/);
-      if (m) unit = parseInt(m[1], 10);
-      while ((m = re.exec(note))) {
-        var n = parseInt(m[1], 10), tail = m[2] || '';
-        if (/최저가|할인|저렴|특가|프로|%/.test(tail)) { if (!best) best = n; }
-        else if (!unit) unit = n;
-      }
-      if (!unit) { var bm = String((item && item.boxUnit) || '').match(/(\d{1,5})/); if (bm) unit = parseInt(bm[1], 10); }
-      var out = [], seen = {};
-      function add(v, isBest) { if (v > 0 && v <= 99999 && !seen[v]) { seen[v] = 1; out.push({ n: v, best: !!isBest }); } }
-      if (unit) { add(unit); add(unit * 2); }
-      if (best) add(best, true);
-      out.sort(function (a, b) { return a.n - b.n; });
-      return out.slice(0, 3);
+      var note = String((item && item.note) || ''), m, min = 0, unitN = 0, out = [];
+      m = note.match(/(\d{1,5})\s*개\s*(?:이상\s*)?(?:부터\s*)?최저/) || note.match(/최저\s*(?:주문\s*)?(?:수량)?\s*[:：]?\s*(\d{1,5})/) || note.match(/(\d{1,5})\s*개\s*(?:이상\s*)?부터/);
+      if (m) min = parseInt(m[1], 10);
+      m = note.match(/주문\s*단위\s*[:：]?\s*(\d{1,5})/); if (m) unitN = parseInt(m[1], 10);
+      var box = parseInt((String((item && item.boxUnit) || '').match(/\d{1,5}/) || ['0'])[0], 10) || 0;
+      if (box) out.push({ n: box, t: '1박스 (' + box + '개)', tip: '1박스 입수량' });
+      else if (unitN) out.push({ n: unitN, t: '주문단위 ' + unitN + '개', tip: '주문단위' });
+      if (min) { if (out[0] && out[0].n === min) out[0] = { n: min, t: '최저 ' + min + '개', tip: '최저수량 · ' + out[0].tip, best: true }; else out.push({ n: min, t: '최저 ' + min + '개', tip: '최저수량', best: true }); }
+      return out;
     }
-    /* ═══ 1003 추천 발주 수량 (사용자: AI·자동화 2번 — 주문 칸에 추천 수량을 미리 채움)
-       하루 판매(15일 판매 ÷ 15) × 계절 배수(월별 엑셀이 3달↑ 있을 때) × (입고 소요 + 2주) → 박스 단위로 올림 · 월 한도 넘지 않게
-       입고 소요 = 카테고리 평균(3건↑) 또는 전체 평균, 영업일 → 달력일(×1.4), 자료 없으면 3일 ═══ */
-    var REC_COVER = 14, REC_INIT = false;
-    function ryRecMult(name) {
-      var d = typeof MS !== 'undefined' && MS.data && MS.data.ok ? MS.data : null; if (!d || d.months.length < 3) return null;
-      var k = s15Key(name), it = d.items.filter(function (x) { return s15Key(x.n) === k; })[0]; if (!it) return null;
-      var nx = new Date(); nx.setDate(nx.getDate() + 21); var mm = nx.getMonth() + 1;   // 3주 뒤(입고·판매가 일어날 때)의 달
-      var tot = it.q.reduce(function (a, b) { return a + b; }, 0), avg = tot / d.months.length; if (!avg || tot < 20) return null;
-      var same = d.months.map(function (m, i) { return +m.slice(5) === mm ? it.q[i] : null; }).filter(function (v) { return v != null; });
-      if (!same.length) return null;
-      var x = same.reduce(function (a, b) { return a + b; }, 0) / same.length / avg; x = Math.max(0.7, Math.min(2.5, x));
-      return Math.abs(x - 1) < 0.15 ? null : { x: +x.toFixed(1), m: mm };
-    }
-    function ryRecLead(cat) {
-      var d = typeof LT !== 'undefined' && LT.data, top = String(cat || '').split('›')[0].trim(), c = d && (d.byCategory || []).filter(function (x) { return String(x.category || '').split('›')[0].trim() === top && (parseInt(x.n, 10) || 0) >= 3; })[0];
-      var v = c ? Number(c.avg) : d && d.overall ? Number(d.overall.avg) : NaN;
-      return isFinite(v) && v > 0 ? Math.max(1, Math.round(v * 1.4)) : 3;
-    }
-    /* 1004 사용자 규칙: 15일 판매 10개 이상 → ×2 (10개 → 20개), 10개 미만·기록 없음 → 10개. 직원은 수량을 몰라 그냥 요청하고, 1차 검토에서 물류관리자가 맞춤
-       박스 단위 상품은 박스 수로 올림 · 특이사항 '월 N개 제한'은 넘지 않음 · 계절 배수(월별 엑셀 3달↑)는 ×2 쪽에만 곱함 */
-    var RY_TIGHT = /이지덤뷰티|락토핏/;   // 1005 사용자: 두 배로 요청하면 창고가 넘쳐서 15일 판매량만큼만
-    function ryRec(item, cycleDays) {
-      if (!REC_INIT) { REC_INIT = true; try { msLoad(false); } catch (e) {} }
-      if (!item) return null;
-      var raw = String(item.sales15 == null ? '' : item.sales15).replace(/[^0-9.]/g, ''), s15 = raw === '' ? null : Number(raw);
-      var tight = RY_TIGHT.test(String(item.name || '').replace(/\s+/g, '')) && s15 != null;   // 1005 창고 공간이 빠듯한 시리즈: ×2·계절 배수 없이 딱 15일 판매량만큼
-      var mult = s15 >= 10 && !tight ? ryRecMult(item.name) : null, base = tight ? Math.max(1, Math.ceil(s15)) : s15 >= 10 ? Math.ceil(s15 * 2 * (mult ? mult.x : 1)) : 10;
-      var box = parseInt((String(item.boxUnit || '').match(/\d{1,5}/) || ['0'])[0], 10) || 0, isBox = item.unit === '박스';
-      var lim = (String(item.note || '').match(/월\s*(\d+)\s*개?\s*(제한|한도)/) || [])[1], n = base, unit = '개', capped = false;
-      var r10 = false;
-      if (isBox) { if (!box) return null; n = Math.max(1, Math.ceil(base / box)); unit = '박스'; }
-      else { if (n % 10) { n = Math.ceil(n / 10) * 10; r10 = true; }   // 1006 사용자: 낱개 수량은 무조건 십 단위로 끝나게 (34 → 40)
-        if (lim && n > +lim) { n = +lim; capped = true; r10 = false; } }
-      return { n: n, unit: unit, why: (tight ? '15일 ' + Math.round(s15) + '개 팔림 → 창고 공간 품목이라 15일치 그대로 = ' + base + '개' : s15 >= 10 ? '15일 ' + Math.round(s15) + '개 팔림 → ×2' + (mult ? ' × ' + mult.m + '월 ' + mult.x + '배' : '') + ' = ' + base + '개' : '15일 판매 ' + (s15 == null ? '기록 없음' : Math.round(s15) + '개') + ' → 10개 미만이라 기본 10개') + (isBox ? ' → ' + box + '개입 ' + n + '박스' : '') + (r10 ? ' → 십 단위로 올림 ' + n + '개' : '') + (capped ? ' · 월 ' + lim + '개 한도' : '') };
-    }
-    function ryRecApply(row, n, unit) {   // 1차 검토: 15일 기준 수량으로 바꾸고 바로 저장 (단위가 다르면 단위도)
-      ['qty-', 'm-qty-'].forEach(function (p) { var i = document.getElementById(p + row); if (i) i.value = n; });
-      var cur = ((document.getElementById('unit-btn-' + row) || document.getElementById('m-unit-btn-' + row) || {}).innerText || '개').trim();
-      if (unit && cur !== unit) { try { toggleUnit(row); } catch (e) {} }
-      saveModifiedQtyAndUnit(row, document.getElementById('qty-' + row) || document.getElementById('m-qty-' + row));
-    }
-    function ryRecApplyAll() {
-      var list = (window.RV_PURE || cachedReviewItems || []).map(function (it) { var r = ryRec(it), q = parseInt(String(it.targetQty).replace(/[^0-9]/g, ''), 10) || 1; return r && (r.n !== q || r.unit !== (it.unit || '개')) ? [it, r] : null; }).filter(Boolean);
-      if (!list.length) { showToast('모두 15일 기준이에요'); return; }
-      list.forEach(function (p, k) { setTimeout(function () { ryRecApply(p[0].rowNumber, p[1].n, p[1].unit); }, k * 350); });
-      showToast(list.length + '개 상품을 15일 기준 수량으로 맞췄어요', 2600);
-    }
-    function ryRecHead() {
-      var b = document.getElementById('ryRecAll'); if (!b) return;
-      var n = (window.RV_PURE || cachedReviewItems || []).filter(function (it) { var r = ryRec(it), q = parseInt(String(it.targetQty).replace(/[^0-9]/g, ''), 10) || 1; return r && (r.n !== q || r.unit !== (it.unit || '개')); }).length;
-      b.hidden = !n; b.querySelector('b').textContent = n;
-    }
-    function ryRecWhy(row) { var it = (lastSearchResults || []).filter(function (x) { return x.rowNumber === row; })[0] || findItemByRow(row), r = ryRec(it); if (r) showToast('추천 ' + r.n + r.unit + ' · ' + r.why, 4200); }
     function ry25PresetHtml(item) {
-      var list = item && item.unit === '박스' ? [] : ry25Presets(item), rec = ryRec(item);   /* 1003 박스 단위 상품에 '30개' 프리셋이 30박스로 들어가던 것 막음 */
-      if (!list.length && !rec) return '';
-      var cur = rec ? rec.n : parseInt(String(item.targetQty || '').replace(/[^0-9]/g, ''), 10) || 0;
-      return '<span class="ry25-pre" onclick="event.stopPropagation()">' + (rec ? '<button type="button" class="rec on" data-pre-row="' + item.rowNumber + '" data-n="' + rec.n + '" onclick="ry25SetQty(' + item.rowNumber + ', ' + rec.n + ');ryRecWhy(' + item.rowNumber + ')" title="' + escapeHtml(rec.why) + '"><span>' + RYI.sparkles + '추천 ' + rec.n + rec.unit + '</span></button>' : '')
-        + list.filter(function (p) { return !rec || p.n !== rec.n; }).map(function (p) {
+      var list = item && item.unit === '박스' ? [] : ry25Presets(item);   /* 1003 박스 단위 상품에 '30개' 칩이 30박스로 들어가던 것 막음 */
+      if (!list.length) return '';
+      var cur = parseInt(String(item.targetQty || '').replace(/[^0-9]/g, ''), 10) || 0;
+      return '<span class="ry25-pre" onclick="event.stopPropagation()">' + list.map(function (p) {
         return '<button type="button" class="' + (p.best ? 'best' : '') + (p.n === cur ? ' on' : '') + '" data-pre-row="' + item.rowNumber + '" data-n="' + p.n + '"'
-          + ' onclick="ry25SetQty(' + item.rowNumber + ', ' + p.n + ')" title="' + (p.best ? '이 수량부터 최저가' : '주문 단위') + '"><span>' + p.n + '개</span></button>';
+          + ' onclick="ry25SetQty(' + item.rowNumber + ', ' + p.n + ')" title="' + p.tip + '" aria-label="' + p.t + ' 넣기"><span>' + p.t + '</span></button>';
       }).join('') + '</span>';
     }
     function ry25MarkPreset(rowNumber) {
@@ -10498,14 +10421,13 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var row = parseInt(it.rowNumber, 10) || 0;
       var since = rfDaysSince(it.lastInbound), dl = rfNum(it.daysLeft), cyc = rfNum(it.avgCycleDays), s15 = rfNum(it.sales15);
       var unit = it.unit === '박스' ? '박스' : '개';
-      var usual = Math.max(1, parseInt(it.usualQty, 10) || 1), _src = (function () { try { return findItemByRow(row) || ((typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) || []).filter(function (x) { return x.rowNumber === row; })[0] || {}; } catch (e) { return {}; } })(), rec = ryRec({ name: it.name, sales15: it.sales15, boxUnit: it.boxUnit || _src.boxUnit, unit: it.unit, note: it.note || _src.note, category: it.category || _src.category }, cyc), qty = rec ? rec.n : usual;   /* 1003 추천 수량 */
+      var qty = Math.max(1, parseInt(it.usualQty, 10) || 1);
       var chip = dl == null ? '' : dl < 0 ? (-dl) + '일 지남' : dl === 0 ? '오늘 예정' : '예정 D-' + dl;
       var hint = group === 'stale' ? '<span class="ry25-rf-hint">안 파는 상품이면 [특이사항]에서 판매종료 표시</span>' : '';
       var img = it.imgUrl
         ? '<img src="' + escapeHtml(it.imgUrl) + '" referrerpolicy="no-referrer" data-row="' + row + '" loading="lazy" alt="" onerror="imgFallback(this)">'
         : '<div class="ry25-rf-noimg">' + RYI.pill + '</div>';
       var meta = ['마지막 입고 ' + (since == null ? '-' : since + '일 전'), cyc ? '평균 ' + cyc + '일 주기' : '입고 ' + (parseInt(it.cycles, 10) || 1) + '회', '15일 판매 ' + (s15 == null ? '-' : s15)];
-      var recLine = rec ? '<button type="button" class="ry-rec-line" onclick="showToast(this.dataset.w, 4200)" data-w="' + escapeHtml('추천 ' + rec.n + rec.unit + ' · ' + rec.why) + '">' + RYI.sparkles + '추천 <b>' + rec.n + rec.unit + '</b>' + (usual !== rec.n ? ' <span>· 평소 ' + usual + '</span>' : '') + '</button>' : '';
       var act = group === 'insufficient' ? '' :
         '<div class="ry25-rf-act">'
         + '<div class="ry25-step"><button type="button" aria-label="수량 1 줄이기" onclick="rfStep(' + row + ', -1)">' + RYI.minus + '</button>'
@@ -10517,7 +10439,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         + '<div class="ry25-rf-img">' + img + '</div>'
         + '<div class="ry25-rf-m"><b class="ry25-rf-n">' + escapeHtml(it.name) + '</b>'
         + '<span class="ry25-rf-meta">' + meta.map(escapeHtml).join(' · ') + '</span>'
-        + (chip ? '<span class="ry25-rf-chip ' + group + '">' + escapeHtml(chip) + '</span>' : '') + recLine + hint
+        + (chip ? '<span class="ry25-rf-chip ' + group + '">' + escapeHtml(chip) + '</span>' : '') + hint
         + '</div>' + act + '</div>';
     }
     function rfRender() {
@@ -13295,15 +13217,17 @@ html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-tab[aria-selected="tru
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab[aria-selected="true"] .edu-tab-i{background:rgba(255,255,255,.18)!important;color:#fff!important}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab[aria-selected="true"] .edu-tab-t small{color:rgba(255,255,255,.88)}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab-hint{margin:0 2px 10px;font-size:13px;line-height:1.5;color:#667085}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-stg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-st{display:flex!important;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;min-height:108px!important;padding:14px!important;border:1px solid #EDEEF0!important;border-radius:20px!important;background:#fff!important;color:#111827!important;text-align:left;cursor:pointer;box-shadow:0 1px 2px rgba(16,24,40,.04)}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-st-i{width:40px;height:40px;flex:none;display:grid;place-items:center;margin-bottom:8px;border-radius:12px;background:#EFF4FF;color:#155EEF}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-stg,html:not(#q):not(#w):not(#e) body:not(#r) .edu-btg{--c:2;--g:8px;display:flex;flex-wrap:wrap;gap:var(--g)}   /* 1009b 줄이 덜 차면 마지막 줄 타일이 늘어나 채움 (MJ: 빈칸 X) */
+html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-st{display:flex!important;flex-direction:row;align-items:center;gap:10px;flex:1 1 calc((100% - (var(--c) - 1) * var(--g)) / var(--c) - 1px);min-width:0;min-height:64px!important;padding:10px 12px!important;border:1px solid #EDEEF0!important;border-radius:20px!important;background:#fff!important;color:#111827!important;text-align:left;cursor:pointer;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-st-i{width:40px;height:40px;flex:none;display:grid;place-items:center;border-radius:12px;background:#EFF4FF;color:#155EEF}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-st-t{display:flex;flex-direction:column;min-width:0}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-st.skin .edu-st-i{background:#FDF2FA;color:#C11574}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-st b{font-size:15.5px;line-height:1.35;font-weight:700!important;word-break:keep-all;overflow-wrap:anywhere}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-st small{font-size:13px;line-height:1.4;font-weight:500;color:#667085;font-variant-numeric:tabular-nums}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-st b{font-size:15px;line-height:1.3;font-weight:700!important;word-break:keep-all;overflow-wrap:anywhere}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-st small{font-size:12.5px;line-height:1.4;font-weight:500;color:#667085;font-variant-numeric:tabular-nums}
 html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-st.more{background:#F9FAFB!important;border-style:dashed!important;border-color:#D0D5DD!important;box-shadow:none}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-st.more .edu-st-i{background:#F2F4F7;color:#475467}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-btg{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-btg{--c:1}
+html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-btg>.edu-bt{flex:1 1 calc((100% - (var(--c) - 1) * var(--g)) / var(--c) - 1px);width:auto}
 html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-bt{display:flex!important;align-items:flex-start;gap:12px;width:100%;min-width:0;min-height:72px!important;padding:14px!important;border:1px solid #EDEEF0!important;border-radius:20px!important;background:#fff!important;color:#111827!important;text-align:left;cursor:pointer;box-shadow:0 1px 2px rgba(16,24,40,.04)}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-bt .edu-mono{width:44px;height:44px;border-radius:12px;font-size:19px}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-bt-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
@@ -13313,10 +13237,10 @@ html:not(#q):not(#w):not(#e) body:not(#r) .edu-bt-x{display:none}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-bt-x i{display:block;flex:0 1 auto;min-width:0;height:30px;padding:0 10px;border:1px solid #EAECF0;border-radius:999px;font-style:normal;font-size:12.5px;font-weight:600;line-height:28px;color:#475467;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-bt-x i small{margin-left:4px;font-size:12px;color:#667085;font-variant-numeric:tabular-nums}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-bt-x i.n{flex:none;background:#F2F4F7;border-color:#F2F4F7;color:#475467}
-@media(max-width:429px){ html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-st{min-height:96px!important;padding:12px!important} html:not(#q):not(#w):not(#e) body:not(#r) .edu-st-i{width:36px;height:36px;margin-bottom:6px} }
-@media(min-width:430px){ html:not(#q):not(#w):not(#e) body:not(#r) .edu-stg{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media(max-width:429px){ html:not(#q):not(#w):not(#e) body:not(#r) .edu-st-i{width:36px;height:36px} html:not(#q):not(#w):not(#e) body:not(#r) .edu-st b{font-size:14.5px} html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-st{gap:8px;padding:10px!important} }
+@media(min-width:560px){ html:not(#q):not(#w):not(#e) body:not(#r) .edu-stg{--c:3} }
 @media(min-width:560px){
-  html:not(#q):not(#w):not(#e) body:not(#r) .edu-btg{grid-template-columns:repeat(2,minmax(0,1fr))}
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-btg{--c:2}
   html:not(#q):not(#w):not(#e) body:not(#r) .edu-bt-l{display:none}
   html:not(#q):not(#w):not(#e) body:not(#r) .edu-bt-x{display:flex;gap:6px;margin-top:6px;min-width:0;overflow:hidden}
 }
@@ -13324,12 +13248,12 @@ html:not(#q):not(#w):not(#e) body:not(#r) .edu-bt-x i.n{flex:none;background:#F2
   html:not(#q):not(#w):not(#e) body:not(#r) .edu-tabs{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
   html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-tab{min-height:68px!important;padding:12px!important;gap:12px}
   html:not(#q):not(#w):not(#e) body:not(#r) .edu-tab-i{width:42px;height:42px}
-  html:not(#q):not(#w):not(#e) body:not(#r) .edu-stg{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-  html:not(#q):not(#w):not(#e) body:not(#r) .edu-btg{gap:10px}
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-stg{--c:4;--g:10px}
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-btg{--g:10px}
 }
 @media(min-width:1100px){
-  html:not(#q):not(#w):not(#e) body:not(#r) .edu-stg{grid-template-columns:repeat(5,minmax(0,1fr))}
-  html:not(#q):not(#w):not(#e) body:not(#r) .edu-btg:not(.two){grid-template-columns:repeat(3,minmax(0,1fr))}
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-stg{--c:5}
+  html:not(#q):not(#w):not(#e) body:not(#r) .edu-btg:not(.two){--c:3}
 }
 </style>
 
@@ -13857,14 +13781,14 @@ function eduShow() {
   eduDotSync();
   if (!EDU.loadedAt || Date.now() - EDU.loadedAt > 5 * 60000) { EDU.loadedAt = Date.now(); eduLoad(); }
 }
-function eduOpen() { eduShow(); EDU.stack = [{ v: 'hub' }]; EDU.q = ''; EDU.concern = ''; EDU.symN = 10; EDU.symC = 0; EDU.symMore = 0; EDU.tab = eduTabSaved(); eduRender(); }   /* 1008 열 때는 늘 첫 화면 (지난 검색 · 고민 칩 X) */
+function eduOpen() { eduShow(); EDU.stack = [{ v: 'hub' }]; EDU.q = ''; EDU.concern = ''; EDU.symN = 10; EDU.symC = 0; EDU.symMore = 0; EDU.tab = eduTabSaved(); EDU.tabMoved = 0; eduRender(); }   /* 1008 열 때는 늘 첫 화면 (지난 검색 · 고민 칩 X) */
 function eduOpenCard(id) { if (document.getElementById('eduReader').hidden) { eduShow(); EDU.stack = [{ v: 'hub' }]; } eduPush({ v: 'card', id: id }); }
 /* 층마다 보던 위치(y)를 기억 → 뒤로 오면 그 자리. 층 수 = 뒤로가기 기록 수 (ryLayers 가 EDU.stack 길이로 셈) */
 function eduPush(st) { var top = EDU.stack[EDU.stack.length - 1]; if (top) top.y = document.getElementById('eduScroll').scrollTop; EDU.rep = ''; EDU.stack.push(st); eduRender(); }
 /* 1008 자료실 첫 화면에서 고민 칩 · 검색어 = 뒤로가기 한 층 → 뒤로 = 걸러보기 풀고 첫 화면, 한 번 더 = 닫기 */
-/* 1009 첫 화면 칸(약·몸 증상 기본)이 기본이 아니면 한 층 더 → 뒤로 = 걸러보기 풀기 → 기본 칸 → 닫기 */
-function eduHubF() { return (String(EDU.q || '').trim() || EDU.concern ? 1 : 0) + (EDU.tab && EDU.tab !== '몸' ? 1 : 0); }
-function eduBack() { EDU.rep = ''; if (EDU.stack.length > 1) { EDU.stack.pop(); eduRender(false, true); } else if (String(EDU.q || '').trim() || EDU.concern) { EDU.q = ''; EDU.concern = ''; eduRender(); } else if (EDU.tab && EDU.tab !== '몸') eduSetTab('몸'); else eduClose(); }
+/* 1009 이번에 바꾼 칸(약·몸 증상 기본이 아닌 것)은 한 층 더 → 뒤로 = 걸러보기 풀기 → 기본 칸 → 닫기 */
+function eduHubF() { return (String(EDU.q || '').trim() || EDU.concern ? 1 : 0) + (EDU.tabMoved && EDU.tab !== '몸' ? 1 : 0); }   /* 1009b 기억해 둔 칸으로 열렸으면 뒤로 한 번 = 닫기 · 이번에 칸을 바꿨을 때만 한 층 */
+function eduBack() { EDU.rep = ''; if (EDU.stack.length > 1) { EDU.stack.pop(); eduRender(false, true); } else if (String(EDU.q || '').trim() || EDU.concern) { EDU.q = ''; EDU.concern = ''; eduRender(); } else if (EDU.tabMoved && EDU.tab !== '몸') eduSetTab('몸'); else eduClose(); }
 function eduClose() { document.getElementById('eduReader').hidden = true; document.documentElement.classList.remove('edu-lock'); }
 function eduOpenBrand(b) { eduPush({ v: 'brand', b: b }); }
 /* 카드 → 브랜드: 바로 아래 층이 그 브랜드면 뒤로(층이 쌓이지 않게) */
@@ -13963,7 +13887,7 @@ function eduHubDraw() {
 /* ── 1009 첫 화면 4칸 (MJ: 카테고리가 딱 나눠져 바로 보이게) — 약·몸 증상 · 피부 고민 · 브랜드 · 공부. 고른 칸은 기기에 기억 ── */
 var EDU_TABS = [['몸', '약·몸 증상'], ['피부', '피부 고민'], ['brand', '브랜드'], ['study', '공부']];
 function eduTabSaved() { var t = ''; try { t = localStorage.getItem('ry_edu_tab') || ''; } catch (e) {} return EDU_TABS.some(function (x) { return x[0] === t; }) ? t : '몸'; }
-function eduSetTab(k) { EDU.tab = k; EDU.symMore = 0; try { localStorage.setItem('ry_edu_tab', k); } catch (e) {} eduHubDraw(); var sc = document.getElementById('eduScroll'), tb = document.getElementById('eduTabs'); if (sc && tb && sc.scrollTop > tb.offsetTop) sc.scrollTop = tb.offsetTop; }
+function eduSetTab(k) { EDU.tabMoved = EDU.tabMoved || k !== EDU.tab; EDU.tab = k; EDU.symMore = 0; try { localStorage.setItem('ry_edu_tab', k); } catch (e) {} eduHubDraw(); var sc = document.getElementById('eduScroll'), tb = document.getElementById('eduTabs'); if (sc && tb && sc.scrollTop > tb.offsetTop) sc.scrollTop = tb.offsetTop; }
 function eduSvg(d) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>'; }
 var EDU_SI = {   /* lucide 모양 (stroke 1.5) */
   pill: '<path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/>',
@@ -14006,7 +13930,7 @@ var EDU_SYM_IC = [[/감기|기침/, 'pill'], [/해열|진통|열/, 'thermo'], [/
 function eduSymIco(x) { var k = (EDU_SYM_IC.filter(function (r) { return r[0].test(x.n); })[0] || [0, x.g === '몸' ? 'cross' : 'spark'])[1]; return eduSvg(EDU_SI[k]); }
 function eduSymTile(x) {
   return '<button type="button" class="edu-st ' + (x.g === '몸' ? 'body' : 'skin') + '" data-t="' + eduE(x.n) + '" onclick="eduSetConcern(this.dataset.t)"><span class="edu-st-i" aria-hidden="true">' + eduSymIco(x) + '</span>'
-    + '<b>' + eduE(x.n) + '</b><small>' + (x.cnt ? '상품 ' + x.cnt : '상담 가이드') + '</small></button>';
+    + '<span class="edu-st-t"><b>' + eduE(x.n) + '</b><small>' + (x.cnt ? '상품 ' + x.cnt : '상담 가이드') + '</small></span></button>';
 }
 /* 상품 2개 이하 고민은 '더보기' 뒤로 (상품 수 많은 순 · 같으면 원래 순서) */
 function eduSymGrid(g) {
@@ -14014,7 +13938,7 @@ function eduSymGrid(g) {
   var top = xs.filter(function (x) { return x.cnt > 2; }), low = xs.filter(function (x) { return x.cnt <= 2; });
   if (!top.length) { top = low; low = []; }
   return '<p class="edu-tab-hint">누르면 상담 멘트 · 물어볼 것 · 우리 약국 많이 팔린 순이 나와요</p><div class="edu-stg" role="group" aria-label="' + (g === '몸' ? '약·몸 증상' : '피부 고민') + '">' + top.concat(EDU.symMore ? low : []).map(eduSymTile).join('')
-    + (low.length ? '<button type="button" class="edu-st more" aria-expanded="' + !!EDU.symMore + '" onclick="EDU.symMore = EDU.symMore ? 0 : 1; eduHubDraw()"><span class="edu-st-i" aria-hidden="true">' + eduSvg(EDU.symMore ? '<path d="m18 15-6-6-6 6"/>' : '<path d="m6 9 6 6 6-6"/>') + '</span><b>' + (EDU.symMore ? '접기' : '더보기 (' + low.length + ')') + '</b><small>' + (EDU.symMore ? '상품 적은 고민 숨기기' : '상품 2개 이하 고민') + '</small></button>' : '') + '</div>';
+    + (low.length ? '<button type="button" class="edu-st more" aria-expanded="' + !!EDU.symMore + '" onclick="EDU.symMore = EDU.symMore ? 0 : 1; eduHubDraw()"><span class="edu-st-i" aria-hidden="true">' + eduSvg(EDU.symMore ? '<path d="m18 15-6-6-6 6"/>' : '<path d="m6 9 6 6 6-6"/>') + '</span><span class="edu-st-t"><b>' + (EDU.symMore ? '접기' : '더보기 (' + low.length + ')') + '</b><small>' + (EDU.symMore ? '상품 적은 고민 숨기기' : '상품 2개 이하 고민') + '</small></span></button>' : '') + '</div>';
 }
 /* 브랜드 · 공부 타일: 이름 · 한 줄 설명 · 칩 3개 + 나머지 수 (폰은 칩 대신 글 한 줄) */
 function eduHomeTile(attrs, ico, title, meta, names, chips) {
