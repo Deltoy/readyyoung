@@ -8771,7 +8771,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       refreshDelayReasons(Date.now() - DELAY_AT > 30000);   /* 1002 지연 탭을 볼 때는 30초 지난 이유면 새로 받음 */
       const src = cachedInboundItems || [];
       const delayed = src
-        .filter(it => { const d = daysSince(effOrderDate(it)); return d != null && d >= 7; })   /* 1001 재주문 날짜부터 다시 셈 */
+        .filter(it => { const d = daysSince(effOrderDate(it)); return d != null && d >= 7 && !delayReasonOf(it); })   /* 1001 재주문 날짜부터 다시 셈 · 1009 늦는 이유가 적힌 상품은 입고대기에서만 */
         .sort((a, b) => (daysSince(effOrderDate(b)) || 0) - (daysSince(effOrderDate(a)) || 0));
 
       setSubBadge('tabDelayedBadge', delayed.length, true);
@@ -12071,7 +12071,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       function per(m) { var k = Object.keys(m), n = k.reduce(function (s, d) { return s + m[d]; }, 0); return { n: n, avg: k.length ? n / k.length : 0 }; }
       var w = per(wk), o = per(old);
       var ages = (cachedInboundItems || []).map(function (x) { return daysSince(effOrderDate(x)); }).filter(function (d) { return d != null; });
-      var late = ages.filter(function (d) { return d >= 7; }).length, soon = ages.filter(function (d) { return d >= 4 && d < 7; }).length;
+      var late = (cachedInboundItems || []).filter(function (x) { var d = daysSince(effOrderDate(x)); return d != null && d >= 7 && !delayReasonOf(x); }).length, soon = ages.filter(function (d) { return d >= 4 && d < 7; }).length;
       var lt = LT.data && LT.data.overall, rj = RJA.data && RJA.data.totals, ltN = lt ? parseInt(lt.n, 10) || 0 : 0;
       function wait(st) { return st.err ? '못 불러옴 · 눌러서 다시' : (st.loading ? '불러오는 중' : ''); }
       return [
