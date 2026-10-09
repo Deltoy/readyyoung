@@ -2298,6 +2298,12 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pre button{min-height:44px;min-w
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pre button>span{display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:999px;border:1px solid var(--z-line2);background:#fff;font-size:12.5px;font-weight:600;color:var(--z-ink2);font-variant-numeric:tabular-nums;transition:background .15s,color .15s,border-color .15s}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pre button.best>span{border-color:#f0d78a;background:var(--z-warn-soft);color:var(--z-warn)}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pre button.on>span{background:var(--z-ink);border-color:var(--z-ink);color:#fff}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-rv-pre{display:flex;flex-wrap:wrap;justify-content:center;gap:0 2px;margin:4px 0 0}   /* 1009 1차 검토 수량 칩 */
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-oc-qty .ry-rv-pre{justify-content:center;margin:2px 0 0}
+@media(min-width:720px){ html:not(#q):not(#w):not(#e) body:not(#r) .ry-oc-qty .ry25-qtybox>input[id^="m-qty-"]{height:56px!important;font-size:20px!important} }
+@media(max-width:719px){ html:not(#q):not(#w):not(#e) body:not(#r) #reviewCardContainer .ry-oc-qty .ry25-qtybox>input[id^="m-qty-"]{height:68px!important;min-height:68px!important;font-size:22px!important} }
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-oc-qty .ry-rv-pre button{min-width:0;padding:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-oc-qty .ry-rv-pre button>span{padding:0 7px;font-size:12px;white-space:nowrap}   /* 1009 15일 기준 줄이 빠진 자리: 주문 칸을 크게 (Fold 에서 누르기 쉽게) */
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pre button:hover>span{border-color:var(--z-ink)}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pc-act{display:flex;align-items:center;gap:10px;grid-column:3;grid-row:1 / span 2}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-step{display:inline-flex;align-items:center;background:#f6f7f9;border:1px solid var(--z-line2);border-radius:14px;padding:2px;height:50px;box-sizing:border-box}
@@ -7770,7 +7776,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
                   class="px-2 py-1 text-xs font-black rounded-lg border shadow-sm transition ${currentUnit === '박스' ? 'bg-indigo-600 text-white' : 'bg-blue-50 text-blue-700 border-blue-300'}">
             ${currentUnit}
           </button>
-        </div>
+        </div>${type === 'review' ? ryRvPreHtml(item) : ''}
       `;
 
       let actionButtons = '';
@@ -7871,7 +7877,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
                     class="px-2.5 py-1.5 text-xs font-black rounded-xl border shadow-sm transition ${currentUnit === '박스' ? 'bg-indigo-600 text-white' : 'bg-blue-50 text-blue-700 border-blue-300'}">
               ${currentUnit}
             </button>
-            </div>
+            </div>${type === 'review' ? ryRvPreHtml(item) : ''}
           </div>
         </section>
         <section class="ry-oc-photo">${imgHtml}</section>
@@ -10188,6 +10194,25 @@ html body #ryLaunchGrid .tl-search{top:56px}
       else if (unitN) out.push({ n: unitN, t: '주문단위 ' + unitN + '개', tip: '주문단위' });
       if (min) { if (out[0] && out[0].n === min) out[0] = { n: min, t: '최저 ' + min + '개', tip: '최저수량 · ' + out[0].tip, best: true }; else out.push({ n: min, t: '최저 ' + min + '개', tip: '최저수량', best: true }); }
       return out;
+    }
+    /* 1009 1차 검토 수량 칩 (검색 카드와 같은 '1박스 (N개)' · '최저 N개') — 누르면 손으로 고치고 칸을 벗어날 때와 같은 저장 */
+    function ryRvPreHtml(item) {
+      var list = item && item.unit === '박스' ? [] : ry25Presets(item);
+      if (!list.length) return '';
+      var cur = parseInt(String(item.targetQty || '').replace(/[^0-9]/g, ''), 10) || 0;
+      return '<span class="ry25-pre ry-rv-pre">' + list.map(function (p) {
+        return '<button type="button" class="' + (p.best ? 'best' : '') + (p.n === cur ? ' on' : '') + '" data-rv-row="' + item.rowNumber + '" data-n="' + p.n + '"'
+          + ' onclick="ryRvSetQty(' + item.rowNumber + ', ' + p.n + ')" title="' + p.tip + '" aria-label="' + p.t + ' 넣기"><span>' + p.t + '</span></button>';
+      }).join('') + '</span>';
+    }
+    function ryRvSetQty(row, n) {
+      var u = ((document.getElementById('unit-btn-' + row) || document.getElementById('m-unit-btn-' + row) || {}).innerText || '개').trim();
+      if (u === '박스') { showToast('지금 박스 단위예요 — 개로 바꾼 뒤 눌러 주세요'); return; }   /* 개 수량이 박스 수로 들어가지 않게 */
+      var pc = document.getElementById('qty-' + row), m = document.getElementById('m-qty-' + row), src = pc && pc.offsetParent ? pc : (m || pc);
+      if (!src) return;
+      src.value = n;
+      saveModifiedQtyAndUnit(row, src);
+      document.querySelectorAll('[data-rv-row="' + row + '"]').forEach(function (b) { b.classList.toggle('on', +b.getAttribute('data-n') === n); });
     }
     function ry25PresetHtml(item) {
       var list = item && item.unit === '박스' ? [] : ry25Presets(item);   /* 1003 박스 단위 상품에 '30개' 칩이 30박스로 들어가던 것 막음 */
