@@ -3,6 +3,7 @@
 //   eduCompare  ← edu_compare_1010.json          (성분 계열 비교표)
 //   eduInteract ← edu_interact_glossary_1010.json (같이 먹으면 안 되는 조합 · 통역 단어장)
 //   eduStory    ← edu_story_1010.json             (오늘의 성분 — 파일이 없으면 빈 목록 → 화면에서 카드 숨김)
+// eduStory 는 같은 내용을 이 폴더 edu_story.json 으로도 써서 Pages 로 공개 → 트렌드랩이 fetch (https://deltoy.github.io/readyyoung/edu_story.json)
 // 태그가 없으면 eduGuideProds 태그 바로 뒤에 새로 넣는다. 소스는 덮어쓰기 전에 .bak 으로 한 번 남긴다.
 const fs = require('fs'), path = require('path'), os = require('os');
 const DIR = path.join(os.homedir(), 'Desktop/레디영물류_배포'), SRC = process.argv[2] || path.join(DIR, '2_Index에_붙여넣기.txt');
@@ -14,6 +15,7 @@ for (const [id, file] of MAP) {
   if (fs.existsSync(f)) data = JSON.parse(fs.readFileSync(f, 'utf8'));   // 깨진 JSON 이면 여기서 멈춤 (소스는 그대로)
   else if (id === 'eduStory') data = { version: '', items: [] };
   else throw new Error(file + ' 이 없어요');
+  if (id === 'eduStory') fs.writeFileSync(path.join(__dirname, 'edu_story.json'), JSON.stringify(data));
   const tag = '<script type="application/json" id="' + id + '">' + JSON.stringify(data).replace(/<\//g, '<\\/') + '</script>';
   const re = new RegExp('<script type="application/json" id="' + id + '">[\\s\\S]*?</script>');
   if (re.test(s)) s = s.replace(re, () => tag);
