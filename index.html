@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mv62iz2j">
+  <meta name="ry-build" content="mv63cq1b">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -3360,6 +3360,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .nt-swap .o{display:inline-flex;align-
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-swap>.ry-i{color:#9ca3af}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-tl-inline{display:flex;gap:8px;flex-wrap:wrap}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-sheet .nt-raw{width:100%;min-height:150px;border:1px solid #d1d5db;border-radius:14px;padding:12px;font-size:15px;line-height:1.5;box-sizing:border-box;resize:vertical}
+html:not(#q):not(#w):not(#e) body:not(#r) .nt-elab{display:block;font-size:13px;font-weight:600;color:#4b5563;margin:2px 0 6px}
+html:not(#q):not(#w):not(#e) body:not(#r) #ntESheet .ntp-row{margin:10px 0 12px}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
 /* 0928 공지 사진 · 참석/불참 · 댓글 */
 html:not(#q):not(#w):not(#e) body:not(#r) .ntp-grid{display:grid;gap:6px;grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -5816,7 +5818,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     var RY_NAV = { pushed: 0, goAt: 0, ready: false, busy: false, tabs: [], ok: true };
     var RY_SHEET_CLOSE = { noteSheet: 'closeNote', npSheet: 'closeNewProduct', dupSheet: 'closeDuplicates', cbSheet: 'closeCatBrowse', infoSheet: 'closeInfo', inMemoSheet: 'closeInMemo',
                            seSheet: 'closeSetEdit', teSheet: 'closeTagEdit', avaSheet: 'closeAvaPicker', phSheet: 'closePhotoChoice', drSheet: 'closeDelayReason', rejSheet: 'closeRejects',
-                           stSheet: 'closeStale', ntSheet: 'ntClosePaste', sdSheet: 'sdCloseWeek', sdPk: 'sdPkClose', pfaSheet: 'pfaClose', s15Sheet: 's15Close' };
+                           stSheet: 'closeStale', ntSheet: 'ntClosePaste', ntESheet: 'ntCloseEdit', sdSheet: 'sdCloseWeek', sdPk: 'sdPkClose', pfaSheet: 'pfaClose', s15Sheet: 's15Close' };
     function ryOpenSheets() { return [].slice.call(document.querySelectorAll('.ava-sheet.on')); }
     function ryShown(id) { var e = document.getElementById(id); return !!e && !e.hidden; }
     function ryLayers() {   /* 아래 → 위 순서 */
@@ -11847,18 +11849,20 @@ html body #ryLaunchGrid .tl-search{top:56px}
         .deleteNoticeComment(cid, currentSelectedMember);
     }
     /* 쓰기 창: 사진 (최대 6장, 고르자마자 올림) */
+    /* 1013 사진 칸은 붙여넣기 창(ntPhs · NT.photos)과 고치기 창(ntEPhs · NT.ephotos)이 같이 쓴다 */
+    function ntPhArr() { return NT.phMode === 'edit' ? (NT.ephotos = NT.ephotos || []) : (NT.photos = NT.photos || []); }
     function ntPhRender() {
-      var box = document.getElementById('ntPhs'); if (!box) return;
-      var ph = NT.photos || [];
-      box.innerHTML = ph.map(function (p, i) { return p.url ? '<span class="ntp-t"><img src="' + escapeHtml(p.url) + '" alt=""><button type="button" aria-label="사진 빼기" onclick="NT.photos.splice(' + i + ', 1); ntPhRender()">' + RYI.x + '</button></span>' : '<span class="ntp-t busy" aria-busy="true">올리는 중…</span>'; }).join('')
+      var box = document.getElementById(NT.phMode === 'edit' ? 'ntEPhs' : 'ntPhs'); if (!box) return;
+      var ph = ntPhArr();
+      box.innerHTML = ph.map(function (p, i) { return p.url ? '<span class="ntp-t"><img src="' + escapeHtml(p.url) + '" alt=""><button type="button" aria-label="사진 빼기" onclick="ntPhArr().splice(' + i + ', 1); ntPhRender()">' + RYI.x + '</button></span>' : '<span class="ntp-t busy" aria-busy="true">올리는 중…</span>'; }).join('')
         + (ph.length < 6 ? '<label class="ntp-add">' + '<input type="file" accept="image/*" multiple onchange="ntAddPhotos(this)">' + RYI.plus + '<span>사진 추가</span><small>' + ph.length + '/6</small></label>' : '');
     }
     function ntAddPhotos(inp) {
-      NT.photos = NT.photos || [];
-      var fs = [].slice.call(inp.files || []).slice(0, 6 - NT.photos.length); inp.value = '';
+      var arr = ntPhArr();
+      var fs = [].slice.call(inp.files || []).slice(0, 6 - arr.length); inp.value = '';
       fs.forEach(function (f) {
-        var slot = { busy: true }; NT.photos.push(slot); ntPhRender();
-        var drop = function (m) { var i = NT.photos.indexOf(slot); if (i !== -1) NT.photos.splice(i, 1); ntPhRender(); showToast(m || '사진을 올리지 못했어요', 2000); };
+        var slot = { busy: true }; arr.push(slot); ntPhRender();
+        var drop = function (m) { var i = arr.indexOf(slot); if (i !== -1) arr.splice(i, 1); ntPhRender(); showToast(m || '사진을 올리지 못했어요', 2000); };
         resizeImageFile(f, 1600, 0.82).then(function (du) {
           google.script.run.withSuccessHandler(function (r) { if (r && r.success) { slot.url = r.url; slot.busy = false; ntPhRender(); } else drop(r && r.message); }).withFailureHandler(function () { drop(); }).uploadNoticePhoto(du);
         }, function () { drop('사진을 읽지 못했어요'); });
@@ -11883,11 +11887,17 @@ html body #ryLaunchGrid .tl-search{top:56px}
           ntRender(); ntRenderLatest();
         })
         .withFailureHandler(function () { if (my !== NT.seq) return; NT.loading = false; NT.err = 'load'; ntRender(); })
-        .listNotices(NT.q, NT.month, NT.tag);
+        .listNotices('', NT.month, '');   /* 1013 태그·검색어는 화면에서 거른다 — 서버 목록 캐시 키(base64)가 한글을 '?'로 바꿔 '증정'·'품절'·'공지'가 같은 결과(먼저 부른 것)로 나왔음 */
     }
     var _ntQT = null;
-    function ntOnSearch(v) { NT.q = String(v || ''); clearTimeout(_ntQT); _ntQT = setTimeout(ntLoad, 350); }
-    function ntSetTag(t) { NT.tag = NT.tag === t ? '' : t; ntLoad(); showToast(NT.tag ? NT.tag + ' 공지만' : '모든 공지', 1200); }
+    function ntOnSearch(v) { NT.q = String(v || ''); clearTimeout(_ntQT); _ntQT = setTimeout(function () { if (typeof ryFloor === 'function') ryFloor(); ntRender(); }, 150); }
+    function ntSetTag(t) { NT.tag = NT.tag === t ? '' : t; if (typeof ryFloor === 'function') ryFloor(); ntRender(); }   /* 목록이 짧아져도 누른 칩이 제자리 (받침) */
+    function ntMatch(n) {
+      if (NT.tag && n.tag !== NT.tag) return false;
+      var q = ntNorm(NT.q); if (!q) return true;
+      var names = [].concat(n.before || [], n.after || [], n.effectiveAfter || []).map(function (x) { return x.name; }).join(' ');
+      return ntNorm([n.title, n.body, names].concat((n.corrections || []).map(function (c) { return c.title + ' ' + c.body; })).join(' ')).indexOf(q) !== -1;
+    }
     function ntSetMonth(m) { NT.month = m || ''; ntLoad(); }
     function ntRenderLatest() {
       var b = document.getElementById('ntLatest');
@@ -11907,7 +11917,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (NT.err === 'old') { box.innerHTML = '<div class="ry25-rf-msg">서버 파일(Code.gs)을 새 버전으로 교체 · 배포한 뒤에 쓸 수 있어요.</div>'; return; }
       if (NT.err) { box.innerHTML = '<div class="ry25-rf-msg">공지를 불러오지 못했어요. <button type="button" class="ry25-rf-retry" onclick="ntLoad()">다시 시도</button></div>'; return; }
       if (!NT.data) { box.innerHTML = [0, 1].map(function () { return '<div class="lt-card lt-sk tall"><i></i><i></i></div>'; }).join(''); return; }
-      var items = NT.data.items || [];
+      var items = (NT.data.items || []).filter(ntMatch);
       box.innerHTML = items.length ? items.map(ntCardHtml).join('') : '<div class="lt-card lt-empty">' + NT_ICON.mega + '<b>' + (NT.q || NT.tag || NT.month ? '맞는 공지가 없어요' : '아직 보관한 공지가 없어요') + '</b><span>카톡 공지를 [카톡 공지 붙여넣기]로 넣어 두면 여기서 찾아볼 수 있어요.</span></div>';
     }
     function ntGoItem(name) {
@@ -11924,18 +11934,45 @@ html body #ryLaunchGrid .tl-search{top:56px}
       google.script.run.withSuccessHandler(function (res) { if (!res || !res.success) { alert('지우지 못했어요: ' + ((res && res.message) || '')); return; } showToast('공지를 지웠어요'); ntLoad(); })
         .withFailureHandler(function (e) { alert('지우기 오류: ' + (e && e.message ? e.message : e)); }).deleteNotice(id, currentSelectedMember);
     }
+    /* 1013 MJ: 고치기 = 제목 · 내용 · 사진(추가·빼기) · 태그 · 날짜 (전엔 제목만 prompt) — 서버 updateNotice 가 원래 다 받음 */
     function ntEditTitle(id) {
       if (currentSelectedMember !== PF_ADMIN) return;
-      var n = (NT.data && NT.data.items || []).filter(function (x) { return x.id === id; })[0];
-      if (!n) return;
-      var t = prompt('공지 제목을 고쳐 주세요', n.title);
-      if (t == null || !t.trim()) return;
-      google.script.run.withSuccessHandler(function (res) { if (!res || !res.success) { alert('고치지 못했어요: ' + ((res && res.message) || '')); return; } showToast('제목을 고쳤어요'); ntLoad(); })
-        .withFailureHandler(function (e) { alert('고치기 오류: ' + (e && e.message ? e.message : e)); }).updateNotice(id, { title: t.trim() }, currentSelectedMember);
+      var n = ntFind(id); if (!n) return;
+      NT.editId = id; NT.phMode = 'edit'; NT.ephotos = (n.photos || []).map(function (u) { return { url: u }; });
+      document.getElementById('ntETag').value = NT_TAGS.indexOf(n.tag) !== -1 ? n.tag : '공지';
+      document.getElementById('ntEDate').value = /^\d{4}-\d{2}-\d{2}$/.test(n.date) ? n.date : '';
+      document.getElementById('ntETitle').value = n.title || '';
+      document.getElementById('ntEBody').value = n.body || '';
+      var b = document.getElementById('ntESave'); b.disabled = false; b.textContent = '고친 내용 저장';
+      ntPhRender();
+      document.getElementById('ntEDim').classList.add('on'); document.getElementById('ntESheet').classList.add('on');
+      if (typeof ryLockScroll === 'function') ryLockScroll(true);
+      setTimeout(function () { var t = document.getElementById('ntETitle'); if (t) t.focus({ preventScroll: true }); }, 60);
+    }
+    function ntCloseEdit() {
+      var sh = document.getElementById('ntESheet'); if (!sh || !sh.classList.contains('on')) return;
+      document.getElementById('ntEDim').classList.remove('on'); sh.classList.remove('on');
+      NT.phMode = 'paste'; if (typeof ryLockScroll === 'function') ryLockScroll(false);
+    }
+    function ntSaveEdit(btn) {
+      var id = NT.editId, n = ntFind(id); if (!n) { ntCloseEdit(); return; }
+      if (ntPhArr().some(function (x) { return !x.url; })) { showToast('사진을 올리는 중이에요. 잠시만요', 1600); return; }
+      var title = document.getElementById('ntETitle').value.trim();
+      if (!title) { showToast('제목을 적어 주세요', 1600); document.getElementById('ntETitle').focus(); return; }
+      var obj = { tag: document.getElementById('ntETag').value, date: document.getElementById('ntEDate').value || n.date, title: title,
+        body: document.getElementById('ntEBody').value.replace(/\s+$/, ''), photos: ntPhArr().map(function (x) { return x.url; }) };
+      btn.disabled = true; btn.textContent = '저장하는 중…';
+      google.script.run.withSuccessHandler(function (res) {
+        if (!res || !res.success) { btn.disabled = false; btn.textContent = '고친 내용 저장'; alert('고치지 못했어요: ' + ((res && res.message) || '')); return; }
+        Object.assign(n, obj); ntCloseEdit(); ntRender(); showToast('공지를 고쳤어요'); ntLoad();
+        if (NT.latest && NT.latest.id === id) { NT.latest.title = obj.title; NT.latest.tag = obj.tag; ntRenderLatest(); }
+      }).withFailureHandler(function (e) { btn.disabled = false; btn.textContent = '고친 내용 저장'; alert('고치기 오류: ' + (e && e.message ? e.message : e)); })
+        .updateNotice(id, obj, currentSelectedMember);
     }
 
     /* 붙여넣기 창 */
     function ntOpenPaste() {
+      NT.phMode = 'paste';
       document.getElementById('ntDim').classList.add('on');
       document.getElementById('ntSheet').classList.add('on');
       var d = document.getElementById('ntDate'); if (d && !d.value) d.value = sdLocalDate(new Date());
@@ -12409,6 +12446,19 @@ html body #ryLaunchGrid .tl-search{top:56px}
   <label class="ntr-opt"><input type="checkbox" id="ntRsvp"><span><b>참석 / 불참 받기</b><small>회식 · 교육처럼 인원을 모을 때 켜요</small></span></label>
   <div id="ntPrev" class="nt-prev"></div>
   <button type="button" class="np-save" id="ntSaveBtn" onclick="ntSave(this)">보관하기</button>
+</div>
+<div class="ava-dim" id="ntEDim" onclick="ntCloseEdit()"></div>
+<div class="ava-sheet nt-sheet" id="ntESheet" role="dialog" aria-label="공지 고치기">
+  <div class="ava-head"><b class="ry-info-title">공지 고치기</b><button type="button" onclick="ntCloseEdit()">닫기</button></div>
+  <div class="nt-fields">
+    <label>태그<select id="ntETag"><option>공지</option><option>증정</option><option>품절</option><option>업무</option><option>기타</option></select></label>
+    <label>공지일<input type="date" id="ntEDate"></label>
+    <label class="wide">제목<input type="text" id="ntETitle" maxlength="120"></label>
+  </div>
+  <label class="nt-elab" for="ntEBody">내용</label>
+  <textarea id="ntEBody" class="nt-raw" rows="9" maxlength="4000" aria-label="공지 내용"></textarea>
+  <div id="ntEPhs" class="ntp-row" aria-label="공지 사진"></div>
+  <button type="button" class="np-save" id="ntESave" onclick="ntSaveEdit(this)">고친 내용 저장</button>
 </div>
 
 <div class="ava-dim" id="sdDim" onclick="sdCloseWeek()"></div>
