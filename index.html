@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mv63cq1b">
+  <meta name="ry-build" content="mv660iqg">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -3580,6 +3580,16 @@ html:not(#q):not(#w):not(#e) body:not(#r) #reviewView .tab-head .th-row{flex-wra
 </style>
 <style>
 /* 1004 뷰티 상식 6칸 */
+html:not(#q):not(#w):not(#e) body:not(#r) .mb-wp{margin:14px 0 0}
+html:not(#q):not(#w):not(#e) body:not(#r) .mb-wp h3{font-size:15px;font-weight:700;color:var(--c-ink);margin:0 0 10px}.mb-wp h3 small{font-weight:600;color:var(--c-ink3);margin-left:2px}
+html:not(#q):not(#w):not(#e) body:not(#r) .mb-wpl{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+html:not(#q):not(#w):not(#e) body:not(#r) .mb-wpc{display:flex!important;align-items:center;gap:12px;min-width:0;min-height:72px;padding:8px 12px 8px 8px!important;text-align:left;background:var(--c-bg)!important;border:1px solid var(--c-line)!important;border-radius:14px!important;color:var(--c-ink)!important;cursor:pointer}
+html:not(#q):not(#w):not(#e) body:not(#r) .mb-wpc .edu-ph{position:relative;flex:none;display:grid;place-items:center;width:56px;height:56px;border-radius:10px;background:#fff;border:1px solid var(--c-line);overflow:hidden;color:#98A2B3}
+html:not(#q):not(#w):not(#e) body:not(#r) .mb-wpc .edu-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:3px;background:#fff}
+html:not(#q):not(#w):not(#e) body:not(#r) .mb-wpc .edu-ph svg{width:22px;height:22px}
+html:not(#q):not(#w):not(#e) body:not(#r) .mb-wpc .t{display:flex;flex-direction:column;gap:3px;min-width:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .mb-wpc b{font-size:14px;font-weight:650;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:keep-all;overflow-wrap:anywhere}
+html:not(#q):not(#w):not(#e) body:not(#r) .mb-wpc small{font-size:12px;color:var(--c-ink3)}
 .mb-parts{display:grid;gap:8px;margin:12px 0 0}.mb-parts>div{display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;align-items:baseline;padding-top:8px;border-top:1px solid #EAECF0}
 .mb-parts dt{font-size:12px;font-weight:700;color:#155EEF}.mb-parts dd{margin:0;font-size:14px;line-height:1.55;color:#344054;word-break:keep-all}
 .mb-parts>div.say{background:#EFF4FF;border:0;border-radius:12px;padding:10px 12px;margin-top:4px}.mb-parts>div.say dd{color:#101828;font-weight:600}
@@ -13174,6 +13184,26 @@ function mbMsg(t, retry, date) {
 }
 function mbBack() { if (MB.view === 'archive' && MB.cur) { mbShow(MB.cur); return; } mbClose(); }
 function mbClose() { document.getElementById('mbReader').hidden = true; document.documentElement.classList.remove('mb-lock'); }
+/* 1013 MJ: 뷰티 상식 성분이 든 우리 약국 제품을 사진으로 (교육 카드 성분 + 상품 이름 · 15일 판매 순 · 최대 6) · 누르면 교육 자료 또는 발주 검색 */
+function mbWordProds(term) {
+  try {
+    if (typeof eduLoad !== 'function') return '';
+    if (!EDU.data) eduLoad(true);
+    if (!eduCatItems().length && typeof eduCatWait === 'function') { eduCatWait(); setTimeout(function () { var bx = document.getElementById('mbWp'); if (bx && !bx.childElementCount && MB.cur && eduCatItems().length) mbShow(MB.cur); }, 4000); }
+    var it = eduIngMatch(term), s1 = eduIngStrip(term), inner = (s1.match(/\(([^)]+)\)/) || [])[1] || '';
+    var keys = [s1.replace(/\([^)]*\)/g, ' ').trim(), inner].concat(it ? [it.name].concat(it.aka || []) : []).filter(function (k) { return eduKey(k).length >= 2; });
+    /* 교육 카드 성분이 '같은 성분'(성분 사전 id)인 것만 — 글자만 같은 다른 성분(살리실산메틸 파스 등)은 빼고 · 그다음 상품 이름에 성분이 적힌 것 */
+    var ix = eduSymIx(), seen = {}, its = [], add = function (x) { if (x && !seen[x.rowNumber] && !eduGone(x)) { seen[x.rowNumber] = 1; its.push(x); } };
+    if (it) eduCards().forEach(function (c) { if ((c.ingredients || []).some(function (i) { var m = eduIngMatch(i); return m && m.id === it.id; })) (ix.of[c.id] || []).forEach(add); });
+    var ex = ['메틸', '메칠', '나트륨', '콜린'].map(function (x) { return keys.map(function (k) { return k + x; }).concat(keys.map(function (k) { return x + k; })); }).reduce(function (a, b) { return a.concat(b); }, []);
+    eduCatItems().forEach(function (x) { if (eduKeyHit(x.name, keys, ex)) add(x); });
+    its = its.sort(function (a, b) { return eduNum(b.sales15) - eduNum(a.sales15); }).slice(0, 6);
+    if (!its.length) return '<div id="mbWp" hidden></div>';
+    return '<div class="mb-wp" id="mbWp"><h3>이 성분이 든 우리 약국 제품 <small>' + its.length + '</small></h3><div class="mb-wpl">' + its.map(function (x) {
+      var c = eduSymIx().card[x.rowNumber];
+      return '<button type="button" class="mb-wpc" data-r="' + eduE(x.rowNumber) + '" onclick="mbClose(); eduSymGo(this.dataset.r)"><span class="edu-ph" aria-hidden="true">' + EDU_I.box + (x.imgUrl ? '<img src="' + eduE(x.imgUrl) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" data-row="' + (parseInt(x.rowNumber, 10) || 0) + '" onerror="imgFallback(this)">' : '') + '</span><span class="t"><b>' + eduE(eduName(x)) + '</b><small>15일 ' + eduNum(x.sales15) + '개 · ' + (c ? '교육 자료' : '발주 검색') + '</small></span></button>'; }).join('') + '</div></div>';
+  } catch (e) { return ''; }
+}
 function mbSec(icon, title, html) { return '<section class="mb-sec"><h2 class="mb-sh">' + icon + mbEsc(title) + '</h2>' + html + '</section>'; }
 function mbShow(r) {
   MB.cur = r; MB.view = 'brief';
@@ -13195,7 +13225,7 @@ function mbShow(r) {
     }).join('') + '</div>');
   }
   if (b.word && b.word.term) h += mbSec(MBI.bulb, '오늘의 뷰티 상식', '<div class="mb-box"><div class="mb-term">' + mbEsc(b.word.term) + '</div><p>' + mbEsc(b.word.explain) + '</p>'
-    + (Array.isArray(b.word.parts) && b.word.parts.length ? '<dl class="mb-parts">' + b.word.parts.map(function (p) { return '<div class="' + (p.k === '손님께 이렇게' ? 'say' : '') + '"><dt>' + mbEsc(p.k) + '</dt><dd>' + mbEsc(p.v) + '</dd></div>'; }).join('') + '</dl>' : '') + '</div>');   /* 1004 6칸 자세히 */
+    + (Array.isArray(b.word.parts) && b.word.parts.length ? '<dl class="mb-parts">' + b.word.parts.map(function (p) { return '<div class="' + (p.k === '손님께 이렇게' ? 'say' : '') + '"><dt>' + mbEsc(p.k) + '</dt><dd>' + mbEsc(p.v) + '</dd></div>'; }).join('') + '</dl>' : '') + '</div>' + mbWordProds(b.word.term));   /* 1004 6칸 자세히 */
   if (b.tip) h += mbSec(MBI.chat, '응대 팁', '<div class="mb-tip">' + mbEsc(b.tip) + '</div>');
   var br = b.brand;
   if (br && br.name) {
