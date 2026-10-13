@@ -77,3 +77,21 @@
     });
   }
 })();
+/* 1013 오래 열어 둔 탭은 옛 판 그대로였다(약국 PC가 며칠째 1007d 사용 → 이미 고친 화면 밀림이 계속 보임).
+   → 10분마다·화면에 돌아올 때 새 판이 올라왔는지 보고, 새 판이면 손 놓고 있을 때(입력 중·창 열림 아님, 2분 넘게 조작 없음) 또는 다른 앱에 갔다 올 때 조용히 새로고침 */
+(function () {
+  if (!/github\.io$/.test(location.hostname)) return;
+  var meta = document.querySelector('meta[name="ry-build"]'), cur = meta && meta.content, fresh = false, lastAct = Date.now();
+  if (!cur) return;
+  ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(function (ev) { addEventListener(ev, function () { lastAct = Date.now(); }, { capture: true, passive: true }); });
+  function busy() { var a = document.activeElement; return (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) || document.body.style.position === 'fixed' || Date.now() - lastAct < 120000; }
+  function check() {
+    if (fresh) return;
+    fetch(location.pathname + '?ryv=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (t) {
+      var m = /name="ry-build" content="([^"]+)"/.exec(t || ''); if (m && m[1] !== cur) fresh = true;
+    }, function () {});
+  }
+  setInterval(function () { if (fresh && !busy()) location.reload(); }, 15000);
+  setInterval(check, 600000); setTimeout(check, 60000);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') { if (fresh) location.reload(); else check(); } });
+})();
