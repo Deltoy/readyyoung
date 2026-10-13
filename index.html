@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mv660iqg">
+  <meta name="ry-build" content="mv6btdqv">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9474,7 +9474,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (!el) return;
       if (state === 'changed') {
         el.setAttribute('data-state', 'syncing');
-        var t = el.querySelector('#loadingText') || el;
+        var t = el.querySelector('#syncText') || el;   /* 1013 예전 #loadingText 는 없어서 알약 전체 글자를 덮어 '새 변경 확인 · 동기화 중'이 계속 남았다 */
         try { t.textContent = '새 변경 확인 · 동기화 중'; } catch (e) {}
       }
     }
@@ -9687,6 +9687,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (sView) sView.classList.add('hidden');
       if (!keepFocus) dismissKeyboard();
       switchTab(currentTab);
+      /* 1013 MJ 빈 화면: 긴 검색 결과 아래쪽에서 검색을 닫으면 받침(ryFloor)이 예전 높이를 붙잡아 빈 바닥만 보였다 → 탭 맨 위로 */
+      window.scrollTo(0, 0); if (typeof ryFloorRelease === 'function') ryFloorRelease();
       if (keepFocus && inputEl && document.activeElement !== inputEl) inputEl.focus();
     }
 
@@ -9717,7 +9719,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       addEventListener('scroll', function () { var y = window.scrollY, d = y - lastY; if (Math.abs(d) > 60) { var now = Date.now(); jumps.unshift({ t: new Date().toTimeString().slice(0, 8), d: Math.round(d), y: Math.round(y), before: ev.filter(function (x) { return now - x[0] < 1500; }).map(function (x) { return x[1]; }).slice(-5) }); if (jumps.length > 8) jumps.pop(); draw(); } lastY = y; }, { passive: true });
       function draw() {
         if (!box) { box = document.createElement('div'); box.style.cssText = 'position:fixed;top:4px;right:4px;z-index:2147483647;max-width:300px;max-height:45vh;overflow:auto;background:rgba(17,24,39,.92);color:#fff;font:11px/1.35 -apple-system,sans-serif;padding:6px 8px;border-radius:10px;pointer-events:auto'; document.body.appendChild(box); }
-        box.innerHTML = '<b>화면 움직임 기록 (dbg · 1013)</b><br>' + jumps.map(function (j) { return j.t + ' ' + (j.d > 0 ? '아래로 ' : '위로 ') + Math.abs(j.d) + 'px → ' + j.y + '<br><span style="opacity:.75">' + j.before.map(function (b) { return String(b).replace(/</g, '&lt;'); }).join(' / ') + '</span>'; }).join('<hr style="border:0;border-top:1px solid #444;margin:3px 0">');
+        box.innerHTML = '<b>화면 움직임 기록 (dbg · 1013b)</b><br>' + jumps.map(function (j) { return j.t + ' ' + (j.d > 0 ? '아래로 ' : '위로 ') + Math.abs(j.d) + 'px → ' + j.y + '<br><span style="opacity:.75">' + j.before.map(function (b) { return String(b).replace(/</g, '&lt;'); }).join(' / ') + '</span>'; }).join('<hr style="border:0;border-top:1px solid #444;margin:3px 0">');
       }
       setTimeout(function () { note('기록 시작'); draw(); }, 500);
     })();
