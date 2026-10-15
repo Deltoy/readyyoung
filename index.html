@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mv6btdqv">
+  <meta name="ry-build" content="mv99btzh">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4525,7 +4525,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     var CATEGORY_LIST = ['일반의약품','의료기기','뷰티기기','건강기능식품','스킨케어','클렌징','선케어','헤어케어','바디케어','구강용품','반려동물','의약외품','위생·소모품','식품·음료','산리오','포켓몬','티니핑','짱구','뽀로로','기타'];
     /* 0930 하위 섹터: 카테고리 값이 '대분류 › 하위' (없으면 대분류만 — 옛 서버·아직 안 나눈 상품도 그대로 보임) */
     var SUBCATS = {
-      '일반의약품': ['감기·기침','해열·진통','소화·위장','변비·지사','피부외용','상처·화상','안약','비염·알레르기','파스·근육','수면·멀미','자양강장','여성·비뇨','구충·금연','탈모','치질·정맥','구강·구내염','기타','어린이 감기·기침','어린이 해열·진통','어린이 소화·위장','어린이 비염·알레르기','어린이 피부외용','어린이 기타'],
+      '일반의약품': ['감기·기침','해열·진통','소화·위장','변비·지사','피부외용','상처·화상','안약','비염·알레르기','파스·근육','수면·멀미','자양강장','여성·비뇨','구충·금연','탈모','다이어트·체중','치질·정맥','구강·구내염','기타','어린이 감기·기침','어린이 해열·진통','어린이 소화·위장','어린이 비염·알레르기','어린이 피부외용','어린이 기타'],
       '의료기기': ['밴드·드레싱','흉터·습윤','서포터·보호대','검사키트','체온·혈압','렌즈용품','코·호흡','붕대·거즈','기타'],
       '뷰티기기': ['얼굴 EMS·리프팅','LED 마스크','갈바닉·이온','마사지기','헤어기기','기타'],
       '건강기능식품': ['비타민','유산균','오메가3','콜라겐·이너뷰티','다이어트','눈건강','간건강','관절·뼈','홍삼·면역','미네랄','단백질','키즈','기타'],
@@ -9531,7 +9531,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function ryCatSave() {
       try { localStorage.setItem(RY_CAT_KEY, JSON.stringify(RY_CAT)); return 'full'; } catch (e) {}
       try {
-        var slim = RY_CAT.items.map(function (x) { return { rowNumber: x.rowNumber, name: x.name, targetQty: x.targetQty, unit: x.unit, boxUnit: x.boxUnit, note: x.note, sales15: x.sales15, status: x.status, inboundDate: x.inboundDate, _k: x._k }; });
+        var slim = RY_CAT.items.map(function (x) { return { rowNumber: x.rowNumber, name: x.name, targetQty: x.targetQty, unit: x.unit, boxUnit: x.boxUnit, note: x.note, sales15: x.sales15, status: x.status, inboundDate: x.inboundDate, uses: x.uses, _k: x._k }; });
         localStorage.setItem(RY_CAT_KEY, JSON.stringify({ v: RY_CAT.v, t: RY_CAT.t, items: slim }));
         return 'slim';
       } catch (e) { return 'mem'; }
@@ -9579,11 +9579,13 @@ html body #ryLaunchGrid .tl-search{top:56px}
       b0.forEach(function (b) { if (b !== w[0]) alts.push([b].concat(w.slice(1)).join(' ')); });   // 브랜드 오타
       return alts;
     }
+    /* 1015 MJ '다이어트 치면 다이어트 제품 다': 이름·분류 + 용도 태그(다이어트 등)까지 찾는다 */
+    function ryKeyOf(it) { var k = String(it._k || ''); return it.uses && it.uses.length ? k + '|' + it.uses.join(',').replace(/\s+/g, '').toLowerCase() : k; }
     function ryCatSearch(query) {
       if (!RY_CAT || !RY_CAT.items) return null;
       var hit = ryHitFn(query), out = [];
-      for (var i = 0; i < RY_CAT.items.length && out.length < 40; i++) { var it = RY_CAT.items[i]; if (hit(String(it._k || ''))) out.push(it); }
-      if (!out.length) ryQueryAlts(query).some(function (a) { var h2 = ryHitFn(a); for (var j = 0; j < RY_CAT.items.length && out.length < 40; j++) { var it2 = RY_CAT.items[j]; if (h2(String(it2._k || ''))) out.push(it2); } return out.length; });
+      for (var i = 0; i < RY_CAT.items.length && out.length < 100; i++) { var it = RY_CAT.items[i]; if (hit(ryKeyOf(it))) out.push(it); }
+      if (!out.length) ryQueryAlts(query).some(function (a) { var h2 = ryHitFn(a); for (var j = 0; j < RY_CAT.items.length && out.length < 40; j++) { var it2 = RY_CAT.items[j]; if (h2(ryKeyOf(it2))) out.push(it2); } return out.length; });
       /* 폰 목록은 최대 5분 전 것 → 지금 화면이 아는 상태 · 사진을 덮어씀 (방금 요청·승인·입고한 것도 바로 맞게) */
       var live = ryLiveMap();
       var nk = function (x) { return String(x || '').replace(/\s+/g, '').toLowerCase(); };
