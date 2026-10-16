@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvao56xx">
+  <meta name="ry-build" content="mvaocq44">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1646,7 +1646,14 @@ body.sp-open #appToast{bottom:auto!important;top:calc(68px + env(safe-area-inset
 .sp-bp-t td small{display:block;color:#98A2B3;font-size:11.5px}
 .sp-bp-none{padding:12px 16px 14px;border-top:1px solid #F2F4F7;font-size:13px;color:#475467}
 .sp-bp-none>div{margin-top:8px}
-@media(max-width:560px){.sp-bp-t th:nth-child(3),.sp-bp-t td:nth-child(3){display:none}.sp-bp-t td,.sp-bp-t th{padding:8px 6px}}
+.sp-bp .bx-warn{color:#B42318}
+.bx-pbtn{display:inline-flex;margin:8px 0 0;min-height:40px;padding:0 14px;border:1px solid #D0D5DD;border-radius:999px;background:#fff;font-size:13px;font-weight:700;color:#344054}
+.bx-paste{padding:0 16px 14px}.bx-paste textarea{width:100%;border:1px solid #D0D5DD;border-radius:12px;padding:10px;font-size:14px;line-height:1.5;box-sizing:border-box}
+.bx-prev{margin:8px 0;font-size:13px;color:#155EEF;font-weight:700;line-height:1.6}
+.sp-bp-t td small{display:block}
+.sp-bp-t tr.bx-red td:nth-child(2){color:#B42318;font-weight:800}.sp-bp-t tr.bx-yellow td:nth-child(2){color:#B54708;font-weight:800}.sp-bp-t tr.bx-green td:nth-child(2){color:#067647;font-weight:700}
+.sp-bp-t tr.bx-red{background:#FEF3F2}.sp-bp-t tr.bx-yellow{background:#FFFAEB}
+@media(max-width:560px){.sp-bp-t th:nth-child(4),.sp-bp-t td:nth-child(4){display:none}.sp-bp-t td,.sp-bp-t th{padding:8px 6px}.sp-bp-t td:nth-child(5) button{font-size:12px}}
 .sp-card-sales{font-size:12px;color:var(--ry-ink-2);font-weight:600}
 .sp-card-sales b{color:var(--ry-ink);font-weight:800}
 #seSheet input[type=number]{width:100%}
@@ -4970,6 +4977,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         '<span class="b2">확인 ›</span>';
       try { rjPopup(me, list); } catch (eRp) {}
     }
+
     /* 1016 MJ: '재고있음'으로 반려되면 요청한 사람이 앱을 열 때 위에 팝업 — 재고 있으니 물류관리자에게 문의 ([확인] 누르면 이 폰에서 다시 안 뜸) */
     function rjPopup(me, list) {
       var host = document.getElementById('ryTopPops'); if (!host) return;
@@ -5318,6 +5326,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var pg = document.getElementById('setPage');
       pg.classList.add('on'); pg.setAttribute('aria-hidden', 'false');
       document.body.classList.add('sp-open');
+      try { bxLoad(); } catch (eBx) {}
       if (SP.data && !SP.want) { spRender(); spLoad(true); return; }
       if (SP.data) spApplyWant();
       spLoad(!!SP.data);
@@ -5448,30 +5457,67 @@ html body #ryLaunchGrid .tl-search{top:56px}
           + '<span class="sp-card-tags">' + spSetTags(s).map(function (t) { return '<i>' + escapeHtml(t) + '</i>'; }).join('') + '</span></span></button>';
       }).join('') + '</div>';
     }
-    /* 1016 MJ: 아크릴박스 번호별로 한 달에 몇 개 쓰는지 · 몇 개 갖고 있으면 되는지 (세트 15일 판매 × 2 = 한 달) */
-    function spBoxDays() { var d = 30; try { d = parseInt(localStorage.getItem('spBoxDays'), 10) || 30; } catch (e) {} return Math.max(7, Math.min(120, d)); }
-    function spBoxPlan(sets, days) {
-      var g = {}, none = [];
-      sets.forEach(function (s) {
-        var k = String(s.box || '').replace(/\s|번/g, '');
-        if (!k) { none.push(s); return; }
-        var x = g[k] = g[k] || { box: k, sets: [], s15: 0, noSales: 0 };
-        x.sets.push(s); if (s.s15 === '' || s.s15 == null) x.noSales++; else x.s15 += +s.s15 || 0;
-      });
-      var rows = Object.keys(g).map(function (k) { var x = g[k]; x.month = x.s15 * 2; x.keep = Math.ceil(x.month * days / 30); return x; })
-        .sort(function (a, b) { return (parseFloat(a.box) || 999) - (parseFloat(b.box) || 999) || a.box.localeCompare(b.box); });
-      return { rows: rows, none: none };
+    /* 1016 MJ: 아크릴박스(번호 = 크기) 안 떨어지게 — 세트 15일 판매 × 2 = 한 달 사용 · 아침 카톡 '박스 재고 확인' 글 붙여넣기 → 며칠 버팀 신호등 (서버 getBoxStatus · saveBoxStock) */
+    function bxLoad(cb) {
+      if (typeof google === 'undefined' || !google.script || typeof google.script.run.getBoxStatus !== 'function') return;
+      google.script.run.withSuccessHandler(function (r) { if (r && r.success) { SP.box = r; SP.boxAt = Date.now(); try { if (SP.data && SP.view === 'sets' && document.getElementById('setPage').classList.contains('on')) spRenderSets(); } catch (e) {} try { bxPopup(); } catch (e2) {} } if (cb) cb(r); }).withFailureHandler(function () {}).getBoxStatus();
     }
+    /* "1번 59+139" → 1번 198개 · '무지박스' 줄 아래는 '무지1' 처럼 */
+    function bxParse(t) {
+      var pre = '', out = [];
+      String(t || '').split(/\n/).forEach(function (ln) {
+        if (/무지/.test(ln) && !/\d+\s*번/.test(ln)) { pre = '무지'; return; }
+        var m = ln.match(/^\s*(\d{1,2})\s*번\s*(.*)$/); if (!m) return;
+        var ns = m[2].replace(/\([^)]*\)/g, '').match(/\d+/g); if (!ns) return;
+        out.push({ box: pre + m[1], n: ns.reduce(function (a, x) { return a + (+x); }, 0) });
+      });
+      return out;
+    }
+    function bxPasteOpen() { var b = document.getElementById('bxPaste'); if (b) { b.hidden = !b.hidden; if (!b.hidden) document.getElementById('bxText').focus(); } }
+    function bxPastePreview() { var r = bxParse(document.getElementById('bxText').value); document.getElementById('bxPrev').textContent = r.length ? r.map(function (x) { return (x.box.indexOf('무지') === 0 ? '무지 ' + x.box.slice(2) : x.box) + '번 ' + x.n + '개'; }).join(' · ') : '"1번 59+139" 같은 줄을 찾지 못했어요'; document.getElementById('bxSave').disabled = !r.length; }
+    function bxPasteSave(btn) {
+      var r = bxParse(document.getElementById('bxText').value), me = currentSelectedMember || '';
+      if (!r.length) return; if (!me || me === '미선택') { showToast('위에서 내 이름을 먼저 골라 주세요', 1800); return; }
+      btn.disabled = true; btn.textContent = '저장 중…';
+      google.script.run.withSuccessHandler(function (x) { btn.disabled = false; btn.textContent = '저장'; if (!x || !x.success) { showToast((x && x.message) || '저장하지 못했어요', 2200); return; } SP.box = x; SP.boxAt = Date.now(); showToast('박스 ' + x.saved + '종 남은 개수를 저장했어요', 1800); spRenderSets(); try { bxPopup(true); } catch (e) {} })
+        .withFailureHandler(function () { btn.disabled = false; btn.textContent = '저장'; showToast('저장하지 못했어요 · 인터넷 확인', 2200); }).saveBoxStock(r, me);
+    }
+    var BX_ST = { red: ['🔴', '지금 주문'], yellow: ['🟡', '이번 주 주문'], green: ['🟢', '넉넉해요'], unknown: ['⚪', '남은 개수 모름'] };
+    function bxName(k) { return k.indexOf('무지') === 0 ? '무지 ' + k.slice(2) + '번' : k + '번'; }
     function spBoxPlanHtml(sets) {
-      var days = spBoxDays(), P = spBoxPlan(sets, days), tot = P.rows.reduce(function (a, r) { return a + r.month; }, 0);
-      var per = (sets.filter(function (s) { return s.s15p; })[0] || {}).s15p || '';
-      return '<details class="sp-bp"' + (SP.bpOpen ? ' open' : '') + ' ontoggle="SP.bpOpen = this.open"><summary>📦 아크릴박스 한 달 사용량<small>' + (P.rows.length ? '박스 ' + P.rows.length + '종 · 한 달 약 ' + tot + '개' : '박스 번호를 넣으면 계산돼요') + (P.none.length ? ' · 번호 없는 세트 ' + P.none.length : '') + '</small></summary>'
-        + '<p class="sp-bp-h">세트 15일 판매량' + (per ? ' (' + escapeHtml(per) + ')' : '') + ' × 2 = 한 달 사용량이에요. 갖고 있을 개수는 <label><input type="number" min="7" max="120" value="' + days + '" onchange="try{localStorage.setItem(\'spBoxDays\', this.value)}catch(e){} spRenderSets()" aria-label="며칠치 갖고 있을지">일치</label> 기준.</p>'
-        + (P.rows.length ? '<table class="sp-bp-t"><thead><tr><th>박스</th><th>들어가는 세트</th><th>15일</th><th>한 달</th><th>갖고 있을 개수</th></tr></thead><tbody>' + P.rows.map(function (r) {
-            return '<tr><td><b>' + escapeHtml(r.box) + '번</b></td><td>' + r.sets.map(function (s) { return '<button type="button" data-id="' + escapeHtml(s.id) + '" onclick="spOpenSet(this.dataset.id)">' + escapeHtml(s.name) + (s.s15 !== '' && s.s15 != null ? ' <i>' + s.s15 + '</i>' : '') + '</button>'; }).join('') + (r.noSales ? '<small>판매 기록 없는 세트 ' + r.noSales + '개는 빼고 계산</small>' : '') + '</td><td>' + r.s15 + '</td><td>' + r.month + '</td><td><b>' + r.keep + '개</b></td></tr>';
+      var B = (SP.box && SP.box.rows) || [], byK = {}, none = sets.filter(function (s) { return !String(s.box || '').replace(/\s|번/g, ''); });
+      B.forEach(function (r) { byK[r.box] = r; });
+      var setsOf = {}; sets.forEach(function (s) { var k = String(s.box || '').replace(/\s|번/g, ''); if (k) (setsOf[k] = setsOf[k] || []).push(s); });
+      var rows = B.slice(), bad = rows.filter(function (r) { return r.status === 'red' || r.status === 'yellow'; }).length;
+      var per = (sets.filter(function (s) { return s.s15p; })[0] || {}).s15p || '', last = rows.reduce(function (m, r) { return r.at && r.at > m ? r.at : m; }, '');
+      var sum = rows.length ? (bad ? '<b class="bx-warn">주문할 박스 ' + bad + '종</b>' : '모두 넉넉해요') + (last ? ' · ' + escapeHtml(last.slice(5).replace('-', '/')) + ' 셈' : '') : '박스 번호를 넣으면 계산돼요';
+      var open = SP.bpOpen || bad;
+      return '<details class="sp-bp"' + (open ? ' open' : '') + ' ontoggle="SP.bpOpen = this.open"><summary>📦 아크릴박스 재고<small>' + sum + (none.length ? ' · 번호 없는 세트 ' + none.length : '') + '</small></summary>'
+        + '<p class="sp-bp-h">한 달 사용 = 세트 15일 판매' + (per ? '(' + escapeHtml(per) + ')' : '') + ' × 2 · 도착 ' + ((SP.box && SP.box.lead) || 3) + '일 + 여유 ' + ((SP.box && SP.box.safe) || 7) + '일치 밑이면 🟡, 5일치 밑이면 🔴<button type="button" class="bx-pbtn" onclick="bxPasteOpen()">📋 카톡 박스 재고 글 붙여넣기</button></p>'
+        + '<div id="bxPaste" class="bx-paste" hidden><textarea id="bxText" rows="6" placeholder="아침 카톡 글을 그대로 붙여넣어 주세요&#10;예) 1번 59+139&#10;2번 117" oninput="bxPastePreview()"></textarea><div id="bxPrev" class="bx-prev"></div><button type="button" id="bxSave" class="np-save" disabled onclick="bxPasteSave(this)">저장</button></div>'
+        + (rows.length ? '<table class="sp-bp-t"><thead><tr><th>박스</th><th>상태</th><th>남은 개수</th><th>한 달 사용</th><th>들어가는 세트</th></tr></thead><tbody>' + rows.map(function (r) {
+            var st = BX_ST[r.status] || BX_ST.unknown, ss = setsOf[r.box] || [];
+            var stTxt = r.status === 'unknown' ? st[0] + ' ' + st[1] : st[0] + ' ' + (r.days == null ? '판매 기록 없음' : r.days + '일 버팀') + (r.order ? '<small>' + st[1] + ' · ' + r.order + '개</small>' : '');
+            return '<tr class="bx-' + r.status + '"><td><b>' + escapeHtml(bxName(r.box)) + '</b></td><td>' + stTxt + '</td><td>' + (r.left != null ? '<b>' + r.left + '</b>개<small>' + (r.counted !== r.left ? '센 개수 ' + r.counted + ' · ' : '') + escapeHtml(String(r.at || '').slice(5).replace('-', '/')) + '</small>' : '–') + '</td><td>' + (r.month ? r.month + '개' : '–') + '</td><td>'
+              + ss.map(function (s) { return '<button type="button" data-id="' + escapeHtml(s.id) + '" onclick="spOpenSet(this.dataset.id)">' + escapeHtml(s.name) + (s.s15 !== '' && s.s15 != null ? ' <i>' + s.s15 + '</i>' : '') + '</button>'; }).join('') + (!ss.length ? '<small>이 박스를 쓰는 세트가 아직 없어요</small>' : '') + '</td></tr>';
           }).join('') + '</tbody></table>' : '')
-        + (P.none.length ? '<div class="sp-bp-none"><b>박스 번호가 없는 세트</b> · 누르고 [세트 고치기]에서 박스 번호를 넣어 주세요<div>' + P.none.map(function (s) { return '<button type="button" data-id="' + escapeHtml(s.id) + '" onclick="spOpenSet(this.dataset.id)">' + escapeHtml(s.name) + '</button>'; }).join('') + '</div></div>' : '')
+        + (none.length ? '<div class="sp-bp-none"><b>박스 번호가 없는 세트</b> · 누르고 [세트 고치기]에서 박스 번호를 넣어 주세요<div>' + none.map(function (s) { return '<button type="button" data-id="' + escapeHtml(s.id) + '" onclick="spOpenSet(this.dataset.id)">' + escapeHtml(s.name) + '</button>'; }).join('') + '</div></div>' : '')
         + '</details>';
+    }
+    /* 첫 화면 알림: 🟡·🔴 박스가 있으면 세트 담당 권한(관리약사 · 팀장 · 물류관리자)에게 하루 한 번 */
+    function bxPopup(force) {
+      var host = document.getElementById('ryTopPops'); if (!host || !SP.box) return;
+      var el = document.getElementById('bxPop');
+      var can = false; try { can = typeof sdCanEdit === 'function' && sdCanEdit(); } catch (e) {}
+      var bad = (SP.box.rows || []).filter(function (r) { return r.status === 'red' || r.status === 'yellow'; }).sort(function (a, b) { return (a.days || 0) - (b.days || 0); });
+      var day = new Date(Date.now() + 9 * 3600000).toISOString().slice(0, 10), sig = day + '|' + bad.map(function (r) { return r.box + r.status; }).join(','), seen = '';
+      try { seen = localStorage.getItem('bxSeen') || ''; } catch (e) {}
+      if (!can || !bad.length || (seen === sig && !window._bxSess)) { if (el) el.hidden = true; return; }
+      if (!el) { el = document.createElement('div'); el.id = 'bxPop'; el.setAttribute('role', 'status'); host.appendChild(el); }
+      el.innerHTML = '<div class="tp-txt"><b class="t">' + (bad[0].status === 'red' ? '🔴' : '🟡') + ' 아크릴박스 주문할 때예요</b><p>' + bad.slice(0, 3).map(function (r) { return escapeHtml(bxName(r.box)) + ' ' + r.days + '일 버팀 · ' + r.order + '개'; }).join(' / ') + (bad.length > 3 ? ' 외 ' + (bad.length - 3) : '') + '</p></div>'
+        + '<button type="button" class="tp-go" onclick="document.getElementById(\'bxPop\').hidden = true; window._bxSess = 0; SP.bpOpen = true; openSetPage()">보기</button><button type="button" class="tp-x" aria-label="닫기" onclick="window._bxSess = 0; document.getElementById(\'bxPop\').hidden = true">×</button>';
+      el.hidden = false; window._bxSess = 1;
+      try { localStorage.setItem('bxSeen', sig); } catch (e) {}
     }
     function spOpenSet(id) { SP.view = 'detail'; SP.setId = id; spRender(); document.getElementById('spBody').scrollTop = 0; }
     function spRenderDetail() {
@@ -7080,6 +7126,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         localStorage.setItem('s_selected_member', name);
       } catch(e) {}
       renderDropdownItems();
+      try { if (!SP.boxAt || Date.now() - SP.boxAt > 600000) bxLoad(); else bxPopup(); } catch (eBx) {}
       try { renderMyRejectBanner(); } catch (e) {}   // 이름을 바꾸면 '내 반려' 배너도 그 사람 기준으로
       try { ryArrivedNotice(); } catch (e) {}
       try { if (typeof rlBadge === 'function') rlBadge(); if (typeof ntNotify === 'function') ntNotify(); } catch (e) {}
