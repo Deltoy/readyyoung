@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvafgenh">
+  <meta name="ry-build" content="mvafiwkc">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -15316,6 +15316,8 @@ setTimeout(function () { EDU.loadedAt = Date.now(); eduLoad(); }, 5000);
 #rlView .rl-body{margin:6px 0 0;font-size:15px;line-height:1.6;color:#344054;white-space:pre-wrap;word-break:keep-all}
 #rlView .rl-ph{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
 #rlView .rl-ph.n1{grid-template-columns:1fr}
+#rlView .rl-ph.n3{grid-template-columns:repeat(3,1fr)}
+#rlView .rl-ph.n3 a{aspect-ratio:3/4}
 #rlView .rl-ph a{position:relative;display:block;border-radius:14px!important;overflow:hidden;background:#F2F4F7;aspect-ratio:4/3}
 #rlView .rl-ph.n1 a{aspect-ratio:16/10}
 #rlView .rl-ph img{width:100%;height:100%;object-fit:cover;display:block}
@@ -15512,7 +15514,7 @@ function rlCardHtml(r) {
   return '<article class="rl-card' + (!read && !r.archived ? ' new' : '') + '" data-rl="' + id + '">'
     + '<div class="rl-h"><span class="rl-t">' + escapeHtml(r.topic) + '</span>' + (!read && !r.archived ? '<span class="rl-new">새 규칙</span>' : '') + (r.archived ? '<span class="rl-arch">보관</span>' : '') + '<span class="rl-meta">' + escapeHtml(r.author) + ' · ' + escapeHtml(String(r.updatedAt).slice(5, 10).replace('.', '/')) + (r.updatedAt !== r.createdAt ? ' 고침' : '') + '</span></div>'
     + '<h3>' + escapeHtml(r.title) + '</h3>'
-    + (ph.length ? '<div class="rl-ph n' + Math.min(ph.length, 2) + '">' + ph.map(function (p) { return '<a class="' + (p.m || '') + '" href="' + escapeHtml(p.u) + '" target="_blank" rel="noopener" aria-label="사진 크게 보기"><img src="' + escapeHtml(p.u) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' + (p.m ? '<span class="rl-mk ' + p.m + '">' + (p.m === 'o' ? '✓ 이렇게' : '✕ 이렇게 말고') + '</span>' : '') + '</a>'; }).join('') + '</div>' : '')
+    + (ph.length ? '<div class="rl-ph n' + (ph.length === 3 ? 3 : Math.min(ph.length, 2)) + '">' + ph.map(function (p) { return '<a class="' + (p.m || '') + '" href="' + escapeHtml(p.u) + '" target="_blank" rel="noopener" aria-label="사진 크게 보기"><img src="' + escapeHtml(p.u) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' + (p.m ? '<span class="rl-mk ' + p.m + '">' + (p.m === 'o' ? '✓ 이렇게' : '✕ 이렇게 말고') + '</span>' : '') + '</a>'; }).join('') + '</div>' : '')
     + (r.body ? '<p class="rl-body">' + escapeHtml(r.body) + '</p>' : '')
     + '<div class="rl-f"><button type="button" class="rl-who" aria-expanded="false" onclick="var n = this.parentNode.querySelector(\'.rl-names\'); n.hidden = !n.hidden; this.setAttribute(\'aria-expanded\', !n.hidden)">숙지 <b>' + done.length + '/' + mem.length + '명</b>' + (not.length ? ' · 누가 안 읽었나 보기' : ' · 모두 읽었어요') + '</button>'
     + (can ? '<button type="button" class="rl-ed" data-id="' + id + '" onclick="rlEdit(this.dataset.id)">고치기</button>' : '')
