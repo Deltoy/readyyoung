@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvae6x87">
+  <meta name="ry-build" content="mvaebpko">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4252,7 +4252,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       <div class="tab-head">
         <div class="th-row">
           <span class="th-title"><span class="ry25-thi"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span>공지 보관함</span>
-          <span style="display:inline-flex;gap:8px;flex-wrap:wrap"><button type="button" class="ev-reg" onclick="evOpen()">🎁 이벤트 등록</button><button type="button" class="nt-paste-btn" onclick="ntOpenPaste()">카톡 공지 붙여넣기</button></span>
+          <span class="nt-hbtns"><button type="button" class="ev-reg" onclick="evOpen()">🎁 이벤트<span class="nt-long"> 등록</span></button><button type="button" class="nt-paste-btn" onclick="ntOpenPaste()"><span class="nt-long">카톡 공지 </span>붙여넣기</button></span>
         </div>
         <div class="ry25-rf-desc">공지는 카톡에서 먼저 하고, 여기엔 보관해요. 증정품 변경은 기존 → 변경을 사진으로 보여줘요.</div>
       </div>
@@ -15653,6 +15653,8 @@ setInterval(function () { if (document.visibilityState === 'visible') rlLoad(); 
 .ev-box.off .ev-end{border-color:#D0D5DD;color:#344054}
 .ev-reg{min-height:44px;padding:0 14px;border-radius:999px!important;border:1px solid #FECDCA;background:#FFF1F0;color:#B42318;font-weight:800;font-size:13.5px;white-space:nowrap}
 .nt-tag.t-7{background:#FFF1F0!important;color:#B42318!important}
+.nt-hbtns{display:inline-flex;gap:8px;flex:none}
+@media(max-width:600px){.nt-long{display:none}}
 #evSheet{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:8200;width:min(560px,100%);max-height:92vh;overflow-y:auto;background:#fff;border-radius:24px 24px 0 0!important;padding:20px 16px calc(20px + env(safe-area-inset-bottom))}
 #evDim{position:fixed;inset:0;z-index:8100;background:rgba(16,24,40,.45)}
 #evSheet[hidden],#evDim[hidden]{display:none!important}
@@ -15732,11 +15734,14 @@ function evEnd(btn) {
   var id = btn.dataset.id, on = btn.dataset.on === '1', me = rlMe(), n = ntFind(id);
   if (!me) { showToast('위에서 내 이름을 먼저 골라 주세요', 1800); return; }
   if (on && !confirm('이 이벤트를 끝낼까요?\n(상품 옆 🎁 배지가 사라져요 · 다시 진행도 할 수 있어요)')) return;
-  btn.disabled = true;
+  var old = n && n.ev ? JSON.parse(JSON.stringify(n.ev)) : null;   // 바로 바꿔 보여 주고(서버가 느릴 때 대비), 실패하면 되돌림
+  var apply = function (ev) { if (n && ev) n.ev = ev; evIndex(); try { ntRedraw(id); } catch (e) {} evRefreshLists(); };
+  if (n && n.ev) apply(Object.assign({}, n.ev, { ended: on, endedBy: on ? me : '' }));
+  showToast(on ? '이벤트를 끝냈어요' : '이벤트를 다시 진행해요', 1600);
   google.script.run.withSuccessHandler(function (r) {
-    if (!r || !r.success) { btn.disabled = false; showToast((r && r.message) || '실패', 2000); return; }
-    if (n) n.ev = r.ev; evIndex(); try { ntRedraw(id); } catch (e) {} evRefreshLists(); showToast(on ? '이벤트를 끝냈어요' : '이벤트를 다시 진행해요', 1600);
-  }).withFailureHandler(function () { btn.disabled = false; showToast('실패 · 인터넷 확인', 2000); }).setEventEnded(id, on, me);
+    if (!r || !r.success) { apply(old); showToast((r && r.message) || '저장하지 못했어요', 2000); return; }
+    apply(r.ev);
+  }).withFailureHandler(function () { apply(old); showToast('저장하지 못했어요 · 인터넷 확인', 2000); }).setEventEnded(id, on, me);
 }
 function evRefreshLists() { try { RY_SR_FULL = ''; if (typeof lastSearchResults !== 'undefined' && lastSearchResults && lastSearchResults.length && RY_SR.q) ryRenderSearchSafe(lastSearchResults, RY_SR.q); } catch (e) {} try { renderAllViews(); } catch (e2) {} }
 /* ── 등록 ── */
