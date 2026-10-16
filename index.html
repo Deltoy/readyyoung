@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvam395k">
+  <meta name="ry-build" content="mvam5bbb">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -14636,7 +14636,7 @@ function eduBrandTile(B) {
 function eduTabsHtml() {
   var L = eduSymList(), bn = eduAllBrands().length, ni = eduIngs().length, gn = eduGuides().length;
   var ic = { own: EDU_SI.star, '몸': EDU_SI.pill, '피부': EDU_SI.spark, brand: EDU_SI.tag, study: EDU_SI.book };
-  var sub = { own: '레디영 · 파마티크 · 리쥬올', '몸': '증상 ' + L.filter(function (x) { return x.g === '몸'; }).length, '피부': '고민 ' + L.filter(function (x) { return x.g !== '몸'; }).length, brand: bn + '곳', study: '성분 ' + ni + ' · 고민 ' + gn };
+  var sub = { own: '브랜드 3 · 자료 ' + eduCards().filter(function (c) { return EDU_OWN.some(function (o) { return o[0] === c.brand; }); }).length, '몸': '증상 ' + L.filter(function (x) { return x.g === '몸'; }).length, '피부': '고민 ' + L.filter(function (x) { return x.g !== '몸'; }).length, brand: bn + '곳', study: '성분 ' + ni + ' · 고민 ' + gn };
   return '<div class="edu-tabs" id="eduTabs" role="tablist" aria-label="교육 자료 종류">' + EDU_TABS.map(function (t) {
     return '<button type="button" role="tab" class="edu-tab" data-k="' + t[0] + '" aria-selected="' + (EDU.tab === t[0]) + '" onclick="eduSetTab(this.dataset.k)"><span class="edu-tab-i" aria-hidden="true">' + eduSvg(ic[t[0]]) + '</span><span class="edu-tab-t"><b>' + t[1] + '</b><small>' + sub[t[0]] + '</small></span></button>';
   }).join('') + '</div>';
