@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvamnjbn">
+  <meta name="ry-build" content="mvamp04x">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -14512,7 +14512,8 @@ function eduSetQ(v) { EDU.q = v; var q = document.getElementById('eduQ'); if (q)
 function eduRow(c, rn) {
   if (typeof rn !== 'number' || !eduReps(c.id).length) rn = 0;   /* 1008 고민 칩 누르면 멈춤: map(eduRow) 의 순번이 신고 수로 들어가 없는 신고를 읽다 오류 */
   var tg = (c.targets || []).slice(0, 4), dn = eduDone()[c.id];
-  return '<button type="button" class="edu-row" data-id="' + eduE(c.id) + '" onclick="eduOpenCard(this.dataset.id)"><span class="edu-row-t"><span class="edu-row-k">' + eduE(c.brand) + ' · ' + eduE(c.line) + eduAiBadge(c) + (rn ? '<i class="edu-rep-n">신고 ' + rn + '</i>' : '') + (eduIsNew(c) && !eduAllNew(c.brand) && !eduIsDraft(c) ? '<i class="edu-new">새</i>' : '') + (dn ? '<i class="edu-done" title="공부했어요">' + EDU_I.check + '</i>' : '') + '</span><b>' + eduE(eduShort(c)) + '</b>'
+  var pu = eduPhoto(c);   /* 1016 MJ: 무슨 상품인지 바로 보이게 앞에 사진 */
+  return '<button type="button" class="edu-row" data-id="' + eduE(c.id) + '" onclick="eduOpenCard(this.dataset.id)"><span class="edu-ph" aria-hidden="true">' + EDU_I.box + (pu ? '<img src="' + eduE(pu) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">' : '') + '</span><span class="edu-row-t"><span class="edu-row-k">' + eduE(c.brand) + ' · ' + eduE(c.line) + eduAiBadge(c) + (rn ? '<i class="edu-rep-n">신고 ' + rn + '</i>' : '') + (eduIsNew(c) && !eduAllNew(c.brand) && !eduIsDraft(c) ? '<i class="edu-new">새</i>' : '') + (dn ? '<i class="edu-done" title="공부했어요">' + EDU_I.check + '</i>' : '') + '</span><b>' + eduE(eduShort(c)) + '</b>'
     + (c.concept ? '<span class="edu-row-c">' + eduE(c.concept) + '</span>' : '') + (rn ? '<span class="edu-why">' + eduE(eduReps(c.id)[0].by + ' · ' + eduReps(c.id)[0].text) + '</span>' : '') + (tg.length ? '<span class="edu-tg">' + tg.map(function (t) { return '<i>' + eduE(t) + '</i>'; }).join('') + '</span>' : '') + '</span>' + EDU_I.chev + '</button>';
 }
 function eduSlideBtn(g) { return g && g.img ? '<button type="button" class="edu-sb" data-u="' + eduE(g.img) + '" onclick="eduZoomOpen(this.dataset.u)">' + EDU_I.img + '슬라이드</button>' : ''; }
