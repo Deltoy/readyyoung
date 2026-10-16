@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvaqo31h">
+  <meta name="ry-build" content="mvaqz6hc">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -5521,7 +5521,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var r = bxParse(document.getElementById('bxText').value), me = currentSelectedMember || '';
       if (!r.length) return; if (!me || me === '미선택') { showToast('위에서 내 이름을 먼저 골라 주세요', 1800); return; }
       btn.disabled = true; btn.textContent = '저장 중…';
-      google.script.run.withSuccessHandler(function (x) { btn.disabled = false; btn.textContent = '저장'; if (!x || !x.success) { showToast((x && x.message) || '저장하지 못했어요', 2200); return; } SP.box = x; SP.boxAt = Date.now(); bxDotSync(); showToast('박스 ' + x.saved + '종 남은 개수를 저장했어요' + ((x.requested || []).length ? ' · 🔴 ' + x.requested.map(function (b) { return b + '번'; }).join(', ') + ' 1박스 자동 요청했어요' : ''), (x.requested || []).length ? 3600 : 1800); spRenderSets(); try { bxPopup(true); } catch (e) {} })
+      google.script.run.withSuccessHandler(function (x) { btn.disabled = false; btn.textContent = '저장'; if (!x || !x.success) { showToast((x && x.message) || '저장하지 못했어요', 2200); return; } SP.box = x; SP.boxAt = Date.now(); bxDotSync(); showToast('박스 ' + x.saved + '종 남은 개수를 저장했어요' + ((x.requested || []).length ? ' · 🔴 ' + x.requested.map(function (b) { return b + '번'; }).join(', ') + ' 1박스 약사 발주에 올렸어요' : ''), (x.requested || []).length ? 3600 : 1800); spRenderSets(); try { bxPopup(true); } catch (e) {} })
         .withFailureHandler(function () { btn.disabled = false; btn.textContent = '저장'; showToast('저장하지 못했어요 · 인터넷 확인', 2200); }).saveBoxStock(r, me);
     }
     /* 1016 MJ: 카톡 대신 물류앱에 바로 — 첫 화면 [📦 박스 재고] → 번호마다 개수(59+139 처럼 적어도 됨) → 저장 = 신호등 계산 + 🔴면 자동 1박스 요청 */
@@ -5564,7 +5564,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         [].slice.call(document.querySelectorAll(root + ' input[data-k]')).forEach(function (inp) { inp.value = ''; var sm = inp.parentNode.querySelector('small'); if (sm) sm.textContent = ''; });
         try { bxTabStatus(); } catch (eT) {}
         var bad = (x.rows || []).filter(function (r) { return r.status === 'red' || r.status === 'yellow'; }), req = x.requested || [];
-        document.querySelector(root + ' .bx-res').innerHTML = '<b>✓ ' + x.saved + '종 저장했어요</b>' + (req.length ? '<p class="r">🔴 ' + req.map(function (b) { return b + '번'; }).join(', ') + ' 아크릴박스 1박스를 자동으로 요청했어요 (1차 검토)</p>' : '')
+        document.querySelector(root + ' .bx-res').innerHTML = '<b>✓ ' + x.saved + '종 저장했어요</b>' + (req.length ? '<p class="r">🔴 ' + req.map(function (b) { return b + '번'; }).join(', ') + ' 아크릴박스 1박스를 약사 발주(최종 발주)에 바로 올렸어요</p>' : '')
           + (bad.length ? bad.map(function (r) { return '<p class="' + (r.status === 'red' ? 'r' : 'y') + '">' + (r.status === 'red' ? '🔴' : '🟡') + ' ' + escapeHtml(bxName(r.box)) + ' · ' + r.days + '일 버팀</p>'; }).join('') : '<p>계산된 박스는 모두 넉넉해요 🟢</p>');
         try { if (document.getElementById('setPage').classList.contains('on') && SP.data && SP.view === 'sets') spRenderSets(); } catch (e) {}
         try { bxPopup(true); } catch (e2) {}
@@ -5584,7 +5584,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           + '<div id="bxTabM" class="bx-grid" hidden>' + gm + '</div>'
           + '<details class="bx-kakao"><summary>카톡에 올린 글이 있으면 붙여넣기</summary><textarea rows="5" placeholder="1번 59+139&#10;2번 117" oninput="bxFillFromText(this.value, \'#bxTab\')"></textarea></details>'
           + '<div class="bx-res" role="status"></div>'
-          + '<button type="button" class="bx-save" onclick="bxSave(\'#bxTab\', this)">저장 · 부족하면 1박스 자동 요청</button></section>'
+          + '<button type="button" class="bx-save" onclick="bxSave(\'#bxTab\', this)">저장 · 부족하면 1박스 자동 발주</button></section>'
           + '<section class="bx-card" id="bxTabStatus"></section></div>';
       }
       bxTabStatus();
@@ -5598,7 +5598,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var rows = (SP.box && SP.box.rows) || [], bad = rows.filter(function (r) { return r.status === 'red' || r.status === 'yellow'; }).length, n = document.getElementById('spBoxN');
       if (n) n.textContent = bad ? bad : '';
       if (!SP.box) { el.innerHTML = '<div class="sp-msg"><span class="ry-info-spin"></span>불러오는 중…</div>'; return; }
-      el.innerHTML = '<h3>박스별 상태</h3><p class="bx-last">도착 ' + (SP.box.lead || 3) + '일 + 여유 ' + (SP.box.safe || 7) + '일치 밑이면 🟡 · 5일치 밑이면 🔴 (🔴면 1박스 자동 요청) · 한 달 사용 = 세트 15일 판매 × 2</p>'
+      el.innerHTML = '<h3>박스별 상태</h3><p class="bx-last">도착 ' + (SP.box.lead || 3) + '일 + 여유 ' + (SP.box.safe || 7) + '일치 밑이면 🟡 · 5일치 밑이면 🔴 (🟡·🔴 = 10일치 이하면 1박스를 약사 발주에 바로 올려요) · 한 달 사용 = 세트 15일 판매 × 2</p>'
         + '<table class="sp-bp-t"><thead><tr><th>박스</th><th>상태</th><th>남은 개수</th><th>한 달 사용</th><th>쓰는 세트</th></tr></thead><tbody>' + rows.map(function (r) {
           var st = BX_ST[r.status] || BX_ST.unknown;
           var stTxt = r.status === 'unknown' ? st[0] + ' ' + st[1] : r.status === 'nodata' ? st[0] + ' 사용량 모름<small>세트에 박스 번호 필요</small>' : st[0] + ' ' + (r.days == null ? '판매 기록 없음' : r.days + '일 버팀') + (r.order ? '<small>' + st[1] + ' · ' + r.order + '개</small>' : '');
@@ -5618,7 +5618,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var sum = rows.length ? (bad ? '<b class="bx-warn">주문할 박스 ' + bad + '종</b>' : nod < rows.length ? '계산된 박스는 넉넉해요' : '사용량 계산 전') + (nod ? ' · 사용량 모름 ' + nod + '종' : '') + (last ? ' · ' + escapeHtml(last.slice(5).replace('-', '/')) + ' 셈' : '') : '박스 번호를 넣으면 계산돼요';
       var open = SP.bpOpen || bad;
       return '<details class="sp-bp"' + (open ? ' open' : '') + ' ontoggle="SP.bpOpen = this.open"><summary>📦 아크릴박스 재고<small>' + sum + (none.length ? ' · 번호 없는 세트 ' + none.length : '') + '</small></summary>'
-        + '<p class="sp-bp-h">🔴가 되면 그 번호 아크릴박스를 1박스 자동 요청해요 (이미 요청 · 발주 중이면 안 함). 한 달 사용 = 세트 15일 판매' + (per ? '(' + escapeHtml(per) + ')' : '') + ' × 2 · 도착 ' + ((SP.box && SP.box.lead) || 3) + '일 + 여유 ' + ((SP.box && SP.box.safe) || 7) + '일치 밑이면 🟡, 5일치 밑이면 🔴<button type="button" class="bx-pbtn" onclick="bxPasteOpen()">📋 카톡 박스 재고 글 붙여넣기</button></p>'
+        + '<p class="sp-bp-h">🟡·🔴(10일치 이하)가 되면 그 번호 아크릴박스 1박스를 약사 발주에 바로 올려요 (이미 발주 중이면 안 함). 한 달 사용 = 세트 15일 판매' + (per ? '(' + escapeHtml(per) + ')' : '') + ' × 2 · 도착 ' + ((SP.box && SP.box.lead) || 3) + '일 + 여유 ' + ((SP.box && SP.box.safe) || 7) + '일치 밑이면 🟡, 5일치 밑이면 🔴<button type="button" class="bx-pbtn" onclick="bxPasteOpen()">📋 카톡 박스 재고 글 붙여넣기</button></p>'
         + '<div id="bxPaste" class="bx-paste" hidden><textarea id="bxText" rows="6" placeholder="아침 카톡 글을 그대로 붙여넣어 주세요&#10;예) 1번 59+139&#10;2번 117" oninput="bxPastePreview()"></textarea><div id="bxPrev" class="bx-prev"></div><button type="button" id="bxSave" class="np-save" disabled onclick="bxPasteSave(this)">저장</button></div>'
         + (rows.length ? '<table class="sp-bp-t"><thead><tr><th>박스</th><th>상태</th><th>남은 개수</th><th>한 달 사용</th><th>들어가는 세트</th></tr></thead><tbody>' + rows.map(function (r) {
             var st = BX_ST[r.status] || BX_ST.unknown, ss = setsOf[r.box] || [];
