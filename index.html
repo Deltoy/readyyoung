@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvarm9ju">
+  <meta name="ry-build" content="mvaxciye">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -10590,8 +10590,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (m) min = parseInt(m[1], 10);
       m = note.match(/주문\s*단위\s*[:：]?\s*(\d{1,5})/); if (m) unitN = parseInt(m[1], 10);
       var box = parseInt((String((item && item.boxUnit) || '').match(/\d{1,5}/) || ['0'])[0], 10) || 0;
-      if (box) out.push({ n: box, t: '1박스 (' + box + '개)', tip: '1박스 입수량' });
-      else if (unitN) out.push({ n: unitN, t: '주문단위 ' + unitN + '개', tip: '주문단위' });
+      if (box) out.push({ n: box, t: '+1박스 (' + box + '개)', tip: '누를 때마다 1박스(' + box + '개)씩 더해요', add: 1 });   /* 1016 MJ: 누를 때마다 1박스씩 늘어나게 (100 → 200 → 300) */
+      else if (unitN) out.push({ n: unitN, t: '+' + unitN + '개 (주문단위)', tip: '누를 때마다 주문단위 ' + unitN + '개씩 더해요', add: 1 });
       if (min) { if (out[0] && out[0].n === min) out[0] = { n: min, t: '최저 ' + min + '개', tip: '최저수량 · ' + out[0].tip, best: true }; else out.push({ n: min, t: '최저 ' + min + '개', tip: '최저수량', best: true }); }
       return out;
     }
@@ -10601,26 +10601,29 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (!list.length) return '';
       var cur = parseInt(String(item.targetQty || '').replace(/[^0-9]/g, ''), 10) || 0;
       return '<span class="ry25-pre ry-rv-pre">' + list.map(function (p) {
-        return '<button type="button" class="' + (p.best ? 'best' : '') + (p.n === cur ? ' on' : '') + '" data-rv-row="' + item.rowNumber + '" data-n="' + p.n + '"'
-          + ' onclick="ryRvSetQty(' + item.rowNumber + ', ' + p.n + ')" title="' + p.tip + '" aria-label="' + p.t + ' 넣기"><span>' + p.t + '</span></button>';
+        return '<button type="button" class="' + (p.best ? 'best' : '') + (!p.add && p.n === cur ? ' on' : '') + '" data-rv-row="' + item.rowNumber + '" data-n="' + p.n + '"' + (p.add ? ' data-add="1"' : '')
+          + ' onclick="ryRvSetQty(' + item.rowNumber + ', ' + p.n + (p.add ? ', 1' : '') + ')" title="' + p.tip + '" aria-label="' + p.t + ' 넣기"><span>' + p.t + '</span></button>';
       }).join('') + '</span>';
     }
-    function ryRvSetQty(row, n) {
+    /* 1016 1박스 칩: 다음 박스 배수로 (20 → 25 · 100 → 200 · 150 → 200) */
+    function ryNextBox(cur, n) { cur = parseInt(cur, 10) || 0; return Math.min(99999, (Math.floor(cur / n) + 1) * n); }
+    function ryRvSetQty(row, n, add) {
       var u = ((document.getElementById('unit-btn-' + row) || document.getElementById('m-unit-btn-' + row) || {}).innerText || '개').trim();
       if (u === '박스') { showToast('지금 박스 단위예요 — 개로 바꾼 뒤 눌러 주세요'); return; }   /* 개 수량이 박스 수로 들어가지 않게 */
       var pc = document.getElementById('qty-' + row), m = document.getElementById('m-qty-' + row), src = pc && pc.offsetParent ? pc : (m || pc);
       if (!src) return;
+      if (add) n = ryNextBox(src.value, n);
       src.value = n;
       saveModifiedQtyAndUnit(row, src);
-      document.querySelectorAll('[data-rv-row="' + row + '"]').forEach(function (b) { b.classList.toggle('on', +b.getAttribute('data-n') === n); });
+      document.querySelectorAll('[data-rv-row="' + row + '"]').forEach(function (b) { b.classList.toggle('on', !b.hasAttribute('data-add') && +b.getAttribute('data-n') === n); });
     }
     function ry25PresetHtml(item) {
       var list = item && item.unit === '박스' ? [] : ry25Presets(item);   /* 1003 박스 단위 상품에 '30개' 칩이 30박스로 들어가던 것 막음 */
       if (!list.length) return '';
       var cur = parseInt(String(item.targetQty || '').replace(/[^0-9]/g, ''), 10) || 0;
       return '<span class="ry25-pre" onclick="event.stopPropagation()">' + list.map(function (p) {
-        return '<button type="button" class="' + (p.best ? 'best' : '') + (p.n === cur ? ' on' : '') + '" data-pre-row="' + item.rowNumber + '" data-n="' + p.n + '"'
-          + ' onclick="ry25SetQty(' + item.rowNumber + ', ' + p.n + ')" title="' + p.tip + '" aria-label="' + p.t + ' 넣기"><span>' + p.t + '</span></button>';
+        return '<button type="button" class="' + (p.best ? 'best' : '') + (!p.add && p.n === cur ? ' on' : '') + '" data-pre-row="' + item.rowNumber + '" data-n="' + p.n + '"' + (p.add ? ' data-add="1"' : '')
+          + ' onclick="ry25SetQty(' + item.rowNumber + ', ' + p.n + (p.add ? ', 1' : '') + ')" title="' + p.tip + '" aria-label="' + p.t + ' 넣기"><span>' + p.t + '</span></button>';
       }).join('') + '</span>';
     }
     function ry25MarkPreset(rowNumber) {
@@ -10628,7 +10631,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (inp && document.activeElement === inp) inp.dataset.touched = '1';
       var v = inp ? parseInt(inp.value, 10) : NaN;
       document.querySelectorAll('[data-pre-row="' + rowNumber + '"]').forEach(function (b) {
-        b.classList.toggle('on', parseInt(b.getAttribute('data-n'), 10) === v);
+        b.classList.toggle('on', !b.hasAttribute('data-add') && parseInt(b.getAttribute('data-n'), 10) === v);
       });
     }
     /* 1008 MJ '검색했을 때 박스로 요청하는 건 박스로': 검색 결과에서도 개/박스를 고른다. 기본 = 상품에 저장된 단위(박스 상품은 박스) · 추천 n박스가 n개로 들어가던 것 막음 */
@@ -10646,10 +10649,11 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var inp = document.getElementById('m-s-qty-' + row) || document.getElementById('s-qty-' + row), v = inp ? parseInt(inp.value, 10) || 0 : 0;
       if (!quiet) showToast(nu === '박스' ? (v || 1) + '박스로 요청해요' + (per ? ' (= ' + (v || 1) * per + '개)' : '') : (v || 1) + '개로 요청해요', 1800);
     }
-    function ry25SetQty(rowNumber, n) {
+    function ry25SetQty(rowNumber, n, add) {
       var inp = document.getElementById('m-s-qty-' + rowNumber);
       if (inp) inp.dataset.touched = '1';
       if (!inp) return;
+      if (add) n = rySUnit(rowNumber) === '박스' ? Math.min(99999, (parseInt(inp.value, 10) || 0) + 1) : ryNextBox(inp.value, n);   /* 박스 단위면 1박스 더하기 */
       inp.value = String(n);
       ry25MarkPreset(rowNumber);
       showToast('수량을 ' + n + rySUnit(rowNumber) + '로 맞췄어요', 1500);
