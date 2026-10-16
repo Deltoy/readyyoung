@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvaoj4t6">
+  <meta name="ry-build" content="mvaop768">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1646,6 +1646,7 @@ body.sp-open #appToast{bottom:auto!important;top:calc(68px + env(safe-area-inset
 .sp-bp-t td small{display:block;color:#98A2B3;font-size:11.5px}
 .sp-bp-none{padding:12px 16px 14px;border-top:1px solid #F2F4F7;font-size:13px;color:#475467}
 .sp-bp-none>div{margin-top:8px}
+.se-boxchips{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.se-boxchips button{min-height:44px;border:1px solid #D0D5DD;border-radius:12px;background:#fff;font-size:15px;font-weight:700;color:#344054}.se-boxchips button.on{background:#155EEF;border-color:#155EEF;color:#fff}.se-boxchips button.none{font-size:13px;font-weight:600}.se-boxchips button.none.on{background:#475467;border-color:#475467}
 .sp-bp .bx-warn{color:#B42318}
 .bx-pbtn{display:inline-flex;margin:8px 0 0;min-height:40px;padding:0 14px;border:1px solid #D0D5DD;border-radius:999px;background:#fff;font-size:13px;font-weight:700;color:#344054}
 .bx-paste{padding:0 16px 14px}.bx-paste textarea{width:100%;border:1px solid #D0D5DD;border-radius:12px;padding:10px;font-size:14px;line-height:1.5;box-sizing:border-box}
@@ -5775,6 +5776,14 @@ html body #ryLaunchGrid .tl-search{top:56px}
 
     /* ── 세트 만들기 · 고치기 ── */
     var SE = { id: '', items: [], photo: '', uploading: false };
+    /* 1016 MJ: 박스는 글자로 안 쓰고 1~9번 중 고르기 */
+    function seBoxRender() {
+      var v = String(document.getElementById('seBox').value || '').replace(/[^0-9]/g, ''), h = '';
+      for (var i = 1; i <= 9; i++) h += '<button type="button" role="radio" aria-checked="' + (v === String(i)) + '" class="' + (v === String(i) ? 'on' : '') + '" onclick="seBoxPick(\'' + i + '번\')">' + i + '번</button>';
+      h += '<button type="button" role="radio" aria-checked="' + (!v) + '" class="none' + (!v ? ' on' : '') + '" onclick="seBoxPick(\'\')">안 정함</button>';
+      document.getElementById('seBoxChips').innerHTML = h;
+    }
+    function seBoxPick(v) { document.getElementById('seBox').value = v; seBoxRender(); }
     function seSnap() { return JSON.stringify([document.getElementById('seName').value, document.getElementById('seBox').value, document.getElementById('seMemo').value, document.getElementById('seWd').value, document.getElementById('seWe').value, SE.items, SE.photo]); }
     function openSetEdit(id) {
       if (!currentSelectedMember) { showToast('먼저 발주 화면 위쪽에서 이름을 선택해주세요', 3500); return; }
@@ -5783,7 +5792,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       SE = { id: s ? s.id : '', items: s ? s.items.map(function (it) { return { name: it.name, qty: it.qty }; }) : [], photo: s ? s.photo : '', uploading: false };
       document.getElementById('seTitle').textContent = s ? '세트 고치기' : '새 세트';
       document.getElementById('seName').value = s ? s.name : '';
-      document.getElementById('seBox').value = s ? s.box : '';
+      document.getElementById('seBox').value = s ? s.box : ''; seBoxRender();
       document.getElementById('seMemo').value = s ? s.memo : '';
       document.getElementById('seWd').value = s && s.wd !== '' && s.wd != null ? s.wd : '';
       document.getElementById('seWe').value = s && s.we !== '' && s.we != null ? s.we : '';
@@ -12533,7 +12542,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
   <div class="se-scroll">
     <div class="np-err" id="seErr"></div>
     <div class="np-field"><label for="seName">세트 이름</label><input type="text" id="seName" maxlength="40" placeholder="예: 아크네 세트" autocomplete="off" oninput="seClearErr()"></div>
-    <div class="np-field"><label for="seBox">사용하는 박스</label><input type="text" id="seBox" maxlength="20" placeholder="예: 3번 박스" autocomplete="off"></div>
+    <div class="np-field"><label id="seBoxL">사용하는 아크릴박스</label><input type="hidden" id="seBox"><div id="seBoxChips" class="se-boxchips" role="radiogroup" aria-labelledby="seBoxL"></div></div>
     <div class="np-row">
       <div class="np-field"><label for="seWd">평일 하루 평균 판매 (선택)</label><input type="number" id="seWd" inputmode="decimal" min="0" max="9999" step="0.1" placeholder="예: 3"></div>
       <div class="np-field"><label for="seWe">주말 하루 평균 판매 (선택)</label><input type="number" id="seWe" inputmode="decimal" min="0" max="9999" step="0.1" placeholder="예: 7"></div>
