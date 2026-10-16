@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvarc163">
+  <meta name="ry-build" content="mvarjkev">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1683,7 +1683,20 @@ body.sp-open #appToast{bottom:auto!important;top:calc(68px + env(safe-area-inset
 .bx-card .bx-set{display:inline-block;font-style:normal;margin:0 6px 4px 0;padding:3px 9px;border-radius:999px;background:#F2F4F7;font-size:12px;color:#344054}
 #spSegBox i{color:#D92D20}
 .bx-card .bx-grid[hidden],#bxSheet .bx-grid[hidden]{display:none!important}
-.bx-sn{display:none;font-size:12.5px;color:#475467;font-weight:700}@media(max-width:560px){.bx-sf{display:none}.bx-sn{display:inline}#bxTabStatus td:nth-child(5){width:auto;white-space:nowrap}}
+.bx-sbtn{min-height:36px;padding:0 12px;border:1px solid #D0D5DD;border-radius:999px;background:#fff;font-size:13px;font-weight:700;color:#155EEF;white-space:nowrap}
+#bxTabStatus td:nth-child(5){width:auto;white-space:nowrap}
+#bxSetPop{position:fixed;inset:0;z-index:9000;display:flex;align-items:flex-end;justify-content:center}#bxSetPop[hidden]{display:none}
+#bxSetPop .bsp-dim{position:absolute;inset:0;background:rgba(16,24,40,.45)}
+#bxSetPop .bsp-card{position:relative;width:min(520px,100%);max-height:80vh;overflow-y:auto;background:#fff;border-radius:22px 22px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom));box-shadow:0 -12px 40px rgba(16,24,40,.2)}
+@media(min-width:720px){#bxSetPop{align-items:center}#bxSetPop .bsp-card{border-radius:22px}}
+#bxSetPop .bsp-hd{display:flex;align-items:center;justify-content:space-between;gap:10px}#bxSetPop .bsp-hd b{font-size:17px;color:#101828}
+#bxSetPop .bsp-x{width:44px;height:44px;border:0;border-radius:12px;background:#F2F4F7;font-size:22px;color:#344054;flex:none}
+#bxSetPop .bsp-sub{margin:4px 0 10px;font-size:13px;color:#667085}
+#bxSetPop .bsp-list{display:flex;flex-direction:column;border:1px solid #EAECF0;border-radius:16px;overflow:hidden}
+#bxSetPop .bsp-row{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:10px 12px;border:0;border-top:1px solid #F2F4F7;background:#fff;text-align:left}
+#bxSetPop .bsp-row:first-child{border-top:0}#bxSetPop .bsp-row img,#bxSetPop .bsp-ph{width:48px;height:48px;border-radius:10px;object-fit:cover;flex:none;background:#F2F4F7;display:grid;place-items:center}
+#bxSetPop .bsp-t{flex:1;min-width:0;display:flex;flex-direction:column}#bxSetPop .bsp-t b{font-size:15px;color:#101828}#bxSetPop .bsp-t small{font-size:12.5px;color:#155EEF;font-weight:700}
+#bxSetPop .bsp-row i{font-style:normal;font-size:20px;color:#C0C5CD}
 .sp-seg button[hidden]{display:none!important}
 #bxTabStatus{overflow-x:auto}#bxTab{max-width:100%;overflow-x:hidden}
 .bx-paste{padding:0 16px 14px}.bx-paste textarea{width:100%;border:1px solid #D0D5DD;border-radius:12px;padding:10px;font-size:14px;line-height:1.5;box-sizing:border-box}
@@ -5605,10 +5618,24 @@ html body #ryLaunchGrid .tl-search{top:56px}
         + '<table class="sp-bp-t"><thead><tr><th>박스</th><th>상태</th><th>남은 개수</th><th>한 달 사용</th><th>쓰는 세트</th></tr></thead><tbody>' + rows.map(function (r) {
           var st = BX_ST[r.status] || BX_ST.unknown;
           var stTxt = r.status === 'unknown' ? st[0] + ' ' + st[1] : r.status === 'nodata' ? st[0] + ' 사용량 모름<small>세트에 박스 번호 필요</small>' : st[0] + ' ' + (r.days == null ? '판매 기록 없음' : r.days + '일 버팀') + (r.order ? '<small>약사 발주 1박스 (자동)</small>' : '');
-          return '<tr class="bx-' + r.status + '"><td><b>' + escapeHtml(bxName(r.box)) + '</b></td><td>' + stTxt + '</td><td>' + (r.left != null ? '<b>' + r.left + '</b>개<small>' + escapeHtml(String(r.at || '').slice(5).replace('-', '/')) + '</small>' : '–') + '</td><td>' + (r.month ? r.month + '개' : '–') + '</td><td>' + ((r.sets || []).length ? '<span class="bx-sf">' + r.sets.map(function (nm) { return '<i class="bx-set">' + escapeHtml(nm) + '</i>'; }).join('') + '</span><span class="bx-sn">세트 ' + r.sets.length + '개</span>' : '<small>없음</small>') + '</td></tr>';
+          return '<tr class="bx-' + r.status + '"><td><b>' + escapeHtml(bxName(r.box)) + '</b></td><td>' + stTxt + '</td><td>' + (r.left != null ? '<b>' + r.left + '</b>개<small>' + escapeHtml(String(r.at || '').slice(5).replace('-', '/')) + '</small>' : '–') + '</td><td>' + (r.month ? r.month + '개' : '–') + '</td><td>' + ((r.sets || []).length ? '<button type="button" class="bx-sbtn" data-b="' + escapeHtml(r.box) + '" onclick="bxSetPop(this.dataset.b)">세트 ' + r.sets.length + '개 ›</button>' : '<small>없음</small>') + '</td></tr>';
         }).join('') + '</tbody></table>'
         + (SP.data ? (function () { var none = SP.data.sets.filter(function (s) { return !String(s.box || '').replace(/\s|번/g, '') && !/박스\s*없음/.test(s.memo || ''); });   /* 1016 MJ: 주문받아 만드는 세트(박스 없음)는 빼고 */ return none.length ? '<div class="sp-bp-none"><b>박스 번호가 없는 세트 ' + none.length + '개</b> · 누르고 [세트 고치기]에서 번호를 골라 주세요<div>' + none.map(function (s) { return '<button type="button" data-id="' + escapeHtml(s.id) + '" onclick="spOpenSet(this.dataset.id)">' + escapeHtml(s.name) + '</button>'; }).join('') + '</div></div>' : ''; })() : '');
     }
+    /* 1016 MJ: '세트 N개'를 누르면 그 박스를 쓰는 세트를 한눈에 (사진 · 15일 판매 · 누르면 세트 상세) */
+    function bxSetPop(k) {
+      var r = ((SP.box && SP.box.rows) || []).filter(function (x) { return x.box === k; })[0]; if (!r) return;
+      var sets = (SP.data && SP.data.sets) || [], el = document.getElementById('bxSetPop');
+      if (!el) { el = document.createElement('div'); el.id = 'bxSetPop'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); document.body.appendChild(el); }
+      var tot = 0, rows = r.sets.map(function (nm) { var s = sets.filter(function (x) { return x.name === nm; })[0], q = s && s.s15 !== '' && s.s15 != null ? +s.s15 : null; if (q != null) tot += q; return { nm: nm, s: s, q: q }; }).sort(function (a, b) { return (b.q || 0) - (a.q || 0); });
+      el.innerHTML = '<div class="bsp-dim" onclick="bxSetPopClose()"></div><div class="bsp-card"><div class="bsp-hd"><b>📦 ' + escapeHtml(bxName(k)) + ' 박스를 쓰는 세트 ' + rows.length + '개</b><button type="button" class="bsp-x" onclick="bxSetPopClose()" aria-label="닫기">×</button></div>'
+        + '<p class="bsp-sub">15일 판매 합 ' + tot + '개 · 한 달 약 ' + (r.month || tot * 2) + '개 · 남은 ' + (r.left != null ? r.left + '개' : '–') + '</p><div class="bsp-list">'
+        + rows.map(function (x) { return '<button type="button" class="bsp-row"' + (x.s ? ' data-id="' + escapeHtml(x.s.id) + '" onclick="bxSetPopClose(); spOpenSet(this.dataset.id)"' : ' disabled') + '>' + (x.s && x.s.photo ? '<img src="' + escapeHtml(x.s.photo) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : '<span class="bsp-ph">🎁</span>') + '<span class="bsp-t"><b>' + escapeHtml(x.nm) + '</b><small>' + (x.q != null ? '15일 판매 ' + x.q + '개' : '판매 기록 없음') + '</small></span>' + (x.s ? '<i>›</i>' : '') + '</button>'; }).join('')
+        + '</div>' + (!SP.data ? '<p class="bsp-sub">세트 사진은 세트 목록을 불러오면 보여요</p>' : '') + '</div>';
+      el.hidden = false;
+      if (!SP.data) { try { spLoad(true); } catch (e) {} setTimeout(function () { if (SP.data && !el.hidden) bxSetPop(k); }, 4000); }
+    }
+    function bxSetPopClose() { var el = document.getElementById('bxSetPop'); if (el) el.hidden = true; }
     var BX_ST = { red: ['🔴', '지금 주문'], yellow: ['🟡', '이번 주 주문'], green: ['🟢', '넉넉해요'], unknown: ['⚪', '남은 개수 모름'], nodata: ['⚪', '사용량 모름'] };
     function bxName(k) { return k.indexOf('무지') === 0 ? '무지 ' + k.slice(2) + '번' : k + '번'; }
     function spBoxPlanHtml(sets) {
