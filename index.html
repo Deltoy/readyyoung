@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvam8pqj">
+  <meta name="ry-build" content="mvamnjbn">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -3576,7 +3576,13 @@ html:not(#q):not(#w):not(#e) body:not(#r) .sdc-lg .sdc-c{display:inline-flex;ali
 /* 1002 용도 · 취급안함 */
 .ry-uses{display:inline-flex;align-items:center;min-height:24px;margin:4px 0 0 4px;padding:2px 9px;border-radius:999px;background:#EFF4FF;color:#1849A9;font-size:12px;font-weight:600;line-height:1.3;vertical-align:middle;max-width:100%}
 td .ry-uses{margin:4px 0 0;white-space:normal;box-sizing:border-box;word-break:keep-all;overflow-wrap:anywhere}   /* 1007 칸 밖(재고있음 버튼 쪽)으로 넘치던 용도 칩 → 칸 안에서 줄바꿈 */
-html body td:has(>.ry-cat){white-space:normal!important}html body td>.ry-cat{white-space:normal!important;max-width:100%;box-sizing:border-box}   /* 1007 분류·용도 칩이 한 줄에 안 들어가면 다음 줄로 (칸이 줄바꿈 금지라 옆 칸 버튼 위로 넘쳤다) */
+html body td:has(>.ry-cat){white-space:normal!important}html body td>.ry-cat{white-space:normal!important;max-width:100%;box-sizing:border-box}
+/* 1016 MJ '카테고리 줄 맞춤' — 표 칸에서 글자 중간이 끊기지 않게: 큰 분류(작게) / 세부 분류 두 줄로, 낱말 단위로만 줄바꿈 */
+html:not(#q):not(#w):not(#e) body:not(#r) td>.ry-cat{flex-direction:column!important;justify-content:center!important;gap:1px;padding:6px 12px!important;line-height:1.3;text-align:center;word-break:keep-all!important;overflow-wrap:normal!important}
+html:not(#q):not(#w):not(#e) body:not(#r) td>.ry-cat>span{font-size:11px;white-space:nowrap}
+html:not(#q):not(#w):not(#e) body:not(#r) td>.ry-cat>i{display:none}
+html:not(#q):not(#w):not(#e) body:not(#r) td>.ry-cat>b{white-space:normal;word-break:keep-all}
+html:not(#q):not(#w):not(#e) body:not(#r) td>.ry-cat::before{border-radius:14px!important;top:2px!important;bottom:2px!important}   /* 1007 분류·용도 칩이 한 줄에 안 들어가면 다음 줄로 (칸이 줄바꿈 금지라 옆 칸 버튼 위로 넘쳤다) */
 .ry-end.ry-hid{background:#F2F4F7;color:#344054;border-color:#D0D5DD}
 </style>
 <style>
