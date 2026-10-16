@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvap3l10">
+  <meta name="ry-build" content="mvap620o">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -5514,14 +5514,19 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var g = '', gm = ''; for (var i = 1; i <= 9; i++) g += bxCell(String(i), i + '번');
       BX_M.forEach(function (i) { gm += bxCell('무지' + i, '무지 ' + i + '번'); });
       document.getElementById('bxGrid').innerHTML = g; document.getElementById('bxGridM').innerHTML = gm;
-      var l = bxLastAt(), lr = ((SP.box && SP.box.rows) || []).filter(function (r) { return r.at === l; })[0];
-      document.getElementById('bxLast').textContent = l ? '마지막으로 센 것: ' + l.slice(5).replace('-', '/') + (lr && lr.by ? ' · ' + lr.by : '') + ' (흐린 숫자) · 빈 칸은 저장 안 해요' : '번호마다 지금 있는 개수를 적어 주세요 · 빈 칸은 저장 안 해요';
+      document.getElementById('bxGridM').hidden = true; document.querySelector('#bxSheet .bx-more').textContent = '＋ 무지박스도 적기';
       document.getElementById('bxRes').innerHTML = ''; document.getElementById('bxKText').value = '';
       document.getElementById('bxDim').hidden = false; document.getElementById('bxSheet').hidden = false;
-      if (!SP.box) bxLoad(function () { if (!document.getElementById('bxSheet').hidden) bxOpen(); });
+      bxHints();
+      if (!SP.box) bxLoad(function () { if (!document.getElementById('bxSheet').hidden) bxHints(); });   /* 받아오면 흐린 숫자만 채움 (적던 숫자는 그대로) */
+    }
+    function bxHints() {
+      ((SP.box && SP.box.rows) || []).forEach(function (r) { var inp = document.querySelector('#bxSheet input[data-k="' + r.box + '"]'); if (inp && r.counted != null) inp.placeholder = r.counted; });
+      var l = bxLastAt(), lr = ((SP.box && SP.box.rows) || []).filter(function (r) { return r.at === l; })[0];
+      document.getElementById('bxLast').textContent = l ? '마지막으로 센 것: ' + l.slice(5).replace('-', '/') + (lr && lr.by ? ' · ' + lr.by : '') + ' (흐린 숫자) · 빈 칸은 저장 안 해요' : '번호마다 지금 있는 개수를 적어 주세요 · 빈 칸은 저장 안 해요';
     }
     function bxClose() { document.getElementById('bxDim').hidden = true; document.getElementById('bxSheet').hidden = true; }
-    function bxFillFromText(t) { bxParse(t).forEach(function (x) { var inp = document.querySelector('#bxSheet input[data-k="' + x.box + '"]'); if (inp) { inp.value = String(x.n); bxSumShow(inp); if (x.box.indexOf('무지') === 0) document.getElementById('bxGridM').hidden = false; } }); }
+    function bxFillFromText(t) { bxParse(t).forEach(function (x) { var inp = document.querySelector('#bxSheet input[data-k="' + x.box + '"]'); if (inp) { inp.value = String(x.n); bxSumShow(inp); if (x.box.indexOf('무지') === 0) { document.getElementById('bxGridM').hidden = false; document.querySelector('#bxSheet .bx-more').textContent = '－ 무지박스 접기'; } } }); }
     function bxSheetSave(btn) {
       var me = currentSelectedMember || ''; if (!me || me === '미선택') { showToast('위에서 내 이름을 먼저 골라 주세요', 1800); return; }
       var list = [].slice.call(document.querySelectorAll('#bxSheet input[data-k]')).map(function (inp) { var ns = String(inp.value || '').replace(/\([^)]*\)/g, '').match(/\d+/g); return ns ? { box: inp.dataset.k, n: ns.reduce(function (a, x) { return a + (+x); }, 0) } : null; }).filter(Boolean);
@@ -15901,6 +15906,7 @@ function ntMarkSeen() {
 }
 function ntBoot() {
   if (typeof google === 'undefined' || !google.script || typeof google.script.run.listNotices !== 'function') return;
+  try { if (typeof bxLoad === 'function' && (!SP.boxAt || Date.now() - SP.boxAt > 600000)) bxLoad(); } catch (eBx) {}   /* 1016 박스 재고 '오늘 아직' 점 · 첫 화면 알림 */
   google.script.run.withSuccessHandler(function (res) {
     if (!res || !res.ok) return;
     if (!NT.data || !NT.month) { NT.data = res; NT.recent = res.recent || []; NT.latest = res.latest || null; try { ntRenderLatest(); } catch (e) {} }
