@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvacf1dt">
+  <meta name="ry-build" content="mvad1phu">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -6312,7 +6312,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           var extra = (res.category ? ' · ' + catLabel(res.category) : '') + (res.requested ? ' · 1차 검토로 들어갔어요' : '');
           if (res.photo && !res.photo.ok) extra += ' · 사진은 저장 못 했어요';
           showToast('✓ ' + res.name + ' 등록 완료' + extra);
-          try { if (RY_CAT && RY_CAT.items) { RY_CAT.items.push({ rowNumber: res.rowNumber, name: res.name, category: res.category || '', imgUrl: '', note: '', sales15: '-', status: 'IDLE', _k: String(res.name || '').replace(/\s+/g, '').toLowerCase() }); ryCatSave(); } if (RY_CAT) RY_CAT.t = 0; ryCatLoad(true); } catch (eC) {}   // 1001 등록한 상품이 검색에 바로
+          try { if (RY_CAT && RY_CAT.items) { RY_CAT.items.push({ rowNumber: res.rowNumber, name: res.name, category: res.category || '', imgUrl: (res.photo && res.photo.ok && res.photo.url) || '',   /* 1016 사진첩 사진이 검색에 안 보이던 것 */ note: '', sales15: '-', status: 'IDLE', _k: String(res.name || '').replace(/\s+/g, '').toLowerCase() }); ryCatSave(); } if (RY_CAT) RY_CAT.t = 0; ryCatLoad(true); } catch (eC) {}   // 1001 등록한 상품이 검색에 바로
           // 0930 목록을 억지로 다시 받지 않는다(서버가 2분 걸림). 새 상품은 폰 목록에 없어도 서버 이름 스캔으로 바로 찾힌다
           loadAllData(true, true, true);
         })
@@ -9611,6 +9611,15 @@ html body #ryLaunchGrid .tl-search{top:56px}
     }
     /* 1015 MJ '다이어트 치면 다이어트 제품 다': 이름·분류 + 용도 태그(다이어트 등)까지 찾는다 */
     function ryKeyOf(it) { var k = String(it._k || ''); return it.uses && it.uses.length ? k + '|' + it.uses.join(',').replace(/\s+/g, '').toLowerCase() : k; }
+    /* 1016 MJ: 검색 결과 — 주문(입고) 많이 한 상품이 위, 판매종료·취급안함은 모아서 맨 아래. 같으면 15일 판매 많은 순, 그다음 원래 순서 */
+    function rySortSR(list) {
+      var nk = function (x) { return String(x || '').replace(/\s+/g, '').toLowerCase(); }, cnt = {};
+      (cachedHistoryItems || []).forEach(function (h) { var k = nk(h.name); cnt[k] = (cnt[k] || 0) + 1; });
+      var s15 = function (v) { return parseFloat(String(v == null ? '' : v).replace(/[^0-9.]/g, '')) || 0; };
+      return list.map(function (it, i) { return { it: it, i: i, end: isEnded(it) || isHiddenItem(it) ? 1 : 0, n: cnt[nk(it.name)] || 0, s: s15(it.sales15) }; })
+        .sort(function (a, b) { return a.end - b.end || b.n - a.n || b.s - a.s || a.i - b.i; })
+        .map(function (x) { return x.it; });
+    }
     function ryCatSearch(query) {
       if (!RY_CAT || !RY_CAT.items) return null;
       var hit = ryHitFn(query), out = [];
@@ -9648,7 +9657,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
             INBOUND:'bg-emerald-100 text-emerald-800', DONE:'bg-slate-200 text-slate-700',
             SOLDOUT:'bg-rose-100 text-rose-700', IDLE:'bg-slate-100 text-slate-600'
           };
-          const mapped = (results || []).map(item => ({
+          const mapped = rySortSR(results || []).map(item => ({
             ...item,
             statusLabel: _SLAB[item.status] || '미주문',
             statusColor: _SCOL[item.status] || 'bg-slate-100 text-slate-600'
@@ -9674,7 +9683,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
           if (moved) { try { ryCatSave(); } catch (eS2) {} }
           var have = {}; localHit.forEach(function (x) { have[x.rowNumber] = x; });
           var extra = r.filter(function (x) { return x && x.rowNumber && !have[x.rowNumber]; }), changed = moved > 0;
-          r.forEach(function (x) { var l = x && have[x.rowNumber]; if (!l) return; if ((x.imgUrl && x.imgUrl !== l.imgUrl) || (x.name && x.name !== l.name) || (x.category && x.category !== l.category)) { l.imgUrl = x.imgUrl || l.imgUrl; l.name = x.name || l.name; l.category = x.category || l.category; changed = true; } });   // 1001 사진·이름이 바뀐 건 서버 값으로 바로
+          var haveN = {}; localHit.forEach(function (x) { haveN[String(x.name || '').replace(/\s+/g, '').toLowerCase()] = x; });
+          r.forEach(function (x) { var l = x && (haveN[String(x.name || '').replace(/\s+/g, '').toLowerCase()] || have[x.rowNumber]); if (!l) return;   /* 1016 행이 밀려도 같은 이름끼리 사진을 맞춤 */ if ((x.imgUrl && x.imgUrl !== l.imgUrl) || (x.name && x.name !== l.name) || (x.category && x.category !== l.category)) { l.imgUrl = x.imgUrl || l.imgUrl; l.name = x.name || l.name; l.category = x.category || l.category; changed = true; } });   // 1001 사진·이름이 바뀐 건 서버 값으로 바로
           if (changed) { try { (RY_CAT.items || []).forEach(function (it) { var x = r.filter(function (y) { return y.rowNumber === it.rowNumber; })[0]; if (x) { it.imgUrl = x.imgUrl || it.imgUrl; it.name = x.name || it.name; it.category = x.category || it.category; } }); ryCatSave(); } catch (eS) {} }
           if (extra.length || changed) onResults(localHit.concat(extra));
         }).withFailureHandler(function () {}).searchCatalogItems(query); } catch (e) {}
