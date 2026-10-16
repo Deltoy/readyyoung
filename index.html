@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mv99btzh">
+  <meta name="ry-build" content="mvacbuvv">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1019,6 +1019,12 @@ td:has(button[id^="unit-btn-"][class*="bg-indigo-600"]) input[id^="qty-"]{color:
 .ry-in-name{font-size:15px;font-weight:700;line-height:1.3;color:var(--ry-ink);word-break:keep-all;overflow-wrap:anywhere}
 .ry-in-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:5px;font-size:12px;color:var(--ry-ink-3)}
 .ry-in-meta b{color:var(--ry-ink-2);font-weight:700}
+/* 1016 MJ: 입고확인에 주문한 사람 · 그 사람이 앱을 열면 '들어왔어요' 카드 */
+.ry-in-who{display:inline-flex;align-items:center;gap:4px;padding:2px 9px 2px 3px;border-radius:999px;background:#EEF4FF;color:#155EEF;font-size:12px;font-weight:800;white-space:nowrap}
+#ryArr{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9000;width:min(420px,calc(100% - 32px));background:#fff;border:1px solid #D1E0FF;border-radius:18px;box-shadow:0 12px 32px rgba(16,24,40,.18);padding:14px 16px}
+#ryArr b.t{display:block;font-size:15px;color:#101828;margin-bottom:6px}
+#ryArr li{font-size:13.5px;color:#344054;margin:3px 0 3px 16px}
+#ryArr button{margin-top:10px;width:100%;min-height:44px;border:0;border-radius:12px;background:#155EEF;color:#fff;font-weight:800;font-size:14px}
 .ry-in-wait{display:inline-block;margin-bottom:3px;font-size:10.5px;font-weight:800;color:#8A5A00;
   background:#FFF1CC;border:1px solid #D4941F;border-radius:4px;padding:1px 6px}
 .ry-in-qty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
@@ -6995,6 +7001,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       } catch(e) {}
       renderDropdownItems();
       try { renderMyRejectBanner(); } catch (e) {}   // 이름을 바꾸면 '내 반려' 배너도 그 사람 기준으로
+      try { ryArrivedNotice(); } catch (e) {}
       try { ry25RenderBar(false); } catch (e) {}   /* 0925: 요약 바도 그 사람 기준으로 */
       try { pfSyncAdmin(); } catch (e) {}
       try { sdRenderCard(); sdRenderSheet(); } catch (e) {}   /* 0925: 내 담당 표시 */
@@ -7269,6 +7276,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function histToggle(head) { var d = head.dataset.date; if (!d) return; HIST_OPEN[d] = !HIST_OPEN[d]; try { renderAllViews(); } catch (e) {} var again = document.querySelector('.hist-date-head[data-date="' + d + '"]'); if (again) again.scrollIntoView({ block: 'nearest' }); }
     function renderAllViews() {
       try { var sn = document.getElementById('satNudge'); if (sn) sn.hidden = new Date(Date.now() + 9 * 3600000).getUTCDay() !== 6; } catch (eSn) {}   // 1001 토요일 안내
+      try { ryArrivedNotice(); } catch (eAr) {}
       const pureReviewItems = [];
       const pureOrderItems = [];
       const soldOutItems = [];
@@ -8603,6 +8611,23 @@ html body #ryLaunchGrid .tl-search{top:56px}
       onInboundSearch('');
     }
 
+    function ryWho(item) { var n = String(item.requester || '').trim(); return n ? '<span class="ry-in-who">' + avaHTML(n, 's') + '주문 ' + escapeHtml(n) + '</span>' : ''; }
+    /* 1016 내가 주문한 상품이 최근 3일 안에 입고됐으면 앱을 열 때 카드로 알림 ([확인했어요] 누르면 이 폰에서 다시 안 뜸) */
+    function ryArrivedNotice() {
+      var me = String(currentSelectedMember || '').trim(); if (!me) return;
+      var key = 'ryArrSeen_' + me, seen = {}; try { seen = JSON.parse(localStorage.getItem(key) || '{}'); } catch (e) {}
+      var k = new Date(Date.now() + 9 * 3600000), lim = new Date(Date.UTC(k.getUTCFullYear(), k.getUTCMonth(), k.getUTCDate() - 3));
+      var list = (cachedHistoryItems || []).filter(function (it) {
+        var m = String(it.inboundDate || '').match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);
+        return String(it.requester || '').trim() === me && m && new Date(Date.UTC(+m[1], m[2] - 1, +m[3])) >= lim && !seen[it.name + '|' + it.inboundDate];
+      });
+      var el = document.getElementById('ryArr');
+      if (!list.length) { if (el) el.remove(); return; }
+      if (!el) { el = document.createElement('div'); el.id = 'ryArr'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+      el.innerHTML = '<b class="t">📦 ' + escapeHtml(me) + '님이 주문한 상품이 들어왔어요</b><ul>' + list.slice(0, 6).map(function (it) { return '<li>' + escapeHtml(it.name) + ' · ' + escapeHtml(String(it.targetQty || '')) + escapeHtml(it.unit || '개') + ' <small style="color:#667085">(' + escapeHtml(it.inboundDate) + ')</small></li>'; }).join('') + '</ul>' + (list.length > 6 ? '<small style="color:#667085">외 ' + (list.length - 6) + '개 · 입고내역 탭에서 확인</small>' : '') + '<button type="button" id="ryArrOk">확인했어요</button>';
+      document.getElementById('ryArrOk').onclick = function () { list.forEach(function (it) { seen[it.name + '|' + it.inboundDate] = 1; }); try { localStorage.setItem(key, JSON.stringify(seen)); } catch (e) {} el.remove(); };
+    }
+
     function createInboundRow(item) {
       const tr = document.createElement('tr');
       tr.setAttribute('data-item', item.rowNumber);
@@ -8638,7 +8663,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           <div class="font-bold text-slate-900 text-sm leading-relaxed${nameClass(item)}">${escapeHtml(item.name)} ${endedBadge(item)}</div>
           <div class="lg:hidden text-xs text-slate-600 mt-0.5">발주 ${odText(item)}</div>
           ${item.isCheckRequested ? `<div class="lg:hidden mt-1">${statusBadge}</div>` : ''}
-          <div class="mt-1.5 flex items-center gap-2 flex-wrap">${elapsedChip(item)}<button onclick="cancelSoldOut(${item.rowNumber})" class="ry-tcancel" title="공급사 품절로 못 들어오는 상품을 취소합니다">${RYI.ban}품절 취소</button></div>
+          <div class="mt-1.5 flex items-center gap-2 flex-wrap">${ryWho(item)}${elapsedChip(item)}<button onclick="cancelSoldOut(${item.rowNumber})" class="ry-tcancel" title="공급사 품절로 못 들어오는 상품을 취소합니다">${RYI.ban}품절 취소</button></div>
           ${delayReasonHtml(item)}
         </td>
         <td class="p-3 text-center bg-emerald-50/40 font-extrabold text-base text-emerald-700">${item.targetQty}${item.unit || '개'}</td>
@@ -8668,7 +8693,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           <div class="ry-in-text">
             ${item.isCheckRequested ? `<span class="ry-in-wait">${RYI.searchcheck}관리자 확인대기 (${escapeHtml(item.checkRequester)})</span>` : ''}
             <div class="ry-in-name${nameClass(item)}">${escapeHtml(item.name)} ${endedBadge(item)}</div>
-            <div class="ry-in-meta"><span>발주 <b>${odText(item)}</b></span>${elapsedChip(item)}<button onclick="cancelSoldOut(${item.rowNumber})" class="ry-in-cancel" title="공급사 품절로 못 들어오는 상품을 취소합니다">${RYI.ban}품절 취소</button></div>
+            <div class="ry-in-meta"><span>발주 <b>${odText(item)}</b></span>${ryWho(item)}${elapsedChip(item)}<button onclick="cancelSoldOut(${item.rowNumber})" class="ry-in-cancel" title="공급사 품절로 못 들어오는 상품을 취소합니다">${RYI.ban}품절 취소</button></div>
             ${delayReasonHtml(item)}
           </div>
           <div class="ry-in-qty">
@@ -8733,7 +8758,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
       const satD = rySatDateFor(rowNumber);   /* 0925: '토요일에 도착했어요' 를 눌렀으면 그 토요일 (아니면 빈 값 = 오늘) */
       if (!confirm('이 상품을 [✅ 최종 입고완료] 처리할까요?' + (satD ? '\n입고일: ' + satD + ' (토요일 도착)' : '') + '\n(실수했을 땐 📅 입고내역 탭의 ⏪ 되돌리기로 복구할 수 있어요)')) return;
       inFlight.add(key);
-      showToast(satD ? '최종 입고완료 처리했어요 · 입고일 ' + satD : '최종 입고완료 처리했어요');
+      const _who = String(((cachedInboundItems.find(it => it.rowNumber === rowNumber) || {}).requester) || '').trim();
+      showToast((satD ? '최종 입고완료 처리했어요 · 입고일 ' + satD : '최종 입고완료 처리했어요') + (_who && _who !== currentSelectedMember ? ' · ' + _who + '님 앱에 입고 알림이 떠요' : ''), _who ? 3500 : 2200);
 
       const itemIdx = cachedInboundItems.findIndex(it => it.rowNumber === rowNumber);
       if (itemIdx !== -1) {
