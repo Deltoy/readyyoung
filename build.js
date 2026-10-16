@@ -8,7 +8,7 @@ const must = (re, what) => { if (!re.test(html)) throw new Error('Index 에서 '
 must(/<head>/, '<head>'); must(/<title>[^<]*<\/title>/, '<title>');
 html = html
   .replace(/[ \t]*<link rel="(?:apple-touch-icon|icon)"[^>]*lh3\.googleusercontent\.com[^>]*>\n?/g, '')   // 구글 드라이브 아이콘 → 이 사이트 아이콘
-  .replace(/<title>[^<]*<\/title>/, '<title>성수레디영약국</title>')
+  .replace(/<title>[^<]*<\/title>/, '<title>발주 성수레디영약국</title>')   // 1016 관리약사: 탭이 많아 찾기 어려움 → 탭 이름만 '발주'로 시작
   .replace('<head>', () => '<head>\n  <meta name="ry-build" content="' + Date.now().toString(36) + '">\n  <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">\n  <script>' + shim + '</script>');
 const tmp = path.join(dir, 'index.html.tmp'); fs.writeFileSync(tmp, html); fs.renameSync(tmp, path.join(dir, 'index.html'));
 console.log('index.html 만들었어요', Buffer.byteLength(html), 'bytes ←', SRC);

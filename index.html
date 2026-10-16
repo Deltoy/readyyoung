@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvadchnl">
+  <meta name="ry-build" content="mvadj92e">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -105,7 +105,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-  <title>성수레디영약국</title>
+  <title>발주 성수레디영약국</title>
   <meta name="theme-color" content="#ffffff">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3748,6 +3748,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         <button type="button" class="ry-ghost ry-quick" onclick="moOpen()" title="잘 팔리는데 재고가 떨어졌을 상품">놓친 주문</button>
         <button type="button" class="ry-ghost ry-quick" onclick="window.open('https://pallang-0258.github.io/seongsu/viewer.html', '_blank', 'noopener')" title="근무표를 새 창으로 열기">근무표</button>
         <button type="button" class="ry-ghost ry-quick" onclick="ntOpen()" title="카톡 공지 보관함">공지</button>
+        <button type="button" class="ry-ghost ry-quick" onclick="rlOpen()" title="일하면서 알아야 할 규칙 (주제별)">숙지사항<i id="rlDot" class="mb-dot edu-qdot" hidden aria-label="안 읽은 숙지사항"></i></button>
         <button type="button" class="ry-ghost ry-quick" onclick="mbOpenArchive()" title="날짜별 아침 뷰티 브리핑">뷰티 브리핑</button>
         <button type="button" class="ry-ghost ry-quick" onclick="eduOpen()" title="제품 교육 자료">교육 자료실<i id="eduDot" class="mb-dot edu-qdot" hidden aria-label="새 교육 자료"></i></button>
         <div class="ry-more">
@@ -7003,6 +7004,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       renderDropdownItems();
       try { renderMyRejectBanner(); } catch (e) {}   // 이름을 바꾸면 '내 반려' 배너도 그 사람 기준으로
       try { ryArrivedNotice(); } catch (e) {}
+      try { if (typeof rlBadge === 'function') rlBadge(); } catch (e) {}
       try { ry25RenderBar(false); } catch (e) {}   /* 0925: 요약 바도 그 사람 기준으로 */
       try { pfSyncAdmin(); } catch (e) {}
       try { sdRenderCard(); sdRenderSheet(); } catch (e) {}   /* 0925: 내 담당 표시 */
@@ -15279,5 +15281,271 @@ document.addEventListener('keydown', function (e) {
 eduLoad(true);   // 기본 자료로 바로 (점 표시) · 서버는 조금 뒤 한 번
 setTimeout(function () { EDU.loadedAt = Date.now(); eduLoad(); }, 5000);
 </script>
+<!-- ==================== 1016 숙지사항 (일하면서 알아야 할 규칙 · 주제별 · 공지와 따로) ==================== -->
+<style>
+#rlView{position:fixed;inset:0;z-index:8000;background:#F5F6F8;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+#rlView[hidden],#rlPop[hidden],#rlDim[hidden],#rlSheet[hidden]{display:none!important}
+#rlView .rl-wrap{max-width:760px;margin:0 auto;padding:0 16px calc(96px + env(safe-area-inset-bottom))}
+#rlView .rl-top{position:sticky;top:0;z-index:2;background:rgba(245,246,248,.94);backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px);margin:0 -16px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px}
+#rlView .rl-bar{display:flex;align-items:center;gap:10px;min-height:48px}
+#rlView .rl-back{width:44px;height:44px;border-radius:12px;border:0;background:transparent;display:grid;place-items:center;color:#101828;font-size:22px;flex:none}
+#rlView .rl-bar h2{flex:1;margin:0;font-size:20px;font-weight:800;color:#101828;letter-spacing:-.3px}
+#rlView .rl-add{min-height:44px;padding:0 16px;border-radius:999px;border:0;background:#155EEF;color:#fff;font-weight:800;font-size:14px;display:inline-flex;align-items:center;gap:6px;flex:none}
+#rlView .rl-q{width:100%;height:48px;border-radius:14px;border:1px solid #E4E7EC;background:#fff;padding:0 16px;font-size:16px;margin-top:6px;outline:none}
+#rlView .rl-q:focus{border-color:#155EEF;box-shadow:0 0 0 3px rgba(21,94,239,.14)}
+#rlView .rl-chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
+#rlView .rl-chips::-webkit-scrollbar{display:none}
+#rlView .rl-chip{flex:none;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #E4E7EC;background:#fff;color:#344054;font-size:14px;font-weight:700;white-space:nowrap}
+#rlView .rl-chip.on{background:#101828;border-color:#101828;color:#fff}
+#rlView .rl-chip b{margin-left:4px;color:#F04438;font-weight:800}
+#rlView .rl-chip.on b{color:#FDA29B}
+#rlView .rl-unread{display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px 14px;border-radius:16px;background:#FEF3F2;border:1px solid #FEE4E2;color:#B42318;font-size:14px;font-weight:700}
+#rlView .rl-unread span{flex:1}
+#rlView .rl-unread button{min-height:40px;padding:0 14px;border-radius:999px;border:0;background:#D92D20;color:#fff;font-weight:800;font-size:13.5px}
+#rlView .rl-list{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+#rlView .rl-card{background:#fff;border-radius:20px;padding:16px;box-shadow:0 1px 2px rgba(16,24,40,.05);border:1px solid #EEF0F3}
+#rlView .rl-card.new{border-color:#FDA29B;box-shadow:0 0 0 3px rgba(240,68,56,.08)}
+#rlView .rl-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#rlView .rl-t{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:#EFF4FF;color:#155EEF;font-size:12px;font-weight:800}
+#rlView .rl-new{display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:999px;background:#F04438;color:#fff;font-size:11.5px;font-weight:800}
+#rlView .rl-arch{display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:999px;background:#F2F4F7;color:#475467;font-size:11.5px;font-weight:700}
+#rlView .rl-meta{margin-left:auto;font-size:12px;color:#98A2B3;white-space:nowrap}
+#rlView .rl-card h3{margin:10px 0 0;font-size:17px;line-height:1.45;font-weight:800;color:#101828;letter-spacing:-.2px;word-break:keep-all}
+#rlView .rl-body{margin:6px 0 0;font-size:15px;line-height:1.6;color:#344054;white-space:pre-wrap;word-break:keep-all}
+#rlView .rl-ph{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
+#rlView .rl-ph.n1{grid-template-columns:1fr}
+#rlView .rl-ph a{position:relative;display:block;border-radius:14px;overflow:hidden;background:#F2F4F7;aspect-ratio:4/3}
+#rlView .rl-ph.n1 a{aspect-ratio:16/10}
+#rlView .rl-ph img{width:100%;height:100%;object-fit:cover;display:block}
+#rlView .rl-ph a.o{box-shadow:inset 0 0 0 3px #12B76A}
+#rlView .rl-ph a.x{box-shadow:inset 0 0 0 3px #F04438}
+#rlView .rl-mk{position:absolute;left:8px;top:8px;height:28px;padding:0 10px;border-radius:999px;font-size:13px;font-weight:800;display:inline-flex;align-items:center;gap:4px;color:#fff}
+#rlView .rl-mk.o{background:#12B76A}
+#rlView .rl-mk.x{background:#F04438}
+#rlView .rl-f{display:flex;align-items:center;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid #F2F4F7;flex-wrap:wrap}
+#rlView .rl-who{flex:1;min-width:0;border:0;background:transparent;padding:6px 0;text-align:left;font-size:13px;color:#667085;min-height:40px}
+#rlView .rl-who b{color:#101828}
+#rlView .rl-ok{min-height:44px;padding:0 18px;border-radius:999px;border:0;background:#155EEF;color:#fff;font-weight:800;font-size:14px}
+#rlView .rl-done{font-size:13px;font-weight:800;color:#067647;display:inline-flex;align-items:center;gap:4px}
+#rlView .rl-ed{min-height:40px;padding:0 12px;border-radius:999px;border:1px solid #E4E7EC;background:#fff;color:#344054;font-size:13px;font-weight:700}
+#rlView .rl-names{width:100%;font-size:13px;color:#667085;line-height:1.7}
+#rlView .rl-names i{font-style:normal;display:inline-block;margin:2px 4px 0 0;padding:1px 8px;border-radius:999px;background:#F2F4F7;color:#344054}
+#rlView .rl-names i.no{background:#FEF3F2;color:#B42318}
+#rlView .rl-empty{text-align:center;padding:48px 16px;color:#667085;font-size:15px;line-height:1.6}
+#rlView .rl-empty b{display:block;font-size:17px;color:#101828;margin-bottom:4px}
+#rlDim{position:fixed;inset:0;z-index:8100;background:rgba(16,24,40,.45)}
+#rlSheet{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:8200;width:min(560px,100%);max-height:92vh;overflow-y:auto;background:#fff;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -12px 40px rgba(16,24,40,.2)}
+#rlSheet h3{margin:0 0 14px;font-size:19px;font-weight:800;color:#101828}
+#rlSheet label.rl-l{display:block;font-size:13px;font-weight:700;color:#475467;margin:14px 0 6px}
+#rlSheet .rl-tp{display:flex;flex-wrap:wrap;gap:8px}
+#rlSheet .rl-tp button{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #E4E7EC;background:#fff;color:#344054;font-size:14px;font-weight:700}
+#rlSheet .rl-tp button.on{background:#155EEF;border-color:#155EEF;color:#fff}
+#rlSheet input[type=text],#rlSheet textarea{width:100%;border:1px solid #E4E7EC;border-radius:14px;padding:12px 14px;font-size:16px;outline:none;font-family:inherit;background:#fff;color:#101828}
+#rlSheet textarea{min-height:96px;resize:vertical;line-height:1.55}
+#rlSheet input[type=text]:focus,#rlSheet textarea:focus{border-color:#155EEF;box-shadow:0 0 0 3px rgba(21,94,239,.14)}
+#rlSheet .rl-phs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+#rlSheet .rl-pt{position:relative;border-radius:14px;overflow:hidden;background:#F2F4F7;aspect-ratio:1}
+#rlSheet .rl-pt img{width:100%;height:100%;object-fit:cover;display:block}
+#rlSheet .rl-pt.busy{display:grid;place-items:center;font-size:12.5px;color:#667085}
+#rlSheet .rl-pt .rl-mkb{position:absolute;left:6px;bottom:6px;min-height:32px;padding:0 10px;border-radius:999px;border:0;font-size:12.5px;font-weight:800;background:rgba(16,24,40,.72);color:#fff}
+#rlSheet .rl-pt .rl-mkb.o{background:#12B76A}
+#rlSheet .rl-pt .rl-mkb.x{background:#F04438}
+#rlSheet .rl-pt .rl-del{position:absolute;right:6px;top:6px;width:32px;height:32px;border-radius:50%;border:0;background:rgba(16,24,40,.72);color:#fff;font-size:16px;line-height:1}
+#rlSheet .rl-padd{border:1.5px dashed #D0D5DD;border-radius:14px;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#475467;font-size:13px;font-weight:700;cursor:pointer;background:#FCFCFD}
+#rlSheet .rl-padd input{position:absolute;width:1px;height:1px;opacity:0}
+#rlSheet .rl-padd small{color:#98A2B3;font-weight:600}
+#rlSheet .rl-hint{font-size:12.5px;color:#667085;margin-top:6px}
+#rlSheet .rl-err{color:#D92D20;font-size:13.5px;font-weight:700;margin-top:10px}
+#rlSheet .rl-err:empty{display:none}
+#rlSheet .rl-btns{display:flex;gap:8px;margin-top:18px}
+#rlSheet .rl-btns button{flex:1;min-height:52px;border-radius:14px;border:0;font-size:16px;font-weight:800}
+#rlSheet .rl-cancel{background:#F2F4F7;color:#344054}
+#rlSheet .rl-save{background:#155EEF;color:#fff}
+#rlSheet .rl-save:disabled{opacity:.5}
+#rlSheet .rl-archb{margin-top:10px;width:100%;min-height:44px;border-radius:14px;border:1px solid #E4E7EC;background:#fff;color:#475467;font-size:14px;font-weight:700}
+#rlPop{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translateX(-50%);z-index:9001;width:min(420px,calc(100% - 32px));background:#fff;border:1px solid #FECDCA;border-radius:18px;box-shadow:0 12px 32px rgba(16,24,40,.18);padding:14px 16px}
+#rlPop b.t{display:block;font-size:15px;color:#101828;margin-bottom:4px}
+#rlPop p{margin:0;font-size:13.5px;color:#475467;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#rlPop .rl-pb{display:flex;gap:8px;margin-top:10px}
+#rlPop .rl-pb button{flex:1;min-height:44px;border-radius:12px;border:0;font-weight:800;font-size:14px}
+#rlPop .rl-later{background:#F2F4F7;color:#344054}
+#rlPop .rl-go{background:#D92D20;color:#fff}
+</style>
+<div id="rlView" hidden role="dialog" aria-modal="true" aria-label="숙지사항">
+  <div class="rl-wrap">
+    <div class="rl-top">
+      <div class="rl-bar">
+        <button type="button" class="rl-back" onclick="rlClose()" aria-label="닫기">←</button>
+        <h2>숙지사항</h2>
+        <button type="button" class="rl-add" onclick="rlEdit()">＋ 규칙 추가</button>
+      </div>
+      <input type="search" id="rlQ" class="rl-q" placeholder="규칙 검색 (예: 스티커, 진열대)" aria-label="규칙 검색" enterkeyhint="search" autocomplete="off" oninput="RL.q = this.value; rlRender()">
+      <div id="rlChips" class="rl-chips" role="group" aria-label="주제"></div>
+    </div>
+    <div id="rlUnread"></div>
+    <div id="rlList" class="rl-list"></div>
+  </div>
+</div>
+<div id="rlDim" hidden onclick="rlEditClose()"></div>
+<div id="rlSheet" hidden role="dialog" aria-modal="true" aria-labelledby="rlSheetT">
+  <h3 id="rlSheetT">규칙 추가</h3>
+  <label class="rl-l">주제</label>
+  <div id="rlTp" class="rl-tp" role="group" aria-label="주제 고르기"></div>
+  <label class="rl-l" for="rlTitle">제목 (한 줄)</label>
+  <input type="text" id="rlTitle" maxlength="80" placeholder="예: 세트 진열대 위에는 올리지 않기">
+  <label class="rl-l">사진 (최대 6장)</label>
+  <div id="rlPhs" class="rl-phs"></div>
+  <div class="rl-hint">사진 왼쪽 아래 버튼을 누르면 ⭕ 이렇게 → ❌ 이렇게 말고 → 표시 없음 순서로 바뀌어요.</div>
+  <label class="rl-l" for="rlBody">설명 (선택)</label>
+  <textarea id="rlBody" maxlength="1000" placeholder="왜 그런지, 어떻게 하는지 짧게"></textarea>
+  <div id="rlErr" class="rl-err" role="alert"></div>
+  <div class="rl-btns"><button type="button" class="rl-cancel" onclick="rlEditClose()">취소</button><button type="button" id="rlSave" class="rl-save" onclick="rlSave()">저장</button></div>
+  <button type="button" id="rlArchBtn" class="rl-archb" hidden onclick="rlArchive()">보관함으로 옮기기</button>
+</div>
+<div id="rlPop" hidden role="status"></div>
+<script>
+/* ===== 1016 숙지사항 (서버 listRules · saveRule · archiveRule · readRules) ===== */
+var RL = { data: null, topic: '', q: '', edit: null, busy: false, popShown: '' };
+function rlMe() { return (typeof currentSelectedMember !== 'undefined' && currentSelectedMember && currentSelectedMember !== '미선택') ? currentSelectedMember : ''; }
+function rlTopics() { return (RL.data && RL.data.topics) || ['진열', '세트', '스티커·POP', '발주·입고', '계산대·응대', '기타']; }
+function rlActive() { return ((RL.data && RL.data.rules) || []).filter(function (r) { return !r.archived; }); }
+function rlUnread() { var me = rlMe(); return me ? rlActive().filter(function (r) { return (r.reads || []).indexOf(me) === -1; }) : []; }
+function rlLoad(cb) {
+  if (typeof google === 'undefined' || !google.script || typeof google.script.run.listRules !== 'function') return;
+  google.script.run.withSuccessHandler(function (r) { if (r && r.ok) { RL.data = r; rlBadge(); if (!document.getElementById('rlView').hidden) rlRender(); } if (cb) cb(r); })
+    .withFailureHandler(function () { if (cb) cb(null); }).listRules();
+}
+function rlBadge() {
+  var n = rlUnread().length, d = document.getElementById('rlDot'); if (d) d.hidden = !n;
+  rlPopup();
+}
+/* 앱을 열 때: 안 읽은 규칙이 있으면 위에 한 번 알려 줌 ([나중에]는 이 화면에서만 닫힘 — 다음에 열면 또) */
+function rlPopup() {
+  var el = document.getElementById('rlPop'), un = rlUnread(), me = rlMe();
+  if (!el) return;
+  if (!un.length || !document.getElementById('rlView').hidden || RL.popShown === me + '|' + un.length) { if (!un.length) el.hidden = true; return; }
+  el.innerHTML = '<b class="t">📌 새 숙지사항 ' + un.length + '개</b><p>' + un.slice(0, 2).map(function (r) { return escapeHtml(r.title); }).join(' · ') + '</p>'
+    + '<div class="rl-pb"><button type="button" class="rl-later" onclick="RL.popShown = rlMe() + \'|\' + rlUnread().length; document.getElementById(\'rlPop\').hidden = true">나중에</button><button type="button" class="rl-go" onclick="document.getElementById(\'rlPop\').hidden = true; rlOpen(\'new\')">지금 보기</button></div>';
+  el.hidden = false;
+}
+function rlOpen(mode) {
+  var v = document.getElementById('rlView'); v.hidden = false; document.body.style.overflow = 'hidden';
+  document.getElementById('rlPop').hidden = true;
+  RL.topic = mode === 'new' ? '__new' : (RL.topic === '__arch' ? '' : RL.topic);
+  rlRender(); rlLoad();
+  try { history.pushState({ rl: 1 }, ''); } catch (e) {}
+}
+function rlClose(fromPop) {
+  var v = document.getElementById('rlView'); if (v.hidden) return;
+  v.hidden = true; document.body.style.overflow = ''; rlEditClose();
+  if (!fromPop) { try { if (history.state && history.state.rl) history.back(); } catch (e) {} }
+}
+window.addEventListener('popstate', function () { if (!document.getElementById('rlView').hidden) rlClose(true); });
+function rlSetTopic(t) { RL.topic = RL.topic === t ? '' : t; rlRender(); }
+function rlNorm(s) { return String(s || '').replace(/\s+/g, '').toLowerCase(); }
+function rlRender() {
+  var me = rlMe(), all = (RL.data && RL.data.rules) || [], act = rlActive(), un = rlUnread(), arch = all.filter(function (r) { return r.archived; });
+  var cnt = function (t) { return un.filter(function (r) { return r.topic === t; }).length; };
+  var chips = [['', '전체', un.length]].concat(un.length ? [['__new', '안 읽은 것', 0]] : []).concat(rlTopics().map(function (t) { return [t, t, cnt(t)]; })).concat(arch.length ? [['__arch', '보관함 ' + arch.length, 0]] : []);
+  if (RL.topic === '__new' && !un.length) RL.topic = '';
+  document.getElementById('rlChips').innerHTML = chips.map(function (c) { var on = RL.topic === c[0]; return '<button type="button" class="rl-chip' + (on ? ' on' : '') + '" aria-pressed="' + on + '" data-t="' + escapeHtml(c[0]) + '" onclick="rlSetTopic(this.dataset.t)">' + escapeHtml(c[1]) + (c[2] ? '<b>' + c[2] + '</b>' : '') + '</button>'; }).join('');
+  document.getElementById('rlUnread').innerHTML = un.length ? '<div class="rl-unread"><span>안 읽은 규칙 ' + un.length + '개가 있어요</span><button type="button" onclick="rlRead(rlUnread().map(function (r) { return r.id; }))">모두 숙지했어요</button></div>' : '';
+  var q = rlNorm(RL.q), list = (RL.topic === '__arch' ? arch : RL.topic === '__new' ? un : act).filter(function (r) {
+    if (RL.topic && RL.topic.indexOf('__') !== 0 && r.topic !== RL.topic) return false;
+    return !q || rlNorm(r.title + ' ' + r.body + ' ' + r.topic).indexOf(q) !== -1;
+  }).sort(function (a, b) { var ua = (a.reads || []).indexOf(me) === -1 ? 0 : 1, ub = (b.reads || []).indexOf(me) === -1 ? 0 : 1; return ua - ub || String(b.updatedAt).localeCompare(String(a.updatedAt)); });
+  var box = document.getElementById('rlList');
+  if (!RL.data) { box.innerHTML = '<div class="rl-empty">불러오는 중…</div>'; return; }
+  if (!list.length) { box.innerHTML = '<div class="rl-empty">' + (all.length ? '<b>맞는 규칙이 없어요</b>다른 주제나 검색어로 찾아보세요.' : '<b>아직 규칙이 없어요</b>[＋ 규칙 추가]로 사진 한 장과 한 줄만 적으면 돼요.') + '</div>'; return; }
+  box.innerHTML = list.map(rlCardHtml).join('');
+}
+function rlMembers() { return (typeof sharedMemberList !== 'undefined' && sharedMemberList ? sharedMemberList : []).filter(function (n) { return n && n !== '관리약사' && n !== '미선택'; }); }
+function rlCardHtml(r) {
+  var me = rlMe(), read = (r.reads || []).indexOf(me) !== -1, mem = rlMembers(), done = mem.filter(function (n) { return (r.reads || []).indexOf(n) !== -1; }), not = mem.filter(function (n) { return (r.reads || []).indexOf(n) === -1; });
+  var can = me && (me === r.author || me === '문준'), id = escapeHtml(r.id), ph = r.photos || [];
+  return '<article class="rl-card' + (!read && !r.archived ? ' new' : '') + '" data-rl="' + id + '">'
+    + '<div class="rl-h"><span class="rl-t">' + escapeHtml(r.topic) + '</span>' + (!read && !r.archived ? '<span class="rl-new">새 규칙</span>' : '') + (r.archived ? '<span class="rl-arch">보관</span>' : '') + '<span class="rl-meta">' + escapeHtml(r.author) + ' · ' + escapeHtml(String(r.updatedAt).slice(5, 10).replace('.', '/')) + (r.updatedAt !== r.createdAt ? ' 고침' : '') + '</span></div>'
+    + '<h3>' + escapeHtml(r.title) + '</h3>'
+    + (ph.length ? '<div class="rl-ph n' + Math.min(ph.length, 2) + '">' + ph.map(function (p) { return '<a class="' + (p.m || '') + '" href="' + escapeHtml(p.u) + '" target="_blank" rel="noopener" aria-label="사진 크게 보기"><img src="' + escapeHtml(p.u) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' + (p.m ? '<span class="rl-mk ' + p.m + '">' + (p.m === 'o' ? '⭕ 이렇게' : '❌ 이렇게 말고') + '</span>' : '') + '</a>'; }).join('') + '</div>' : '')
+    + (r.body ? '<p class="rl-body">' + escapeHtml(r.body) + '</p>' : '')
+    + '<div class="rl-f"><button type="button" class="rl-who" aria-expanded="false" onclick="var n = this.parentNode.querySelector(\'.rl-names\'); n.hidden = !n.hidden; this.setAttribute(\'aria-expanded\', !n.hidden)">숙지 <b>' + done.length + '/' + mem.length + '명</b>' + (not.length ? ' · 누가 안 읽었나 보기' : ' · 모두 읽었어요') + '</button>'
+    + (can ? '<button type="button" class="rl-ed" data-id="' + id + '" onclick="rlEdit(this.dataset.id)">고치기</button>' : '')
+    + (r.archived ? '' : read ? '<span class="rl-done">✓ 숙지함</span>' : '<button type="button" class="rl-ok" data-id="' + id + '" onclick="rlRead([this.dataset.id])"' + (me ? '' : ' disabled title="위에서 내 이름을 먼저 골라 주세요"') + '>숙지했어요</button>')
+    + '<div class="rl-names" hidden>' + done.map(function (n) { return '<i>' + escapeHtml(n) + '</i>'; }).join('') + not.map(function (n) { return '<i class="no">' + escapeHtml(n) + ' 아직</i>'; }).join('') + '</div></div>'
+    + '</article>';
+}
+function rlRead(ids) {
+  var me = rlMe(); if (!me) { showToast('위에서 내 이름을 먼저 골라 주세요', 1800); return; }
+  ids = (ids || []).filter(Boolean); if (!ids.length) return;
+  var rules = (RL.data && RL.data.rules) || [], undo = [];
+  rules.forEach(function (r) { if (ids.indexOf(r.id) !== -1 && (r.reads || []).indexOf(me) === -1) { r.reads = (r.reads || []).concat([me]); undo.push(r); } });
+  rlRender(); rlBadge(); showToast(ids.length > 1 ? ids.length + '개 숙지했어요' : '숙지했어요', 1400);
+  google.script.run.withSuccessHandler(function (r) { if (!r || !r.success) { undo.forEach(function (x) { x.reads = x.reads.filter(function (n) { return n !== me; }); }); rlRender(); rlBadge(); showToast((r && r.message) || '저장하지 못했어요', 2000); } })
+    .withFailureHandler(function () { undo.forEach(function (x) { x.reads = x.reads.filter(function (n) { return n !== me; }); }); rlRender(); rlBadge(); showToast('저장하지 못했어요 · 인터넷 확인', 2000); })
+    .readRules(ids, me);
+}
+/* ── 쓰기 · 고치기 ── */
+function rlEdit(id) {
+  if (!rlMe()) { showToast('위에서 내 이름을 먼저 골라 주세요', 1800); return; }
+  var r = id ? ((RL.data && RL.data.rules) || []).filter(function (x) { return x.id === id; })[0] : null;
+  RL.edit = { id: r ? r.id : '', topic: r ? r.topic : (RL.topic && RL.topic.indexOf('__') !== 0 ? RL.topic : ''), photos: r ? r.photos.map(function (p) { return { u: p.u, m: p.m }; }) : [], archived: r ? r.archived : false };
+  document.getElementById('rlSheetT').textContent = r ? '규칙 고치기' : '규칙 추가';
+  document.getElementById('rlTitle').value = r ? r.title : '';
+  document.getElementById('rlBody').value = r ? r.body : '';
+  document.getElementById('rlErr').textContent = '';
+  var ab = document.getElementById('rlArchBtn'); ab.hidden = !r; ab.textContent = r && r.archived ? '보관함에서 다시 꺼내기' : '보관함으로 옮기기 (더 이상 안 쓰는 규칙)';
+  rlTpRender(); rlPhRender();
+  document.getElementById('rlDim').hidden = false; document.getElementById('rlSheet').hidden = false;
+  setTimeout(function () { if (!r) document.getElementById('rlTitle').focus(); }, 120);
+}
+function rlEditClose() { var d = document.getElementById('rlDim'), s = document.getElementById('rlSheet'); if (d) d.hidden = true; if (s) s.hidden = true; }
+function rlTpRender() {
+  document.getElementById('rlTp').innerHTML = rlTopics().map(function (t) { var on = RL.edit.topic === t; return '<button type="button" class="' + (on ? 'on' : '') + '" aria-pressed="' + on + '" data-t="' + escapeHtml(t) + '" onclick="RL.edit.topic = this.dataset.t; rlTpRender()">' + escapeHtml(t) + '</button>'; }).join('');
+}
+function rlPhRender() {
+  var ph = RL.edit.photos, lab = { o: '⭕ 이렇게', x: '❌ 말고', '': '표시 없음' };
+  document.getElementById('rlPhs').innerHTML = ph.map(function (p, i) {
+    return p.u ? '<div class="rl-pt"><img src="' + escapeHtml(p.u) + '" alt="" referrerpolicy="no-referrer"><button type="button" class="rl-mkb ' + (p.m || '') + '" onclick="rlMark(' + i + ')" aria-label="표시 바꾸기: 지금 ' + lab[p.m || ''] + '">' + lab[p.m || ''] + '</button><button type="button" class="rl-del" onclick="RL.edit.photos.splice(' + i + ', 1); rlPhRender()" aria-label="사진 빼기">×</button></div>'
+      : '<div class="rl-pt busy" aria-busy="true">올리는 중…</div>';
+  }).join('') + (ph.length < 6 ? '<label class="rl-padd"><input type="file" accept="image/*" multiple onchange="rlAddPhotos(this)"><span style="font-size:22px">＋</span>사진 추가<small>' + ph.length + '/6</small></label>' : '');
+}
+function rlMark(i) { var p = RL.edit.photos[i]; p.m = p.m === 'o' ? 'x' : p.m === 'x' ? '' : 'o'; rlPhRender(); }
+function rlAddPhotos(inp) {
+  var arr = RL.edit.photos, fs = [].slice.call(inp.files || []).slice(0, 6 - arr.length); inp.value = '';
+  fs.forEach(function (f) {
+    var slot = { u: '', m: arr.length === 0 ? 'o' : '' }; arr.push(slot); rlPhRender();
+    var drop = function (m) { var i = arr.indexOf(slot); if (i !== -1) arr.splice(i, 1); rlPhRender(); showToast(m || '사진을 올리지 못했어요', 2000); };
+    resizeImageFile(f, 1600, 0.82).then(function (du) {
+      google.script.run.withSuccessHandler(function (r) { if (r && r.success) { slot.u = r.url; rlPhRender(); } else drop(r && r.message); }).withFailureHandler(function () { drop(); }).uploadNoticePhoto(du);
+    }, function () { drop('사진을 읽지 못했어요'); });
+  });
+}
+function rlSave() {
+  var e = RL.edit, err = document.getElementById('rlErr'), btn = document.getElementById('rlSave'), title = document.getElementById('rlTitle').value.trim();
+  if (!e.topic) { err.textContent = '주제를 골라 주세요.'; return; }
+  if (!title) { err.textContent = '제목을 한 줄 적어 주세요.'; document.getElementById('rlTitle').focus(); return; }
+  if (e.photos.some(function (p) { return !p.u; })) { err.textContent = '사진을 올리는 중이에요. 잠시만요.'; return; }
+  btn.disabled = true; btn.textContent = '저장 중…'; err.textContent = '';
+  google.script.run.withSuccessHandler(function (r) {
+    btn.disabled = false; btn.textContent = '저장';
+    if (!r || !r.success) { err.textContent = (r && r.message) || '저장하지 못했어요.'; return; }
+    rlEditClose(); showToast(e.id ? '고쳤어요 · 모두에게 다시 알려요' : '규칙을 올렸어요 · 모두에게 알려요', 2200);
+    if (!e.id) RL.topic = e.topic;
+    rlLoad();
+  }).withFailureHandler(function () { btn.disabled = false; btn.textContent = '저장'; err.textContent = '저장하지 못했어요 · 인터넷 확인 후 다시 눌러 주세요.'; })
+    .saveRule({ id: e.id, topic: e.topic, title: title, body: document.getElementById('rlBody').value, photos: e.photos }, rlMe());
+}
+function rlArchive() {
+  var e = RL.edit; if (!e || !e.id) return;
+  var on = !e.archived;
+  if (on && !confirm('이 규칙을 보관함으로 옮길까요?\n(목록과 알림에서 빠지고, 보관함에서 다시 꺼낼 수 있어요)')) return;
+  google.script.run.withSuccessHandler(function (r) { if (r && r.success) { rlEditClose(); showToast(on ? '보관함으로 옮겼어요' : '다시 꺼냈어요', 1600); rlLoad(); } else showToast((r && r.message) || '실패', 2000); })
+    .withFailureHandler(function () { showToast('실패 · 인터넷 확인', 2000); }).archiveRule(e.id, on, rlMe());
+}
+/* 앱 열고 조금 뒤 한 번 + 이름을 바꾸면 그 사람 기준으로 다시 (5분마다 새 규칙 확인) */
+setTimeout(function () { rlLoad(); }, 4000);
+setInterval(function () { if (document.visibilityState === 'visible') rlLoad(); }, 5 * 60000);
+</script>
+
 </body>
 </html>
