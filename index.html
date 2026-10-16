@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvam5bbb">
+  <meta name="ry-build" content="mvam8pqj">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -15476,7 +15476,24 @@ setTimeout(function () { EDU.loadedAt = Date.now(); eduLoad(); }, 5000);
 .rl-btn-n{margin-left:6px;vertical-align:middle}
 @media(max-width:440px){.nt-pill{padding:0 8px!important}html:not(#q):not(#w):not(#e) body:not(#r) #wxBar{gap:6px!important}html:not(#q):not(#w):not(#e) body:not(#r) #wxBar>*{padding-left:9px!important;padding-right:9px!important}}
 @media(max-width:400px){html:not(#q):not(#w):not(#e) body:not(#r) #wxBar{overflow-x:auto!important;scrollbar-width:none}html:not(#q):not(#w):not(#e) body:not(#r) #wxBar::-webkit-scrollbar{display:none}}   /* 공지 버튼이 들어와도 미세먼지가 안 잘리게 */
-@media(min-width:900px){#rlView .rl-wrap{max-width:1080px}#rlView .rl-list{display:grid;grid-template-columns:repeat(2,1fr);align-items:start}#rlView .rl-ph.n1 a{aspect-ratio:4/3}#rlView .rl-empty{grid-column:1/-1}}
+#rlView .rl-gh{display:flex;align-items:center;gap:6px;margin:4px 4px 8px;font-size:14px;font-weight:800!important;color:#475467}
+#rlView .rl-gh small{font-size:12.5px;font-weight:700;color:#98A2B3}
+#rlView .rl-rows{background:#fff;border:1px solid #EEF0F3;border-radius:18px!important;overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,.05)!important}
+#rlView .rl-row{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:10px 14px;border:0;border-top:1px solid #F2F4F7;background:#fff;text-align:left;color:#101828;cursor:pointer}
+#rlView .rl-rows .rl-row:first-child{border-top:0}
+#rlView .rl-row:active{background:#F9FAFB}
+#rlView .rl-row:focus-visible{outline:3px solid #155EEF;outline-offset:-3px}
+#rlView .rl-row.new{background:#FFFBFA}
+#rlView .rl-th{width:44px;height:44px;flex:none;border-radius:12px!important;object-fit:cover;background:#F2F4F7}
+#rlView .rl-th.none{display:grid;place-items:center;font-size:12px;font-weight:800;color:#155EEF;background:#EFF4FF}
+#rlView .rl-rt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+#rlView .rl-rt b{font-size:15.5px;line-height:1.4;font-weight:700;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:keep-all}
+#rlView .rl-rm{font-size:12.5px;color:#98A2B3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#rlView .rl-ck{flex:none;font-size:14px;font-weight:800;color:#12B76A}
+#rlView .rl-chev{flex:none;font-size:22px;line-height:1;color:#C0C5CD}
+#rlView .rl-tolist{align-self:flex-start;min-height:44px;padding:0 14px;border-radius:999px!important;border:1px solid #E4E7EC;background:#fff;color:#344054;font-size:14px;font-weight:700}
+#rlView .rl-next{min-height:52px;border-radius:14px!important;border:0;background:#101828;color:#fff;font-size:15px;font-weight:800}
+@media(min-width:900px){#rlView .rl-wrap{max-width:1080px}#rlView .rl-list:not(.rl-detail){display:grid;grid-template-columns:repeat(2,1fr);align-items:start;column-gap:16px}#rlView .rl-list.rl-detail{max-width:760px;margin-left:auto;margin-right:auto}#rlView .rl-empty{grid-column:1/-1}}
 </style>
 <div id="rlView" hidden role="dialog" aria-modal="true" aria-label="숙지사항">
   <div class="rl-wrap">
@@ -15539,6 +15556,7 @@ function rlOpen(mode) {
   var v = document.getElementById('rlView'); v.hidden = false; document.body.style.overflow = 'hidden';
   document.getElementById('rlPop').hidden = true;
   RL.topic = (mode === 'new' || (!mode && rlUnread().length)) ? '__new' : (RL.topic === '__arch' ? '' : RL.topic);
+  RL.open = '';
   rlRender(); rlLoad();
   try { history.pushState({ rl: 1 }, ''); } catch (e) {}
 }
@@ -15547,8 +15565,8 @@ function rlClose(fromPop) {
   v.hidden = true; document.body.style.overflow = ''; rlEditClose();
   if (!fromPop) { try { if (history.state && history.state.rl) history.back(); } catch (e) {} }
 }
-window.addEventListener('popstate', function () { if (!document.getElementById('rlView').hidden) rlClose(true); });
-function rlSetTopic(t) { RL.topic = RL.topic === t ? '' : t; rlRender(); }
+window.addEventListener('popstate', function () { if (document.getElementById('rlView').hidden) return; if (RL.open) rlShut(true); else rlClose(true); });
+function rlSetTopic(t) { RL.topic = RL.topic === t ? '' : t; if (RL.open) rlShut(); else rlRender(); }
 function rlNorm(s) { return String(s || '').replace(/\s+/g, '').toLowerCase(); }
 function rlRender() {
   var me = rlMe(), all = (RL.data && RL.data.rules) || [], act = rlActive(), un = rlUnread(), arch = all.filter(function (r) { return r.archived; });
@@ -15564,8 +15582,30 @@ function rlRender() {
   var box = document.getElementById('rlList');
   if (!RL.data) { box.innerHTML = '<div class="rl-empty">불러오는 중…</div>'; return; }
   if (!list.length) { box.innerHTML = '<div class="rl-empty">' + (all.length ? '<b>맞는 규칙이 없어요</b>다른 주제나 검색어로 찾아보세요.' : '<b>아직 규칙이 없어요</b>[＋ 규칙 추가]로 사진 한 장과 한 줄만 적으면 돼요.') + '</div>'; return; }
-  box.innerHTML = list.map(rlCardHtml).join('');
+  /* 1016b MJ: 카드를 다 펼치지 않고 목록(제목 한 줄) → 누르면 안에서 자세히 */
+  var cur = RL.open ? all.filter(function (r) { return r.id === RL.open; })[0] : null;
+  if (RL.open && !cur) RL.open = '';
+  box.classList.toggle('rl-detail', !!cur);
+  if (cur) {
+    var nx = un.filter(function (r) { return r.id !== cur.id; });
+    box.innerHTML = '<button type="button" class="rl-tolist" onclick="rlShut()">‹ 목록으로</button>' + rlCardHtml(cur)
+      + (nx.length && (cur.reads || []).indexOf(me) !== -1 ? '<button type="button" class="rl-next" data-id="' + escapeHtml(nx[0].id) + '" onclick="rlShow(this.dataset.id, 1)">다음 안 읽은 규칙 ' + nx.length + '개 ›</button>' : '');
+    return;
+  }
+  var grp = !RL.topic && !q, html = '';
+  if (grp) rlTopics().forEach(function (t) { var xs = list.filter(function (r) { return r.topic === t; }); if (xs.length) html += '<section class="rl-g"><h3 class="rl-gh">' + escapeHtml(t) + '<small>' + xs.length + '</small></h3><div class="rl-rows">' + xs.map(rlRowHtml).join('') + '</div></section>'; });
+  else html = '<section class="rl-g"><div class="rl-rows">' + list.map(rlRowHtml).join('') + '</div></section>';
+  box.innerHTML = html;
 }
+function rlRowHtml(r) {
+  var me = rlMe(), read = (r.reads || []).indexOf(me) !== -1, ph = (r.photos || [])[0], nw = !read && !r.archived;
+  return '<button type="button" class="rl-row' + (nw ? ' new' : '') + '" data-id="' + escapeHtml(r.id) + '" onclick="rlShow(this.dataset.id)">'
+    + (ph ? '<img class="rl-th" src="' + escapeHtml(ph.u) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : '<span class="rl-th none" aria-hidden="true">' + escapeHtml(String(r.topic || '').slice(0, 2)) + '</span>')
+    + '<span class="rl-rt"><b>' + escapeHtml(r.title) + '</b><span class="rl-rm">' + (RL.topic || RL.q ? escapeHtml(r.topic) + ' · ' : '') + escapeHtml(r.author) + ' · ' + escapeHtml(String(r.updatedAt).slice(5, 10).replace('.', '/')) + ((r.photos || []).length ? ' · 사진 ' + r.photos.length : '') + '</span></span>'
+    + (nw ? '<span class="rl-new">새</span>' : r.archived ? '<span class="rl-arch">보관</span>' : '<span class="rl-ck" aria-label="숙지함">✓</span>') + '<span class="rl-chev" aria-hidden="true">›</span></button>';
+}
+function rlShow(id, fromNext) { var first = !RL.open; RL.open = id; rlRender(); document.getElementById('rlView').scrollTop = 0; if (first && !fromNext) { try { history.pushState({ rl: 1, rlD: 1 }, ''); } catch (e) {} } }
+function rlShut(fromPop) { if (!RL.open) return; RL.open = ''; rlRender(); if (!fromPop) { try { if (history.state && history.state.rlD) history.back(); } catch (e) {} } }
 function rlMembers() { return (typeof sharedMemberList !== 'undefined' && sharedMemberList ? sharedMemberList : []).filter(function (n) { return n && n !== '관리약사' && n !== '미선택'; }); }
 function rlCardHtml(r) {
   var me = rlMe(), read = (r.reads || []).indexOf(me) !== -1, mem = rlMembers(), done = mem.filter(function (n) { return (r.reads || []).indexOf(n) !== -1; }), not = mem.filter(function (n) { return (r.reads || []).indexOf(n) === -1; });
