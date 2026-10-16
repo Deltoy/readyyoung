@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvaqz6hc">
+  <meta name="ry-build" content="mvar8gfk">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1682,6 +1682,8 @@ body.sp-open #appToast{bottom:auto!important;top:calc(68px + env(safe-area-inset
 .bx-card .bx-save{width:100%;min-height:52px;border:0;border-radius:14px;background:#155EEF;color:#fff;font-size:16px;font-weight:800}.bx-card .bx-save:disabled{opacity:.5}
 .bx-card .bx-set{display:inline-block;font-style:normal;margin:0 6px 4px 0;padding:3px 9px;border-radius:999px;background:#F2F4F7;font-size:12px;color:#344054}
 #spSegBox i{color:#D92D20}
+.bx-card .bx-grid[hidden],#bxSheet .bx-grid[hidden]{display:none!important}
+.sp-seg button[hidden]{display:none!important}
 #bxTabStatus{overflow-x:auto}#bxTab{max-width:100%;overflow-x:hidden}
 .bx-paste{padding:0 16px 14px}.bx-paste textarea{width:100%;border:1px solid #D0D5DD;border-radius:12px;padding:10px;font-size:14px;line-height:1.5;box-sizing:border-box}
 .bx-prev{margin:8px 0;font-size:13px;color:#155EEF;font-weight:700;line-height:1.6}
@@ -5476,7 +5478,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       spSegSync();
       document.getElementById('spSetCnt').textContent = SP.data.sets.length || '';
       if (inDetail) return spRenderDetail();
-      document.getElementById('spTitle').textContent = '세트 · 용도';
+      document.getElementById('spTitle').textContent = SP.view === 'tags' ? '용도별 상품' : '세트 상품';   /* 1016 MJ: 용도별 상품 탭은 숨김 (다른 화면에서 여는 링크는 그대로) */
       if (SP.view === 'tags') return spRenderTags();
       spRenderSets();
     }
@@ -12409,7 +12411,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           ['setduty', RYI.cal, '세트 담당 주간표', k.setduty, '오전·오후 세트 담당, 반차도 포함'],
           ['roster', RYI.cal, '근무표', '새 창', '약국 근무표 보기']].concat(s15 && !s15.hidden ? [['s15', RYI.clipboard, '15일 판매량 엑셀', '마지막 ' + (((s15.querySelector('small') || {}).textContent || '').replace('판매량 통계 엑셀로 한 번에', '').trim() || '올리기'), 'POS 15일 판매량을 한 번에 넣기(문준)']] : [])],
         ['상품 정리', [
-          ['sets', RYI.package, '세트 · 용도 찾기', '세트 목록 · 용도 태그', '세트 상품 구성과 용도별 상품 찾기'],
+          ['sets', RYI.package, '세트 상품 · 박스 재고', '세트 목록 · 아크릴박스', '세트 구성과 아크릴박스 재고'],
           ['catbrowse', RYI.package, '카테고리별 보기', '어린이 전체 · 분류 고치기', "분류가 비었거나 '기타'인 상품 바로잡기"],
           ['dups', RYI.searchcheck, '중복 정리', '이름 겹치는 상품', '같은 상품이 두 줄이면 하나로'],
           ['noph', RYI.clipboard, '사진 없는 상품 찍기', '카메라로 바로', '사진 없는 상품만 모아 찍어 넣기']]
@@ -12457,7 +12459,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         { k: 'dups', g: 1, ic: RYI.copy, n: '중복 정리', v: '이름 겹치는 상품', kw: '중복 합치기 두 줄' },
         { k: 'catbrowse', g: 1, ic: RYI.folder, n: '카테고리 고치기', v: '분류 없음·기타', kw: '카테고리 분류 어린이 기타 섹터' }
       ]).concat(scr && !scr.hidden ? [{ k: 'scr', g: 1, ic: RYI.layers, n: '하위 섹터 확인', v: scrN ? scrN + '개' : '확인', cnt: scrN, act: '분류가 애매한 상품', pri: 5, kw: '하위 섹터 분류 확인필요' }] : [])
-      .concat([{ k: 'sets', g: 1, ic: RYI.gift, n: '세트 · 용도 찾기', v: '세트 구성·용도별 상품', kw: '세트 용도 태그 보습 여드름' }])
+      .concat([{ k: 'sets', g: 1, ic: RYI.gift, n: '세트 상품 · 박스 재고', v: '세트 구성 · 아크릴박스', kw: '세트 박스 재고 아크릴 용도' }])
       .concat(isAdmin ? [{ k: 'pfauto', g: 1, ic: RYI.sparkles, n: '사진 자동 채우기', v: '문준 전용', kw: '사진 인터넷 자동' }] : [])
       .concat([
         { k: 'lead', g: 2, ic: RYI.timer, n: '입고 소요일', v: LT.data && LT.data.etaAccuracy ? '예상일 적중 ' + Math.round(Number(LT.data.etaAccuracy.withinPct) || 0) + '%' : '거래처·요일별', kw: '리드타임 발주 입고 걸린 날 거래처' },
@@ -12649,12 +12651,12 @@ html body #ryLaunchGrid .tl-search{top:56px}
 <div id="setPage" class="sp" role="dialog" aria-label="세트 상품과 용도별 상품" aria-hidden="true">
   <header class="sp-head">
     <button type="button" class="sp-back" id="spBackBtn" onclick="spBack()">✕ 닫기</button>
-    <b id="spTitle">세트 · 용도</b>
+    <b id="spTitle">세트 상품</b>
     <button type="button" class="sp-new" id="spNewBtn" onclick="openSetEdit(null)" hidden>＋ 새 세트</button>
   </header>
   <div class="sp-seg" id="spSeg" role="tablist">
     <button type="button" id="spSegSets" role="tab" onclick="spShow('sets')">🎁 세트 상품 <i id="spSetCnt"></i></button>
-    <button type="button" id="spSegTags" role="tab" onclick="spShow('tags')">🏷 용도별 상품</button>
+    <button type="button" id="spSegTags" role="tab" onclick="spShow('tags')" hidden>🏷 용도별 상품</button>
     <button type="button" id="spSegBox" role="tab" onclick="spShow('boxes')">📦 박스 재고<i id="spBoxN"></i></button>
   </div>
   <main id="spBody" class="sp-body"></main>
