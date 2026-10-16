@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvamrfbb">
+  <meta name="ry-build" content="mvant3sw">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -5425,6 +5425,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           + spImg(s.photo, 'sp-card-img')
           + '<span class="sp-card-body"><b>' + escapeHtml(s.name) + '</b>'
           + '<span class="sp-card-meta">' + (s.box ? '<i class="sp-box">📦 ' + escapeHtml(s.box) + '</i>' : '') + '<i>상품 ' + s.items.length + '종 · ' + n + '개</i></span>'
+          + (s.s15 !== '' && s.s15 != null ? '<span class="sp-card-sales" title="' + escapeHtml(s.s15p || '') + '">🧾 15일 판매 <b>' + s.s15 + '</b>개</span>' : '')
           + ((spNum(s.wd) != null || spNum(s.we) != null) ? '<span class="sp-card-sales">📈 평일 <b>' + (spNum(s.wd) == null ? '–' : s.wd) + '</b> · 주말 <b>' + (spNum(s.we) == null ? '–' : s.we) + '</b></span>' : '')
           + '<span class="sp-card-tags">' + spSetTags(s).map(function (t) { return '<i>' + escapeHtml(t) + '</i>'; }).join('') + '</span></span></button>';
       }).join('') + '</div>';
@@ -11360,6 +11361,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         else if (g.unlink) links[g.key] = null;
       });
       S15.busy = 'save'; s15Render();
+      var xs0 = (S15.xs || []).slice(), per0 = ((document.getElementById('s15From') || {}).value || '') + '~' + ((document.getElementById('s15To') || {}).value || '');
       google.script.run
         .withSuccessHandler(function (r) {
           S15.busy = false;
@@ -11372,6 +11374,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
           showToast(cnt + '개 상품 15일 판매량을 바꿨어요' + (r.reset ? ' · 엑셀에 없던 ' + r.reset + '개는 0으로' : '') + (r.skipped ? ' · 시트 수식 칸 ' + r.skipped + '개는 그대로' : ''), 3200);
           try { var nx = s15Next((document.getElementById('s15To') || {}).value); if (nx) setTimeout(function () { alert('다음 15일 판매량은 ' + nx.label + ' 기간으로 ' + nx.when + ' 올려주세요'); }, 400); } catch (eN) {}
           loadAllData(true, true, true);
+          /* 1016 MJ: 같은 엑셀에서 세트 이름을 찾아 세트 15일 판매량도 */
+          try { google.script.run.withSuccessHandler(function () { try { if (typeof SP !== 'undefined') { SP.data = null; } } catch (e2) {} }).setSetSales15(xs0.map(function (x) { return { n: x.n, q: x.q }; }), per0); } catch (eSet) {}
         })
         .withFailureHandler(function (e) { S15.busy = false; s15Render(); showToast('저장하지 못했어요: ' + (e && e.message || e), 2600); })
         .updateSales15Batch(list, links, { from: (document.getElementById('s15From') || {}).value || '', to: (document.getElementById('s15To') || {}).value || '' });
