@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvahd1ed">
+  <meta name="ry-build" content="mvai0cv4">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4956,6 +4956,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
         + '<button type="button" class="tp-go" onclick="rjSeenAll(); openMyRejects()">보기</button><button type="button" class="tp-x" aria-label="확인했어요" onclick="rjSeenAll()">×</button>';
       el.hidden = false;
       window._rjList = nw;
+      nw.forEach(function (it) { seen[it.name + '|' + (it.date || '')] = 1; });   /* 1016 MJ: 한 번만 — 보여 준 순간 본 걸로 (다음에 앱을 열면 안 뜸, 새 반려만 뜸) */
+      try { localStorage.setItem(key, JSON.stringify(seen)); } catch (e) {}
     }
     function rjSeenAll() {
       var me = currentSelectedMember || '', key = 'rjSeen_' + me, seen = {}; try { seen = JSON.parse(localStorage.getItem(key) || '{}'); } catch (e) {}
