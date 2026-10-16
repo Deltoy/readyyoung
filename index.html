@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvalvc7r">
+  <meta name="ry-build" content="mvalxu0c">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -14550,15 +14550,21 @@ function eduHubDraw() {
 /* ── 1009 첫 화면 4칸 (MJ: 카테고리가 딱 나눠져 바로 보이게) — 약·몸 증상 · 피부 고민 · 브랜드 · 공부. 고른 칸은 기기에 기억 ── */
 var EDU_TABS = [['own', '자사 제품'], ['몸', '약·몸 증상'], ['피부', '피부 고민'], ['brand', '브랜드'], ['study', '공부']];
 /* 1016 MJ: 우리 자사 제품(파마티크 · 레디영 PB · 닥터리쥬올)은 맨 앞 칸에서 바로 공부 */
-var EDU_OWN = ['레디영', '파마티크', '닥터리쥬올'];
-function eduOwnBrands() { var bs = eduAllBrands(); return EDU_OWN.map(function (n) { return bs.filter(function (B) { return B.name === n; })[0]; }).filter(Boolean); }
+var EDU_OWN = [['레디영', /^레디\s?(비타|샷|글로우)/], ['파마티크', /파마티크|pharmatique/i], ['닥터리쥬올', /리쥬올|rejuall/i]];
+/* 발주 목록에 있지만 아직 교육 카드가 없는 자사 상품 (판매종료 · 취급안함 빼고) */
+function eduOwnLeft(re) { var six = eduSymIx(); return eduCatItems().filter(function (it) { return re.test(String(it.name || '')) && !eduGone(it) && !six.card[it.rowNumber]; }); }
 function eduOwnHtml() {
-  var bs = eduOwnBrands();
-  if (!bs.length) return '<div class="edu-empty">아직 자사 제품 자료가 없어요.</div>';
-  return '<p class="edu-tab-hint">우리 약국이 직접 만든 제품이에요. 손님께 가장 자신 있게 권할 수 있게 먼저 공부해요.</p>' + bs.map(function (B) {
-    var cs = [].concat.apply([], B.lines.map(function (l) { return l.cards; })), dn = eduDoneN(cs);
-    return '<section class="edu-sec edu-own"><h2 class="edu-h"><button type="button" class="edu-own-b" data-b="' + eduE(B.name) + '" onclick="eduOpenBrand(this.dataset.b)">' + eduMono(B.name) + '<span>' + eduE(B.name) + '</span>' + EDU_I.chev + '</button><small>제품 ' + B.n + (dn ? ' · 공부 ' + dn + '/' + B.n : '') + '</small></h2><div class="edu-list">' + cs.map(function (c) { return eduRow(c); }).join('') + '</div></section>';
-  }).join('');
+  var bs = eduAllBrands(), out = '';
+  EDU_OWN.forEach(function (o) {
+    var B = bs.filter(function (x) { return x.name === o[0]; })[0], cs = B ? [].concat.apply([], B.lines.map(function (l) { return l.cards; })) : [], dn = eduDoneN(cs), left = eduOwnLeft(o[1]);
+    if (!cs.length && !left.length) return;
+    out += '<section class="edu-sec edu-own"><h2 class="edu-h">' + (B ? '<button type="button" class="edu-own-b" data-b="' + eduE(o[0]) + '" onclick="eduOpenBrand(this.dataset.b)">' + eduMono(o[0]) + '<span>' + eduE(o[0]) + '</span>' + EDU_I.chev + '</button>' : '<span class="edu-own-b">' + eduMono(o[0]) + '<span>' + eduE(o[0]) + '</span></span>')
+      + '<small>교육 자료 ' + cs.length + (dn ? ' · 공부 ' + dn + '/' + cs.length : '') + (left.length ? ' · 자료 없음 ' + left.length : '') + '</small></h2>'
+      + (cs.length ? '<div class="edu-list">' + cs.map(function (c) { return eduRow(c); }).join('') + '</div>' : '')
+      + (left.length ? '<h3 class="edu-sh">아직 교육 자료가 없는 상품<small> · 누르면 발주 검색</small></h3><div class="edu-list">' + left.map(function (it) { return '<button type="button" class="edu-sr" data-r="' + eduE(it.rowNumber) + '" onclick="eduSymGo(this.dataset.r)">' + eduItImg(it) + '<span class="edu-sr-t"><b>' + eduE(eduName(it)) + '</b><span class="edu-sr-m">' + eduE(eduCat(it).split(' › ').pop() || '분류 없음') + (eduNum(it.sales15) ? ' · 15일 ' + eduNum(it.sales15) + '개' : '') + eduActChip(null) + '</span></span></button>'; }).join('') + '</div>' : '')
+      + '</section>';
+  });
+  return out ? '<p class="edu-tab-hint">우리 약국이 직접 만든 제품이에요. 손님께 가장 자신 있게 권할 수 있게 먼저 공부해요.</p>' + out : '<div class="edu-empty">아직 자사 제품 자료가 없어요.</div>';
 }
 function eduTabSaved() { var t = ''; try { t = localStorage.getItem('ry_edu_tab') || ''; } catch (e) {} return EDU_TABS.some(function (x) { return x[0] === t; }) ? t : 'own'; }
 function eduSetTab(k) { EDU.tabMoved = EDU.tabMoved || k !== EDU.tab; EDU.tab = k; EDU.symMore = 0; try { localStorage.setItem('ry_edu_tab', k); } catch (e) {} eduHubDraw(); var sc = document.getElementById('eduScroll'), tb = document.getElementById('eduTabs'); if (sc && tb && sc.scrollTop > tb.offsetTop) sc.scrollTop = tb.offsetTop; }
@@ -14630,7 +14636,7 @@ function eduBrandTile(B) {
 function eduTabsHtml() {
   var L = eduSymList(), bn = eduAllBrands().length, ni = eduIngs().length, gn = eduGuides().length;
   var ic = { own: EDU_SI.star, '몸': EDU_SI.pill, '피부': EDU_SI.spark, brand: EDU_SI.tag, study: EDU_SI.book };
-  var sub = { own: '제품 ' + eduOwnBrands().reduce(function (m, B) { return m + B.n; }, 0) + ' · ' + eduOwnBrands().map(function (B) { return B.name; }).join(' · '), '몸': '증상 ' + L.filter(function (x) { return x.g === '몸'; }).length, '피부': '고민 ' + L.filter(function (x) { return x.g !== '몸'; }).length, brand: bn + '곳', study: '성분 ' + ni + ' · 고민 ' + gn };
+  var sub = { own: '레디영 · 파마티크 · 리쥬올', '몸': '증상 ' + L.filter(function (x) { return x.g === '몸'; }).length, '피부': '고민 ' + L.filter(function (x) { return x.g !== '몸'; }).length, brand: bn + '곳', study: '성분 ' + ni + ' · 고민 ' + gn };
   return '<div class="edu-tabs" id="eduTabs" role="tablist" aria-label="교육 자료 종류">' + EDU_TABS.map(function (t) {
     return '<button type="button" role="tab" class="edu-tab" data-k="' + t[0] + '" aria-selected="' + (EDU.tab === t[0]) + '" onclick="eduSetTab(this.dataset.k)"><span class="edu-tab-i" aria-hidden="true">' + eduSvg(ic[t[0]]) + '</span><span class="edu-tab-t"><b>' + t[1] + '</b><small>' + sub[t[0]] + '</small></span></button>';
   }).join('') + '</div>';
