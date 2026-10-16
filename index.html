@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvaduari">
+  <meta name="ry-build" content="mvadxtyc">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -3727,7 +3727,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     <!-- 1. 날씨 · 검색 · 도구 (0925 디자인) -->
     <div class="ry25-wxcard">
       <div id="wxBar" class="empty" aria-label="성수동 날씨"></div>
-      <button type="button" id="ntPill" class="nt-pill" onclick="ntOpen()" aria-label="공지 보관함 열기"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg><b>공지</b><span id="ntPillT" class="nt-pill-t"></span><i id="ntPillDot" class="mb-dot" hidden aria-label="새 공지"></i></button>
+      <button type="button" id="ntPill" class="nt-pill" onclick="ntOpen()" aria-label="공지 보관함 열기"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg><b>공지</b><span id="ntPillT" class="nt-pill-t"></span><i id="ntPillDot" class="nt-pill-n" hidden></i></button>
     </div>
 
     <div class="ry25-search">
@@ -3747,7 +3747,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         <button type="button" id="newProductBtn" onclick="openNewProduct()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>새 상품 등록</button>
         <button type="button" class="ry-ghost ry-quick" onclick="moOpen()" title="잘 팔리는데 재고가 떨어졌을 상품">놓친 주문</button>
         <button type="button" class="ry-ghost ry-quick" onclick="window.open('https://pallang-0258.github.io/seongsu/viewer.html', '_blank', 'noopener')" title="근무표를 새 창으로 열기">근무표</button>
-        <button type="button" class="ry-ghost ry-quick" onclick="rlOpen()" title="일하면서 알아야 할 규칙 (주제별)">숙지사항<i id="rlDot" class="mb-dot edu-qdot" hidden aria-label="안 읽은 숙지사항"></i></button>
+        <button type="button" class="ry-ghost ry-quick" onclick="rlOpen()" title="일하면서 알아야 할 규칙 (주제별)">숙지사항<i id="rlDot" class="rl-btn-n" hidden></i></button>
         <button type="button" class="ry-ghost ry-quick" onclick="mbOpenArchive()" title="날짜별 아침 뷰티 브리핑">뷰티 브리핑</button>
         <button type="button" class="ry-ghost ry-quick" onclick="eduOpen()" title="제품 교육 자료">교육 자료실<i id="eduDot" class="mb-dot edu-qdot" hidden aria-label="새 교육 자료"></i></button>
         <div class="ry-more">
@@ -15389,6 +15389,30 @@ setTimeout(function () { EDU.loadedAt = Date.now(); eduLoad(); }, 5000);
 .tp-go{flex:none;min-height:40px;padding:0 14px;border-radius:12px!important;border:0;background:#155EEF;color:#fff;font-weight:800;font-size:13.5px}
 #rlPop .tp-go{background:#D92D20}
 .tp-x{flex:none;width:40px;height:40px;border-radius:12px!important;border:0;background:#F2F4F7;color:#475467;font-size:18px;line-height:1}
+/* 1016 검수 반영: 대비 4.5 이상 · 손가락 44px · 포커스 링 · PC 2열 */
+#rlView .rl-mk.o,#rlSheet .rl-pt .rl-mkb.o{background:#067647!important}
+#rlView .rl-mk.x,#rlSheet .rl-pt .rl-mkb.x{background:#D92D20!important}
+#rlView .rl-ph a.o{outline:3px solid #067647;outline-offset:-3px}
+#rlView .rl-ph a.x{outline:3px solid #D92D20;outline-offset:-3px}
+#rlView .rl-meta,#rlSheet .rl-padd small{color:#667085!important}
+#rlView .rl-meta{font-size:12.5px}
+#rlView .rl-chip b{color:#D92D20}
+#rlView .rl-chip,#rlView .rl-ed,#rlView .rl-who,#rlView .rl-unread button,#rlSheet .rl-tp button{min-height:44px!important}
+#rlSheet .rl-pt .rl-del{width:44px!important;height:44px!important;border:6px solid transparent!important;background-clip:padding-box!important;right:2px;top:2px}
+#rlSheet .rl-pt .rl-mkb{min-height:44px!important;border:6px solid transparent!important;background-clip:padding-box!important;left:2px;bottom:2px}
+#rlSheet .rl-hint{font-size:13px}
+#rlView .rl-unread{background:#fff;border-color:#FECDCA}
+#rlView .rl-unread button{background:#fff!important;color:#B42318!important;border:1px solid #FDA29B!important}
+#rlView button:focus-visible,#rlView a:focus-visible,#rlSheet button:focus-visible,#ryTopPops button:focus-visible,.nt-pill:focus-visible{outline:3px solid rgba(21,94,239,.55)!important;outline-offset:2px}
+#rlView .rl-q:focus,#rlSheet input[type=text]:focus,#rlSheet textarea:focus{outline:2px solid #155EEF}
+.tp-go,.tp-x{min-height:44px!important}.tp-x{width:44px!important}
+#rlPop .tp-go{background:#155EEF!important}
+#rlPop{border-color:#FDA29B!important}#ntPop{border-color:#B2CCFF!important}
+.nt-pill-n,.rl-btn-n{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px!important;background:#D92D20;color:#fff;font-size:12px;font-style:normal;font-weight:800;flex:none}
+.nt-pill-n[hidden],.rl-btn-n[hidden]{display:none!important}
+.rl-btn-n{margin-left:6px;vertical-align:middle}
+@media(max-width:440px){.nt-pill{padding:0 8px!important}}
+@media(min-width:900px){#rlView .rl-wrap{max-width:1080px}#rlView .rl-list{display:grid;grid-template-columns:repeat(2,1fr);align-items:start}#rlView .rl-ph.n1 a{aspect-ratio:4/3}#rlView .rl-empty{grid-column:1/-1}}
 </style>
 <div id="rlView" hidden role="dialog" aria-modal="true" aria-label="숙지사항">
   <div class="rl-wrap">
@@ -15435,7 +15459,7 @@ function rlLoad(cb) {
     .withFailureHandler(function () { if (cb) cb(null); }).listRules();
 }
 function rlBadge() {
-  var n = rlUnread().length, d = document.getElementById('rlDot'); if (d) d.hidden = !n;
+  var n = rlUnread().length, d = document.getElementById('rlDot'); if (d) { d.hidden = !n; d.textContent = n; d.setAttribute('aria-label', '안 읽은 숙지사항 ' + n + '개'); }
   rlPopup();
 }
 /* 앱을 열 때: 안 읽은 규칙이 있으면 위에 한 번 알려 줌 ([나중에]는 이 화면에서만 닫힘 — 다음에 열면 또) */
@@ -15450,7 +15474,7 @@ function rlPopup() {
 function rlOpen(mode) {
   var v = document.getElementById('rlView'); v.hidden = false; document.body.style.overflow = 'hidden';
   document.getElementById('rlPop').hidden = true;
-  RL.topic = mode === 'new' ? '__new' : (RL.topic === '__arch' ? '' : RL.topic);
+  RL.topic = (mode === 'new' || (!mode && rlUnread().length)) ? '__new' : (RL.topic === '__arch' ? '' : RL.topic);
   rlRender(); rlLoad();
   try { history.pushState({ rl: 1 }, ''); } catch (e) {}
 }
@@ -15468,7 +15492,7 @@ function rlRender() {
   var chips = [['', '전체', un.length]].concat(un.length ? [['__new', '안 읽은 것', 0]] : []).concat(rlTopics().map(function (t) { return [t, t, cnt(t)]; })).concat(arch.length ? [['__arch', '보관함 ' + arch.length, 0]] : []);
   if (RL.topic === '__new' && !un.length) RL.topic = '';
   document.getElementById('rlChips').innerHTML = chips.map(function (c) { var on = RL.topic === c[0]; return '<button type="button" class="rl-chip' + (on ? ' on' : '') + '" aria-pressed="' + on + '" data-t="' + escapeHtml(c[0]) + '" onclick="rlSetTopic(this.dataset.t)">' + escapeHtml(c[1]) + (c[2] ? '<b>' + c[2] + '</b>' : '') + '</button>'; }).join('');
-  document.getElementById('rlUnread').innerHTML = un.length ? '<div class="rl-unread"><span>안 읽은 규칙 ' + un.length + '개가 있어요</span><button type="button" onclick="rlRead(rlUnread().map(function (r) { return r.id; }))">모두 숙지했어요</button></div>' : '';
+  document.getElementById('rlUnread').innerHTML = un.length ? '<div class="rl-unread"><span>안 읽은 규칙 ' + un.length + '개가 있어요</span><button type="button" onclick="if (confirm('안 읽은 ' + rlUnread().length + '개를 모두 읽으셨나요?')) rlRead(rlUnread().map(function (r) { return r.id; }))">모두 숙지했어요</button></div>' : '';
   var q = rlNorm(RL.q), list = (RL.topic === '__arch' ? arch : RL.topic === '__new' ? un : act).filter(function (r) {
     if (RL.topic && RL.topic.indexOf('__') !== 0 && r.topic !== RL.topic) return false;
     return !q || rlNorm(r.title + ' ' + r.body + ' ' + r.topic).indexOf(q) !== -1;
@@ -15576,7 +15600,7 @@ function ntNotify() {
   var nw = ntNewOnes(), dot = document.getElementById('ntPillDot'), t = document.getElementById('ntPillT'), pop = document.getElementById('ntPop');
   var items = (NT.data && NT.data.items) || [], top = items.slice().sort(function (a, b) { return String(b.createdAt).localeCompare(String(a.createdAt)); })[0];
   if (t) t.textContent = top ? top.title : '';
-  if (dot) dot.hidden = !nw.length;
+  if (dot) { dot.hidden = !nw.length; dot.textContent = nw.length; dot.setAttribute('aria-label', '새 공지 ' + nw.length + '개'); }
   if (!pop) return;
   var sig = rlMe() + '|' + nw.map(function (n) { return n.id; }).join(',');
   if (!nw.length || NT.popClosed === sig || !document.getElementById('noticeView').classList.contains('hidden')) { pop.hidden = true; return; }
