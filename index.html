@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvai1iog">
+  <meta name="ry-build" content="mvakfqax">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8643,6 +8643,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     /* 1016 내가 주문한 상품이 최근 3일 안에 입고됐으면 앱을 열 때 카드로 알림 ([확인했어요] 누르면 이 폰에서 다시 안 뜸) */
     function ryArrivedNotice() {
       var me = String(currentSelectedMember || '').trim(); if (!me) return;
+      if (me === '물류관리자' || memberTitle(me) === '물류관리자') { var o = document.getElementById('ryArr'); if (o) o.remove(); return; }   /* 1016 MJ: 입고완료 누르는 본인(문준)에겐 안 띄움 */
       var key = 'ryArrSeen_' + me, seen = {}, first = true; try { var sv = localStorage.getItem(key); first = !sv; seen = JSON.parse(sv || '{}'); } catch (e) {}
       var k = new Date(Date.now() + 9 * 3600000), lim = new Date(Date.UTC(k.getUTCFullYear(), k.getUTCMonth(), k.getUTCDate() - 3)), today = new Date(Date.UTC(k.getUTCFullYear(), k.getUTCMonth(), k.getUTCDate()));
       var list = (cachedHistoryItems || []).filter(function (it) {
