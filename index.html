@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvadj92e">
+  <meta name="ry-build" content="mvadptko">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -3727,7 +3727,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     <!-- 1. 날씨 · 검색 · 도구 (0925 디자인) -->
     <div class="ry25-wxcard">
       <div id="wxBar" class="empty" aria-label="성수동 날씨"></div>
-      <span class="ry25-wx-note">성수동 물류 거점 · 30분마다 갱신</span>
+      <button type="button" id="ntPill" class="nt-pill" onclick="ntOpen()" aria-label="공지 보관함 열기"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg><b>공지</b><span id="ntPillT" class="nt-pill-t"></span><i id="ntPillDot" class="mb-dot" hidden aria-label="새 공지"></i></button>
     </div>
 
     <div class="ry25-search">
@@ -3747,7 +3747,6 @@ html body #ryLaunchGrid .tl-search{top:56px}
         <button type="button" id="newProductBtn" onclick="openNewProduct()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>새 상품 등록</button>
         <button type="button" class="ry-ghost ry-quick" onclick="moOpen()" title="잘 팔리는데 재고가 떨어졌을 상품">놓친 주문</button>
         <button type="button" class="ry-ghost ry-quick" onclick="window.open('https://pallang-0258.github.io/seongsu/viewer.html', '_blank', 'noopener')" title="근무표를 새 창으로 열기">근무표</button>
-        <button type="button" class="ry-ghost ry-quick" onclick="ntOpen()" title="카톡 공지 보관함">공지</button>
         <button type="button" class="ry-ghost ry-quick" onclick="rlOpen()" title="일하면서 알아야 할 규칙 (주제별)">숙지사항<i id="rlDot" class="mb-dot edu-qdot" hidden aria-label="안 읽은 숙지사항"></i></button>
         <button type="button" class="ry-ghost ry-quick" onclick="mbOpenArchive()" title="날짜별 아침 뷰티 브리핑">뷰티 브리핑</button>
         <button type="button" class="ry-ghost ry-quick" onclick="eduOpen()" title="제품 교육 자료">교육 자료실<i id="eduDot" class="mb-dot edu-qdot" hidden aria-label="새 교육 자료"></i></button>
@@ -7004,7 +7003,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       renderDropdownItems();
       try { renderMyRejectBanner(); } catch (e) {}   // 이름을 바꾸면 '내 반려' 배너도 그 사람 기준으로
       try { ryArrivedNotice(); } catch (e) {}
-      try { if (typeof rlBadge === 'function') rlBadge(); } catch (e) {}
+      try { if (typeof rlBadge === 'function') rlBadge(); if (typeof ntNotify === 'function') ntNotify(); } catch (e) {}
       try { ry25RenderBar(false); } catch (e) {}   /* 0925: 요약 바도 그 사람 기준으로 */
       try { pfSyncAdmin(); } catch (e) {}
       try { sdRenderCard(); sdRenderSheet(); } catch (e) {}   /* 0925: 내 담당 표시 */
@@ -11926,6 +11925,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       });
     }
     function ntOpen() {
+      try { ntMarkSeen(); } catch (eS) {}
       var gi = document.getElementById('globalSearchInput');
       if (gi && gi.value) clearGlobalSearch();
       switchTab('notices');
@@ -11941,7 +11941,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           if (my !== NT.seq) return;
           NT.loading = false;
           if (res && res.ok) { NT.data = res; NT.err = ''; NT.recent = res.recent || []; NT.latest = res.latest || null; } else NT.err = 'load';
-          ntRender(); ntRenderLatest();
+          ntRender(); ntRenderLatest(); try { ntNotify(); } catch (eN) {}
         })
         .withFailureHandler(function () { if (my !== NT.seq) return; NT.loading = false; NT.err = 'load'; ntRender(); })
         .listNotices('', NT.month, '');   /* 1013 태그·검색어는 화면에서 거른다 — 서버 목록 캐시 키(base64)가 한글을 '?'로 바꿔 '증정'·'품절'·'공지'가 같은 결과(먼저 부른 것)로 나왔음 */
@@ -15288,88 +15288,98 @@ setTimeout(function () { EDU.loadedAt = Date.now(); eduLoad(); }, 5000);
 #rlView .rl-wrap{max-width:760px;margin:0 auto;padding:0 16px calc(96px + env(safe-area-inset-bottom))}
 #rlView .rl-top{position:sticky;top:0;z-index:2;background:rgba(245,246,248,.94);backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px);margin:0 -16px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px}
 #rlView .rl-bar{display:flex;align-items:center;gap:10px;min-height:48px}
-#rlView .rl-back{width:44px;height:44px;border-radius:12px;border:0;background:transparent;display:grid;place-items:center;color:#101828;font-size:22px;flex:none}
-#rlView .rl-bar h2{flex:1;margin:0;font-size:20px;font-weight:800;color:#101828;letter-spacing:-.3px}
-#rlView .rl-add{min-height:44px;padding:0 16px;border-radius:999px;border:0;background:#155EEF;color:#fff;font-weight:800;font-size:14px;display:inline-flex;align-items:center;gap:6px;flex:none}
-#rlView .rl-q{width:100%;height:48px;border-radius:14px;border:1px solid #E4E7EC;background:#fff;padding:0 16px;font-size:16px;margin-top:6px;outline:none}
-#rlView .rl-q:focus{border-color:#155EEF;box-shadow:0 0 0 3px rgba(21,94,239,.14)}
+#rlView .rl-back{width:44px;height:44px;border-radius:12px!important;border:0;background:transparent;display:grid;place-items:center;color:#101828;font-size:22px;flex:none}
+#rlView .rl-bar h2{flex:1;margin:0;font-size:20px;font-weight:800!important;color:#101828;letter-spacing:-.3px}
+#rlView .rl-add{min-height:44px;padding:0 16px;border-radius:999px!important;border:0;background:#155EEF;color:#fff;font-weight:800;font-size:14px;display:inline-flex;align-items:center;gap:6px;flex:none}
+#rlView .rl-q{width:100%;height:48px;border-radius:14px!important;border:1px solid #E4E7EC;background:#fff;padding:0 16px;font-size:16px;margin-top:6px;outline:none}
+#rlView .rl-q:focus{border-color:#155EEF;box-shadow:0 0 0 3px rgba(21,94,239,.14)!important}
 #rlView .rl-chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
 #rlView .rl-chips::-webkit-scrollbar{display:none}
-#rlView .rl-chip{flex:none;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #E4E7EC;background:#fff;color:#344054;font-size:14px;font-weight:700;white-space:nowrap}
+#rlView .rl-chip{flex:none;min-height:40px;padding:0 14px;border-radius:999px!important;border:1px solid #E4E7EC;background:#fff;color:#344054;font-size:14px;font-weight:700;white-space:nowrap}
 #rlView .rl-chip.on{background:#101828;border-color:#101828;color:#fff}
 #rlView .rl-chip b{margin-left:4px;color:#F04438;font-weight:800}
 #rlView .rl-chip.on b{color:#FDA29B}
-#rlView .rl-unread{display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px 14px;border-radius:16px;background:#FEF3F2;border:1px solid #FEE4E2;color:#B42318;font-size:14px;font-weight:700}
+#rlView .rl-unread{display:flex;align-items:center;gap:10px;margin-top:14px;padding:12px 14px;border-radius:16px!important;background:#FEF3F2;border:1px solid #FEE4E2;color:#B42318;font-size:14px;font-weight:700}
 #rlView .rl-unread span{flex:1}
-#rlView .rl-unread button{min-height:40px;padding:0 14px;border-radius:999px;border:0;background:#D92D20;color:#fff;font-weight:800;font-size:13.5px}
+#rlView .rl-unread button{min-height:40px;padding:0 14px;border-radius:999px!important;border:0;background:#D92D20;color:#fff;font-weight:800;font-size:13.5px}
 #rlView .rl-list{display:flex;flex-direction:column;gap:12px;margin-top:14px}
-#rlView .rl-card{background:#fff;border-radius:20px;padding:16px;box-shadow:0 1px 2px rgba(16,24,40,.05);border:1px solid #EEF0F3}
-#rlView .rl-card.new{border-color:#FDA29B;box-shadow:0 0 0 3px rgba(240,68,56,.08)}
+#rlView .rl-card{background:#fff;border-radius:20px!important;padding:16px;box-shadow:0 1px 2px rgba(16,24,40,.05)!important;border:1px solid #EEF0F3}
+#rlView .rl-card.new{border-color:#FDA29B;box-shadow:0 0 0 3px rgba(240,68,56,.08)!important}
 #rlView .rl-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-#rlView .rl-t{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:#EFF4FF;color:#155EEF;font-size:12px;font-weight:800}
-#rlView .rl-new{display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:999px;background:#F04438;color:#fff;font-size:11.5px;font-weight:800}
-#rlView .rl-arch{display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:999px;background:#F2F4F7;color:#475467;font-size:11.5px;font-weight:700}
+#rlView .rl-t{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px!important;background:#EFF4FF;color:#155EEF;font-size:12px;font-weight:800}
+#rlView .rl-new{display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:999px!important;background:#F04438;color:#fff;font-size:11.5px;font-weight:800}
+#rlView .rl-arch{display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:999px!important;background:#F2F4F7;color:#475467;font-size:11.5px;font-weight:700}
 #rlView .rl-meta{margin-left:auto;font-size:12px;color:#98A2B3;white-space:nowrap}
-#rlView .rl-card h3{margin:10px 0 0;font-size:17px;line-height:1.45;font-weight:800;color:#101828;letter-spacing:-.2px;word-break:keep-all}
+#rlView .rl-card h3{margin:10px 0 0;font-size:17px;line-height:1.45;font-weight:700!important;color:#101828;letter-spacing:-.2px;word-break:keep-all}
 #rlView .rl-body{margin:6px 0 0;font-size:15px;line-height:1.6;color:#344054;white-space:pre-wrap;word-break:keep-all}
 #rlView .rl-ph{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
 #rlView .rl-ph.n1{grid-template-columns:1fr}
-#rlView .rl-ph a{position:relative;display:block;border-radius:14px;overflow:hidden;background:#F2F4F7;aspect-ratio:4/3}
+#rlView .rl-ph a{position:relative;display:block;border-radius:14px!important;overflow:hidden;background:#F2F4F7;aspect-ratio:4/3}
 #rlView .rl-ph.n1 a{aspect-ratio:16/10}
 #rlView .rl-ph img{width:100%;height:100%;object-fit:cover;display:block}
-#rlView .rl-ph a.o{box-shadow:inset 0 0 0 3px #12B76A}
-#rlView .rl-ph a.x{box-shadow:inset 0 0 0 3px #F04438}
-#rlView .rl-mk{position:absolute;left:8px;top:8px;height:28px;padding:0 10px;border-radius:999px;font-size:13px;font-weight:800;display:inline-flex;align-items:center;gap:4px;color:#fff}
+#rlView .rl-ph a.o{box-shadow:inset 0 0 0 3px #12B76A!important}
+#rlView .rl-ph a.x{box-shadow:inset 0 0 0 3px #F04438!important}
+#rlView .rl-mk{position:absolute;left:8px;top:8px;height:28px;padding:0 10px;border-radius:999px!important;font-size:13px;font-weight:800;display:inline-flex;align-items:center;gap:4px;color:#fff}
 #rlView .rl-mk.o{background:#12B76A}
 #rlView .rl-mk.x{background:#F04438}
 #rlView .rl-f{display:flex;align-items:center;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid #F2F4F7;flex-wrap:wrap}
 #rlView .rl-who{flex:1;min-width:0;border:0;background:transparent;padding:6px 0;text-align:left;font-size:13px;color:#667085;min-height:40px}
 #rlView .rl-who b{color:#101828}
-#rlView .rl-ok{min-height:44px;padding:0 18px;border-radius:999px;border:0;background:#155EEF;color:#fff;font-weight:800;font-size:14px}
+#rlView .rl-ok{min-height:44px;padding:0 18px;border-radius:999px!important;border:0;background:#155EEF;color:#fff;font-weight:800;font-size:14px}
 #rlView .rl-done{font-size:13px;font-weight:800;color:#067647;display:inline-flex;align-items:center;gap:4px}
-#rlView .rl-ed{min-height:40px;padding:0 12px;border-radius:999px;border:1px solid #E4E7EC;background:#fff;color:#344054;font-size:13px;font-weight:700}
+#rlView .rl-ed{min-height:40px;padding:0 12px;border-radius:999px!important;border:1px solid #E4E7EC;background:#fff;color:#344054;font-size:13px;font-weight:700}
 #rlView .rl-names{width:100%;font-size:13px;color:#667085;line-height:1.7}
-#rlView .rl-names i{font-style:normal;display:inline-block;margin:2px 4px 0 0;padding:1px 8px;border-radius:999px;background:#F2F4F7;color:#344054}
+#rlView .rl-names i{font-style:normal;display:inline-block;margin:2px 4px 0 0;padding:1px 8px;border-radius:999px!important;background:#F2F4F7;color:#344054}
 #rlView .rl-names i.no{background:#FEF3F2;color:#B42318}
 #rlView .rl-empty{text-align:center;padding:48px 16px;color:#667085;font-size:15px;line-height:1.6}
 #rlView .rl-empty b{display:block;font-size:17px;color:#101828;margin-bottom:4px}
 #rlDim{position:fixed;inset:0;z-index:8100;background:rgba(16,24,40,.45)}
-#rlSheet{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:8200;width:min(560px,100%);max-height:92vh;overflow-y:auto;background:#fff;border-radius:24px 24px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -12px 40px rgba(16,24,40,.2)}
-#rlSheet h3{margin:0 0 14px;font-size:19px;font-weight:800;color:#101828}
+#rlSheet{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:8200;width:min(560px,100%);max-height:92vh;overflow-y:auto;background:#fff;border-radius:24px 24px 0 0!important;padding:20px 16px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -12px 40px rgba(16,24,40,.2)!important}
+#rlSheet h3{margin:0 0 14px;font-size:19px;font-weight:700!important;color:#101828}
 #rlSheet label.rl-l{display:block;font-size:13px;font-weight:700;color:#475467;margin:14px 0 6px}
 #rlSheet .rl-tp{display:flex;flex-wrap:wrap;gap:8px}
-#rlSheet .rl-tp button{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #E4E7EC;background:#fff;color:#344054;font-size:14px;font-weight:700}
+#rlSheet .rl-tp button{min-height:40px;padding:0 14px;border-radius:999px!important;border:1px solid #E4E7EC;background:#fff;color:#344054;font-size:14px;font-weight:700}
 #rlSheet .rl-tp button.on{background:#155EEF;border-color:#155EEF;color:#fff}
-#rlSheet input[type=text],#rlSheet textarea{width:100%;border:1px solid #E4E7EC;border-radius:14px;padding:12px 14px;font-size:16px;outline:none;font-family:inherit;background:#fff;color:#101828}
+#rlSheet input[type=text],#rlSheet textarea{width:100%;border:1px solid #E4E7EC;border-radius:14px!important;padding:12px 14px;font-size:16px;outline:none;font-family:inherit;background:#fff;color:#101828}
 #rlSheet textarea{min-height:96px;resize:vertical;line-height:1.55}
-#rlSheet input[type=text]:focus,#rlSheet textarea:focus{border-color:#155EEF;box-shadow:0 0 0 3px rgba(21,94,239,.14)}
+#rlSheet input[type=text]:focus,#rlSheet textarea:focus{border-color:#155EEF;box-shadow:0 0 0 3px rgba(21,94,239,.14)!important}
 #rlSheet .rl-phs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-#rlSheet .rl-pt{position:relative;border-radius:14px;overflow:hidden;background:#F2F4F7;aspect-ratio:1}
+#rlSheet .rl-pt{position:relative;border-radius:14px!important;overflow:hidden;background:#F2F4F7;aspect-ratio:1}
 #rlSheet .rl-pt img{width:100%;height:100%;object-fit:cover;display:block}
 #rlSheet .rl-pt.busy{display:grid;place-items:center;font-size:12.5px;color:#667085}
-#rlSheet .rl-pt .rl-mkb{position:absolute;left:6px;bottom:6px;min-height:32px;padding:0 10px;border-radius:999px;border:0;font-size:12.5px;font-weight:800;background:rgba(16,24,40,.72);color:#fff}
+#rlSheet .rl-pt .rl-mkb{position:absolute;left:6px;bottom:6px;min-height:32px;padding:0 10px;border-radius:999px!important;border:0;font-size:12.5px;font-weight:800;background:rgba(16,24,40,.72);color:#fff}
 #rlSheet .rl-pt .rl-mkb.o{background:#12B76A}
 #rlSheet .rl-pt .rl-mkb.x{background:#F04438}
-#rlSheet .rl-pt .rl-del{position:absolute;right:6px;top:6px;width:32px;height:32px;border-radius:50%;border:0;background:rgba(16,24,40,.72);color:#fff;font-size:16px;line-height:1}
-#rlSheet .rl-padd{border:1.5px dashed #D0D5DD;border-radius:14px;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#475467;font-size:13px;font-weight:700;cursor:pointer;background:#FCFCFD}
+#rlSheet .rl-pt .rl-del{position:absolute;right:6px;top:6px;width:32px;height:32px;border-radius:50%!important;border:0;background:rgba(16,24,40,.72);color:#fff;font-size:16px;line-height:1}
+#rlSheet .rl-padd{border:1.5px dashed #D0D5DD;border-radius:14px!important;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#475467;font-size:13px;font-weight:700;cursor:pointer;background:#FCFCFD}
 #rlSheet .rl-padd input{position:absolute;width:1px;height:1px;opacity:0}
 #rlSheet .rl-padd small{color:#98A2B3;font-weight:600}
 #rlSheet .rl-hint{font-size:12.5px;color:#667085;margin-top:6px}
 #rlSheet .rl-err{color:#D92D20;font-size:13.5px;font-weight:700;margin-top:10px}
 #rlSheet .rl-err:empty{display:none}
 #rlSheet .rl-btns{display:flex;gap:8px;margin-top:18px}
-#rlSheet .rl-btns button{flex:1;min-height:52px;border-radius:14px;border:0;font-size:16px;font-weight:800}
+#rlSheet .rl-btns button{flex:1;min-height:52px;border-radius:14px!important;border:0;font-size:16px;font-weight:800}
 #rlSheet .rl-cancel{background:#F2F4F7;color:#344054}
 #rlSheet .rl-save{background:#155EEF;color:#fff}
 #rlSheet .rl-save:disabled{opacity:.5}
-#rlSheet .rl-archb{margin-top:10px;width:100%;min-height:44px;border-radius:14px;border:1px solid #E4E7EC;background:#fff;color:#475467;font-size:14px;font-weight:700}
-#rlPop{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translateX(-50%);z-index:9001;width:min(420px,calc(100% - 32px));background:#fff;border:1px solid #FECDCA;border-radius:18px;box-shadow:0 12px 32px rgba(16,24,40,.18);padding:14px 16px}
-#rlPop b.t{display:block;font-size:15px;color:#101828;margin-bottom:4px}
-#rlPop p{margin:0;font-size:13.5px;color:#475467;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#rlPop .rl-pb{display:flex;gap:8px;margin-top:10px}
-#rlPop .rl-pb button{flex:1;min-height:44px;border-radius:12px;border:0;font-weight:800;font-size:14px}
-#rlPop .rl-later{background:#F2F4F7;color:#344054}
-#rlPop .rl-go{background:#D92D20;color:#fff}
+#rlSheet .rl-archb{margin-top:10px;width:100%;min-height:44px;border-radius:14px!important;border:1px solid #E4E7EC;background:#fff;color:#475467;font-size:14px;font-weight:700}
+#ryTopPops{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translateX(-50%);z-index:9001;width:min(420px,calc(100% - 32px));display:flex;flex-direction:column;gap:8px;pointer-events:none}
+#ntPop[hidden]{display:none!important}
+#rlPop,#ntPop{pointer-events:auto;background:#fff;border:1px solid #FECDCA;border-radius:18px!important;box-shadow:0 12px 32px rgba(16,24,40,.18)!important;padding:14px 16px}
+#rlPop b.t,#ntPop b.t{display:block;font-weight:700!important;font-size:15px;color:#101828;margin-bottom:4px}
+#rlPop p,#ntPop p{margin:0;font-size:13.5px;color:#475467;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#rlPop .rl-pb,#ntPop .rl-pb{display:flex;gap:8px;margin-top:10px}
+#rlPop .rl-pb button,#ntPop .rl-pb button{flex:1;min-height:44px;border-radius:12px!important;border:0;font-weight:800;font-size:14px}
+#rlPop .rl-later,#ntPop .rl-later{background:#F2F4F7;color:#344054}
+#rlPop .rl-go,#ntPop .rl-go{background:#D92D20;color:#fff}
+#ntPop{border-color:#D1E0FF!important}
+#ntPop .rl-go{background:#155EEF!important}
+.nt-pill{margin-left:auto;display:inline-flex;align-items:center;gap:6px;min-height:40px;max-width:46%;padding:0 14px;border-radius:999px!important;border:1px solid #D1E0FF;background:#EFF4FF;color:#155EEF;font-size:13.5px;cursor:pointer;flex:none}
+.nt-pill b{font-weight:700!important;flex:none}
+.nt-pill .ry-i{width:16px;height:16px;flex:none}
+.nt-pill-t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#344054;font-size:13px}
+.nt-pill .mb-dot{flex:none}
+@media(max-width:767px){.nt-pill{padding:0 12px;min-height:36px}.nt-pill-t{display:none}}
 </style>
 <div id="rlView" hidden role="dialog" aria-modal="true" aria-label="숙지사항">
   <div class="rl-wrap">
@@ -15402,7 +15412,7 @@ setTimeout(function () { EDU.loadedAt = Date.now(); eduLoad(); }, 5000);
   <div class="rl-btns"><button type="button" class="rl-cancel" onclick="rlEditClose()">취소</button><button type="button" id="rlSave" class="rl-save" onclick="rlSave()">저장</button></div>
   <button type="button" id="rlArchBtn" class="rl-archb" hidden onclick="rlArchive()">보관함으로 옮기기</button>
 </div>
-<div id="rlPop" hidden role="status"></div>
+<div id="ryTopPops"><div id="ntPop" hidden role="status"></div><div id="rlPop" hidden role="status"></div></div>
 <script>
 /* ===== 1016 숙지사항 (서버 listRules · saveRule · archiveRule · readRules) ===== */
 var RL = { data: null, topic: '', q: '', edit: null, busy: false, popShown: '' };
@@ -15542,6 +15552,44 @@ function rlArchive() {
   google.script.run.withSuccessHandler(function (r) { if (r && r.success) { rlEditClose(); showToast(on ? '보관함으로 옮겼어요' : '다시 꺼냈어요', 1600); rlLoad(); } else showToast((r && r.message) || '실패', 2000); })
     .withFailureHandler(function () { showToast('실패 · 인터넷 확인', 2000); }).archiveRule(e.id, on, rlMe());
 }
+/* ===== 1016 새 공지 알림: 날씨 줄 '📢 공지' 빨간 점 + 앱 열 때 위에 작은 팝업 (본 시각은 이 폰에 사람마다 저장) ===== */
+function ntSeenKey() { return 'ntSeen_' + (rlMe() || '-'); }
+function ntNewOnes() {
+  var items = (NT.data && NT.data.items) || [], me = rlMe(), seen = null;
+  try { seen = localStorage.getItem(ntSeenKey()); } catch (e) {}
+  if (seen == null) {   // 처음 쓰는 폰: 어제·오늘 올라온 것만 새 공지로
+    var k = new Date(Date.now() + 9 * 3600000 - 86400000), p2 = function (n) { return (n < 10 ? '0' : '') + n; };
+    seen = k.getUTCFullYear() + '.' + p2(k.getUTCMonth() + 1) + '.' + p2(k.getUTCDate()) + ' 00:00';
+  }
+  return items.filter(function (n) { return String(n.createdAt || '') > seen && n.author !== me; });
+}
+function ntNotify() {
+  var nw = ntNewOnes(), dot = document.getElementById('ntPillDot'), t = document.getElementById('ntPillT'), pop = document.getElementById('ntPop');
+  var items = (NT.data && NT.data.items) || [], top = items.slice().sort(function (a, b) { return String(b.createdAt).localeCompare(String(a.createdAt)); })[0];
+  if (t) t.textContent = top ? top.title : '';
+  if (dot) dot.hidden = !nw.length;
+  if (!pop) return;
+  var sig = rlMe() + '|' + nw.map(function (n) { return n.id; }).join(',');
+  if (!nw.length || NT.popClosed === sig || !document.getElementById('noticeView').classList.contains('hidden')) { pop.hidden = true; return; }
+  pop.innerHTML = '<b class="t">📢 새 공지 ' + nw.length + '개</b>' + nw.slice(0, 2).map(function (n) { return '<p>[' + escapeHtml(n.tag || '공지') + '] ' + escapeHtml(n.title) + '</p>'; }).join('')
+    + '<div class="rl-pb"><button type="button" class="rl-later" data-s="' + escapeHtml(sig) + '" onclick="NT.popClosed = this.dataset.s; document.getElementById(\'ntPop\').hidden = true">나중에</button><button type="button" class="rl-go" onclick="ntOpen()">공지 보기</button></div>';
+  pop.hidden = false;
+}
+function ntMarkSeen() {
+  var items = (NT.data && NT.data.items) || [], mx = items.reduce(function (m, n) { return String(n.createdAt) > m ? String(n.createdAt) : m; }, '');
+  if (mx) { try { localStorage.setItem(ntSeenKey(), mx); } catch (e) {} }
+  var p = document.getElementById('ntPop'); if (p) p.hidden = true; var d = document.getElementById('ntPillDot'); if (d) d.hidden = true;
+}
+function ntBoot() {
+  if (typeof google === 'undefined' || !google.script || typeof google.script.run.listNotices !== 'function') return;
+  google.script.run.withSuccessHandler(function (res) {
+    if (!res || !res.ok) return;
+    if (!NT.data || !NT.month) { NT.data = res; NT.recent = res.recent || []; NT.latest = res.latest || null; try { ntRenderLatest(); } catch (e) {} }
+    ntNotify();
+  }).withFailureHandler(function () {}).listNotices('', '', '');
+}
+setTimeout(ntBoot, 3000);
+setInterval(function () { if (document.visibilityState === 'visible') ntBoot(); }, 5 * 60000);
 /* 앱 열고 조금 뒤 한 번 + 이름을 바꾸면 그 사람 기준으로 다시 (5분마다 새 규칙 확인) */
 setTimeout(function () { rlLoad(); }, 4000);
 setInterval(function () { if (document.visibilityState === 'visible') rlLoad(); }, 5 * 60000);
