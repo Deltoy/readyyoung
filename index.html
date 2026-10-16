@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvadxtyc">
+  <meta name="ry-build" content="mvadz7zf">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -15492,7 +15492,7 @@ function rlRender() {
   var chips = [['', '전체', un.length]].concat(un.length ? [['__new', '안 읽은 것', 0]] : []).concat(rlTopics().map(function (t) { return [t, t, cnt(t)]; })).concat(arch.length ? [['__arch', '보관함 ' + arch.length, 0]] : []);
   if (RL.topic === '__new' && !un.length) RL.topic = '';
   document.getElementById('rlChips').innerHTML = chips.map(function (c) { var on = RL.topic === c[0]; return '<button type="button" class="rl-chip' + (on ? ' on' : '') + '" aria-pressed="' + on + '" data-t="' + escapeHtml(c[0]) + '" onclick="rlSetTopic(this.dataset.t)">' + escapeHtml(c[1]) + (c[2] ? '<b>' + c[2] + '</b>' : '') + '</button>'; }).join('');
-  document.getElementById('rlUnread').innerHTML = un.length ? '<div class="rl-unread"><span>안 읽은 규칙 ' + un.length + '개가 있어요</span><button type="button" onclick="if (confirm('안 읽은 ' + rlUnread().length + '개를 모두 읽으셨나요?')) rlRead(rlUnread().map(function (r) { return r.id; }))">모두 숙지했어요</button></div>' : '';
+  document.getElementById('rlUnread').innerHTML = un.length ? '<div class="rl-unread"><span>안 읽은 규칙 ' + un.length + '개가 있어요</span><button type="button" onclick="rlReadAll()">모두 숙지했어요</button></div>' : '';
   var q = rlNorm(RL.q), list = (RL.topic === '__arch' ? arch : RL.topic === '__new' ? un : act).filter(function (r) {
     if (RL.topic && RL.topic.indexOf('__') !== 0 && r.topic !== RL.topic) return false;
     return !q || rlNorm(r.title + ' ' + r.body + ' ' + r.topic).indexOf(q) !== -1;
@@ -15517,6 +15517,7 @@ function rlCardHtml(r) {
     + '<div class="rl-names" hidden>' + done.map(function (n) { return '<i>' + escapeHtml(n) + '</i>'; }).join('') + not.map(function (n) { return '<i class="no">' + escapeHtml(n) + ' 아직</i>'; }).join('') + '</div></div>'
     + '</article>';
 }
+function rlReadAll() { var u = rlUnread(); if (u.length && confirm('안 읽은 ' + u.length + '개를 모두 읽으셨나요?')) rlRead(u.map(function (r) { return r.id; })); }
 function rlRead(ids) {
   var me = rlMe(); if (!me) { showToast('위에서 내 이름을 먼저 골라 주세요', 1800); return; }
   ids = (ids || []).filter(Boolean); if (!ids.length) return;
