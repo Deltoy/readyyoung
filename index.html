@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvafy1mi">
+  <meta name="ry-build" content="mvag5kw4">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8200,7 +8200,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     var MR = { map: {}, busy: false, ver: 0 };
     function mrCanSee() { try { return /^(진성|하은)$/.test(String(currentSelectedMember || '').trim()) || /^(관리약사|물류관리자)$/.test(memberTitle(currentSelectedMember)); } catch (e) { return false; } }
     function mrSlot(item, type) {
-      if ((type !== 'order' && type !== 'review' && type !== 'soldout') || !mrCanSee()) return '';   // 1001 품절 탭에도 제조사·경로 (보면서 바로 재주문)
+      if ((type !== 'order' && type !== 'review' && type !== 'soldout' && type !== 'delayed') || !mrCanSee()) return '';   // 1016 지연 탭에도   // 1001 품절 탭에도 제조사·경로 (보면서 바로 재주문)
       var r = item.rowNumber, has = Object.prototype.hasOwnProperty.call(MR.map, r);
       return '<div class="ry-mr' + (has ? '' : ' wait') + '" data-mr="' + r + '">' + (has ? mrLineHtml(r) : '') + '</div>';
     }
@@ -8656,7 +8656,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       document.getElementById('ryArrOk').onclick = function () { list.forEach(function (it) { seen[it.name + '|' + it.inboundDate] = 1; }); try { localStorage.setItem(key, JSON.stringify(seen)); } catch (e) {} el.remove(); };
     }
 
-    function createInboundRow(item) {
+    function createInboundRow(item, type) {
       const tr = document.createElement('tr');
       tr.setAttribute('data-item', item.rowNumber);
       tr.className = item.isCheckRequested ? "bg-amber-50/70 border-l-4 border-l-amber-500" : "hover:bg-slate-50";
@@ -8693,6 +8693,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           ${item.isCheckRequested ? `<div class="lg:hidden mt-1">${statusBadge}</div>` : ''}
           <div class="mt-1.5 flex items-center gap-2 flex-wrap">${ryWho(item)}${elapsedChip(item)}<button onclick="cancelSoldOut(${item.rowNumber})" class="ry-tcancel" title="공급사 품절로 못 들어오는 상품을 취소합니다">${RYI.ban}품절 취소</button></div>
           ${delayReasonHtml(item)}
+          ${mrSlot(item, type)}
         </td>
         <td class="p-3 text-center bg-emerald-50/40 font-extrabold text-base text-emerald-700">${item.targetQty}${item.unit || '개'}</td>
         <td class="p-3 text-center text-xs text-slate-700 hidden lg:table-cell"><div>${odText(item)}</div></td>
@@ -8702,7 +8703,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       return tr;
     }
 
-    function createInboundCard(item) {
+    function createInboundCard(item, type) {
       const card = document.createElement('div');
       card.setAttribute('data-item', item.rowNumber);
       card.className = 'ry-inrow' + (item.isCheckRequested ? ' ry-inreq' : '');
@@ -8723,6 +8724,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
             <div class="ry-in-name${nameClass(item)}">${escapeHtml(item.name)} ${endedBadge(item)}</div>
             <div class="ry-in-meta"><span>발주 <b>${odText(item)}</b></span>${ryWho(item)}${elapsedChip(item)}<button onclick="cancelSoldOut(${item.rowNumber})" class="ry-in-cancel" title="공급사 품절로 못 들어오는 상품을 취소합니다">${RYI.ban}품절 취소</button></div>
             ${delayReasonHtml(item)}
+            ${mrSlot(item, type)}
           </div>
           <div class="ry-in-qty">
             <span class="ry-in-lbl">입고</span>
@@ -8883,9 +8885,10 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (empty) empty.classList.add('hidden');
       if (cont) cont.classList.remove('hidden');
       delayed.forEach(item => {
-        if (tbody) tbody.appendChild(createInboundRow(item));
-        if (cards) cards.appendChild(createInboundCard(item));
+        if (tbody) tbody.appendChild(createInboundRow(item, 'delayed'));
+        if (cards) cards.appendChild(createInboundCard(item, 'delayed'));
       });
+      try { mrFill(); } catch (eM) {}   /* 1016 지연 탭 제조사·경로 */
     }
 
     function renderStockCheckView(items) {
