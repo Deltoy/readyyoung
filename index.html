@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvap620o">
+  <meta name="ry-build" content="mvapqlzh">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -15600,7 +15600,8 @@ setTimeout(function () { EDU.loadedAt = Date.now(); eduLoad(); }, 5000);
 #ryTopPops{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translateX(-50%);z-index:67;width:min(420px,calc(100% - 32px));display:flex;flex-direction:column;gap:8px;pointer-events:none}
 #ntPop[hidden]{display:none!important}
 #rjPop[hidden]{display:none!important}
-#rlPop,#ntPop,#rjPop{pointer-events:auto;background:#fff;border:1px solid #FECDCA;border-radius:18px!important;box-shadow:0 12px 32px rgba(16,24,40,.18)!important;padding:14px 16px}
+#ryTopPops>div{pointer-events:auto}
+#rlPop,#ntPop,#rjPop,#bxPop{pointer-events:auto;background:#fff;border:1px solid #FECDCA;border-radius:18px!important;box-shadow:0 12px 32px rgba(16,24,40,.18)!important;padding:14px 16px}
 #rlPop b.t,#ntPop b.t{display:block;font-weight:700!important;font-size:15px;color:#101828;margin-bottom:4px}
 #rlPop p,#ntPop p{margin:0;font-size:13.5px;color:#475467;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #rlPop .rl-pb,#ntPop .rl-pb{display:flex;gap:8px;margin-top:10px}
@@ -15616,8 +15617,9 @@ setTimeout(function () { EDU.loadedAt = Date.now(); eduLoad(); }, 5000);
 .nt-pill .mb-dot{flex:none}
 @media(max-width:767px){.nt-pill{padding:0 10px;min-height:36px;gap:5px}.nt-pill-t{display:none}}
 @media(max-width:440px){.nt-pill b{display:none}.nt-pill .ry-i{width:18px;height:18px}}
-#rlPop,#ntPop,#rjPop{display:flex!important;align-items:center;gap:10px;padding:8px 8px 8px 14px!important;border-radius:16px!important}
-#rlPop[hidden],#ntPop[hidden],#rjPop[hidden]{display:none!important}
+#rlPop,#ntPop,#rjPop,#bxPop{display:flex!important;align-items:center;gap:10px;padding:8px 8px 8px 14px!important;border-radius:16px!important}
+#rlPop[hidden],#ntPop[hidden],#rjPop[hidden],#bxPop[hidden]{display:none!important}
+#bxPop{border-color:#FEC84B!important}
 #rjPop{border-color:#FEC84B!important}
 #rjPop .tp-go{background:#155EEF!important}
 .tp-txt{flex:1;min-width:0}
