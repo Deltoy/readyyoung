@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvar8gfk">
+  <meta name="ry-build" content="mvarc163">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1683,6 +1683,7 @@ body.sp-open #appToast{bottom:auto!important;top:calc(68px + env(safe-area-inset
 .bx-card .bx-set{display:inline-block;font-style:normal;margin:0 6px 4px 0;padding:3px 9px;border-radius:999px;background:#F2F4F7;font-size:12px;color:#344054}
 #spSegBox i{color:#D92D20}
 .bx-card .bx-grid[hidden],#bxSheet .bx-grid[hidden]{display:none!important}
+.bx-sn{display:none;font-size:12.5px;color:#475467;font-weight:700}@media(max-width:560px){.bx-sf{display:none}.bx-sn{display:inline}#bxTabStatus td:nth-child(5){width:auto;white-space:nowrap}}
 .sp-seg button[hidden]{display:none!important}
 #bxTabStatus{overflow-x:auto}#bxTab{max-width:100%;overflow-x:hidden}
 .bx-paste{padding:0 16px 14px}.bx-paste textarea{width:100%;border:1px solid #D0D5DD;border-radius:12px;padding:10px;font-size:14px;line-height:1.5;box-sizing:border-box}
@@ -5600,11 +5601,11 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var rows = (SP.box && SP.box.rows) || [], bad = rows.filter(function (r) { return r.status === 'red' || r.status === 'yellow'; }).length, n = document.getElementById('spBoxN');
       if (n) n.textContent = bad ? bad : '';
       if (!SP.box) { el.innerHTML = '<div class="sp-msg"><span class="ry-info-spin"></span>불러오는 중…</div>'; return; }
-      el.innerHTML = '<h3>박스별 상태</h3><p class="bx-last">도착 ' + (SP.box.lead || 3) + '일 + 여유 ' + (SP.box.safe || 7) + '일치 밑이면 🟡 · 5일치 밑이면 🔴 (🟡·🔴 = 10일치 이하면 1박스를 약사 발주에 바로 올려요) · 한 달 사용 = 세트 15일 판매 × 2</p>'
+      el.innerHTML = '<h3>박스별 상태</h3><p class="bx-last">🟢 넉넉 · 🟡 10일치 이하 · 🔴 5일치 이하 · ⚪ 쓰는 세트 없음<br>🟡 · 🔴가 되면 그 번호 1박스가 약사 발주에 자동으로 올라가요 (한 달 사용 = 세트 15일 판매 × 2)</p>'
         + '<table class="sp-bp-t"><thead><tr><th>박스</th><th>상태</th><th>남은 개수</th><th>한 달 사용</th><th>쓰는 세트</th></tr></thead><tbody>' + rows.map(function (r) {
           var st = BX_ST[r.status] || BX_ST.unknown;
-          var stTxt = r.status === 'unknown' ? st[0] + ' ' + st[1] : r.status === 'nodata' ? st[0] + ' 사용량 모름<small>세트에 박스 번호 필요</small>' : st[0] + ' ' + (r.days == null ? '판매 기록 없음' : r.days + '일 버팀') + (r.order ? '<small>' + st[1] + ' · ' + r.order + '개</small>' : '');
-          return '<tr class="bx-' + r.status + '"><td><b>' + escapeHtml(bxName(r.box)) + '</b></td><td>' + stTxt + '</td><td>' + (r.left != null ? '<b>' + r.left + '</b>개<small>' + escapeHtml(String(r.at || '').slice(5).replace('-', '/')) + '</small>' : '–') + '</td><td>' + (r.month ? r.month + '개' : '–') + '</td><td>' + ((r.sets || []).length ? r.sets.map(function (nm) { return '<i class="bx-set">' + escapeHtml(nm) + '</i>'; }).join('') : '<small>없음</small>') + '</td></tr>';
+          var stTxt = r.status === 'unknown' ? st[0] + ' ' + st[1] : r.status === 'nodata' ? st[0] + ' 사용량 모름<small>세트에 박스 번호 필요</small>' : st[0] + ' ' + (r.days == null ? '판매 기록 없음' : r.days + '일 버팀') + (r.order ? '<small>약사 발주 1박스 (자동)</small>' : '');
+          return '<tr class="bx-' + r.status + '"><td><b>' + escapeHtml(bxName(r.box)) + '</b></td><td>' + stTxt + '</td><td>' + (r.left != null ? '<b>' + r.left + '</b>개<small>' + escapeHtml(String(r.at || '').slice(5).replace('-', '/')) + '</small>' : '–') + '</td><td>' + (r.month ? r.month + '개' : '–') + '</td><td>' + ((r.sets || []).length ? '<span class="bx-sf">' + r.sets.map(function (nm) { return '<i class="bx-set">' + escapeHtml(nm) + '</i>'; }).join('') + '</span><span class="bx-sn">세트 ' + r.sets.length + '개</span>' : '<small>없음</small>') + '</td></tr>';
         }).join('') + '</tbody></table>'
         + (SP.data ? (function () { var none = SP.data.sets.filter(function (s) { return !String(s.box || '').replace(/\s|번/g, '') && !/박스\s*없음/.test(s.memo || ''); });   /* 1016 MJ: 주문받아 만드는 세트(박스 없음)는 빼고 */ return none.length ? '<div class="sp-bp-none"><b>박스 번호가 없는 세트 ' + none.length + '개</b> · 누르고 [세트 고치기]에서 번호를 골라 주세요<div>' + none.map(function (s) { return '<button type="button" data-id="' + escapeHtml(s.id) + '" onclick="spOpenSet(this.dataset.id)">' + escapeHtml(s.name) + '</button>'; }).join('') + '</div></div>' : ''; })() : '');
     }
