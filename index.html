@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvaoylv5">
+  <meta name="ry-build" content="mvap3l10">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1649,6 +1649,22 @@ body.sp-open #appToast{bottom:auto!important;top:calc(68px + env(safe-area-inset
 .se-boxchips{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.se-boxchips button{min-height:44px;border:1px solid #D0D5DD;border-radius:12px;background:#fff;font-size:15px;font-weight:700;color:#344054}.se-boxchips button.on{background:#155EEF;border-color:#155EEF;color:#fff}.se-boxchips button.none{font-size:13px;font-weight:600}.se-boxchips button.none.on{background:#475467;border-color:#475467}
 .sp-bp .bx-warn{color:#B42318}
 .bx-pbtn{display:inline-flex;margin:8px 0 0;min-height:40px;padding:0 14px;border:1px solid #D0D5DD;border-radius:999px;background:#fff;font-size:13px;font-weight:700;color:#344054}
+.bx-today{display:inline-flex;align-items:center;margin-left:6px;height:20px;padding:0 7px;border-radius:999px;background:#F04438;color:#fff;font-size:11px;font-style:normal;font-weight:800}
+#bxDim{position:fixed;inset:0;z-index:8100;background:rgba(16,24,40,.45)}#bxDim[hidden],#bxSheet[hidden]{display:none!important}
+#bxSheet{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:8200;width:min(560px,100%);max-height:92vh;overflow-y:auto;background:#fff;border-radius:24px 24px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -12px 40px rgba(16,24,40,.2)}
+#bxSheet .bx-hd{display:flex;align-items:center;justify-content:space-between}#bxSheet h3{margin:0;font-size:19px;font-weight:800;color:#101828}
+#bxSheet .bx-x{width:44px;height:44px;border:0;border-radius:12px;background:#F2F4F7;font-size:22px;color:#344054}
+#bxSheet .bx-last{margin:6px 0 12px;font-size:13px;color:#667085}
+#bxSheet .bx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+#bxSheet .bx-c{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:700;color:#344054}
+#bxSheet .bx-c input{height:48px;border:1px solid #D0D5DD;border-radius:12px;padding:0 12px;font-size:17px;font-weight:700;color:#101828;width:100%;box-sizing:border-box}
+#bxSheet .bx-c input:focus{border-color:#155EEF;outline:none;box-shadow:0 0 0 3px rgba(21,94,239,.15)}
+#bxSheet .bx-c small{min-height:14px;font-size:12px;color:#155EEF;font-weight:700}
+#bxSheet .bx-more{margin:12px 0 8px;min-height:40px;padding:0 12px;border:0;background:none;color:#155EEF;font-weight:700;font-size:14px}
+#bxSheet .bx-kakao{margin:8px 0;font-size:13px;color:#475467}#bxSheet .bx-kakao summary{cursor:pointer;min-height:36px;display:flex;align-items:center}
+#bxSheet .bx-kakao textarea{width:100%;box-sizing:border-box;border:1px solid #D0D5DD;border-radius:12px;padding:10px;font-size:14px;margin-top:6px}
+#bxSheet .bx-res{margin:10px 0;font-size:14px;color:#344054}#bxSheet .bx-res p{margin:4px 0}#bxSheet .bx-res .r{color:#B42318;font-weight:800}#bxSheet .bx-res .y{color:#B54708;font-weight:700}
+#bxSheet .bx-save{width:100%;min-height:52px;border:0;border-radius:14px;background:#155EEF;color:#fff;font-size:16px;font-weight:800;margin-top:6px}#bxSheet .bx-save:disabled{opacity:.5}
 .bx-paste{padding:0 16px 14px}.bx-paste textarea{width:100%;border:1px solid #D0D5DD;border-radius:12px;padding:10px;font-size:14px;line-height:1.5;box-sizing:border-box}
 .bx-prev{margin:8px 0;font-size:13px;color:#155EEF;font-weight:700;line-height:1.6}
 .sp-bp-t td small{display:block}
@@ -3781,6 +3797,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       <div class="ry-tools">
         <button type="button" id="newProductBtn" onclick="openNewProduct()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>새 상품 등록</button>
         <button type="button" class="ry-ghost ry-quick" onclick="rlOpen()" title="일하면서 알아야 할 규칙 (주제별)">숙지사항<i id="rlDot" class="rl-btn-n" hidden></i></button>
+        <button type="button" class="ry-ghost ry-quick" onclick="bxOpen()" title="아침에 아크릴박스 개수 적기 · 🔴면 자동 1박스 요청">📦 박스 재고<i id="bxDot" class="bx-today" hidden>오늘 아직</i></button>
         <button type="button" class="ry-ghost ry-quick" onclick="moOpen()" title="잘 팔리는데 재고가 떨어졌을 상품">놓친 주문</button>
         <button type="button" class="ry-ghost ry-quick" onclick="window.open('https://pallang-0258.github.io/seongsu/viewer.html', '_blank', 'noopener')" title="근무표를 새 창으로 열기">근무표</button>
         <button type="button" class="ry-ghost ry-quick" onclick="mbOpenArchive()" title="날짜별 아침 뷰티 브리핑">뷰티 브리핑</button>
@@ -5461,7 +5478,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     /* 1016 MJ: 아크릴박스(번호 = 크기) 안 떨어지게 — 세트 15일 판매 × 2 = 한 달 사용 · 아침 카톡 '박스 재고 확인' 글 붙여넣기 → 며칠 버팀 신호등 (서버 getBoxStatus · saveBoxStock) */
     function bxLoad(cb) {
       if (typeof google === 'undefined' || !google.script || typeof google.script.run.getBoxStatus !== 'function') return;
-      google.script.run.withSuccessHandler(function (r) { if (r && r.success) { SP.box = r; SP.boxAt = Date.now(); try { if (SP.data && SP.view === 'sets' && document.getElementById('setPage').classList.contains('on')) spRenderSets(); } catch (e) {} try { bxPopup(); } catch (e2) {} } if (cb) cb(r); }).withFailureHandler(function () {}).getBoxStatus();
+      google.script.run.withSuccessHandler(function (r) { if (r && r.success) { SP.box = r; SP.boxAt = Date.now(); try { bxDotSync(); } catch (eD) {} try { if (SP.data && SP.view === 'sets' && document.getElementById('setPage').classList.contains('on')) spRenderSets(); } catch (e) {} try { bxPopup(); } catch (e2) {} } if (cb) cb(r); }).withFailureHandler(function () {}).getBoxStatus();
     }
     /* "1번 59+139" → 1번 198개 · '무지박스' 줄 아래는 '무지1' 처럼 */
     function bxParse(t) {
@@ -5480,8 +5497,46 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var r = bxParse(document.getElementById('bxText').value), me = currentSelectedMember || '';
       if (!r.length) return; if (!me || me === '미선택') { showToast('위에서 내 이름을 먼저 골라 주세요', 1800); return; }
       btn.disabled = true; btn.textContent = '저장 중…';
-      google.script.run.withSuccessHandler(function (x) { btn.disabled = false; btn.textContent = '저장'; if (!x || !x.success) { showToast((x && x.message) || '저장하지 못했어요', 2200); return; } SP.box = x; SP.boxAt = Date.now(); showToast('박스 ' + x.saved + '종 남은 개수를 저장했어요' + ((x.requested || []).length ? ' · 🔴 ' + x.requested.map(function (b) { return b + '번'; }).join(', ') + ' 1박스 자동 요청했어요' : ''), (x.requested || []).length ? 3600 : 1800); spRenderSets(); try { bxPopup(true); } catch (e) {} })
+      google.script.run.withSuccessHandler(function (x) { btn.disabled = false; btn.textContent = '저장'; if (!x || !x.success) { showToast((x && x.message) || '저장하지 못했어요', 2200); return; } SP.box = x; SP.boxAt = Date.now(); bxDotSync(); showToast('박스 ' + x.saved + '종 남은 개수를 저장했어요' + ((x.requested || []).length ? ' · 🔴 ' + x.requested.map(function (b) { return b + '번'; }).join(', ') + ' 1박스 자동 요청했어요' : ''), (x.requested || []).length ? 3600 : 1800); spRenderSets(); try { bxPopup(true); } catch (e) {} })
         .withFailureHandler(function () { btn.disabled = false; btn.textContent = '저장'; showToast('저장하지 못했어요 · 인터넷 확인', 2200); }).saveBoxStock(r, me);
+    }
+    /* 1016 MJ: 카톡 대신 물류앱에 바로 — 첫 화면 [📦 박스 재고] → 번호마다 개수(59+139 처럼 적어도 됨) → 저장 = 신호등 계산 + 🔴면 자동 1박스 요청 */
+    var BX_M = ['1', '3', '4', '5', '6'];
+    function bxToday() { return new Date(Date.now() + 9 * 3600000).toISOString().slice(0, 10); }
+    function bxLastAt() { return ((SP.box && SP.box.rows) || []).reduce(function (m, r) { return r.at && r.at > m ? r.at : m; }, ''); }
+    function bxDotSync() { var d = document.getElementById('bxDot'); if (!d || !SP.box) return; var l = bxLastAt(); d.hidden = !!l && l.slice(0, 10) === bxToday(); }
+    function bxCell(k, label) {
+      var r = ((SP.box && SP.box.rows) || []).filter(function (x) { return x.box === k; })[0];
+      return '<label class="bx-c"><span>' + label + '</span><input type="text" inputmode="numeric" data-k="' + k + '" placeholder="' + (r && r.counted != null ? r.counted : '') + '" autocomplete="off" oninput="bxSumShow(this)"><small></small></label>';
+    }
+    function bxSumShow(inp) { var ns = String(inp.value || '').replace(/\([^)]*\)/g, '').match(/\d+/g), sm = inp.parentNode.querySelector('small'); sm.textContent = ns && ns.length > 1 ? '= ' + ns.reduce(function (a, x) { return a + (+x); }, 0) + '개' : ''; }
+    function bxOpen() {
+      var g = '', gm = ''; for (var i = 1; i <= 9; i++) g += bxCell(String(i), i + '번');
+      BX_M.forEach(function (i) { gm += bxCell('무지' + i, '무지 ' + i + '번'); });
+      document.getElementById('bxGrid').innerHTML = g; document.getElementById('bxGridM').innerHTML = gm;
+      var l = bxLastAt(), lr = ((SP.box && SP.box.rows) || []).filter(function (r) { return r.at === l; })[0];
+      document.getElementById('bxLast').textContent = l ? '마지막으로 센 것: ' + l.slice(5).replace('-', '/') + (lr && lr.by ? ' · ' + lr.by : '') + ' (흐린 숫자) · 빈 칸은 저장 안 해요' : '번호마다 지금 있는 개수를 적어 주세요 · 빈 칸은 저장 안 해요';
+      document.getElementById('bxRes').innerHTML = ''; document.getElementById('bxKText').value = '';
+      document.getElementById('bxDim').hidden = false; document.getElementById('bxSheet').hidden = false;
+      if (!SP.box) bxLoad(function () { if (!document.getElementById('bxSheet').hidden) bxOpen(); });
+    }
+    function bxClose() { document.getElementById('bxDim').hidden = true; document.getElementById('bxSheet').hidden = true; }
+    function bxFillFromText(t) { bxParse(t).forEach(function (x) { var inp = document.querySelector('#bxSheet input[data-k="' + x.box + '"]'); if (inp) { inp.value = String(x.n); bxSumShow(inp); if (x.box.indexOf('무지') === 0) document.getElementById('bxGridM').hidden = false; } }); }
+    function bxSheetSave(btn) {
+      var me = currentSelectedMember || ''; if (!me || me === '미선택') { showToast('위에서 내 이름을 먼저 골라 주세요', 1800); return; }
+      var list = [].slice.call(document.querySelectorAll('#bxSheet input[data-k]')).map(function (inp) { var ns = String(inp.value || '').replace(/\([^)]*\)/g, '').match(/\d+/g); return ns ? { box: inp.dataset.k, n: ns.reduce(function (a, x) { return a + (+x); }, 0) } : null; }).filter(Boolean);
+      if (!list.length) { showToast('적은 숫자가 없어요', 1600); return; }
+      btn.disabled = true; btn.textContent = '저장 중…';
+      google.script.run.withSuccessHandler(function (x) {
+        btn.disabled = false; btn.textContent = '저장';
+        if (!x || !x.success) { showToast((x && x.message) || '저장하지 못했어요', 2200); return; }
+        SP.box = x; SP.boxAt = Date.now(); bxDotSync();
+        var bad = (x.rows || []).filter(function (r) { return r.status === 'red' || r.status === 'yellow'; }), req = x.requested || [];
+        document.getElementById('bxRes').innerHTML = '<b>✓ ' + x.saved + '종 저장했어요</b>' + (req.length ? '<p class="r">🔴 ' + req.map(function (b) { return b + '번'; }).join(', ') + ' 아크릴박스 1박스를 자동으로 요청했어요 (1차 검토)</p>' : '')
+          + (bad.length ? bad.map(function (r) { return '<p class="' + (r.status === 'red' ? 'r' : 'y') + '">' + (r.status === 'red' ? '🔴' : '🟡') + ' ' + escapeHtml(bxName(r.box)) + ' · ' + r.days + '일 버팀</p>'; }).join('') : '<p>계산된 박스는 모두 넉넉해요 🟢</p>');
+        try { if (document.getElementById('setPage').classList.contains('on') && SP.data && SP.view === 'sets') spRenderSets(); } catch (e) {}
+        try { bxPopup(true); } catch (e2) {}
+      }).withFailureHandler(function () { btn.disabled = false; btn.textContent = '저장'; showToast('저장하지 못했어요 · 인터넷 확인', 2200); }).saveBoxStock(list, me);
     }
     var BX_ST = { red: ['🔴', '지금 주문'], yellow: ['🟡', '이번 주 주문'], green: ['🟢', '넉넉해요'], unknown: ['⚪', '남은 개수 모름'], nodata: ['⚪', '사용량 모름'] };
     function bxName(k) { return k.indexOf('무지') === 0 ? '무지 ' + k.slice(2) + '번' : k + '번'; }
@@ -15623,6 +15678,17 @@ setTimeout(function () { EDU.loadedAt = Date.now(); eduLoad(); }, 5000);
     <div id="rlUnread"></div>
     <div id="rlList" class="rl-list"></div>
   </div>
+</div>
+<div id="bxDim" hidden onclick="bxClose()"></div>
+<div id="bxSheet" hidden role="dialog" aria-modal="true" aria-labelledby="bxSheetT">
+  <div class="bx-hd"><h3 id="bxSheetT">📦 오늘 박스 재고 적기</h3><button type="button" class="bx-x" onclick="bxClose()" aria-label="닫기">×</button></div>
+  <p id="bxLast" class="bx-last"></p>
+  <div id="bxGrid" class="bx-grid"></div>
+  <button type="button" class="bx-more" onclick="var g=document.getElementById('bxGridM'); g.hidden=!g.hidden; this.textContent = g.hidden ? '＋ 무지박스도 적기' : '－ 무지박스 접기'">＋ 무지박스도 적기</button>
+  <div id="bxGridM" class="bx-grid" hidden></div>
+  <details class="bx-kakao"><summary>카톡에 올린 글이 있으면 붙여넣기</summary><textarea id="bxKText" rows="5" placeholder="1번 59+139&#10;2번 117" oninput="bxFillFromText(this.value)"></textarea></details>
+  <div id="bxRes" class="bx-res" role="status"></div>
+  <button type="button" id="bxSaveBtn" class="bx-save" onclick="bxSheetSave(this)">저장</button>
 </div>
 <div id="rlDim" hidden onclick="rlEditClose()"></div>
 <div id="rlSheet" hidden role="dialog" aria-modal="true" aria-labelledby="rlSheetT">
