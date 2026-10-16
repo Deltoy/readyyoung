@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvad1phu">
+  <meta name="ry-build" content="mvad9ai0">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -6312,7 +6312,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           var extra = (res.category ? ' · ' + catLabel(res.category) : '') + (res.requested ? ' · 1차 검토로 들어갔어요' : '');
           if (res.photo && !res.photo.ok) extra += ' · 사진은 저장 못 했어요';
           showToast('✓ ' + res.name + ' 등록 완료' + extra);
-          try { if (RY_CAT && RY_CAT.items) { RY_CAT.items.push({ rowNumber: res.rowNumber, name: res.name, category: res.category || '', imgUrl: (res.photo && res.photo.ok && res.photo.url) || '',   /* 1016 사진첩 사진이 검색에 안 보이던 것 */ note: '', sales15: '-', status: 'IDLE', _k: String(res.name || '').replace(/\s+/g, '').toLowerCase() }); ryCatSave(); } if (RY_CAT) RY_CAT.t = 0; ryCatLoad(true); } catch (eC) {}   // 1001 등록한 상품이 검색에 바로
+          try { if (RY_CAT && RY_CAT.items) { RY_CAT.items.push({ rowNumber: res.rowNumber, name: res.name, category: res.category || '', imgUrl: (res.photo && res.photo.ok && res.photo.url) || '',   /* 1016 사진첩 사진이 검색에 안 보이던 것 */ uses: res.uses || [], note: '', sales15: '-', status: 'IDLE', _k: String(res.name || '').replace(/\s+/g, '').toLowerCase() }); ryCatSave(); } if (RY_CAT) RY_CAT.t = 0; ryCatLoad(true); } catch (eC) {}   // 1001 등록한 상품이 검색에 바로
           // 0930 목록을 억지로 다시 받지 않는다(서버가 2분 걸림). 새 상품은 폰 목록에 없어도 서버 이름 스캔으로 바로 찾힌다
           loadAllData(true, true, true);
         })
