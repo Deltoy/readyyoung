@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvaebpko">
+  <meta name="ry-build" content="mvafgenh">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -11962,7 +11962,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var b = document.getElementById('ntLatest');
       if (!b) return;
       var l = NT.latest;
-      b.hidden = !l;
+      b.hidden = !l || (typeof EV !== 'undefined' && (EV.barIds || []).indexOf(l.id) !== -1);   /* 1016 진행 중 이벤트 줄과 같은 공지면 한 번만 */
       if (l) document.getElementById('ntLatestT').innerHTML = '<span class="nt-tag t-' + (NT_TAGS.indexOf(l.tag) + 1) + '">' + escapeHtml(l.tag) + '</span><b>' + escapeHtml(l.title) + '</b><span class="nt-date">' + escapeHtml(ntMD(l.date)) + '</span>';
     }
     function ntRender() {
@@ -15709,11 +15709,15 @@ function evIndex() {
   var items = (NT.data && NT.data.items) || [];
   EV.list = items.filter(evLive); EV.byName = {};
   EV.list.forEach(function (n) { (n.ev.products || []).forEach(function (p) { EV.byName[evKey(p.name)] = n; }); });
+  /* 1016 MJ: 첫 화면 줄은 올린 날 포함 3일만 (상품 배지는 이벤트 끝날 때까지) · 같은 공지가 '최근 공지'에 또 나오지 않게 */
+  var t0 = Date.parse(evToday()), recent = EV.list.filter(function (n) { var d = Date.parse(n.date); return !isNaN(d) && t0 - d <= 2 * 864e5; });
+  EV.barIds = recent.map(function (n) { return n.id; });
   var bar = document.getElementById('evBar');
   if (bar) {
-    bar.hidden = !EV.list.length;
-    if (EV.list.length) bar.querySelector('.ev-t').innerHTML = '<b>진행 중 이벤트 ' + EV.list.length + '개</b>' + escapeHtml(EV.list[0].title + (EV.list[0].ev.line ? ' · ' + EV.list[0].ev.line : ''));
+    bar.hidden = !recent.length;
+    if (recent.length) bar.querySelector('.ev-t').innerHTML = '<b>진행 중 이벤트 ' + recent.length + '개</b>' + escapeHtml(recent[0].title + (recent[0].ev.line ? ' · ' + recent[0].ev.line : ''));
   }
+  try { ntRenderLatest(); } catch (e) {}
 }
 function evBadge(item) {
   var n = item && EV.byName[evKey(item.name)];
