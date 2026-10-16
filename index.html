@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvadptko">
+  <meta name="ry-build" content="mvadrup2">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -15380,6 +15380,14 @@ setTimeout(function () { EDU.loadedAt = Date.now(); eduLoad(); }, 5000);
 .nt-pill-t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#344054;font-size:13px}
 .nt-pill .mb-dot{flex:none}
 @media(max-width:767px){.nt-pill{padding:0 12px;min-height:36px}.nt-pill-t{display:none}}
+#rlPop,#ntPop{display:flex!important;align-items:center;gap:10px;padding:8px 8px 8px 14px!important;border-radius:16px!important}
+#rlPop[hidden],#ntPop[hidden]{display:none!important}
+.tp-txt{flex:1;min-width:0}
+.tp-txt b.t{margin:0!important;font-size:14px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tp-txt p{font-size:12.5px!important;margin:1px 0 0!important}
+.tp-go{flex:none;min-height:40px;padding:0 14px;border-radius:12px!important;border:0;background:#155EEF;color:#fff;font-weight:800;font-size:13.5px}
+#rlPop .tp-go{background:#D92D20}
+.tp-x{flex:none;width:40px;height:40px;border-radius:12px!important;border:0;background:#F2F4F7;color:#475467;font-size:18px;line-height:1}
 </style>
 <div id="rlView" hidden role="dialog" aria-modal="true" aria-label="숙지사항">
   <div class="rl-wrap">
@@ -15434,8 +15442,8 @@ function rlPopup() {
   var el = document.getElementById('rlPop'), un = rlUnread(), me = rlMe();
   if (!el) return;
   if (!un.length || !document.getElementById('rlView').hidden || RL.popShown === me + '|' + un.length) { if (!un.length) el.hidden = true; return; }
-  el.innerHTML = '<b class="t">📌 새 숙지사항 ' + un.length + '개</b><p>' + un.slice(0, 2).map(function (r) { return escapeHtml(r.title); }).join(' · ') + '</p>'
-    + '<div class="rl-pb"><button type="button" class="rl-later" onclick="RL.popShown = rlMe() + \'|\' + rlUnread().length; document.getElementById(\'rlPop\').hidden = true">나중에</button><button type="button" class="rl-go" onclick="document.getElementById(\'rlPop\').hidden = true; rlOpen(\'new\')">지금 보기</button></div>';
+  el.innerHTML = '<div class="tp-txt"><b class="t">📌 새 숙지사항 ' + un.length + '개</b><p>' + escapeHtml(un[0].title) + '</p></div>'
+    + '<button type="button" class="tp-go" onclick="document.getElementById(\'rlPop\').hidden = true; rlOpen(\'new\')">보기</button><button type="button" class="tp-x" aria-label="나중에 보기" onclick="RL.popShown = rlMe() + \'|\' + rlUnread().length; document.getElementById(\'rlPop\').hidden = true">×</button>';
   el.hidden = false;
 }
 function rlOpen(mode) {
@@ -15571,8 +15579,8 @@ function ntNotify() {
   if (!pop) return;
   var sig = rlMe() + '|' + nw.map(function (n) { return n.id; }).join(',');
   if (!nw.length || NT.popClosed === sig || !document.getElementById('noticeView').classList.contains('hidden')) { pop.hidden = true; return; }
-  pop.innerHTML = '<b class="t">📢 새 공지 ' + nw.length + '개</b>' + nw.slice(0, 2).map(function (n) { return '<p>[' + escapeHtml(n.tag || '공지') + '] ' + escapeHtml(n.title) + '</p>'; }).join('')
-    + '<div class="rl-pb"><button type="button" class="rl-later" data-s="' + escapeHtml(sig) + '" onclick="NT.popClosed = this.dataset.s; document.getElementById(\'ntPop\').hidden = true">나중에</button><button type="button" class="rl-go" onclick="ntOpen()">공지 보기</button></div>';
+  pop.innerHTML = '<div class="tp-txt"><b class="t">📢 새 공지 ' + nw.length + '개</b><p>[' + escapeHtml(nw[0].tag || '공지') + '] ' + escapeHtml(nw[0].title) + '</p></div>'
+    + '<button type="button" class="tp-go" onclick="ntOpen()">보기</button><button type="button" class="tp-x" aria-label="나중에 보기" data-s="' + escapeHtml(sig) + '" onclick="NT.popClosed = this.dataset.s; document.getElementById(\'ntPop\').hidden = true">×</button>';
   pop.hidden = false;
 }
 function ntMarkSeen() {
