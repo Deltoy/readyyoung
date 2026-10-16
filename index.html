@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvae2u8i">
+  <meta name="ry-build" content="mvae6x87">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -3792,6 +3792,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     </section>
 
     <button type="button" id="ntLatest" class="nt-latest" hidden onclick="ntOpen()"><span class="nt-latest-ic"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span><span class="nt-latest-l">최근 공지</span><span id="ntLatestT" class="nt-latest-t"></span><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+    <button type="button" id="evBar" class="ev-bar" hidden onclick="evOpenList()"><span class="ev-ic">🎁</span><span class="ev-t"></span><span class="ev-go">보기 ›</span></button>
     <button type="button" id="mbCard" class="mb-card" hidden onclick="mbOpen()" aria-label="오늘의 뷰티 브리핑 읽기"><span class="mb-card-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.94 14.06 4 20"/><path d="m14.5 4.5 5 5"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m17.66 6.34 1.41-1.41"/><path d="M15 9 9 15"/><circle cx="12" cy="12" r="0.5"/></svg></span><span class="mb-card-t"><span class="mb-card-k"><span id="mbCardK">오늘의 뷰티 브리핑</span><i id="mbDot" class="mb-dot" hidden aria-label="새 브리핑"></i><em id="mbCardD"></em></span><b id="mbCardH"></b><span id="mbCardL" class="mb-card-l"></span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
 
     <!-- 2. 물류 파이프라인 (1차 검토 → 최종 발주 → 입고 대기) & 보조 통계 — 0925 디자인 -->
@@ -4251,7 +4252,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       <div class="tab-head">
         <div class="th-row">
           <span class="th-title"><span class="ry25-thi"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span>공지 보관함</span>
-          <button type="button" class="nt-paste-btn" onclick="ntOpenPaste()">카톡 공지 붙여넣기</button>
+          <span style="display:inline-flex;gap:8px;flex-wrap:wrap"><button type="button" class="ev-reg" onclick="evOpen()">🎁 이벤트 등록</button><button type="button" class="nt-paste-btn" onclick="ntOpenPaste()">카톡 공지 붙여넣기</button></span>
         </div>
         <div class="ry25-rf-desc">공지는 카톡에서 먼저 하고, 여기엔 보관해요. 증정품 변경은 기존 → 변경을 사진으로 보여줘요.</div>
       </div>
@@ -4578,7 +4579,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     var END_TAG = '판매종료';
     function isEnded(item) { return !!(item && String(item.note || '').indexOf(END_TAG) !== -1); }
     function ryNoRc(s) { return String(s == null ? '' : s).replace(/〔품절 재확인[^〕]*〕/g, ' ').replace(/\s{2,}/g, ' ').trim(); }   // 0929 품절 재확인 안내 토막은 품절 판정에서 뺀다
-    function endedBadge(item) { return (typeof locBadge === 'function' ? locBadge(item) : '') + (isHiddenItem(item) ? '<span class="ry-end ry-hid">' + RYI.octx + '취급안함</span>' : '') + (isEnded(item) ? '<span class="ry-end">' + RYI.octx + '판매종료</span>' : '') + (String(item && item.note || '').indexOf('〔품절 재확인') !== -1 ? '<span class="ry-rc" title="품절이 풀렸는지 확인 후 주문해 주세요"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/></svg>품절 30일 · 다시 확인해 주세요</span>' : '') + infoBtn(item); }
+    function endedBadge(item) { return (typeof evBadge === 'function' ? evBadge(item) : '') + (typeof locBadge === 'function' ? locBadge(item) : '') + (isHiddenItem(item) ? '<span class="ry-end ry-hid">' + RYI.octx + '취급안함</span>' : '') + (isEnded(item) ? '<span class="ry-end">' + RYI.octx + '판매종료</span>' : '') + (String(item && item.note || '').indexOf('〔품절 재확인') !== -1 ? '<span class="ry-rc" title="품절이 풀렸는지 확인 후 주문해 주세요"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/></svg>품절 30일 · 다시 확인해 주세요</span>' : '') + infoBtn(item); }
 
     /* ===== 상품 정보 AI 메모 (0920) ===== */
     function infoBtn(item) {
@@ -11735,7 +11736,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
 
     /* ===== 0925 공지 보관함 — 카톡이 원래 통로, 앱은 보관 + 그림. 서버 listNotices / saveNotice / updateNotice · deleteNotice(문준) ===== */
     var NT = { data: null, loading: false, q: '', month: '', tag: '', err: '', parsed: null, matches: {}, recent: [], latest: null, parentSel: '' };
-    var NT_TAGS = ['공지', '증정', '품절', '업무', '기타', '일정'];   // 1016 일정 = 교육·방문 일정
+    var NT_TAGS = ['공지', '증정', '품절', '업무', '기타', '일정', '이벤트'];   // 1016 일정 = 교육·방문 일정
     var NT_ICON = {
       mega: '<svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>',
       xc: '<svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>'
@@ -11756,13 +11757,13 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function ntParse(text) {
       var lines = String(text || '').replace(/\r/g, '').split('\n'), out = { title: '', tag: '', correction: false, before: [], after: [], swaps: [], body: '' };
       var body = [], firstSeen = false, needTitle = false;
-      var TAGMAP = { '공지': '공지', '안내': '공지', '알림': '공지', '증정': '증정', '품절': '품절', '업무': '업무', '기타': '기타', '일정': '일정', '교육': '일정' };
+      var TAGMAP = { '공지': '공지', '안내': '공지', '알림': '공지', '증정': '증정', '품절': '품절', '업무': '업무', '기타': '기타', '일정': '일정', '교육': '일정', '이벤트': '이벤트' };
       lines.forEach(function (ln) {
         var t = ln.trim(), mb;
         if (!t) { body.push(''); return; }
         if (!firstSeen && /^\*?\s*정정/.test(t)) { out.correction = true; firstSeen = true; needTitle = true; return; }
         firstSeen = true;
-        if (!out.title && (mb = t.match(/^\[(공지|안내|알림|증정|품절|업무|기타|일정|교육)\]\s*(.*)$/))) { out.tag = TAGMAP[mb[1]]; out.title = ntClip(mb[2].trim(), 120); needTitle = false; return; }
+        if (!out.title && (mb = t.match(/^\[(공지|안내|알림|증정|품절|업무|기타|일정|교육|이벤트)\]\s*(.*)$/))) { out.tag = TAGMAP[mb[1]]; out.title = ntClip(mb[2].trim(), 120); needTitle = false; return; }
         if (needTitle) { out.title = ntClip(t, 120); needTitle = false; return; }
         if ((mb = t.match(/^(기존|변경\s*전|변경\s*후|변경)\s*[:：]\s*(.+)$/))) {
           out[/^(기존|변경\s*전)/.test(mb[1]) ? 'before' : 'after'] = mb[2].split(/\s*\+\s*/).map(ntParseItem).filter(function (x) { return x; });
@@ -11833,6 +11834,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         + '</div>'
         + '<h3 class="nt-title">' + escapeHtml(n.title) + '</h3>'
         + (n.body ? '<p class="nt-body">' + escapeHtml(n.body) + '</p>' : '')
+        + (typeof evBoxHtml === 'function' ? evBoxHtml(n) : '')
         + ntPhotosHtml(n.photos)
         + ntSetsHtml(n.before, n.effectiveAfter)
         + (n.corrections && n.corrections.length ? '<ol class="nt-tl">' + n.corrections.map(function (c) {
@@ -12494,7 +12496,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
   <div class="ava-head"><b class="ry-info-title">카톡 공지 붙여넣기</b><button type="button" onclick="ntClosePaste()">닫기</button></div>
   <textarea id="ntRaw" class="nt-raw" rows="7" placeholder="[공지] 제목&#10;본문…&#10;기존 : 헤어세럼1 + 핸드크림1&#10;변경 : 헤어세럼1 + 마스크팩 2ea" oninput="ntOnPaste()" aria-label="카톡 공지 글"></textarea>
   <div class="nt-fields">
-    <label>태그<select id="ntTag" onchange="this.dataset.touched=1"><option>공지</option><option>증정</option><option>품절</option><option>업무</option><option>일정</option><option>기타</option></select></label>
+    <label>태그<select id="ntTag" onchange="this.dataset.touched=1"><option>공지</option><option>증정</option><option>품절</option><option>업무</option><option>일정</option><option>이벤트</option><option>기타</option></select></label>
     <label>공지일<input type="date" id="ntDate"></label>
     <label class="wide">제목<input type="text" id="ntTitle" maxlength="120" oninput="this.dataset.touched=1"></label>
     <label class="wide" id="ntParentWrap" hidden>어느 공지의 정정인가요?<select id="ntParent" onchange="this.dataset.touched=1; NT.parentSel=this.value"></select></label>
@@ -12508,7 +12510,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
 <div class="ava-sheet nt-sheet" id="ntESheet" role="dialog" aria-label="공지 고치기">
   <div class="ava-head"><b class="ry-info-title">공지 고치기</b><button type="button" onclick="ntCloseEdit()">닫기</button></div>
   <div class="nt-fields">
-    <label>태그<select id="ntETag"><option>공지</option><option>증정</option><option>품절</option><option>업무</option><option>일정</option><option>기타</option></select></label>
+    <label>태그<select id="ntETag"><option>공지</option><option>증정</option><option>품절</option><option>업무</option><option>일정</option><option>이벤트</option><option>기타</option></select></label>
     <label>공지일<input type="date" id="ntEDate"></label>
     <label class="wide">제목<input type="text" id="ntETitle" maxlength="120"></label>
   </div>
@@ -15599,6 +15601,7 @@ function ntNewOnes() {
   return items.filter(function (n) { return String(n.createdAt || '') > seen && n.author !== me; });
 }
 function ntNotify() {
+  try { var sig0 = Object.keys(EV.byName).sort().join('|'); evIndex(); if (Object.keys(EV.byName).sort().join('|') !== sig0) evRefreshLists(); } catch (eEv) {}
   var nw = ntNewOnes(), dot = document.getElementById('ntPillDot'), t = document.getElementById('ntPillT'), pop = document.getElementById('ntPop');
   var items = (NT.data && NT.data.items) || [], top = items.slice().sort(function (a, b) { return String(b.createdAt).localeCompare(String(a.createdAt)); })[0];
   if (t) t.textContent = top ? top.title : '';
@@ -15628,6 +15631,156 @@ setInterval(function () { if (document.visibilityState === 'visible') ntBoot(); 
 /* 앱 열고 조금 뒤 한 번 + 이름을 바꾸면 그 사람 기준으로 다시 (5분마다 새 규칙 확인) */
 setTimeout(function () { rlLoad(); }, 4000);
 setInterval(function () { if (document.visibilityState === 'visible') rlLoad(); }, 5 * 60000);
+</script>
+
+<!-- ==================== 1016 브랜드 이벤트 (공지 '이벤트' + 상품 배지 + 첫 화면 줄) ==================== -->
+<style>
+.ev-b{display:inline-flex;align-items:center;gap:4px;min-height:26px;padding:0 10px;border-radius:999px!important;border:1px solid #FECDCA;background:#FFF1F0;color:#B42318;font-size:12px;font-weight:800;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:middle;margin-left:4px;cursor:pointer}
+.ev-bar{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:8px 14px;border-radius:16px!important;border:1px solid #FECDCA;background:#FFF6F5;text-align:left;cursor:pointer}
+.ev-bar[hidden]{display:none!important}
+.ev-bar .ev-ic{font-size:20px;flex:none}
+.ev-bar .ev-t{flex:1;min-width:0;font-size:14px;color:#101828;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev-bar .ev-t b{color:#B42318;font-weight:800!important;margin-right:6px}
+.ev-bar .ev-go{flex:none;color:#B42318;font-size:13px;font-weight:800}
+.ev-box{margin-top:12px;padding:12px 14px;border-radius:14px!important;background:#FFF6F5;border:1px solid #FECDCA}
+.ev-box.off{background:#F9FAFB;border-color:#EAECF0}
+.ev-box .ev-line{font-size:15px;font-weight:800;color:#B42318}
+.ev-box.off .ev-line{color:#667085;text-decoration:line-through}
+.ev-box .ev-meta{margin-top:4px;font-size:13px;color:#475467;line-height:1.55}
+.ev-box .ev-ps{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ev-box .ev-ps span{display:inline-flex;align-items:center;min-height:28px;padding:0 10px;border-radius:999px!important;background:#fff;border:1px solid #EAECF0;font-size:12.5px;color:#344054}
+.ev-box .ev-end{margin-top:10px;min-height:44px;padding:0 16px;border-radius:12px!important;border:1px solid #FDA29B;background:#fff;color:#B42318;font-weight:800;font-size:14px}
+.ev-box.off .ev-end{border-color:#D0D5DD;color:#344054}
+.ev-reg{min-height:44px;padding:0 14px;border-radius:999px!important;border:1px solid #FECDCA;background:#FFF1F0;color:#B42318;font-weight:800;font-size:13.5px;white-space:nowrap}
+.nt-tag.t-7{background:#FFF1F0!important;color:#B42318!important}
+#evSheet{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:8200;width:min(560px,100%);max-height:92vh;overflow-y:auto;background:#fff;border-radius:24px 24px 0 0!important;padding:20px 16px calc(20px + env(safe-area-inset-bottom))}
+#evDim{position:fixed;inset:0;z-index:8100;background:rgba(16,24,40,.45)}
+#evSheet[hidden],#evDim[hidden]{display:none!important}
+#evSheet h3{margin:0 0 4px;font-size:19px;font-weight:700!important;color:#101828}
+#evSheet .ev-sub{font-size:13px;color:#667085;margin:0 0 6px}
+#evSheet label.l{display:block;font-size:13px;font-weight:700;color:#475467;margin:14px 0 6px}
+#evSheet input[type=text],#evSheet input[type=date],#evSheet textarea{width:100%;border:1px solid #E4E7EC;border-radius:14px!important;padding:12px 14px;font-size:16px;outline:none;font-family:inherit;background:#fff;color:#101828}
+#evSheet textarea{min-height:88px;resize:vertical;line-height:1.55}
+#evSheet input:focus,#evSheet textarea:focus{border-color:#155EEF;outline:2px solid #155EEF}
+#evSheet .ev-find{display:flex;gap:8px}
+#evSheet .ev-find input{flex:1}
+#evSheet .ev-find button{flex:none;min-height:48px;padding:0 14px;border-radius:14px!important;border:0;background:#101828;color:#fff;font-weight:800;font-size:14px}
+#evSheet .ev-hits{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+#evSheet .ev-hit{display:flex;align-items:center;gap:10px;min-height:52px;padding:6px 10px;border-radius:12px!important;border:1px solid #EAECF0;background:#fff;text-align:left;font-size:14px;color:#101828}
+#evSheet .ev-hit.on{border-color:#155EEF;background:#EFF4FF}
+#evSheet .ev-hit img{width:40px;height:40px;object-fit:contain;border-radius:8px!important;background:#F2F4F7;flex:none}
+#evSheet .ev-hit .ck{margin-left:auto;font-weight:800;color:#155EEF;flex:none}
+#evSheet .ev-hint{font-size:13px;color:#667085;margin-top:6px}
+#evSheet .ev-err{color:#D92D20;font-size:13.5px;font-weight:700;margin-top:10px}
+#evSheet .ev-err:empty{display:none}
+#evSheet .ev-btns{display:flex;gap:8px;margin-top:18px}
+#evSheet .ev-btns button{flex:1;min-height:52px;border-radius:14px!important;border:0;font-size:16px;font-weight:800}
+#evSheet .ev-cancel{background:#F2F4F7;color:#344054}
+#evSheet .ev-save{background:#155EEF;color:#fff}
+#evSheet .ev-save:disabled{opacity:.5}
+</style>
+<div id="evDim" hidden onclick="evClose()"></div>
+<div id="evSheet" hidden role="dialog" aria-modal="true" aria-labelledby="evSheetT">
+  <h3 id="evSheetT">🎁 이벤트 등록</h3>
+  <p class="ev-sub">이벤트 상품을 검색하면 그 상품 옆에 '🎁 이벤트' 배지가 떠요.</p>
+  <label class="l" for="evTitle">제목</label>
+  <input type="text" id="evTitle" maxlength="80" placeholder="예: 대웅 EGF 5g 3개 구매 시 보냉백 증정">
+  <label class="l" for="evLine">배지 한 줄 (상품 옆에 보이는 말)</label>
+  <input type="text" id="evLine" maxlength="60" placeholder="예: 3개 55,000원 + 보냉백">
+  <label class="l" for="evQ">이벤트 상품</label>
+  <div class="ev-find"><input type="text" id="evQ" placeholder="상품 이름 일부 (예: 이지에프)" enterkeyhint="search" onkeydown="if (event.key === 'Enter' && !event.isComposing) { event.preventDefault(); evFind(); }"><button type="button" onclick="evFind()">찾기</button></div>
+  <div id="evHits" class="ev-hits"></div>
+  <label class="l" for="evBody">응대 멘트 · 내용</label>
+  <textarea id="evBody" maxlength="2000" placeholder="예: 1~2개 사시는 분께 이벤트 소개해 업셀링 · 3개 사시면 세트로 바꿔도 돼요"></textarea>
+  <label class="l" for="evUntil">끝나는 날 (비우면 '소진 시까지' — 다 떨어지면 아무나 [이벤트 종료])</label>
+  <input type="date" id="evUntil">
+  <div id="evErr" class="ev-err" role="alert"></div>
+  <div class="ev-btns"><button type="button" class="ev-cancel" onclick="evClose()">취소</button><button type="button" id="evSave" class="ev-save" onclick="evSave()">등록</button></div>
+</div>
+<script>
+/* ===== 1016 브랜드 이벤트 — 공지(태그 '이벤트')에 ev {products, line, until, ended} 를 붙여 저장. 상품 배지 · 첫 화면 줄 · 카드 안 [이벤트 종료] ===== */
+var EV = { list: [], byName: {}, pick: [] };
+function evToday() { var k = new Date(Date.now() + 9 * 3600000), p = function (n) { return (n < 10 ? '0' : '') + n; }; return k.getUTCFullYear() + '-' + p(k.getUTCMonth() + 1) + '-' + p(k.getUTCDate()); }
+function evLive(n) { return n && n.ev && !n.ev.ended && (!n.ev.until || n.ev.until >= evToday()); }
+function evKey(s) { return String(s || '').replace(/\s+/g, '').toLowerCase(); }
+function evIndex() {
+  var items = (NT.data && NT.data.items) || [];
+  EV.list = items.filter(evLive); EV.byName = {};
+  EV.list.forEach(function (n) { (n.ev.products || []).forEach(function (p) { EV.byName[evKey(p.name)] = n; }); });
+  var bar = document.getElementById('evBar');
+  if (bar) {
+    bar.hidden = !EV.list.length;
+    if (EV.list.length) bar.querySelector('.ev-t').innerHTML = '<b>진행 중 이벤트 ' + EV.list.length + '개</b>' + escapeHtml(EV.list[0].title + (EV.list[0].ev.line ? ' · ' + EV.list[0].ev.line : ''));
+  }
+}
+function evBadge(item) {
+  var n = item && EV.byName[evKey(item.name)];
+  return n ? ' <button type="button" class="ev-b" data-id="' + escapeHtml(n.id) + '" onclick="event.stopPropagation(); evShow(this.dataset.id)" title="' + escapeHtml(n.title) + '">🎁 ' + escapeHtml(n.ev.line || '이벤트') + '</button>' : '';
+}
+function evShow(id) { NT.tag = '이벤트'; ntOpen(); setTimeout(function () { var el = document.querySelector('.nt-card[data-nt="' + id + '"]'); if (el) el.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 900); }
+function evOpenList() { NT.tag = '이벤트'; ntOpen(); }
+function evBoxHtml(n) {
+  if (!n.ev) return '';
+  var e = n.ev, live = evLive(n), over = !e.ended && e.until && e.until < evToday();
+  return '<div class="ev-box' + (live ? '' : ' off') + '"><div class="ev-line">🎁 ' + escapeHtml(e.line || n.title) + '</div>'
+    + '<div class="ev-meta">' + (live ? '진행 중 · ' + (e.until ? e.until.slice(5).replace('-', '/') + '까지' : '소진 시까지') : over ? '기간 끝 (' + e.until.slice(5).replace('-', '/') + ')' : '종료됨' + (e.endedBy ? ' · ' + escapeHtml(e.endedBy) : '')) + '</div>'
+    + ((e.products || []).length ? '<div class="ev-ps">' + e.products.map(function (p) { return '<span>' + escapeHtml(p.name) + '</span>'; }).join('') + '</div>' : '')
+    + (over ? '' : '<button type="button" class="ev-end" data-id="' + escapeHtml(n.id) + '" data-on="' + (e.ended ? '0' : '1') + '" onclick="evEnd(this)">' + (e.ended ? '다시 진행' : '이벤트 종료 (소진 · 끝남)') + '</button>')
+    + '</div>';
+}
+function evEnd(btn) {
+  var id = btn.dataset.id, on = btn.dataset.on === '1', me = rlMe(), n = ntFind(id);
+  if (!me) { showToast('위에서 내 이름을 먼저 골라 주세요', 1800); return; }
+  if (on && !confirm('이 이벤트를 끝낼까요?\n(상품 옆 🎁 배지가 사라져요 · 다시 진행도 할 수 있어요)')) return;
+  btn.disabled = true;
+  google.script.run.withSuccessHandler(function (r) {
+    if (!r || !r.success) { btn.disabled = false; showToast((r && r.message) || '실패', 2000); return; }
+    if (n) n.ev = r.ev; evIndex(); try { ntRedraw(id); } catch (e) {} evRefreshLists(); showToast(on ? '이벤트를 끝냈어요' : '이벤트를 다시 진행해요', 1600);
+  }).withFailureHandler(function () { btn.disabled = false; showToast('실패 · 인터넷 확인', 2000); }).setEventEnded(id, on, me);
+}
+function evRefreshLists() { try { RY_SR_FULL = ''; if (typeof lastSearchResults !== 'undefined' && lastSearchResults && lastSearchResults.length && RY_SR.q) ryRenderSearchSafe(lastSearchResults, RY_SR.q); } catch (e) {} try { renderAllViews(); } catch (e2) {} }
+/* ── 등록 ── */
+function evOpen() {
+  if (!rlMe()) { showToast('위에서 내 이름을 먼저 골라 주세요', 1800); return; }
+  ['evTitle', 'evLine', 'evQ', 'evBody', 'evUntil'].forEach(function (k) { document.getElementById(k).value = ''; });
+  EV.pick = []; EV.hits = []; evHitsRender(); document.getElementById('evErr').textContent = '';
+  document.getElementById('evDim').hidden = false; document.getElementById('evSheet').hidden = false;
+  setTimeout(function () { document.getElementById('evTitle').focus(); }, 120);
+}
+function evClose() { document.getElementById('evDim').hidden = true; document.getElementById('evSheet').hidden = true; }
+function evFind() {
+  var q = evKey(document.getElementById('evQ').value); if (q.length < 2) { showToast('두 글자 이상 적어 주세요', 1500); return; }
+  var all = (typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) || [];
+  EV.hits = all.filter(function (x) { return evKey(x.name).indexOf(q) !== -1; }).slice(0, 12);
+  if (!EV.hits.length && !all.length) { showToast('상품 목록을 받는 중이에요. 잠시 뒤 다시 눌러 주세요', 2000); try { ryCatLoad(true); } catch (e) {} }
+  evHitsRender();
+}
+function evHitsRender() {
+  var on = function (x) { return EV.pick.some(function (p) { return p.row === x.rowNumber; }); };
+  var show = EV.pick.map(function (p) { return { rowNumber: p.row, name: p.name, imgUrl: p.img }; }).concat((EV.hits || []).filter(function (x) { return !on(x); }));
+  document.getElementById('evHits').innerHTML = show.length ? show.map(function (x) {
+    var sel = on(x);
+    return '<button type="button" class="ev-hit' + (sel ? ' on' : '') + '" aria-pressed="' + sel + '" data-r="' + x.rowNumber + '" onclick="evToggle(+this.dataset.r)">' + (x.imgUrl ? '<img src="' + escapeHtml(x.imgUrl) + '" alt="" referrerpolicy="no-referrer">' : '') + '<span>' + escapeHtml(x.name) + '</span><span class="ck">' + (sel ? '✓ 선택됨' : '고르기') + '</span></button>';
+  }).join('') : '<div class="ev-hint">상품 이름 일부를 적고 [찾기]를 누르세요. 여러 개 고를 수 있어요.</div>';
+}
+function evToggle(row) {
+  var i = EV.pick.findIndex(function (p) { return p.row === row; });
+  if (i !== -1) EV.pick.splice(i, 1);
+  else { var x = (EV.hits || []).filter(function (h) { return h.rowNumber === row; })[0]; if (x) EV.pick.push({ row: x.rowNumber, name: x.name, img: x.imgUrl || '' }); }
+  evHitsRender();
+}
+function evSave() {
+  var t = document.getElementById('evTitle').value.trim(), line = document.getElementById('evLine').value.trim(), err = document.getElementById('evErr'), btn = document.getElementById('evSave');
+  if (!t) { err.textContent = '제목을 적어 주세요.'; return; }
+  if (!EV.pick.length) { err.textContent = '이벤트 상품을 하나 이상 골라 주세요.'; return; }
+  btn.disabled = true; btn.textContent = '등록 중…'; err.textContent = '';
+  google.script.run.withSuccessHandler(function (r) {
+    btn.disabled = false; btn.textContent = '등록';
+    if (!r || !r.success) { err.textContent = (r && r.message) || '등록하지 못했어요.'; return; }
+    evClose(); showToast('이벤트를 올렸어요 · 상품에 🎁 배지가 떠요', 2200); NT.tag = '이벤트'; ntLoad();
+  }).withFailureHandler(function () { btn.disabled = false; btn.textContent = '등록'; err.textContent = '등록하지 못했어요 · 인터넷 확인'; })
+    .saveNotice({ tag: '이벤트', title: t, body: document.getElementById('evBody').value.trim(), ev: { products: EV.pick.map(function (p) { return { name: p.name, row: p.row }; }), line: line, until: document.getElementById('evUntil').value || '' } }, rlMe());
+}
 </script>
 
 </body>
