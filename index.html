@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvad9ai0">
+  <meta name="ry-build" content="mvadchnl">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -3311,6 +3311,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .nt-tag{display:inline-flex;align-item
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-tag.t-2{background:#EFF4FF;color:#155EEF}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-tag.t-3{background:#FEF2F2;color:#b42318}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-tag.t-4{background:#ECFDF3;color:#067647}
+html:not(#q):not(#w):not(#e) body:not(#r) .nt-tag.t-6{background:#F4F3FF;color:#5925DC}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-date{font-size:12px;color:#9ca3af;white-space:nowrap;font-variant-numeric:tabular-nums}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-paste-btn{min-height:44px!important;padding:0 14px!important;border-radius:12px!important;background:#155EEF!important;color:#fff!important;border:0!important;font-size:13.5px!important;font-weight:700!important;white-space:nowrap}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-ctrl{display:flex;gap:8px;flex-wrap:wrap}
@@ -11733,7 +11734,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
 
     /* ===== 0925 공지 보관함 — 카톡이 원래 통로, 앱은 보관 + 그림. 서버 listNotices / saveNotice / updateNotice · deleteNotice(문준) ===== */
     var NT = { data: null, loading: false, q: '', month: '', tag: '', err: '', parsed: null, matches: {}, recent: [], latest: null, parentSel: '' };
-    var NT_TAGS = ['공지', '증정', '품절', '업무', '기타'];
+    var NT_TAGS = ['공지', '증정', '품절', '업무', '기타', '일정'];   // 1016 일정 = 교육·방문 일정
     var NT_ICON = {
       mega: '<svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>',
       xc: '<svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>'
@@ -11754,13 +11755,13 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function ntParse(text) {
       var lines = String(text || '').replace(/\r/g, '').split('\n'), out = { title: '', tag: '', correction: false, before: [], after: [], swaps: [], body: '' };
       var body = [], firstSeen = false, needTitle = false;
-      var TAGMAP = { '공지': '공지', '안내': '공지', '알림': '공지', '증정': '증정', '품절': '품절', '업무': '업무', '기타': '기타' };
+      var TAGMAP = { '공지': '공지', '안내': '공지', '알림': '공지', '증정': '증정', '품절': '품절', '업무': '업무', '기타': '기타', '일정': '일정', '교육': '일정' };
       lines.forEach(function (ln) {
         var t = ln.trim(), mb;
         if (!t) { body.push(''); return; }
         if (!firstSeen && /^\*?\s*정정/.test(t)) { out.correction = true; firstSeen = true; needTitle = true; return; }
         firstSeen = true;
-        if (!out.title && (mb = t.match(/^\[(공지|안내|알림|증정|품절|업무|기타)\]\s*(.*)$/))) { out.tag = TAGMAP[mb[1]]; out.title = ntClip(mb[2].trim(), 120); needTitle = false; return; }
+        if (!out.title && (mb = t.match(/^\[(공지|안내|알림|증정|품절|업무|기타|일정|교육)\]\s*(.*)$/))) { out.tag = TAGMAP[mb[1]]; out.title = ntClip(mb[2].trim(), 120); needTitle = false; return; }
         if (needTitle) { out.title = ntClip(t, 120); needTitle = false; return; }
         if ((mb = t.match(/^(기존|변경\s*전|변경\s*후|변경)\s*[:：]\s*(.+)$/))) {
           out[/^(기존|변경\s*전)/.test(mb[1]) ? 'before' : 'after'] = mb[2].split(/\s*\+\s*/).map(ntParseItem).filter(function (x) { return x; });
@@ -12491,7 +12492,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
   <div class="ava-head"><b class="ry-info-title">카톡 공지 붙여넣기</b><button type="button" onclick="ntClosePaste()">닫기</button></div>
   <textarea id="ntRaw" class="nt-raw" rows="7" placeholder="[공지] 제목&#10;본문…&#10;기존 : 헤어세럼1 + 핸드크림1&#10;변경 : 헤어세럼1 + 마스크팩 2ea" oninput="ntOnPaste()" aria-label="카톡 공지 글"></textarea>
   <div class="nt-fields">
-    <label>태그<select id="ntTag" onchange="this.dataset.touched=1"><option>공지</option><option>증정</option><option>품절</option><option>업무</option><option>기타</option></select></label>
+    <label>태그<select id="ntTag" onchange="this.dataset.touched=1"><option>공지</option><option>증정</option><option>품절</option><option>업무</option><option>일정</option><option>기타</option></select></label>
     <label>공지일<input type="date" id="ntDate"></label>
     <label class="wide">제목<input type="text" id="ntTitle" maxlength="120" oninput="this.dataset.touched=1"></label>
     <label class="wide" id="ntParentWrap" hidden>어느 공지의 정정인가요?<select id="ntParent" onchange="this.dataset.touched=1; NT.parentSel=this.value"></select></label>
@@ -12505,7 +12506,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
 <div class="ava-sheet nt-sheet" id="ntESheet" role="dialog" aria-label="공지 고치기">
   <div class="ava-head"><b class="ry-info-title">공지 고치기</b><button type="button" onclick="ntCloseEdit()">닫기</button></div>
   <div class="nt-fields">
-    <label>태그<select id="ntETag"><option>공지</option><option>증정</option><option>품절</option><option>업무</option><option>기타</option></select></label>
+    <label>태그<select id="ntETag"><option>공지</option><option>증정</option><option>품절</option><option>업무</option><option>일정</option><option>기타</option></select></label>
     <label>공지일<input type="date" id="ntEDate"></label>
     <label class="wide">제목<input type="text" id="ntETitle" maxlength="120"></label>
   </div>
