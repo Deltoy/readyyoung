@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvbrdg2w">
+  <meta name="ry-build" content="mvbrkk4e">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -11431,7 +11431,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
     /* ===== 0928 15일 판매량 엑셀 — 판매량 통계(상품별통계.xlsx)를 올리면 앱 상품과 이름으로 맞춰 M열에 한꺼번에 (문준 전용) ===== */
     var S15 = { info: null, groups: [], xs: [], busy: false, file: '', open: {} };   /* open: 펼친 묶음 기억 (다시 그려도 그대로) */
     var S15_XLSX = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
-    function s15Clean(s) { return String(s || '').split(/\n|\s-\s|-\s*\d+\/\d+|보관분/)[0].toLowerCase().replace(/(\d+)\s*(매|개|정|포|병|캡슐)입/g, '$1$2'); }
+    /* 1017 상품명 중간 줄바꿈('…피디알엔 \n리쥬비네이팅 크림 맥스PD3 (60ml)')은 이름의 일부 — 전엔 첫 줄만 봐서 PD3 60ml · 30ml 가 한 상품으로 묶였음. '\n- 메모'만 자름 */
+    function s15Clean(s) { return String(s || '').replace(/\n(?!\s*-)/g, ' ').split(/\n|\s-\s|-\s*\d+\/\d+|보관분/)[0].toLowerCase().replace(/(\d+)\s*(매|개|정|포|병|캡슐)입/g, '$1$2'); }
     function s15Base(s) { return s15Clean(s).replace(/\([^)]*\)?|\[[^\]]*\]/g, '').replace(/[^0-9a-z가-힣]/g, ''); }
     function s15Nums(s) { return (s15Clean(s).match(/\d+(?:\.\d+)?\s*(?:ml|mg|g|kg|l|매|개|정|포|병|캡슐|c|t|ea|p)?/g) || []).map(function (x) { return x.replace(/\s/g, ''); }); }
     function s15Key(s) { return s15Clean(s).replace(/\s+/g, ''); }
@@ -11490,14 +11491,16 @@ html body #ryLaunchGrid .tl-search{top:56px}
         (p[0] || []).forEach(function (it) {
           if (!it || !it.rowNumber || !it.name) return;
           var k = s15Key(it.name); if (!k) return;
-          var g = groups[k] || (groups[k] = { key: k, name: String(it.name).split('\n')[0].split(/\s-\s/)[0].trim(), rows: [], cur: it.sales15, active: false });
+          var g = groups[k] || (groups[k] = { key: k, name: String(it.name).replace(/\n(?!\s*-)/g, ' ').split('\n')[0].split(/\s-\s/)[0].replace(/\s+/g, ' ').trim(), rows: [], cur: it.sales15, active: false, old: s15Key(String(it.name).split('\n')[0]) });
           if (g.rows.indexOf(it.rowNumber) === -1) g.rows.push(it.rowNumber);
           if (p[1]) g.active = true;
         });
       });
       var stemOwners = {}; Object.keys(groups).forEach(function (k) { var sk = s15Stem(groups[k].name).k; stemOwners[sk] = (stemOwners[sk] || 0) + 1; });   /* 앱 쪽에도 같은 꼬리 뗀 이름이 하나뿐일 때만 */
+      var oldN = {}; Object.keys(groups).forEach(function (k) { oldN[groups[k].old] = (oldN[groups[k].old] || 0) + 1; });
       return Object.keys(groups).map(function (k) {
         var g = groups[k], ln = links[k];
+        if (ln == null && g.old !== k && oldN[g.old] === 1) ln = links[g.old];   /* 1017 줄바꿈 고치기 전 연결(첫 줄 이름)도 — 다른 상품과 겹치지 않을 때만 */
         if (ln === '-') { g.st = 'skip'; return g; }
         if (ln && byName[ln]) { g.x = byName[ln]; g.st = 'auto'; g.linked = true; return g; }
         if (byKey[k] && byKey[k] !== 'dup') { g.x = byKey[k]; g.st = 'auto'; return g; }
