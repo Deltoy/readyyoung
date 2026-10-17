@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvbr8yz2">
+  <meta name="ry-build" content="mvbrdg2w">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1485,6 +1485,11 @@ body.sp-open{overflow:hidden}
 .sp-item-s i.cat{color:var(--ry-ink-2);background:var(--ry-sunken)}
 .sp-item-s i.set{color:#9A3412;background:#FFF1E6}
 .sp-item-s i.warn{color:#B54708;background:var(--ry-warn-soft)}
+.sp-pr{display:flex;flex-wrap:wrap;gap:4px 12px;margin:3px 0 2px;font-size:12.5px;color:var(--ry-ink-2);font-variant-numeric:tabular-nums}
+.sp-pr b{color:var(--ry-ink);font-weight:800}
+.sp-pr-sum{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;margin-top:10px;padding:12px 16px;border-radius:14px;background:var(--ry-sunken);font-size:13px;color:var(--ry-ink-2);font-variant-numeric:tabular-nums}
+.sp-pr-sum b{color:var(--ry-ink);font-weight:800}
+.sp-pr-sum small{flex-basis:100%;font-size:11.5px;color:var(--ry-ink-3)}
 /* 세트 상세 */
 .sp-detail{max-width:640px;margin:0 auto}
 .sp-photo-wrap{position:relative;border-radius:14px;overflow:hidden;border:1px solid #C9D1DB;background:#fff;cursor:zoom-in}
@@ -5695,14 +5700,24 @@ html body #ryLaunchGrid .tl-search{top:56px}
         h += '<div class="sp-item plain">'
           + spThumb(p)
           + '<span class="sp-item-t"><b>' + escapeHtml(it.name) + '</b>'
+          + (p && (p.cost != null || p.price != null) ? '<span class="sp-pr"><span>사입 <b>' + spWon(p.cost) + '</b></span><span>판매 <b>' + spWon(p.price) + '</b></span></span>' : '')
           + '<span class="sp-item-s">' + (p ? p.tags.map(function (t) { return '<i>' + escapeHtml(t) + '</i>'; }).join('') : '<i class="warn">상품 목록에 없는 이름</i>') + '</span></span>'
           + '<span class="sp-qty"><b>' + it.qty + '</b>개</span></div>';
       });
-      h += '</div><div class="sp-d-foot">'
+      h += '</div>' + spPriceSum(s) + '<div class="sp-d-foot">'
         + '<button type="button" class="ry-info-sub" data-id="' + escapeHtml(s.id) + '" onclick="openSetEdit(this.dataset.id)">✏️ 세트 고치기</button></div>'
         + (s.editor ? '<div class="ry-info-foot">마지막 수정: ' + escapeHtml(s.editor) + ' · ' + escapeHtml(s.at) + '</div>' : '') + '</div></div>';
       document.getElementById('spBody').innerHTML = h;
       spLazyImgs();
+    }
+    /* 1017 MJ: 세트 상세에서만 사입가·판매가 (POS 15일 판매 엑셀에서 1개 값 · 세트로만 나가 엑셀에 없으면 –) */
+    function spWon(v) { return v == null || v === '' ? '–' : Number(v).toLocaleString() + '원'; }
+    function spPriceSum(s) {
+      var c = 0, pr = 0, miss = 0;
+      s.items.forEach(function (it) { var p = spProduct(it.name); if (!p || p.cost == null) { miss++; return; } c += p.cost * it.qty; pr += (p.price || 0) * it.qty; });
+      if (miss === s.items.length) return '';
+      return '<div class="sp-pr-sum"><span>구성품 합계 (개수 포함)</span><span>사입 <b>' + spWon(c) + '</b> · 따로 사면 <b>' + spWon(pr) + '</b></span>'
+        + (miss ? '<small>가격 모르는 상품 ' + miss + '개는 빼고 계산했어요</small>' : '') + '</div>';
     }
     function spZoom(on) { var w = document.getElementById('spPhotoWrap'); if (!w) return; if (on && w.classList.contains('zoom')) return; w.classList.toggle('zoom', !!on); if (on) { w.scrollLeft = (w.scrollWidth - w.clientWidth) / 2; w.scrollTop = (w.scrollHeight - w.clientHeight) / 2; } }
     function spNum(v) { return (v === '' || v == null || isNaN(v)) ? null : Number(v); }
@@ -11447,13 +11462,17 @@ html body #ryLaunchGrid .tl-search{top:56px}
         if (nc >= 0 && qc >= 0) hi = i;
       }
       if (hi < 0) return null;
-      var by = {};
+      /* 1017 세트 상세 사입가·판매가: 매출금액 · 할인금액 · 사입가(합계) 열 */
+      var hd = rows[hi].map(function (x) { return String(x).replace(/\s/g, ''); }), col = function (re) { return hd.findIndex(function (h) { return re.test(h); }); };
+      var ac = col(/^매출금액/), dc = col(/^할인금액/), cc = col(/^사입가/);
+      var by = {}, num = function (r, c) { var v = c >= 0 ? Number(String(r[c] == null ? '' : r[c]).replace(/[^0-9.\-]/g, '')) : 0; return isFinite(v) ? v : 0; };
       rows.slice(hi + 1).forEach(function (r) {
         var n = String(r[nc] == null ? '' : r[nc]).trim(), q = Number(String(r[qc] == null ? '' : r[qc]).replace(/[^0-9.\-]/g, ''));
         if (!n || !isFinite(q)) return;
-        by[n] = (by[n] || 0) + q;
+        var b = by[n] || (by[n] = { q: 0, a: 0, c: 0 });
+        b.q += q; b.a += num(r, ac) + num(r, dc); b.c += num(r, cc);
       });
-      return Object.keys(by).map(function (n) { var p = s15Prep(n); p.n = n; p.q = Math.round(by[n]); return p; });
+      return Object.keys(by).map(function (n) { var p = s15Prep(n), b = by[n]; p.n = n; p.q = Math.round(b.q); if (b.q > 0 && ac >= 0 && cc >= 0) { p.price = Math.round(b.a / b.q); p.cost = Math.round(b.c / b.q); } return p; });
     }
     /* 앱 상품을 이름별로 묶고(같은 상품 여러 줄은 같은 숫자) 엑셀과 맞춘다 */
     /* 1001 용량·개수 꼬리(10T · 14ml · 10g · 6매 · 30c …)를 뗀 이름 — '지르텍정(세티리진염산염)' = '지르텍정(세티리진염산염) 10T' */
@@ -11611,6 +11630,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         + sec('맞췄어요', '예전 숫자 → 새 숫자 · 틀린 건 "틀려요"', auto, false) + sec('건너뛰는 상품', '매주 건너뛰어요', skip, false);
       gs.forEach(function (g) { if (g.find && (g.st === 'check' || g.st === 'none')) s15Find(g.key, ''); });
     }
+    function s15PriceList() { var out = []; (S15.groups || []).forEach(function (g) { if (g.st === 'auto' && g.x && g.x.price != null) g.rows.forEach(function (r) { out.push({ row: r, cost: g.x.cost, price: g.x.price }); }); }); return out; }
     function s15Save() {
       if (S15.busy) return;
       var list = [], links = {}, cnt = 0;
@@ -11620,6 +11640,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         else if (g.unlink) links[g.key] = null;
       });
       S15.busy = 'save'; s15Render();
+      var pl0 = s15PriceList();   /* 저장되면 S15.groups 를 비우니 미리 */
       var xs0 = (S15.xs || []).slice(), per0 = ((document.getElementById('s15From') || {}).value || '') + '~' + ((document.getElementById('s15To') || {}).value || '');
       google.script.run
         .withSuccessHandler(function (r) {
@@ -11633,6 +11654,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           showToast(cnt + '개 상품 15일 판매량을 바꿨어요' + (r.reset ? ' · 엑셀에 없던 ' + r.reset + '개는 0으로' : '') + (r.skipped ? ' · 시트 수식 칸 ' + r.skipped + '개는 그대로' : ''), 3200);
           try { var nx = s15Next((document.getElementById('s15To') || {}).value); if (nx) setTimeout(function () { alert('다음 15일 판매량은 ' + nx.label + ' 기간으로 ' + nx.when + ' 올려주세요'); }, 400); } catch (eN) {}
           loadAllData(true, true, true);
+          try { var pl = pl0; if (pl.length) google.script.run.withSuccessHandler(function () { try { if (typeof SP !== 'undefined') SP.data = null; } catch (e3) {} }).saveUnitPrices(pl, per0); } catch (ePr) {}   /* 1017 세트 상세 사입가·판매가 */
           /* 1016 MJ: 같은 엑셀에서 세트 이름을 찾아 세트 15일 판매량도 */
           try { google.script.run.withSuccessHandler(function () { try { if (typeof SP !== 'undefined') { SP.data = null; } } catch (e2) {} }).setSetSales15(xs0.map(function (x) { return { n: x.n, q: x.q }; }), per0); } catch (eSet) {}
         })
