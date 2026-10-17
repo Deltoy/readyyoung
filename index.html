@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvbsom71">
+  <meta name="ry-build" content="mvbw9o3s">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -5711,7 +5711,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       spLazyImgs();
     }
     /* 1017 MJ: 세트 상세에서만 사입가·판매가 (POS 15일 판매 엑셀에서 1개 값 · 세트로만 나가 엑셀에 없으면 –) */
-    function spPrice(name) { if (memberTitle(currentSelectedMember) !== '물류관리자') return null; var p = spProduct(name); return p && p.cost != null ? p : ((SP.data && SP.data.setPrices) || {})[spKey(name)] || p; }   /* 발주 목록에 없는 구성품(600정 소분 100정)은 setPrices */
+    function spPrice(name) { if (memberTitle(currentSelectedMember) !== '물류관리자') return null; return ((SP.data && SP.data.setPrices) || {})[spKey(name)] || spProduct(name); }   /* setPrices = 발주 목록에 없는 구성품(600정 소분 100정) · 박스에서 1장씩 넣는 구성품(골드팩) */
     function spWon(v) { return v == null || v === '' ? '–' : Number(v).toLocaleString() + '원'; }
     function spPriceSum(s) {
       var c = 0, pr = 0, miss = 0;
