@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvbrnq4t">
+  <meta name="ry-build" content="mvbs1vhg">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -5700,7 +5700,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         h += '<div class="sp-item plain">'
           + spThumb(p)
           + '<span class="sp-item-t"><b>' + escapeHtml(it.name) + '</b>'
-          + (p && (p.cost != null || p.price != null) ? '<span class="sp-pr"><span>사입 <b>' + spWon(p.cost) + '</b></span><span>판매 <b>' + spWon(p.price) + '</b></span></span>' : '')
+          + (function (q) { return q && (q.cost != null || q.price != null) ? '<span class="sp-pr"><span>사입 <b>' + spWon(q.cost) + '</b></span><span>판매 <b>' + spWon(q.price) + '</b></span></span>' : ''; })(spPrice(it.name))
           + '<span class="sp-item-s">' + (p ? p.tags.map(function (t) { return '<i>' + escapeHtml(t) + '</i>'; }).join('') : '<i class="warn">상품 목록에 없는 이름</i>') + '</span></span>'
           + '<span class="sp-qty"><b>' + it.qty + '</b>개</span></div>';
       });
@@ -5711,10 +5711,11 @@ html body #ryLaunchGrid .tl-search{top:56px}
       spLazyImgs();
     }
     /* 1017 MJ: 세트 상세에서만 사입가·판매가 (POS 15일 판매 엑셀에서 1개 값 · 세트로만 나가 엑셀에 없으면 –) */
+    function spPrice(name) { var p = spProduct(name); return p && p.cost != null ? p : ((SP.data && SP.data.setPrices) || {})[spKey(name)] || p; }   /* 발주 목록에 없는 구성품(600정 소분 100정)은 setPrices */
     function spWon(v) { return v == null || v === '' ? '–' : Number(v).toLocaleString() + '원'; }
     function spPriceSum(s) {
       var c = 0, pr = 0, miss = 0;
-      s.items.forEach(function (it) { var p = spProduct(it.name); if (!p || p.cost == null) { miss++; return; } c += p.cost * it.qty; pr += (p.price || 0) * it.qty; });
+      s.items.forEach(function (it) { var p = spPrice(it.name); if (!p || p.cost == null) { miss++; return; } c += p.cost * it.qty; pr += (p.price || 0) * it.qty; });
       if (miss === s.items.length) return '';
       return '<div class="sp-pr-sum"><span>구성품 합계 (개수 포함)</span><span>사입 <b>' + spWon(c) + '</b> · 따로 사면 <b>' + spWon(pr) + '</b></span>'
         + (miss ? '<small>가격 모르는 상품 ' + miss + '개는 빼고 계산했어요</small>' : '') + '</div>';
