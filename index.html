@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvbs7b93">
+  <meta name="ry-build" content="mvbsom71">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -11660,7 +11660,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           loadAllData(true, true, true);
           try { var pl = pl0; if (pl.length) google.script.run.withSuccessHandler(function () { try { if (typeof SP !== 'undefined') SP.data = null; } catch (e3) {} }).saveUnitPrices(pl, per0); } catch (ePr) {}   /* 1017 세트 상세 사입가·판매가 */
           /* 1016 MJ: 같은 엑셀에서 세트 이름을 찾아 세트 15일 판매량도 */
-          try { google.script.run.withSuccessHandler(function () { try { if (typeof SP !== 'undefined') { SP.data = null; } } catch (e2) {} }).setSetSales15(xs0.map(function (x) { return { n: x.n, q: x.q }; }), per0); } catch (eSet) {}
+          try { google.script.run.withSuccessHandler(function () { try { if (typeof SP !== 'undefined') { SP.data = null; } } catch (e2) {} }).setSetSales15(xs0.map(function (x) { return { n: x.n, q: x.q, p: x.price }; }), per0); } catch (eSet) {}
         })
         .withFailureHandler(function (e) { S15.busy = false; s15Render(); showToast('저장하지 못했어요: ' + (e && e.message || e), 2600); })
         .updateSales15Batch(list, links, { from: (document.getElementById('s15From') || {}).value || '', to: (document.getElementById('s15To') || {}).value || '' });
