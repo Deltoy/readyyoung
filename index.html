@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvdx26j2">
+  <meta name="ry-build" content="mvdx8hm0">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1020,6 +1020,10 @@ td:has(button[id^="unit-btn-"][class*="bg-indigo-600"]) input[id^="qty-"]{color:
 .ry-in-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:5px;font-size:12px;color:var(--ry-ink-3)}
 .ry-in-meta b{color:var(--ry-ink-2);font-weight:700}
 /* 1016 MJ: 입고확인에 주문한 사람 · 그 사람이 앱을 열면 '들어왔어요' 카드 */
+/* 1018 MJ: 주문 요청자 사진 크게 · 사진이면 눌러서 크게 보기(eduZoom 재사용) */
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-reqb .ry-ava{width:40px!important;height:40px!important;font-size:22px!important;border-radius:999px!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-who .ry-ava{width:30px!important;height:30px!important;font-size:17px!important;border-radius:999px!important}
+.ry-reqb .ry-ava.photo,.ry-in-who .ry-ava.photo{cursor:zoom-in}
 .ry-in-who{display:inline-flex;align-items:center;gap:4px;padding:2px 9px 2px 3px;border-radius:999px;background:#EEF4FF;color:#155EEF;font-size:12px;font-weight:800;white-space:nowrap}
 #ryArr{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:66;width:min(420px,calc(100% - 32px));background:#fff;border:1px solid #D1E0FF;border-radius:18px;box-shadow:0 12px 32px rgba(16,24,40,.18);padding:14px 16px}
 #ryArr b.t{display:block;font-size:15px;color:#101828;margin-bottom:6px}
@@ -1688,6 +1692,10 @@ body.sp-open #appToast{bottom:auto!important;top:calc(68px + env(safe-area-inset
 .bx-khelp li b{flex:none;width:22px;height:22px;border-radius:50%;background:#155EEF;color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center}
 .bx-khelp em{font-style:normal;font-weight:800;color:#155EEF}.bx-khelp u{text-decoration:none;font-weight:800;background:#fff;border:1px solid #D0D5DD;border-radius:6px;padding:0 6px}
 .bx-kex{margin:0 0 6px;padding:10px 12px;border:1px dashed #D0D5DD;border-radius:12px;font-size:12px;color:#667085}.bx-kex pre{margin:4px 0 6px;font:600 13px/1.5 ui-monospace,Menlo,monospace;color:#101828;white-space:pre-wrap}
+.bx-guide{margin:8px 0 12px;border:1px solid #D1E0FF;border-radius:14px;background:#F5F8FF}.bx-guide>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:4px;padding:0 14px;font-size:14px;font-weight:800;color:#155EEF}.bx-guide>summary small{font-weight:500;color:#667085}
+.bx-gw{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;padding:0 10px}.bx-gm{background:#fff;border-radius:12px;padding:12px}.bx-gm h4{margin:0 0 4px;font-size:14px;color:#101828;display:flex;align-items:center;gap:6px}.bx-gm h4 i{font-style:normal;font-size:11px;font-weight:800;color:#fff;background:#155EEF;border-radius:999px;padding:2px 8px}
+.bx-gm .bx-khelp{background:none;padding:4px 0;margin:0}.bx-gbtn{margin-top:4px;min-height:40px;padding:0 14px;border:1px solid #155EEF;border-radius:10px;background:#fff;color:#155EEF;font-weight:800;font-size:13px;cursor:pointer}
+.bx-khelp u{white-space:nowrap}.bx-gnote{margin:0;padding:10px 14px 12px;font-size:12.5px;color:#475467;line-height:1.5}
 .bx-kfb{margin:6px 0 0;font-size:13px;font-weight:700}.bx-kfb:empty{display:none}.bx-kfb.ok{color:#067647}.bx-kfb.no{color:#B42318}
 .bx-card .bx-kakao textarea{width:100%;box-sizing:border-box;border:1px solid #D0D5DD;border-radius:12px;padding:10px;font-size:14px;margin-top:6px}
 .bx-card .bx-res{margin:8px 0;font-size:14px;color:#344054}.bx-card .bx-res p{margin:4px 0}.bx-card .bx-res .r{color:#B42318;font-weight:800}.bx-card .bx-res .y{color:#B54708;font-weight:700}
@@ -5568,7 +5576,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       BX_M.forEach(function (i) { gm += bxCell('무지' + i, '무지 ' + i + '번'); });
       document.getElementById('bxGrid').innerHTML = g; document.getElementById('bxGridM').innerHTML = gm;
       document.getElementById('bxGridM').hidden = true; document.querySelector('#bxSheet .bx-more').textContent = '＋ 무지박스도 적기';
-      document.getElementById('bxRes').innerHTML = ''; document.getElementById('bxKText').value = ''; var kd = document.getElementById('bxKDet'); kd.open = false; kd.querySelector('summary').innerHTML = BX_KSUM; if (!kd.querySelector('.bx-khelp')) kd.querySelector('summary').insertAdjacentHTML('afterend', BX_KHELP); kd.querySelector('.bx-kfb').textContent = '';
+      document.getElementById('bxRes').innerHTML = ''; document.getElementById('bxKText').value = ''; if (!document.querySelector('#bxSheet .bx-guide')) document.getElementById('bxLast').insertAdjacentHTML('afterend', BX_GUIDE); document.querySelector('#bxSheet .bx-guide').open = false; var kd = document.getElementById('bxKDet'); kd.open = false; kd.querySelector('summary').innerHTML = BX_KSUM; if (!kd.querySelector('.bx-khelp')) kd.querySelector('summary').insertAdjacentHTML('afterend', BX_KHELP); kd.querySelector('.bx-kfb').textContent = '';
       document.getElementById('bxDim').hidden = false; document.getElementById('bxSheet').hidden = false;
       bxHints();
       if (!SP.box) bxLoad(function () { if (!document.getElementById('bxSheet').hidden) bxHints(); });   /* 받아오면 흐린 숫자만 채움 (적던 숫자는 그대로) */
@@ -5587,6 +5595,21 @@ html body #ryLaunchGrid .tl-search{top:56px}
       + '<li><b>3</b><span>위 번호 칸에 숫자가 <em>저절로</em> 들어가요 (59+139 → 198)</span></li>'
       + '<li><b>4</b><span>숫자를 확인하고 파란 <u>저장</u> 버튼</span></li></ol>'
       + '<div class="bx-kex"><small>이렇게 쓴 글이면 돼요</small><pre>1번 59+139\n2번 117\n3번 1334(새 박스 포함)\n무지박스\n1번 20</pre><small>번호 뒤에 「번」이 꼭 있어야 해요 · 괄호 안 글은 빼고 숫자만 더해요 · 「무지박스」 줄 아래는 무지 번호로 들어가요</small></div>';
+    /* 1018 MJ: 박스 재고 적는 방법 2가지(칸에 바로 적기 · 카톡 글 붙여넣기) 튜토리얼 — 탭·시트 맨 위 */
+    var BX_GUIDE = '<details class="bx-guide"><summary>❓ 박스 재고 적는 방법 2가지 <small>(처음이면 눌러 보기)</small></summary><div class="bx-gw">'
+      + '<div class="bx-gm"><h4><i>방법 1</i>칸에 바로 적기</h4><ol class="bx-khelp">'
+      + '<li><b>1</b><span>아크릴박스를 번호마다 세요</span></li>'
+      + '<li><b>2</b><span>그 번호 칸에 남은 개수를 적어요 · 박스가 여러 개면 <em>59+139</em>처럼 적으면 저절로 더해요</span></li>'
+      + '<li><b>3</b><span>무지박스는 <u>＋ 무지박스도 적기</u>를 눌러 적어요</span></li>'
+      + '<li><b>4</b><span>파란 <u>저장</u> 버튼 · 빈 칸은 저장 안 하니 센 것만 적어도 돼요</span></li></ol></div>'
+      + '<div class="bx-gm"><h4><i>방법 2</i>카톡에 올린 글 붙여넣기</h4><ol class="bx-khelp">'
+      + '<li><b>1</b><span>카톡방에 올린 박스 재고 글을 <em>꾹</em> 눌러 <u>복사</u></span></li>'
+      + '<li><b>2</b><span>아래 <u>📋 카톡에 올린 글 붙여넣기</u>를 열고 빈 칸을 <em>꾹</em> 눌러 <u>붙여넣기</u></span></li>'
+      + '<li><b>3</b><span>번호 칸에 숫자가 <em>저절로</em> 들어가요</span></li>'
+      + '<li><b>4</b><span>숫자를 확인하고 파란 <u>저장</u> 버튼</span></li></ol>'
+      + '<button type="button" class="bx-gbtn" onclick="bxGuidePaste(this)">카톡 글 붙여넣기 열기 ›</button></div></div>'
+      + '<p class="bx-gnote">저장하면 박스마다 며칠 버틸지 계산해요. 🟡·🔴(10일치 이하)가 되면 그 번호 1박스가 약사 발주에 자동으로 올라가요.</p></details>';
+    function bxGuidePaste(btn) { var d = btn.closest('#bxTab, #bxSheet').querySelector('.bx-kakao'); btn.closest('.bx-guide').open = false; d.open = true; d.scrollIntoView({ block: 'center', behavior: 'smooth' }); d.querySelector('textarea').focus(); }
     function bxFillFromText(t, root) { root = root || '#bxSheet'; var ps = bxParse(t), hit = 0, fb = document.querySelector(root + ' .bx-kfb'); ps.forEach(function (x) { if (document.querySelector(root + ' input[data-k="' + x.box + '"]')) hit++; });
       if (fb) { fb.className = 'bx-kfb' + (String(t || '').trim() ? (hit ? ' ok' : ' no') : ''); fb.textContent = !String(t || '').trim() ? '' : hit ? '✓ ' + hit + '칸 채웠어요 — 위 숫자를 확인하고 저장을 눌러 주세요' : '번호 줄을 못 찾았어요 · 「1번 59」처럼 번호 뒤에 「번」이 있어야 해요'; }
       ps.forEach(function (x) { var inp = document.querySelector(root + ' input[data-k="' + x.box + '"]'); if (inp) { inp.value = String(x.n); bxSumShow(inp); if (x.box.indexOf('무지') === 0) { var gm = document.querySelector(root + ' .bx-more + .bx-grid'); if (gm) gm.hidden = false; var mb = document.querySelector(root + ' .bx-more'); if (mb) mb.textContent = '－ 무지박스 접기'; } } }); }
@@ -5617,7 +5640,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         var g = '', gm = ''; for (var i = 1; i <= 9; i++) g += bxCell(String(i), i + '번');
         BX_M.forEach(function (i) { gm += bxCell('무지' + i, '무지 ' + i + '번'); });
         body.innerHTML = '<div id="bxTab" class="bx-tab">'
-          + '<section class="bx-card"><h3>오늘 남은 개수 적기</h3><p class="bx-last" id="bxTabLast"></p>'
+          + '<section class="bx-card"><h3>오늘 남은 개수 적기</h3><p class="bx-last" id="bxTabLast"></p>' + BX_GUIDE
           + '<div class="bx-grid">' + g + '</div>'
           + '<button type="button" class="bx-more" onclick="var g=document.getElementById(\'bxTabM\'); g.hidden=!g.hidden; this.textContent = g.hidden ? \'＋ 무지박스도 적기\' : \'－ 무지박스 접기\'">＋ 무지박스도 적기</button>'
           + '<div id="bxTabM" class="bx-grid" hidden>' + gm + '</div>'
@@ -6700,7 +6723,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     }
     function avaHTML(name, size) {
       var bg = AVA_BG[avaHash(name) % AVA_BG.length];
-      return '<span class="ry-ava ' + (size || 's') + (avaIsPhoto(avaFace(name)) ? ' photo' : '') + '" style="background:' + bg + '">' + avaInner(name, size === 'l' ? 160 : 96) + '</span>';
+      return '<span class="ry-ava ' + (size || 's') + (avaIsPhoto(avaFace(name)) ? ' photo' : '') + '" style="background:' + bg + '">' + avaInner(name, size === 's' ? 96 : 160) + '</span>';
     }
     function updateMyAvatar() {
       var el = document.getElementById('myAvaFace');
@@ -8137,7 +8160,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         : photoPlaceholderHtml(item.rowNumber, 'w-11 h-11 mx-auto');
 
       let reqBadge = item.requester
-        ? `<span class="inline-flex items-center gap-1 bg-indigo-100 text-indigo-900 border border-indigo-300 px-2 py-0.5 rounded-md text-[11px] font-black mt-1">${avaHTML(item.requester,'s')} ${escapeHtml(item.requester)}</span>`
+        ? `<span class="ry-reqb inline-flex items-center gap-1 bg-indigo-100 text-indigo-900 border border-indigo-300 px-2 py-0.5 rounded-md text-[11px] font-black mt-1">${avaHTML(item.requester,'m')} ${escapeHtml(item.requester)}</span>`
         : `<span class="inline-flex items-center gap-1 text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded mt-1">${RYI.user}미지정</span>`;
 
       let numTargetQty = parseInt(String(item.targetQty).replace(/[^0-9]/g, ''), 10) || 1;
@@ -8205,7 +8228,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       let currentUnit = item.unit || '개';
 
       let reqBadge = item.requester
-        ? `<span class="inline-flex items-center gap-1 bg-indigo-100 text-indigo-900 border border-indigo-300 px-2 py-0.5 rounded-md text-[11px] font-black">${avaHTML(item.requester,'s')} ${escapeHtml(item.requester)}</span>` 
+        ? `<span class="ry-reqb inline-flex items-center gap-1 bg-indigo-100 text-indigo-900 border border-indigo-300 px-2 py-0.5 rounded-md text-[11px] font-black">${avaHTML(item.requester,'m')} ${escapeHtml(item.requester)}</span>` 
         : `<span class="inline-flex items-center gap-1 text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">${RYI.user}미지정</span>`;
 
       let actionButtons = '';
@@ -12978,6 +13001,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
   (function () {
     var b = document.getElementById('myAvaBtn');
     if (b) b.addEventListener('click', function (e) { e.stopPropagation(); openAvaPicker(); });
+    document.addEventListener('click', function (e) { var im = e.target.closest && e.target.closest('.ry-reqb .ry-ava.photo img, .ry-in-who .ry-ava.photo img'); if (!im) return; e.preventDefault(); e.stopPropagation(); eduZoomOpen(im.src.replace(/=s\d+$/, '=s1000')); }, true);   /* 1018 요청자 사진 크게 보기 */
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeAvaPicker(); closeNewProduct(); closeNote(); closeDuplicates(); } });
   })();
 </script>
