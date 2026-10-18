@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvdxdgg3">
+  <meta name="ry-build" content="mvdxh8hk">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -13027,7 +13027,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
   (function () {
     var b = document.getElementById('myAvaBtn');
     if (b) b.addEventListener('click', function (e) { e.stopPropagation(); openAvaPicker(); });
-    document.addEventListener('click', function (e) { var im = e.target.closest && e.target.closest('.ry-reqb .ry-ava.photo img, .ry-in-who .ry-ava.photo img'); if (!im) return; e.preventDefault(); e.stopPropagation(); eduZoomOpen(im.src.replace(/=s\d+$/, '=s1000')); }, true);   /* 1018 요청자 사진 크게 보기 */
+    document.addEventListener('click', function (e) { var im = e.target.closest && e.target.closest('.ry-reqb .ry-ava.photo img, .ry-in-who .ry-ava.photo img'); if (!im) return; e.preventDefault(); e.stopPropagation(); eduZoomOpen(im.src.replace(/=s\d+$/, '=s1000'), 1); }, true);   /* 1018 요청자 사진 크게 보기 */
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeAvaPicker(); closeNewProduct(); closeNote(); closeDuplicates(); } });
   })();
 </script>
@@ -15672,7 +15672,7 @@ function eduDelete(id, btn) {
 /* ── 원본 슬라이드: 전체 화면 + 두 손가락 확대 (앱이 화면 확대를 막아 두어서 직접 구현) ── */
 var EZ = { s: 1, x: 0, y: 0, p: {}, d0: 0, s0: 1, lt: 0, mv: 0 };
 function ezSet() { var i = document.getElementById('eduZoomImg'); if (EZ.s <= 1) { EZ.s = 1; EZ.x = 0; EZ.y = 0; } i.style.transform = 'translate(' + EZ.x + 'px,' + EZ.y + 'px) scale(' + EZ.s + ')'; }
-function eduZoomOpen(u) { var z = document.getElementById('eduZoom'), i = document.getElementById('eduZoomImg'); i.removeAttribute('data-try'); i.src = u; EZ.s = 1; ezSet(); z.hidden = false; }
+function eduZoomOpen(u, tap) { var z = document.getElementById('eduZoom'), i = document.getElementById('eduZoomImg'); i.removeAttribute('data-try'); i.src = u; EZ.s = 1; ezSet(); EZ.tap = !!tap; z.querySelector('.edu-zoom-h').textContent = tap ? '한 번 누르면 닫혀요 · 두 손가락으로 확대' : '두 손가락으로 확대 · 두 번 누르면 확대/원래대로'; z.hidden = false; }   /* tap = 요청자 사진(1018): 한 번 누르면 닫기 */
 function eduZoomClose() { document.getElementById('eduZoom').hidden = true; }
 function eduImgErr(img) {   /* 드라이브 사진: 썸네일 주소(큰 크기) → 크기 지정 주소 → 안내 */
   var m = String(img.src).match(/\/d\/([A-Za-z0-9_-]+)/) || String(img.src).match(/[?&]id=([A-Za-z0-9_-]+)/), t = +(img.getAttribute('data-try') || 0);
@@ -15693,6 +15693,7 @@ function eduImgErr(img) {   /* 드라이브 사진: 썸네일 주소(큰 크기)
   });
   var up = function (e) {
     var was = Object.keys(EZ.p).length; delete EZ.p[e.pointerId];
+    if (was === 1 && EZ.mv < 10 && EZ.tap && EZ.s <= 1) { eduZoomClose(); return; }
     if (was === 1 && EZ.mv < 10) { var now = Date.now(); if (now - EZ.lt < 320) { EZ.s = EZ.s > 1 ? 1 : 2.5; EZ.x = 0; EZ.y = 0; ezSet(); EZ.lt = 0; } else EZ.lt = now; }
   };
   st.addEventListener('pointerup', up); st.addEventListener('pointercancel', up);
