@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvdx8hm0">
+  <meta name="ry-build" content="mvdxdgg3">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1021,7 +1021,7 @@ td:has(button[id^="unit-btn-"][class*="bg-indigo-600"]) input[id^="qty-"]{color:
 .ry-in-meta b{color:var(--ry-ink-2);font-weight:700}
 /* 1016 MJ: 입고확인에 주문한 사람 · 그 사람이 앱을 열면 '들어왔어요' 카드 */
 /* 1018 MJ: 주문 요청자 사진 크게 · 사진이면 눌러서 크게 보기(eduZoom 재사용) */
-html:not(#q):not(#w):not(#e) body:not(#r) .ry-reqb .ry-ava{width:40px!important;height:40px!important;font-size:22px!important;border-radius:999px!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-reqb .ry-ava{width:30px!important;height:30px!important;font-size:17px!important;border-radius:999px!important}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-who .ry-ava{width:30px!important;height:30px!important;font-size:17px!important;border-radius:999px!important}
 .ry-reqb .ry-ava.photo,.ry-in-who .ry-ava.photo{cursor:zoom-in}
 .ry-in-who{display:inline-flex;align-items:center;gap:4px;padding:2px 9px 2px 3px;border-radius:999px;background:#EEF4FF;color:#155EEF;font-size:12px;font-weight:800;white-space:nowrap}
@@ -1658,6 +1658,8 @@ body.sp-open #appToast{bottom:auto!important;top:calc(68px + env(safe-area-inset
 .se-boxchips{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.se-boxchips button{min-height:44px;border:1px solid #D0D5DD;border-radius:12px;background:#fff;font-size:15px;font-weight:700;color:#344054}.se-boxchips button.on{background:#155EEF;border-color:#155EEF;color:#fff}.se-boxchips button.none{font-size:13px;font-weight:600}.se-boxchips button.none.on{background:#475467;border-color:#475467}
 .sp-bp .bx-warn{color:#B42318}
 .bx-pbtn{display:inline-flex;margin:8px 0 0;min-height:40px;padding:0 14px;border:1px solid #D0D5DD;border-radius:999px;background:#fff;font-size:13px;font-weight:700;color:#344054}
+.bx-today.ok{background:#ECFDF3;color:#067647;border:1px solid #ABEFC6}
+.bx-done{margin:4px 0 8px}.bx-dn{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px;padding:7px 12px;border-radius:12px;font-size:13.5px;font-weight:700;line-height:1.4}.bx-dn.ok{background:#ECFDF3;color:#067647}.bx-dn.no{background:#FFFAEB;color:#B54708}
 .bx-today{display:inline-flex;align-items:center;margin-left:6px;height:20px;padding:0 7px;border-radius:999px;background:#F04438;color:#fff;font-size:11px;font-style:normal;font-weight:800}
 #bxDim{position:fixed;inset:0;z-index:8100;background:rgba(16,24,40,.45)}#bxDim[hidden],#bxSheet[hidden]{display:none!important}
 #bxSheet{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:8200;width:min(560px,100%);max-height:92vh;overflow-y:auto;background:#fff;border-radius:24px 24px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -12px 40px rgba(16,24,40,.2)}
@@ -5565,7 +5567,19 @@ html body #ryLaunchGrid .tl-search{top:56px}
     var BX_M = ['1', '3', '4', '5', '6'];
     function bxToday() { return new Date(Date.now() + 9 * 3600000).toISOString().slice(0, 10); }
     function bxLastAt() { return ((SP.box && SP.box.rows) || []).reduce(function (m, r) { return r.at && r.at > m ? r.at : m; }, ''); }
-    function bxDotSync() { var d = document.getElementById('bxDot'); if (!d || !SP.box) return; var l = bxLastAt(); d.hidden = !!l && l.slice(0, 10) === bxToday(); }
+    /* 1018 MJ: 오늘 누가 적었는지 표시 — 첫 화면 버튼(✓ 이름 / 오늘 아직) · 박스 재고 탭·시트 맨 위 줄 (오전 세트 담당 이름 같이) */
+    function bxDoneHtml() {
+      var l = bxLastAt(), lr = ((SP.box && SP.box.rows) || []).filter(function (r) { return r.at === l; })[0];
+      if (l && l.slice(0, 10) === bxToday()) return '<span class="bx-dn ok">✓ 오늘 기입 완료 · <b>' + escapeHtml((lr && lr.by) || '') + '</b> ' + escapeHtml(l.slice(11, 16)) + '</span>';
+      var t = typeof sdToday === 'function' ? sdToday() : null, am = t && t.am ? [t.am.cn, t.am.jp].filter(Boolean) : [];
+      return '<span class="bx-dn no">⏳ 오늘 아직 안 적었어요' + (am.length ? ' · 오전 세트 담당 <b>' + am.map(escapeHtml).join(' · ') + '</b>' : '') + '</span>';
+    }
+    function bxDotSync() {
+      if (!SP.box) return; var l = bxLastAt(), done = !!l && l.slice(0, 10) === bxToday(), lr = ((SP.box.rows) || []).filter(function (r) { return r.at === l; })[0], d = document.getElementById('bxDot');
+      if (d) { d.hidden = false; d.classList.toggle('ok', done); d.textContent = done ? '✓ ' + ((lr && lr.by) || '완료') : '오늘 아직'; }
+      [].slice.call(document.querySelectorAll('.bx-done')).forEach(function (el) { el.innerHTML = bxDoneHtml(); });
+      try { bxDutyPop(); } catch (eDp) {}
+    }
     function bxCell(k, label) {
       var r = ((SP.box && SP.box.rows) || []).filter(function (x) { return x.box === k; })[0];
       return '<label class="bx-c"><span>' + label + '</span><input type="text" inputmode="numeric" data-k="' + k + '" placeholder="' + (r && r.counted != null ? r.counted : '') + '" autocomplete="off" oninput="bxSumShow(this)"><small></small></label>';
@@ -5581,7 +5595,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       bxHints();
       if (!SP.box) bxLoad(function () { if (!document.getElementById('bxSheet').hidden) bxHints(); });   /* 받아오면 흐린 숫자만 채움 (적던 숫자는 그대로) */
     }
-    function bxHints() {
+    function bxHints() { try { bxDotSync(); } catch (eDn) {}
       ((SP.box && SP.box.rows) || []).forEach(function (r) { var inp = document.querySelector('#bxSheet input[data-k="' + r.box + '"]'); if (inp && r.counted != null) inp.placeholder = r.counted; });
       var l = bxLastAt(), lr = ((SP.box && SP.box.rows) || []).filter(function (r) { return r.at === l; })[0];
       document.getElementById('bxLast').textContent = l ? '마지막으로 센 것: ' + l.slice(5).replace('-', '/') + (lr && lr.by ? ' · ' + lr.by : '') + ' (흐린 숫자) · 빈 칸은 저장 안 해요' : '번호마다 지금 있는 개수를 적어 주세요 · 빈 칸은 저장 안 해요';
@@ -5640,7 +5654,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         var g = '', gm = ''; for (var i = 1; i <= 9; i++) g += bxCell(String(i), i + '번');
         BX_M.forEach(function (i) { gm += bxCell('무지' + i, '무지 ' + i + '번'); });
         body.innerHTML = '<div id="bxTab" class="bx-tab">'
-          + '<section class="bx-card"><h3>오늘 남은 개수 적기</h3><p class="bx-last" id="bxTabLast"></p>' + BX_GUIDE
+          + '<section class="bx-card"><h3>오늘 남은 개수 적기</h3><p class="bx-done"></p><p class="bx-last" id="bxTabLast"></p>' + BX_GUIDE
           + '<div class="bx-grid">' + g + '</div>'
           + '<button type="button" class="bx-more" onclick="var g=document.getElementById(\'bxTabM\'); g.hidden=!g.hidden; this.textContent = g.hidden ? \'＋ 무지박스도 적기\' : \'－ 무지박스 접기\'">＋ 무지박스도 적기</button>'
           + '<div id="bxTabM" class="bx-grid" hidden>' + gm + '</div>'
@@ -5652,7 +5666,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       bxTabStatus();
       if (!SP.box || Date.now() - (SP.boxAt || 0) > 60000) bxLoad();
     }
-    function bxTabStatus() {
+    function bxTabStatus() { try { bxDotSync(); } catch (eDn) {}
       var el = document.getElementById('bxTabStatus'); if (!el) return;
       [].slice.call(document.querySelectorAll('#bxTab input[data-k]')).forEach(function (inp) { var r = ((SP.box && SP.box.rows) || []).filter(function (x) { return x.box === inp.dataset.k; })[0]; if (r && r.counted != null) inp.placeholder = r.counted; });
       var l = bxLastAt(), lr = ((SP.box && SP.box.rows) || []).filter(function (r) { return r.at === l; })[0], lt = document.getElementById('bxTabLast');
@@ -5707,7 +5721,19 @@ html body #ryLaunchGrid .tl-search{top:56px}
         + '</details>';
     }
     /* 첫 화면 알림: 🟡·🔴 박스가 있으면 세트 담당 권한(관리약사 · 팀장 · 물류관리자)에게 하루 한 번 */
+    /* 1018 MJ: 박스 재고는 그날 오전 세트 담당만 — 그 사람이 앱을 열면 위에 알림 (오늘 누가 적으면 사라짐 · × 는 이번에만) */
+    function bxDutyPop() {
+      var host = document.getElementById('ryTopPops'); if (!host || !SP.box) return;
+      var el = document.getElementById('bxDutyPop'), me = currentSelectedMember || '', l = bxLastAt(), done = !!l && l.slice(0, 10) === bxToday();
+      var t = typeof sdToday === 'function' ? sdToday() : null, am = t && t.am ? [t.am.cn, t.am.jp].filter(Boolean) : [];
+      if (done || window._bxDutyX || am.indexOf(me) < 0) { if (el) el.hidden = true; return; }
+      if (!el) { el = document.createElement('div'); el.id = 'bxDutyPop'; el.setAttribute('role', 'status'); host.appendChild(el); }
+      el.innerHTML = '<div class="tp-txt"><b class="t">📦 오늘 오전 세트 담당이에요</b><p>아크릴박스 남은 개수를 적어 주세요</p></div>'
+        + '<button type="button" class="tp-go" onclick="document.getElementById(\'bxDutyPop\').hidden = true; bxOpenTab()">적으러 가기</button><button type="button" class="tp-x" aria-label="닫기" onclick="window._bxDutyX = 1; document.getElementById(\'bxDutyPop\').hidden = true">×</button>';
+      el.hidden = false;
+    }
     function bxPopup(force) {
+      try { bxDutyPop(); } catch (eDp) {}
       var host = document.getElementById('ryTopPops'); if (!host || !SP.box) return;
       var el = document.getElementById('bxPop');
       var can = false; try { can = typeof sdCanEdit === 'function' && sdCanEdit(); } catch (e) {}
@@ -11717,7 +11743,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (typeof google === 'undefined' || !google.script || !google.script.run || typeof google.script.run.getSetDuty !== 'function') { SD.err = 'old'; sdRenderCard(); return; }
       SD.loading = true; sdRenderCard();
       google.script.run
-        .withSuccessHandler(function (res) { SD.loading = false; SD.at = Date.now(); if (res && res.ok && Array.isArray(res.days)) { SD.data = res; SD.err = ''; try { updateProfileTextDisplay(); renderDropdownItems(); } catch (eT) {} } else { SD.err = 'load'; } sdRenderCard(); sdRenderSheet(); })
+        .withSuccessHandler(function (res) { SD.loading = false; SD.at = Date.now(); if (res && res.ok && Array.isArray(res.days)) { SD.data = res; SD.err = ''; try { updateProfileTextDisplay(); renderDropdownItems(); } catch (eT) {} try { bxDotSync(); } catch (eBd) {} } else { SD.err = 'load'; } sdRenderCard(); sdRenderSheet(); })
         .withFailureHandler(function () { SD.loading = false; SD.err = 'load'; sdRenderCard(); sdRenderSheet(); })
         .getSetDuty(sdWeekStart(), 14);   /* 0927 이번 주 + 다음 주(예정) */
     }
@@ -15768,7 +15794,7 @@ setTimeout(function () { EDU.loadedAt = Date.now(); eduLoad(); }, 5000);
 #ntPop[hidden]{display:none!important}
 #rjPop[hidden]{display:none!important}
 #ryTopPops>div{pointer-events:auto}
-#rlPop,#ntPop,#rjPop,#bxPop{pointer-events:auto;background:#fff;border:1px solid #FECDCA;border-radius:18px!important;box-shadow:0 12px 32px rgba(16,24,40,.18)!important;padding:14px 16px}
+#rlPop,#ntPop,#rjPop,#bxPop,#bxDutyPop{pointer-events:auto;background:#fff;border:1px solid #FECDCA;border-radius:18px!important;box-shadow:0 12px 32px rgba(16,24,40,.18)!important;padding:14px 16px}
 #rlPop b.t,#ntPop b.t{display:block;font-weight:700!important;font-size:15px;color:#101828;margin-bottom:4px}
 #rlPop p,#ntPop p{margin:0;font-size:13.5px;color:#475467;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #rlPop .rl-pb,#ntPop .rl-pb{display:flex;gap:8px;margin-top:10px}
@@ -15784,9 +15810,10 @@ setTimeout(function () { EDU.loadedAt = Date.now(); eduLoad(); }, 5000);
 .nt-pill .mb-dot{flex:none}
 @media(max-width:767px){.nt-pill{padding:0 10px;min-height:36px;gap:5px}.nt-pill-t{display:none}}
 @media(max-width:440px){.nt-pill b{display:none}.nt-pill .ry-i{width:18px;height:18px}}
-#rlPop,#ntPop,#rjPop,#bxPop{display:flex!important;align-items:center;gap:10px;padding:8px 8px 8px 14px!important;border-radius:16px!important}
-#rlPop[hidden],#ntPop[hidden],#rjPop[hidden],#bxPop[hidden]{display:none!important}
+#rlPop,#ntPop,#rjPop,#bxPop,#bxDutyPop{display:flex!important;align-items:center;gap:10px;padding:8px 8px 8px 14px!important;border-radius:16px!important}
+#rlPop[hidden],#ntPop[hidden],#rjPop[hidden],#bxPop[hidden],#bxDutyPop[hidden]{display:none!important}
 #bxPop{border-color:#FEC84B!important}
+#bxDutyPop{border-color:#B2CCFF!important}
 #rjPop{border-color:#FEC84B!important}
 #rjPop .tp-go{background:#155EEF!important}
 .tp-txt{flex:1;min-width:0}
@@ -15856,7 +15883,7 @@ setTimeout(function () { EDU.loadedAt = Date.now(); eduLoad(); }, 5000);
 <div id="bxDim" hidden onclick="bxClose()"></div>
 <div id="bxSheet" hidden role="dialog" aria-modal="true" aria-labelledby="bxSheetT">
   <div class="bx-hd"><h3 id="bxSheetT">📦 오늘 박스 재고 적기</h3><button type="button" class="bx-x" onclick="bxClose()" aria-label="닫기">×</button></div>
-  <p id="bxLast" class="bx-last"></p>
+  <p class="bx-done"></p><p id="bxLast" class="bx-last"></p>
   <div id="bxGrid" class="bx-grid"></div>
   <button type="button" class="bx-more" onclick="var g=document.getElementById('bxGridM'); g.hidden=!g.hidden; this.textContent = g.hidden ? '＋ 무지박스도 적기' : '－ 무지박스 접기'">＋ 무지박스도 적기</button>
   <div id="bxGridM" class="bx-grid" hidden></div>
