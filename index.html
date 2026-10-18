@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvdxntpf">
+  <meta name="ry-build" content="mvdxrt5q">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -6745,7 +6745,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function avaInner(name, px) {
       var f = avaFace(name);
       if (!avaIsPhoto(f)) return escapeHtml(f);
-      return '<img class="ry-ava-img" src="' + escapeHtml(f) + '=s' + (px || 96) + '" referrerpolicy="no-referrer" alt="" loading="lazy" onerror="this.outerHTML=\'🙂\'">';
+      return '<img class="ry-ava-img" data-no-preview src="' + escapeHtml(f) + '=s' + (px || 96) + '" referrerpolicy="no-referrer" alt="" loading="lazy" onerror="this.outerHTML=\'🙂\'">';
     }
     function avaHTML(name, size) {
       var bg = AVA_BG[avaHash(name) % AVA_BG.length];
