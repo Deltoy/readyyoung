@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvdxixqz">
+  <meta name="ry-build" content="mvdxntpf">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -15693,10 +15693,11 @@ function eduImgErr(img) {   /* 드라이브 사진: 썸네일 주소(큰 크기)
   });
   var up = function (e) {
     var was = Object.keys(EZ.p).length; delete EZ.p[e.pointerId];
-    if (was === 1 && EZ.mv < 10 && EZ.tap && EZ.s <= 1) { eduZoomClose(); return; }
+    if (EZ.tap) return;
     if (was === 1 && EZ.mv < 10) { var now = Date.now(); if (now - EZ.lt < 320) { EZ.s = EZ.s > 1 ? 1 : 2.5; EZ.x = 0; EZ.y = 0; ezSet(); EZ.lt = 0; } else EZ.lt = now; }
   };
   st.addEventListener('pointerup', up); st.addEventListener('pointercancel', up);
+  st.addEventListener('click', function (e) { if (!EZ.tap || EZ.s > 1 || EZ.mv >= 10) return; e.preventDefault(); e.stopPropagation(); eduZoomClose(); });   /* 1018 요청자 사진: 한 번 누르면 닫기 — click 에서 닫아야 아래 버튼으로 터치가 새지 않아요 */
   st.addEventListener('wheel', function (e) { e.preventDefault(); EZ.s = Math.min(5, Math.max(1, EZ.s * (1 - e.deltaY * 0.002))); ezSet(); }, { passive: false });
 })();
 document.addEventListener('keydown', function (e) {
