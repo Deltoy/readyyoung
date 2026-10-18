@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvbw9o3s">
+  <meta name="ry-build" content="mvdx26j2">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1682,6 +1682,13 @@ body.sp-open #appToast{bottom:auto!important;top:calc(68px + env(safe-area-inset
 .bx-card .bx-c small{min-height:14px;font-size:12px;color:#155EEF;font-weight:700}
 .bx-card .bx-more{margin:10px 0 6px;min-height:40px;padding:0 4px;border:0;background:none;color:#155EEF;font-weight:700;font-size:14px}
 .bx-card .bx-kakao{margin:6px 0;font-size:13px;color:#475467}.bx-card .bx-kakao summary{cursor:pointer;min-height:36px;display:flex;align-items:center}
+.bx-kakao summary small{font-weight:500;color:#667085;margin-left:4px}.bx-kakao summary{font-weight:700;color:#155EEF;gap:4px}
+.bx-khelp{list-style:none;margin:8px 0;padding:12px;background:#F5F8FF;border-radius:12px;display:grid;gap:8px}
+.bx-khelp li{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.45;color:#344054}
+.bx-khelp li b{flex:none;width:22px;height:22px;border-radius:50%;background:#155EEF;color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center}
+.bx-khelp em{font-style:normal;font-weight:800;color:#155EEF}.bx-khelp u{text-decoration:none;font-weight:800;background:#fff;border:1px solid #D0D5DD;border-radius:6px;padding:0 6px}
+.bx-kex{margin:0 0 6px;padding:10px 12px;border:1px dashed #D0D5DD;border-radius:12px;font-size:12px;color:#667085}.bx-kex pre{margin:4px 0 6px;font:600 13px/1.5 ui-monospace,Menlo,monospace;color:#101828;white-space:pre-wrap}
+.bx-kfb{margin:6px 0 0;font-size:13px;font-weight:700}.bx-kfb:empty{display:none}.bx-kfb.ok{color:#067647}.bx-kfb.no{color:#B42318}
 .bx-card .bx-kakao textarea{width:100%;box-sizing:border-box;border:1px solid #D0D5DD;border-radius:12px;padding:10px;font-size:14px;margin-top:6px}
 .bx-card .bx-res{margin:8px 0;font-size:14px;color:#344054}.bx-card .bx-res p{margin:4px 0}.bx-card .bx-res .r{color:#B42318;font-weight:800}.bx-card .bx-res .y{color:#B54708;font-weight:700}
 .bx-card .bx-save{width:100%;min-height:52px;border:0;border-radius:14px;background:#155EEF;color:#fff;font-size:16px;font-weight:800}.bx-card .bx-save:disabled{opacity:.5}
@@ -5561,7 +5568,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       BX_M.forEach(function (i) { gm += bxCell('무지' + i, '무지 ' + i + '번'); });
       document.getElementById('bxGrid').innerHTML = g; document.getElementById('bxGridM').innerHTML = gm;
       document.getElementById('bxGridM').hidden = true; document.querySelector('#bxSheet .bx-more').textContent = '＋ 무지박스도 적기';
-      document.getElementById('bxRes').innerHTML = ''; document.getElementById('bxKText').value = '';
+      document.getElementById('bxRes').innerHTML = ''; document.getElementById('bxKText').value = ''; var kd = document.getElementById('bxKDet'); kd.open = false; kd.querySelector('summary').innerHTML = BX_KSUM; if (!kd.querySelector('.bx-khelp')) kd.querySelector('summary').insertAdjacentHTML('afterend', BX_KHELP); kd.querySelector('.bx-kfb').textContent = '';
       document.getElementById('bxDim').hidden = false; document.getElementById('bxSheet').hidden = false;
       bxHints();
       if (!SP.box) bxLoad(function () { if (!document.getElementById('bxSheet').hidden) bxHints(); });   /* 받아오면 흐린 숫자만 채움 (적던 숫자는 그대로) */
@@ -5572,7 +5579,17 @@ html body #ryLaunchGrid .tl-search{top:56px}
       document.getElementById('bxLast').textContent = l ? '마지막으로 센 것: ' + l.slice(5).replace('-', '/') + (lr && lr.by ? ' · ' + lr.by : '') + ' (흐린 숫자) · 빈 칸은 저장 안 해요' : '번호마다 지금 있는 개수를 적어 주세요 · 빈 칸은 저장 안 해요';
     }
     function bxClose() { document.getElementById('bxDim').hidden = true; document.getElementById('bxSheet').hidden = true; }
-    function bxFillFromText(t, root) { root = root || '#bxSheet'; bxParse(t).forEach(function (x) { var inp = document.querySelector(root + ' input[data-k="' + x.box + '"]'); if (inp) { inp.value = String(x.n); bxSumShow(inp); if (x.box.indexOf('무지') === 0) { var gm = document.querySelector(root + ' .bx-more + .bx-grid'); if (gm) gm.hidden = false; var mb = document.querySelector(root + ' .bx-more'); if (mb) mb.textContent = '－ 무지박스 접기'; } } }); }
+    /* 1018 MJ: 카톡 붙여넣기 튜토리얼 — 복사 → 붙여넣기 → 칸 자동 채움 → 저장 4단계 + 붙여넣은 뒤 몇 칸 채웠는지 */
+    var BX_KSUM = '📋 카톡에 올린 글 붙여넣기 <small>(방법 보기)</small>';
+    var BX_KHELP = '<ol class="bx-khelp">'
+      + '<li><b>1</b><span>카톡방에서 박스 재고 글을 <em>꾹</em> 눌러 <u>복사</u></span></li>'
+      + '<li><b>2</b><span>아래 빈 칸을 <em>꾹</em> 눌러 <u>붙여넣기</u></span></li>'
+      + '<li><b>3</b><span>위 번호 칸에 숫자가 <em>저절로</em> 들어가요 (59+139 → 198)</span></li>'
+      + '<li><b>4</b><span>숫자를 확인하고 파란 <u>저장</u> 버튼</span></li></ol>'
+      + '<div class="bx-kex"><small>이렇게 쓴 글이면 돼요</small><pre>1번 59+139\n2번 117\n3번 1334(새 박스 포함)\n무지박스\n1번 20</pre><small>번호 뒤에 「번」이 꼭 있어야 해요 · 괄호 안 글은 빼고 숫자만 더해요 · 「무지박스」 줄 아래는 무지 번호로 들어가요</small></div>';
+    function bxFillFromText(t, root) { root = root || '#bxSheet'; var ps = bxParse(t), hit = 0, fb = document.querySelector(root + ' .bx-kfb'); ps.forEach(function (x) { if (document.querySelector(root + ' input[data-k="' + x.box + '"]')) hit++; });
+      if (fb) { fb.className = 'bx-kfb' + (String(t || '').trim() ? (hit ? ' ok' : ' no') : ''); fb.textContent = !String(t || '').trim() ? '' : hit ? '✓ ' + hit + '칸 채웠어요 — 위 숫자를 확인하고 저장을 눌러 주세요' : '번호 줄을 못 찾았어요 · 「1번 59」처럼 번호 뒤에 「번」이 있어야 해요'; }
+      ps.forEach(function (x) { var inp = document.querySelector(root + ' input[data-k="' + x.box + '"]'); if (inp) { inp.value = String(x.n); bxSumShow(inp); if (x.box.indexOf('무지') === 0) { var gm = document.querySelector(root + ' .bx-more + .bx-grid'); if (gm) gm.hidden = false; var mb = document.querySelector(root + ' .bx-more'); if (mb) mb.textContent = '－ 무지박스 접기'; } } }); }
     function bxSheetSave(btn) { return bxSave('#bxSheet', btn); }
     function bxSave(root, btn) {
       var me = currentSelectedMember || ''; if (!me || me === '미선택') { showToast('위에서 내 이름을 먼저 골라 주세요', 1800); return; }
@@ -5604,7 +5621,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           + '<div class="bx-grid">' + g + '</div>'
           + '<button type="button" class="bx-more" onclick="var g=document.getElementById(\'bxTabM\'); g.hidden=!g.hidden; this.textContent = g.hidden ? \'＋ 무지박스도 적기\' : \'－ 무지박스 접기\'">＋ 무지박스도 적기</button>'
           + '<div id="bxTabM" class="bx-grid" hidden>' + gm + '</div>'
-          + '<details class="bx-kakao"><summary>카톡에 올린 글이 있으면 붙여넣기</summary><textarea rows="5" placeholder="1번 59+139&#10;2번 117" oninput="bxFillFromText(this.value, \'#bxTab\')"></textarea></details>'
+          + '<details class="bx-kakao"><summary>' + BX_KSUM + '</summary>' + BX_KHELP + '<textarea rows="5" placeholder="여기를 꾹 눌러 붙여넣기" oninput="bxFillFromText(this.value, \'#bxTab\')"></textarea><p class="bx-kfb" role="status"></p></details>'
           + '<div class="bx-res" role="status"></div>'
           + '<button type="button" class="bx-save" onclick="bxSave(\'#bxTab\', this)">저장 · 부족하면 1박스 자동 발주</button></section>'
           + '<section class="bx-card" id="bxTabStatus"></section></div>';
@@ -15819,7 +15836,7 @@ setTimeout(function () { EDU.loadedAt = Date.now(); eduLoad(); }, 5000);
   <div id="bxGrid" class="bx-grid"></div>
   <button type="button" class="bx-more" onclick="var g=document.getElementById('bxGridM'); g.hidden=!g.hidden; this.textContent = g.hidden ? '＋ 무지박스도 적기' : '－ 무지박스 접기'">＋ 무지박스도 적기</button>
   <div id="bxGridM" class="bx-grid" hidden></div>
-  <details class="bx-kakao"><summary>카톡에 올린 글이 있으면 붙여넣기</summary><textarea id="bxKText" rows="5" placeholder="1번 59+139&#10;2번 117" oninput="bxFillFromText(this.value)"></textarea></details>
+  <details class="bx-kakao" id="bxKDet"><summary></summary><textarea id="bxKText" rows="5" placeholder="여기를 꾹 눌러 붙여넣기" oninput="bxFillFromText(this.value)"></textarea><p class="bx-kfb" role="status"></p></details>
   <div id="bxRes" class="bx-res" role="status"></div>
   <button type="button" id="bxSaveBtn" class="bx-save" onclick="bxSheetSave(this)">저장</button>
 </div>
