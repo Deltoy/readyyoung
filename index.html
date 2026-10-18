@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvdxrt5q">
+  <meta name="ry-build" content="mvdxvc5i">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -7173,6 +7173,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
         '#imgPreviewClose{position:fixed;top:12px;right:16px;color:#fff;font-size:30px;font-weight:900;background:none;border:none;cursor:pointer;line-height:1;z-index:10000}' +
         '#imgPreviewRetake{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#2563eb;color:#fff;border:none;border-radius:9999px;padding:12px 22px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.4);z-index:10000}' +
         '#imgPreviewRetake[hidden]{display:none}' +
+        '.pv-nav{position:fixed;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;border:0;background:rgba(255,255,255,.18);color:#fff;font-size:26px;font-weight:700;line-height:1;z-index:10000;cursor:pointer}.pv-nav[hidden]{display:none}#imgPrevP{left:10px}#imgPrevN{right:10px}' +
+        '#imgPrevC{position:fixed;top:18px;left:50%;transform:translateX(-50%);color:#fff;font-size:14px;font-weight:800;background:rgba(0,0,0,.35);border-radius:999px;padding:4px 12px;z-index:10000}#imgPrevC[hidden]{display:none}' +
         '.item-flash{animation:itemFlash 2.2s ease-in-out}' +
         '.sync-pill{position:fixed;bottom:12px;right:12px;z-index:40;display:flex;align-items:center;gap:6px;padding:6px 11px;border-radius:9999px;font-size:12px;font-weight:700;background:rgba(255,255,255,.96);border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(15,23,42,.10);color:#64748b;cursor:pointer;user-select:none;transition:background .25s,color .25s,border-color .25s}' +
         '.sync-pill[data-state="syncing"]{color:#1d4ed8;border-color:#93c5fd;background:#eff6ff}' +
@@ -7188,9 +7190,16 @@ html body #ryLaunchGrid .tl-search{top:56px}
       ov.id = 'imgPreviewOverlay';
       ov.innerHTML = '<button id="imgPreviewClose" type="button" aria-label="닫기">✕</button>'
         + '<img alt="상품 사진 미리보기">'
-        + '<button id="imgPreviewRetake" type="button" hidden style="min-height:52px;padding:0 26px;font-size:17px">📷 다시 찍기</button>';
+        + '<button id="imgPreviewRetake" type="button" hidden style="min-height:52px;padding:0 26px;font-size:17px">📷 다시 찍기</button>'
+        + '<button id="imgPrevP" class="pv-nav" type="button" aria-label="이전 사진" hidden>‹</button><button id="imgPrevN" class="pv-nav" type="button" aria-label="다음 사진" hidden>›</button><span id="imgPrevC" hidden></span>';
+      /* 1018 MJ: 같은 묶음(숙지사항 사진들) 이면 ‹ › · 옆으로 밀어서 연속으로 보기 */
+      var pvSx = null, pvSy = 0;
+      ov.addEventListener('touchstart', function (e) { if (e.touches.length === 1) { pvSx = e.touches[0].clientX; pvSy = e.touches[0].clientY; } }, { passive: true });
+      ov.addEventListener('touchend', function (e) { if (pvSx == null) return; var t = e.changedTouches[0], dx = t.clientX - pvSx, dy = t.clientY - pvSy; pvSx = null; if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) && PV.list.length > 1) { ov._sw = Date.now(); pvStep(dx < 0 ? 1 : -1); } });
       ov.addEventListener('click', function (e) {   // 0930 폰에서 '다시 찍기' 탭이 오버레이 닫기로만 잡히던 문제: 버튼 영역이면 다시 찍기
         if (e.target && e.target.closest && e.target.closest('#imgPreviewRetake')) { e.stopPropagation(); const row = parseInt(ov.getAttribute('data-row'), 10); closeImagePreview(); if (row) openPhotoPicker(row); return; }
+        var nv = e.target && e.target.closest && e.target.closest('.pv-nav'); if (nv) { e.stopPropagation(); pvStep(nv.id === 'imgPrevN' ? 1 : -1); return; }
+        if (ov._sw && Date.now() - ov._sw < 500) return;   // 밀어서 넘긴 손가락은 닫기로 안 침
         closeImagePreview();
       });
       document.body.appendChild(ov);
@@ -7209,14 +7218,22 @@ html body #ryLaunchGrid .tl-search{top:56px}
         if (t && t.tagName === 'IMG' && t.getAttribute('referrerpolicy') === 'no-referrer' && !t.hasAttribute('data-no-preview') && /^https?:/.test(t.src || '')) {
           e.preventDefault();
           e.stopPropagation();
-          openImagePreview(t.src, t.getAttribute('data-row'));
+          var g = t.closest('.rl-ph'), ims = g ? [].slice.call(g.querySelectorAll('img')) : [];
+          openImagePreview(t.src, t.getAttribute('data-row'), ims.map(function (x) { return x.src; }), ims.indexOf(t));
         }
       }, true);
+      /* 1018 MJ: 사진을 닫는 그 터치가 뒤 화면 버튼까지 눌리던 것 — 닫은 직후 0.4초는 뒤 화면 누름을 막아요 */
+      ['click', 'pointerup', 'touchend'].forEach(function (ty) { document.addEventListener(ty, function (e) { if (window._pvBlock && Date.now() < window._pvBlock && !(e.target.closest && e.target.closest('#imgPreviewOverlay.open, #eduZoom:not([hidden])'))) { e.preventDefault(); e.stopImmediatePropagation(); } }, true); });
     }
 
-    function openImagePreview(url, row) {
+    var PV = { list: [], i: 0 };
+    function pvBig(url) { return /lh3\.googleusercontent\.com\/d\//.test(url) ? url.split('=')[0] + '=s1600' : url; }
+    function pvStep(d) { if (PV.list.length < 2) return; PV.i = (PV.i + d + PV.list.length) % PV.list.length; pvShow(); }
+    function pvShow() { var ov = document.getElementById('imgPreviewOverlay'), n = PV.list.length, c = document.getElementById('imgPrevC'); if (n > 1) ov.querySelector('img').src = pvBig(PV.list[PV.i]); document.getElementById('imgPrevP').hidden = document.getElementById('imgPrevN').hidden = c.hidden = n < 2; c.textContent = (PV.i + 1) + ' / ' + n; }
+    function openImagePreview(url, row, list, idx) {
       const ov = document.getElementById('imgPreviewOverlay');
       if (!ov) return;
+      PV.list = list && list.length > 1 && idx >= 0 ? list : []; PV.i = PV.list.length ? idx : 0;
       let big = url;
       if (/lh3\.googleusercontent\.com\/d\//.test(url)) big = url.split('=')[0] + '=s1600';
       ov.querySelector('img').src = big;
@@ -7224,6 +7241,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       ov.setAttribute('data-row', r ? String(r) : '');
       const retake = ov.querySelector('#imgPreviewRetake');
       if (retake) retake.hidden = !r;   // 행 번호가 있는 상품 사진에서만 표시
+      pvShow();
       ov.classList.add('open');
       ryLockScroll(true);   /* 1002 사진 확대 중 손가락이 조금만 움직여도 뒤 목록이 위로 밀리던 것: 뒤 화면 고정, 닫으면 같은 위치 */
     }
@@ -7232,6 +7250,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       const ov = document.getElementById('imgPreviewOverlay');
       if (!ov) return;
       ov.classList.remove('open');
+      window._pvBlock = Date.now() + 400;
       ryLockScroll(false);
       const im = ov.querySelector('img');
       if (im) im.removeAttribute('src');
@@ -15673,7 +15692,7 @@ function eduDelete(id, btn) {
 var EZ = { s: 1, x: 0, y: 0, p: {}, d0: 0, s0: 1, lt: 0, mv: 0 };
 function ezSet() { var i = document.getElementById('eduZoomImg'); if (EZ.s <= 1) { EZ.s = 1; EZ.x = 0; EZ.y = 0; } i.style.transform = 'translate(' + EZ.x + 'px,' + EZ.y + 'px) scale(' + EZ.s + ')'; }
 function eduZoomOpen(u, tap) { var z = document.getElementById('eduZoom'), i = document.getElementById('eduZoomImg'); i.removeAttribute('data-try'); i.src = u; EZ.s = 1; ezSet(); EZ.tap = !!tap; z.querySelector('.edu-zoom-h').textContent = tap ? '한 번 누르면 닫혀요 · 두 손가락으로 확대' : '두 손가락으로 확대 · 두 번 누르면 확대/원래대로'; z.hidden = false; }   /* tap = 요청자 사진(1018): 한 번 누르면 닫기 */
-function eduZoomClose() { document.getElementById('eduZoom').hidden = true; }
+function eduZoomClose() { document.getElementById('eduZoom').hidden = true; window._pvBlock = Date.now() + 400; }
 function eduImgErr(img) {   /* 드라이브 사진: 썸네일 주소(큰 크기) → 크기 지정 주소 → 안내 */
   var m = String(img.src).match(/\/d\/([A-Za-z0-9_-]+)/) || String(img.src).match(/[?&]id=([A-Za-z0-9_-]+)/), t = +(img.getAttribute('data-try') || 0);
   var plan = m ? ['https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w2000', 'https://lh3.googleusercontent.com/d/' + m[1] + '=s2000'] : [];
