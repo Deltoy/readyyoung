@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvdy09en">
+  <meta name="ry-build" content="mvdy6i5r">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -15967,7 +15967,7 @@ function rlClose(fromPop) {
   v.hidden = true; document.body.style.overflow = ''; rlEditClose();
   if (!fromPop) { try { if (history.state && history.state.rl) history.back(); } catch (e) {} }
 }
-window.addEventListener('popstate', function () { if (document.getElementById('rlView').hidden) return; if (RL.open) rlShut(true); else rlClose(true); });
+window.addEventListener('popstate', function (e) { if (document.getElementById('rlView').hidden) return; var st = e.state || {}; if (RL.open) { if (!st.rlD) rlShut(true); } else if (!st.rl) rlClose(true); });   /* 1018 사진 확대를 닫을 때 앱이 뒤로 한 칸 가는데, 그때 규칙 화면까지 닫히던 것: 돌아온 기록이 아직 규칙(상세)이면 그대로 둔다 */
 function rlSetTopic(t) { RL.topic = RL.topic === t ? '' : t; if (RL.open) rlShut(); else rlRender(); }
 function rlNorm(s) { return String(s || '').replace(/\s+/g, '').toLowerCase(); }
 function rlRender() {
