@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvetpvcz">
+  <meta name="ry-build" content="mvetvemm">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -11625,7 +11625,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
       /* 1019 MJ: 묶음으로도 파는 상품은 주문 단위로 합쳐 앱 상품 이름 한 줄로 (레디비타: 1병·7병·28병 → 28병 패키지 수) */
       S15_PACKS.forEach(function (pk) {
         var q = 0, hit = false; out.forEach(function (x) { pk.from.forEach(function (f) { if (s15Key(x.n) === s15Key(f[0])) { q += x.q * f[1]; hit = true; } }); });
-        if (!hit) return; out = out.filter(function (x) { return s15Key(x.n) !== s15Key(pk.to); }); var p = s15Prep(pk.to); p.n = pk.to; p.q = Math.round(q); p.pack = true; out.push(p);
+        if (!hit) return; out = out.filter(function (x) { return s15Key(x.n) !== s15Key(pk.to); }); var p = s15Prep(pk.to); p.n = pk.to; p.q = Math.round(q); p.pack = true;
+        p.packTxt = pk.from.map(function (f) { var x = out.filter(function (y) { return s15Key(y.n) === s15Key(f[0]); })[0]; return x ? f[0].replace(/^.*?(\d+\s*(?:포|병|ea)).*$/i, '$1') + ' ' + x.q + '개' : ''; }).filter(Boolean).join(' + ') + ' = ' + (Math.round(q * 10) / 10) + '패키지'; out.push(p);
       });
       return out;
     }
@@ -11811,6 +11812,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           S15.groups = []; S15.xs = [];
           s15Render(); s15Dot();
           showToast(cnt + '개 상품 15일 판매량을 바꿨어요' + (r.reset ? ' · 엑셀에 없던 ' + r.reset + '개는 0으로' : '') + (r.skipped ? ' · 시트 수식 칸 ' + r.skipped + '개는 그대로' : ''), 3200);
+          try { var pk = xs0.filter(function (x) { return x.pack; }); if (pk.length) setTimeout(function () { alert('📦 묶음 상품은 패키지 수로 합쳤어요\n' + pk.map(function (x) { return '· ' + x.n + ' : 15일 판매 ' + x.q + '개 (' + x.packTxt + ')'; }).join('\n')); }, 200); } catch (ePk) {}   /* 1019 MJ: 엑셀 올리면 레디비타·뉴베인 계산 결과 알려 주기 */
           try { var nx = s15Next((document.getElementById('s15To') || {}).value); if (nx) setTimeout(function () { alert('다음 15일 판매량은 ' + nx.label + ' 기간으로 ' + nx.when + ' 올려주세요'); }, 400); } catch (eN) {}
           loadAllData(true, true, true);
           try { var pl = pl0; if (pl.length) google.script.run.withSuccessHandler(function () { try { if (typeof SP !== 'undefined') SP.data = null; } catch (e3) {} }).saveUnitPrices(pl, per0); } catch (ePr) {}   /* 1017 세트 상세 사입가·판매가 */
