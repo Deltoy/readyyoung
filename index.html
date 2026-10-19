@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvf0plm3">
+  <meta name="ry-build" content="mvf0rw4e">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -12683,7 +12683,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         { k: 'missed', g: 0, ic: RYI.bellring, n: '놓친 주문', v: '잘 팔리는데 안 시킨 것', kw: '재고 떨어짐 판매 품절 위험 마지막 입고' },
         { k: 'reorder', g: 0, ic: RYI.rotate, n: '다시 시킬 때', v: rg ? (rNow ? '지금 ' + rNow + '개' : (rg.week.length ? '이번 주 ' + rg.week.length + '개' : '지금은 없음')) : '재주문 후보', cnt: rNow, act: rg && rg.week.length ? '이번 주 ' + rg.week.length + '개 더' : '주기상 지금 시킬 것', pri: 2, kw: '재주문 후보 주기 입고 완료' },
         { k: 'stockCheck', g: 0, ic: RYI.listcheck, n: '재고 확인 요청', v: sc ? '오늘 ' + sc + '개' : '오늘 없음', cnt: sc, act: '물류관리자가 돌려보냄 · 오늘', pri: 1, kw: '취소분 재고있음 반려 확인' }
-      ].concat(isAdmin && s15 && !s15.hidden ? [{ k: 's15', g: 0, ic: RYI.bars, n: '15일 판매량 엑셀', v: s15due ? '오늘 올릴 날' : (s15last ? s15last + ' 올림' : '올리기'), cnt: s15due ? 1 : 0, act: '올릴 날이에요', due: true, pri: 0, kw: 'POS 판매량 15일 업로드' }] : [])
+      ].concat(isAdmin && s15 && !s15.hidden ? [{ k: 's15', g: 0, ic: RYI.bars, n: '15일 판매량 엑셀', v: (function () { var nx = typeof S15 !== 'undefined' && S15.info && s15Next(S15.info.to); return (s15last ? s15last + ' 올림' : '') + (nx ? (s15last ? ' · ' : '') + '다음 ' + nx.label + (nx.due ? ' 지금 올릴 차례' : ' · ' + nx.when + ' 올리기') : (s15last ? '' : '올리기')); })(),   /* 1019 MJ: 다음에 올릴 기간도 */ cnt: s15due ? 1 : 0, act: '올릴 날이에요', due: true, pri: 0, kw: 'POS 판매량 15일 업로드' }] : [])
       .concat([
         { k: 'stale', g: 1, ic: RYI.package, n: '창고 정리', v: stN ? '후보 ' + stN + '개' : '오래 안 시킨 것', cnt: stN, act: '오래 안 시킨 상품', pri: 4, kw: '재고 정리 할인 반품 폐기 소진 판매종료' },
         { k: 'loc', g: 1, ic: typeof LOC_I !== 'undefined' ? LOC_I.pin : RYI.package, n: '창고 위치 넣기', v: typeof LOC !== 'undefined' && Object.keys(LOC.map).length ? Object.keys(LOC.map).length + '개 넣음 · 구역-선반-칸' : '구역-선반-칸 (예: A-03-2)', kw: '창고 위치 선반 구역 칸 자리 진열 로케이션 찾기' },
