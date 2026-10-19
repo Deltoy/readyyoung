@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvexbw3m">
+  <meta name="ry-build" content="mvexdqiu">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -3882,7 +3882,6 @@ html body #ryLaunchGrid .tl-search{top:56px}
         <button type="button" id="newProductBtn" onclick="openNewProduct()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>새 상품 등록</button>
         <button type="button" class="ry-ghost ry-quick" onclick="rlOpen()" title="일하면서 알아야 할 규칙 (주제별)">숙지사항<i id="rlDot" class="rl-btn-n" hidden></i></button>
         <button type="button" class="ry-ghost ry-quick" onclick="bxOpenTab()" title="아침에 아크릴박스 개수 적기 · 🔴면 자동 1박스 요청">📦 박스 재고<i id="bxDot" class="bx-today" hidden>오늘 아직</i></button>
-        <button type="button" class="ry-ghost ry-quick" onclick="moOpen()" title="잘 팔리는데 재고가 떨어졌을 상품">놓친 주문</button>
         <button type="button" class="ry-ghost ry-quick" onclick="window.open('https://pallang-0258.github.io/seongsu/viewer.html', '_blank', 'noopener')" title="근무표를 새 창으로 열기">근무표</button>
         <button type="button" class="ry-ghost ry-quick" onclick="mbOpenArchive()" title="날짜별 아침 뷰티 브리핑">뷰티 브리핑</button>
         <button type="button" class="ry-ghost ry-quick" onclick="eduOpen()" title="제품 교육 자료">교육 자료실<i id="eduDot" class="mb-dot edu-qdot" hidden aria-label="새 교육 자료"></i></button>
@@ -11710,8 +11709,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function s15PeriodDefaults() {
       var f = document.getElementById('s15From'), t = document.getElementById('s15To'); if (!f || !t) return;
       var nx = S15.info && s15Next(S15.info.to), today = new Date(); today.setHours(0, 0, 0, 0);
-      if (!f.value) { if (nx) f.value = nx.from; else { var d = new Date(today); d.setDate(d.getDate() - 14); f.value = s15Ymd(d); } }
-      if (!t.value) t.value = nx && nx.to < s15Ymd(today) ? nx.to : s15Ymd(today);
+      if (!f.value) { var d = new Date(today); d.setDate(d.getDate() - 14); f.value = s15Ymd(d); }   // 1019 MJ: 매주 금요일 = 오늘까지 최근 15일
+      if (!t.value) t.value = s15Ymd(today);
     }
     function s15Dot() {
       var b = document.getElementById('s15Entry'), due = currentSelectedMember === PF_ADMIN && S15.info && (s15Days() == null || s15Days() >= 7);
@@ -13032,7 +13031,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
 <div class="ava-dim" id="s15Dim" onclick="s15Close()"></div>
 <div class="ava-sheet" id="s15Sheet" role="dialog" aria-label="15일 판매량 엑셀">
   <div class="ava-head"><b class="ry-info-title">15일 판매량 엑셀</b><button type="button" onclick="s15Close()">닫기</button></div>
-  <div class="ava-sub">판매량 통계 엑셀을 올리면 앱 상품의 15일 판매 숫자를 한꺼번에 바꿔요. 15일마다 한 번이면 돼요.</div>
+  <div class="ava-sub">판매량 통계 엑셀을 올리면 앱 상품의 15일 판매 숫자를 한꺼번에 바꿔요. 매주 금요일에 최근 15일로 올려 주세요.</div>
   <div class="s15-period"><label>엑셀 기간 <input type="date" id="s15From" aria-label="기간 시작"></label><span>~</span><label><input type="date" id="s15To" aria-label="기간 끝"></label></div>
   <label class="np-save s15-pick" id="s15PickL"><input type="file" accept=".xlsx,.xls,.csv" onchange="s15Pick(this)"><span>엑셀 파일 고르기</span></label>
   <div id="s15Body" class="s15-body"></div>
