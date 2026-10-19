@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvexscon">
+  <meta name="ry-build" content="mveyjlb6">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -5090,7 +5090,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var sess = window._rjSess = window._rjSess || {};   // 이번에 앱을 연 동안 보여 준 것은 닫기 전까지 그대로
       var nw = (list || []).filter(function (it) { var id = it.name + '|' + (it.date || ''); return String(it.date || '') >= cut && (!seen[id] || sess[me + '|' + id]); });
       if (!me || !nw.length) { el.hidden = true; return; }
-      el.innerHTML = '<div class="tp-txt"><b class="t">📦 재고 있어요 · 물류관리자에게 문의</b><p>' + escapeHtml(nw[0].name) + (nw.length > 1 ? ' 외 ' + (nw.length - 1) + '개' : '') + ' — 요청한 상품이 재고가 있어서 발주하지 않았어요</p></div>'
+      var bys = nw.map(function (it) { return it.by || ''; }).filter(function (b, i, a) { return b && a.indexOf(b) === i; });   /* 1019 MJ: 누가 [재고있음]을 눌렀는지 → 그 사람에게 물어보게 */
+      el.innerHTML = '<div class="tp-txt"><b class="t">📦 재고 있어요 · ' + (bys.length ? escapeHtml(bys.join(', ')) + ' 님이 [재고있음]을 눌렀어요' : '물류관리자에게 문의') + '</b><p>' + escapeHtml(nw[0].name) + (nw.length > 1 ? ' 외 ' + (nw.length - 1) + '개' : '') + ' — 요청한 상품이 재고가 있어서 발주하지 않았어요' + (bys.length ? ' · 궁금하면 ' + escapeHtml(bys.join(', ')) + ' 님에게 물어보세요' : '') + '</p></div>'
         + '<button type="button" class="tp-go" onclick="rjSeenAll(); openMyRejects()">보기</button><button type="button" class="tp-x" aria-label="확인했어요" onclick="rjSeenAll()">×</button>';
       el.hidden = false;
       window._rjList = nw;
@@ -5112,7 +5113,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       document.getElementById('rejBody').innerHTML = list.length ? list.map(function (it) {
         return '<div class="rej-r" id="rej-row-' + it.rowNumber + '">' +
           '<div class="t">' + escapeHtml(it.name) + '</div>' +
-          '<div class="m">' + (it.date ? escapeHtml(it.date) + ' 반려' : '반려') +
+          '<div class="m">' + (it.date ? escapeHtml(it.date) + ' 반려' : '반려') + (it.by ? ' · <b>' + escapeHtml(it.by) + '</b> 님이 재고있음' : '') +
             (it.category ? ' · ' + escapeHtml(catLabel(it.category)) : '') +
             (it.note ? ' · ' + escapeHtml(it.note) : '') + '</div>' +
           '<div class="a">' +
@@ -8780,7 +8781,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           alert('반려 처리 오류: ' + err.message);
           loadAllData(true, false, true);
         })
-        .rejectOrderHasStock(rowNumber);
+        .rejectOrderHasStock(rowNumber, currentSelectedMember || '');   /* 1019 누른 사람 */
     }
 
     /* ===== 입고 지연 사유 (0921) — 최종 입고완료가 되면 서버에서 자동으로 지워진다 ===== */
