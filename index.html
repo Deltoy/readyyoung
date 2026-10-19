@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvepdzwv">
+  <meta name="ry-build" content="mvepeze9">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1670,6 +1670,7 @@ body.sp-open #appToast{bottom:auto!important;top:calc(68px + env(safe-area-inset
 .bxv-tx{position:absolute;inset:0;display:flex;align-items:center;padding:0 10px;font-variant-numeric:tabular-nums}.bxv-tx b{font-size:13.5px;font-weight:800;color:#101828}.bxv-tx em{margin-left:auto;font-style:normal;font-size:12px;font-weight:650;color:#475467}
 .bxv-hd{width:64px;flex:none;text-align:right;font-size:22px;font-weight:850;line-height:1;font-variant-numeric:tabular-nums}.bxv-hd small{display:block;font-size:11px;color:#98A2B3;font-weight:600;margin-top:4px}.bxv-h:focus-visible{outline:2px solid #155EEF;outline-offset:-2px}
 .bxv-key{display:flex;flex-wrap:wrap;gap:6px 14px;margin:6px 2px 8px;font-size:12.5px;color:#475467}.bxv-key span{display:inline-flex;align-items:center;gap:6px}.bxv-key .k1 i{width:26px;height:14px;border:2px solid #D0D5DD;border-radius:5px;background:linear-gradient(90deg,rgba(7,148,85,.3) 60%,#fff 60%)}.bxv-key .k2 i{width:0;height:14px;border-left:2px dashed rgba(16,24,40,.55)}.bxv-key .k3 b{color:#DC6803;font-size:14px}
+.bxv-sc{display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:999px;border:1px solid #D0D5DD;background:#fff;color:#344054;font-size:12.5px;font-weight:700;white-space:nowrap}
 .bxv-n{margin:8px 2px 0;font-size:12px;color:#98A2B3;line-height:1.5}
 .bxv-t:focus-visible,.bxv-r:focus-visible{outline:2px solid #155EEF;outline-offset:2px}
 .bx-sort{margin:6px 0 8px;display:inline-flex;align-items:center;height:28px;padding:0 11px;border-radius:999px;background:#EFF4FF;color:#155EEF;font-size:13px;font-weight:700}
@@ -5712,7 +5713,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         var act = function (r) { return (r.sets || []).length ? ' data-b="' + escapeHtml(r.box) + '" onclick="bxSetPop(this.dataset.b)"' : ''; };
         /* 1019 MJ: 실제로 보니 시안 ④ — 박스를 옆으로 눕힌 통(안에 남은 개수) + 오른쪽 큰 '며칠' · 한 목록 */
         return '<div class="bxv-key"><span class="k1"><i></i>통 = 남은 재고 (30일치면 가득)</span><span class="k2"><i></i>점선 = 10일 발주선 · 통이 점선 왼쪽까지 줄면 자동 발주</span><span class="k3"><b>8일</b> = 이만큼 버텨요</span></div><div class="bxv-rest">' + arr.map(function (r) {
-            return '<button type="button" class="bxv-h"' + act(r) + '><span class="bxv-hb"><span class="bxv-ht"><b>' + escapeHtml(bxName(r.box)) + '</b>' + fl(r) + '</span>'
+            return '<button type="button" class="bxv-h"' + act(r) + '><span class="bxv-hb"><span class="bxv-ht"><b>' + escapeHtml(bxName(r.box)) + '</b>' + ((r.sets || []).length ? '<span class="bxv-sc">세트 ' + r.sets.length + '개 ›</span>' : '') + fl(r) + '</span>'
               + '<span class="bxv-tube"><i style="width:' + P(r) + '%;background:' + col(r) + '"></i><s></s><span class="bxv-tx"><b>' + (r.left != null ? r.left.toLocaleString() + '개' : '–') + '</b><em>한 달 ' + (r.month || 0).toLocaleString() + '</em></span></span></span>'
               + '<span class="bxv-hd" style="color:' + col(r) + '">' + dT(r.days) + '일<small>버팀</small></span></button>'; }).join('') + '</div>'
           + '<p class="bxv-n">줄을 누르면 그 박스를 쓰는 세트가 보여요</p>';
