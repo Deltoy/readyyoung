@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvexjmgk">
+  <meta name="ry-build" content="mvexrjig">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1704,7 +1704,8 @@ body.sp-open #appToast{bottom:auto!important;top:calc(68px + env(safe-area-inset
 #bxSheet .bx-save{width:100%;min-height:52px;border:0;border-radius:14px;background:#155EEF;color:#fff;font-size:16px;font-weight:800;margin-top:6px}#bxSheet .bx-save:disabled{opacity:.5}
 .bx-tab{display:flex;flex-direction:column;gap:14px;max-width:900px;margin:0 auto}
 .bx-card{background:#fff;border:1px solid #EAECF0;border-radius:18px;padding:16px}
-.bx-xl p{margin:4px 0 10px;font-size:13.5px;line-height:1.5;color:#475467}.bx-xl .bx-xl-last{font-size:12.5px;color:#667085;margin:-4px 0 10px}.bx-xl .bx-xl-last:empty{display:none}
+.bx-xl p{margin:4px 0 10px;font-size:13.5px;line-height:1.5;color:#475467}.bx-xl-per{display:flex;align-items:center;gap:8px;margin:0 0 8px}.bx-xl-per input{flex:1;min-width:0;min-height:40px;border:1px solid #D0D5DD;border-radius:10px;padding:0 10px;font-size:14px}.bx-xl .bx-xl-res{margin:10px 0 0;font-size:13.5px;line-height:1.6;color:#067647}.bx-xl .bx-xl-res:empty{display:none}.bx-xl .bx-xl-res small{color:#667085}
+.bx-xl .bx-xl-last{font-size:12.5px;color:#667085;margin:-4px 0 10px}.bx-xl .bx-xl-last:empty{display:none}
 .bx-count>summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;min-height:36px}.bx-count>summary::-webkit-details-marker{display:none}.bx-count>summary h3{margin:0}.bx-count>summary small{font-size:12.5px;color:#667085}.bx-count>summary::after{content:'펼치기 ›';margin-left:auto;font-size:13px;color:#155EEF;font-weight:700}.bx-count[open]>summary::after{content:'접기'}
 .bx-card h3{margin:0 0 4px;font-size:17px;font-weight:800;color:#101828}
 .bx-card .bx-last{margin:0 0 12px;font-size:13px;color:#667085;line-height:1.5}
@@ -5673,6 +5674,38 @@ html body #ryLaunchGrid .tl-search{top:56px}
       }).withFailureHandler(function () { btn.disabled = false; btn.textContent = label; showToast('저장하지 못했어요 · 인터넷 확인', 2200); }).saveBoxStock(list, me);
     }
     /* 1016 MJ: 세트 화면에 [📦 박스 재고] 탭 — 번호마다 숫자만 넣고 저장 → 신호등 + 🔴면 1박스 자동 요청 */
+    /* 1019 MJ: 주간 판매량 엑셀 — 기본 기간 = 지난 금요일 ~ 이번(최근) 금요일 · s15 엑셀 읽기(s15LoadLib·s15ParseRows) 그대로 → 서버 setBoxWeekSales */
+    function bxFri() { var d = new Date(); d.setHours(0, 0, 0, 0); while (d.getDay() !== 5) d.setDate(d.getDate() - 1); return d; }
+    function bxWkDefaults() {
+      var f = document.getElementById('bxWkFrom'), t = document.getElementById('bxWkTo'), w = SP.box && SP.box.week, xl = document.getElementById('bxXlLast'); if (!f) return;
+      if (!t.value) { var b = bxFri(), a = new Date(b); a.setDate(a.getDate() - 7); t.value = s15Ymd(b); f.value = s15Ymd(a); }
+      if (xl) xl.textContent = w ? '마지막 ' + s15Md(w.from) + '~' + s15Md(w.to) + ' (' + w.days + '일) · 판매 기록 있는 세트 ' + (w.sets || []).length + '종 · ' + w.at.slice(5).replace('-', '/') + ' 올림' : '아직 안 올렸어요 · 그동안은 세트 15일 판매로 계산해요';
+    }
+    function bxWkPick(inp) {
+      var file = inp.files && inp.files[0]; inp.value = ''; if (!file) return;
+      var res = document.getElementById('bxWkRes'), btn = document.getElementById('bxWkBtn'), from = document.getElementById('bxWkFrom').value, to = document.getElementById('bxWkTo').value;
+      var done = function (t) { btn.disabled = false; btn.textContent = '주간 판매량 엑셀 고르기'; res.innerHTML = t; };
+      btn.disabled = true; btn.textContent = '읽는 중…'; res.textContent = '';
+      s15LoadLib(function (err) {
+        if (err) return done('엑셀 읽기 도구를 못 불러왔어요 · 인터넷 확인');
+        var rd = new FileReader();
+        rd.onload = function () {
+          var xs; try { var wb = XLSX.read(new Uint8Array(rd.result), { type: 'array' }); xs = s15ParseRows(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: '' })); } catch (e) { return done('엑셀을 읽지 못했어요 (' + escapeHtml(e && e.message || e) + ')'); }
+          if (!xs || !xs.length) return done('"판매 상품명" · "판매수량" 열을 못 찾았어요 · 판매량 통계 › 상품별 통계 엑셀을 올려 주세요');
+          btn.textContent = '계산 중…';
+          google.script.run.withSuccessHandler(function (r) {
+            if (!r || !r.success) return done(escapeHtml((r && r.message) || '저장하지 못했어요'));
+            SP.box = r; SP.boxAt = Date.now(); bxTabStatus();
+            var by = {}; (r.matched || []).forEach(function (m) { if (m.box) by[m.box] = (by[m.box] || 0) + m.q; });
+            var top = (r.rows || []).filter(function (x) { return by[x.box]; }).sort(function (a, b) { return b.daily - a.daily; }).map(function (x) { return x.box + '번 하루 ' + x.daily + '개' + (x.days != null ? ' → ' + x.days + '일 버팀' : ''); });
+            var nob = (r.matched || []).filter(function (m) { return !m.box; }).map(function (m) { return m.set; });
+            done('✓ 세트 ' + (r.matched || []).length + '종 판매를 찾았어요<br>' + top.map(escapeHtml).join('<br>') + (nob.length ? '<br><small>박스 번호 없는 세트(계산 빠짐): ' + nob.map(escapeHtml).join(', ') + '</small>' : '') + ((r.requested || []).length ? '<br><b>🔴 ' + r.requested.join(', ') + '번 자동 발주에 올렸어요</b>' : ''));
+          }).withFailureHandler(function (e) { done('저장하지 못했어요: ' + escapeHtml(e && e.message || e)); })
+            .setBoxWeekSales(xs.map(function (x) { return { n: x.n, q: x.q }; }), from, to, currentSelectedMember);
+        };
+        rd.readAsArrayBuffer(file);
+      });
+    }
     function bxOpenTab() { SP.view = 'boxes'; SP.setId = null; openSetPage(); }
     function spRenderBoxes() {
       var body = document.getElementById('spBody');
@@ -5680,7 +5713,9 @@ html body #ryLaunchGrid .tl-search{top:56px}
         var g = '', gm = ''; for (var i = 1; i <= 9; i++) g += bxCell(String(i), i + '번');
         BX_M.forEach(function (i) { gm += bxCell('무지' + i, '무지 ' + i + '번'); });
         body.innerHTML = '<div id="bxTab" class="bx-tab">'
-          + (currentSelectedMember === PF_ADMIN ? '<section class="bx-card bx-xl"><h3>📊 판매량 엑셀로 맞추기</h3><p>매주 금요일 최근 15일 판매량 엑셀을 올리면 세트가 하루에 몇 개씩 나가는지 다시 계산해요 → 남은 박스가 영업일 10일치 아래로 내려가는 날 아침 9시에 자동 발주</p><p class="bx-xl-last" id="bxXlLast"></p><button type="button" class="bx-save" onclick="s15Open()">판매량 엑셀 올리기</button></section>' : '')   // 1019 MJ: 숫자 대신 엑셀 (같은 15일 판매량 엑셀 화면)
+          + (currentSelectedMember === PF_ADMIN ? '<section class="bx-card bx-xl"><h3>📊 주간 판매량 엑셀</h3><p>매주 금요일, 전주 금요일~이번 주 금요일 판매량(판매량 통계 › 상품별 통계)을 올리면 박스마다 하루에 몇 개씩 나가는지 계산해서 언제 떨어질지 예측해요 → 영업일 10일치 아래로 내려가는 날 아침 9시에 자동 발주</p>'
+            + '<div class="bx-xl-per"><input type="date" id="bxWkFrom" aria-label="기간 시작"><span>~</span><input type="date" id="bxWkTo" aria-label="기간 끝"></div><p class="bx-xl-last" id="bxXlLast"></p>'
+            + '<input type="file" id="bxWkFile" accept=".xlsx,.xls,.csv" hidden onchange="bxWkPick(this)"><button type="button" class="bx-save" id="bxWkBtn" onclick="document.getElementById(\'bxWkFile\').click()">주간 판매량 엑셀 고르기</button><p class="bx-xl-res" id="bxWkRes" role="status"></p></section>' : '')   // 1019 MJ: 15일 판매량과 따로, 박스 전용 주간 엑셀
           + '<details class="bx-card bx-count"><summary><h3>📝 박스 직접 세서 맞추기</h3><small>숫자가 이상할 때만 · 평소엔 판매량으로 자동 계산</small></summary><p class="bx-done"></p><p class="bx-last" id="bxTabLast"></p>' + BX_GUIDE
           + '<div class="bx-grid">' + g + '</div>'
           + '<button type="button" class="bx-more" onclick="var g=document.getElementById(\'bxTabM\'); g.hidden=!g.hidden; this.textContent = g.hidden ? \'＋ 무지박스도 적기\' : \'－ 무지박스 접기\'">＋ 무지박스도 적기</button>'
@@ -5691,10 +5726,9 @@ html body #ryLaunchGrid .tl-search{top:56px}
           + '<section class="bx-card" id="bxTabStatus"></section></div>';
       }
       bxTabStatus();
-      try { var xl = document.getElementById('bxXlLast'), si = typeof S15 !== 'undefined' && S15.info, nx = si && s15Next(si.to); if (xl) { xl.textContent = si && si.from ? '마지막 ' + s15Md(si.from) + '~' + s15Md(si.to) + (nx ? ' · 다음은 ' + nx.when : '') : ''; if (!si) s15InfoLoad(true); } } catch (eXl) {}
       if (!SP.box || Date.now() - (SP.boxAt || 0) > 60000) bxLoad();
     }
-    function bxTabStatus() { try { bxDotSync(); } catch (eDn) {}
+    function bxTabStatus() { try { bxDotSync(); } catch (eDn) {} try { bxWkDefaults(); } catch (eWk) {}
       var el = document.getElementById('bxTabStatus'); if (!el) return;
       [].slice.call(document.querySelectorAll('#bxTab input[data-k]')).forEach(function (inp) { var r = ((SP.box && SP.box.rows) || []).filter(function (x) { return x.box === inp.dataset.k; })[0]; if (r && r.counted != null) inp.placeholder = r.counted; });
       var l = bxLastAt(), lr = ((SP.box && SP.box.rows) || []).filter(function (r) { return r.at === l; })[0], lt = document.getElementById('bxTabLast');
@@ -5702,7 +5736,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var rows = (SP.box && SP.box.rows) || [], bad = rows.filter(function (r) { return r.status === 'red' || r.status === 'yellow'; }).length, n = document.getElementById('spBoxN');
       if (n) n.textContent = bad ? bad : '';
       if (!SP.box) { el.innerHTML = '<div class="sp-msg"><span class="ry-info-spin"></span>불러오는 중…</div>'; return; }
-      el.innerHTML = '<h3>박스별 상태</h3><p class="bx-last">🟢 넉넉 · 🟡 영업일 10일치 이하 · 🔴 영업일 5일치 이하 · ⚪ 쓰는 세트 없음<br>🟡 · 🔴가 되면 그 번호가 약사 발주에 자동으로 올라가요 · 1박스 개수를 알면 ‘한 달 + 도착 3일’치 박스 수만큼 (한 달 사용 = 세트 15일 판매 × 2)</p><p class="bx-sort">↓ 한 달 사용량 많은 순으로 정렬했어요</p>'
+      el.innerHTML = '<h3>박스별 상태</h3><p class="bx-last">🟢 넉넉 · 🟡 영업일 10일치 이하 · 🔴 영업일 5일치 이하 · ⚪ 쓰는 세트 없음<br>🟡 · 🔴가 되면 그 번호가 약사 발주에 자동으로 올라가요 · 1박스 개수를 알면 ‘한 달 + 도착 3일’치 박스 수만큼 (' + (SP.box.week ? '하루 사용 = 주간 판매 엑셀 ' + s15Md(SP.box.week.from) + '~' + s15Md(SP.box.week.to) + ' 세트 판매 ÷ ' + SP.box.week.days + '일' : '한 달 사용 = 세트 15일 판매 × 2') + ')</p><p class="bx-sort">↓ 한 달 사용량 많은 순으로 정렬했어요</p>'
         + (function () {   /* 1019 MJ: 많이 쓰는 박스 순 · 사용량 모르는 박스·무지박스는 아래에 접어 두기 (무지라도 🟡·🔴면 위에) */
           var TH = '<table class="sp-bp-t"><thead><tr><th>박스</th><th>상태</th><th>남은 개수</th><th>한 달 사용 ▼</th><th>쓰는 세트</th></tr></thead><tbody>', bad = function (r) { return r.status === 'red' || r.status === 'yellow'; };
           var muji = rows.filter(function (r) { return /^무지/.test(r.box) && !bad(r); }), rest = rows.filter(function (r) { return muji.indexOf(r) < 0; });
@@ -11702,15 +11736,15 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function s15Md(v) { var m = String(v || '').match(/^(\d{4})-(\d{2})-(\d{2})$/); return m ? (+m[2]) + '/' + (+m[3]) : ''; }
     function s15Next(to) {
       if (!/^\d{4}-\d{2}-\d{2}$/.test(String(to || ''))) return null;
-      var b = new Date(to + 'T00:00:00'); b.setDate(b.getDate() + 1); while (b.getDay() !== 5) b.setDate(b.getDate() + 1); var a = new Date(b); a.setDate(a.getDate() - 14);   // 1019 MJ: 매주 금요일에 최근 15일 엑셀 (겹쳐도 됨 · 박스 재고 하루 사용량도 이걸로)
+      var a = new Date(to + 'T00:00:00'); a.setDate(a.getDate() + 1); var b = new Date(a); b.setDate(b.getDate() + 14);
       var t = new Date(); t.setHours(0, 0, 0, 0); var left = Math.round((b - t) / 864e5);
       return { from: s15Ymd(a), to: s15Ymd(b), label: s15Md(s15Ymd(a)) + '~' + s15Md(s15Ymd(b)), when: left > 0 ? s15Md(s15Ymd(b)) + '에(' + left + '일 뒤)' : '지금', due: left <= 0 };
     }
     function s15PeriodDefaults() {
       var f = document.getElementById('s15From'), t = document.getElementById('s15To'); if (!f || !t) return;
       var nx = S15.info && s15Next(S15.info.to), today = new Date(); today.setHours(0, 0, 0, 0);
-      if (!f.value) { var d = new Date(today); d.setDate(d.getDate() - 14); f.value = s15Ymd(d); }   // 1019 MJ: 매주 금요일 = 오늘까지 최근 15일
-      if (!t.value) t.value = s15Ymd(today);
+      if (!f.value) { if (nx) f.value = nx.from; else { var d = new Date(today); d.setDate(d.getDate() - 14); f.value = s15Ymd(d); } }
+      if (!t.value) t.value = nx && nx.to < s15Ymd(today) ? nx.to : s15Ymd(today);
     }
     function s15Dot() {
       var b = document.getElementById('s15Entry'), due = currentSelectedMember === PF_ADMIN && S15.info && (s15Days() == null || s15Days() >= 7);
@@ -11816,7 +11850,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           s15Render(); s15Dot();
           showToast(cnt + '개 상품 15일 판매량을 바꿨어요' + (r.reset ? ' · 엑셀에 없던 ' + r.reset + '개는 0으로' : '') + (r.skipped ? ' · 시트 수식 칸 ' + r.skipped + '개는 그대로' : ''), 3200);
           try { var pk = xs0.filter(function (x) { return x.pack; }); if (pk.length) setTimeout(function () { alert('📦 묶음 상품은 패키지 수로 합쳤어요\n' + pk.map(function (x) { return '· ' + x.n + ' : 15일 판매 ' + x.q + '개 (' + x.packTxt + ')'; }).join('\n')); }, 200); } catch (ePk) {}   /* 1019 MJ: 엑셀 올리면 레디비타·뉴베인 계산 결과 알려 주기 */
-          try { var nx = s15Next((document.getElementById('s15To') || {}).value); if (nx) setTimeout(function () { alert('다음 판매량 엑셀은 ' + nx.when + ' 최근 15일(' + nx.label + ')로 올려주세요'); }, 400); } catch (eN) {}
+          try { var nx = s15Next((document.getElementById('s15To') || {}).value); if (nx) setTimeout(function () { alert('다음 15일 판매량은 ' + nx.label + ' 기간으로 ' + nx.when + ' 올려주세요'); }, 400); } catch (eN) {}
           loadAllData(true, true, true);
           try { var pl = pl0; if (pl.length) google.script.run.withSuccessHandler(function () { try { if (typeof SP !== 'undefined') SP.data = null; } catch (e3) {} }).saveUnitPrices(pl, per0); } catch (ePr) {}   /* 1017 세트 상세 사입가·판매가 */
           /* 1016 MJ: 같은 엑셀에서 세트 이름을 찾아 세트 15일 판매량도 */
@@ -13031,7 +13065,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
 <div class="ava-dim" id="s15Dim" onclick="s15Close()"></div>
 <div class="ava-sheet" id="s15Sheet" role="dialog" aria-label="15일 판매량 엑셀">
   <div class="ava-head"><b class="ry-info-title">15일 판매량 엑셀</b><button type="button" onclick="s15Close()">닫기</button></div>
-  <div class="ava-sub">판매량 통계 엑셀을 올리면 앱 상품의 15일 판매 숫자를 한꺼번에 바꿔요. 매주 금요일에 최근 15일로 올려 주세요.</div>
+  <div class="ava-sub">판매량 통계 엑셀을 올리면 앱 상품의 15일 판매 숫자를 한꺼번에 바꿔요. 15일마다 한 번이면 돼요.</div>
   <div class="s15-period"><label>엑셀 기간 <input type="date" id="s15From" aria-label="기간 시작"></label><span>~</span><label><input type="date" id="s15To" aria-label="기간 끝"></label></div>
   <label class="np-save s15-pick" id="s15PickL"><input type="file" accept=".xlsx,.xls,.csv" onchange="s15Pick(this)"><span>엑셀 파일 고르기</span></label>
   <div id="s15Body" class="s15-body"></div>
