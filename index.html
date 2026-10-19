@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvetvemm">
+  <meta name="ry-build" content="mveujc2w">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -7233,7 +7233,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         '#imgPreviewOverlay.open{display:flex}' +
         '#imgPreviewOverlay img{max-width:96vw;max-height:86vh;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.5);background:#fff}' +
         '#imgPreviewClose{position:fixed;top:12px;right:16px;color:#fff;font-size:30px;font-weight:900;background:none;border:none;cursor:pointer;line-height:1;z-index:10000}' +
-        '#imgPreviewRetake{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#2563eb;color:#fff;border:none;border-radius:9999px;padding:12px 22px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.4);z-index:10000}' +
+        '#imgPreviewRetake{position:fixed;bottom:24px;left:0;right:0;margin:0 auto;width:max-content;transform:none!important;background:#2563eb;color:#fff;border:none;border-radius:9999px;padding:12px 22px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.4);z-index:10000}' +
         '#imgPreviewRetake[hidden]{display:none}' +
         '.pv-nav{position:fixed;top:calc(50% - 24px);transform:none!important;width:48px;height:48px;border-radius:50%;border:0;background:rgba(255,255,255,.18);color:#fff;font-size:26px;font-weight:700;line-height:1;z-index:10000;cursor:pointer}.pv-nav[hidden]{display:none}#imgPrevP{left:10px}#imgPrevN{right:10px}' +
         '#imgPrevC{position:fixed;top:18px;left:50%;transform:translateX(-50%);color:#fff;font-size:14px;font-weight:800;background:rgba(0,0,0,.35);border-radius:999px;padding:4px 12px;z-index:10000}#imgPrevC[hidden]{display:none}' +
@@ -7259,7 +7259,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       ov.addEventListener('touchstart', function (e) { if (e.touches.length === 1) { pvSx = e.touches[0].clientX; pvSy = e.touches[0].clientY; } }, { passive: true });
       ov.addEventListener('touchend', function (e) { if (pvSx == null) return; var t = e.changedTouches[0], dx = t.clientX - pvSx, dy = t.clientY - pvSy; pvSx = null; if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) && PV.list.length > 1) { ov._sw = Date.now(); pvStep(dx < 0 ? 1 : -1); } });
       ov.addEventListener('click', function (e) {   // 0930 폰에서 '다시 찍기' 탭이 오버레이 닫기로만 잡히던 문제: 버튼 영역이면 다시 찍기
-        if (e.target && e.target.closest && e.target.closest('#imgPreviewRetake')) { e.stopPropagation(); const row = parseInt(ov.getAttribute('data-row'), 10); closeImagePreview(); if (row) openPhotoPicker(row); return; }
+        if (e.target && e.target.closest && e.target.closest('#imgPreviewRetake')) { e.stopPropagation(); const row = parseInt(ov.getAttribute('data-row'), 10); closeImagePreview(); window._pvBlock = 0; if (row) openPhotoPicker(row); return; }   // 1019 닫힘 뒤 0.4초 막기가 사진 고르기 창(input click)까지 막던 것
         var nv = e.target && e.target.closest && e.target.closest('.pv-nav'); if (nv) { e.stopPropagation(); pvStep(nv.id === 'imgPrevN' ? 1 : -1); return; }
         if (ov._sw && Date.now() - ov._sw < 500) return;   // 밀어서 넘긴 손가락은 닫기로 안 침
         closeImagePreview();
@@ -7270,7 +7270,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       ov.querySelector('#imgPreviewRetake').addEventListener('click', function(e) {
         e.stopPropagation();
         const row = parseInt(ov.getAttribute('data-row'), 10);
-        closeImagePreview();
+        closeImagePreview(); window._pvBlock = 0;
         if (row) openPhotoPicker(row);
       });
 
@@ -7285,7 +7285,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         }
       }, true);
       /* 1018 MJ: 사진을 닫는 그 터치가 뒤 화면 버튼까지 눌리던 것 — 닫은 직후 0.4초는 뒤 화면 누름을 막아요 */
-      ['click', 'pointerup', 'touchend'].forEach(function (ty) { document.addEventListener(ty, function (e) { if (window._pvBlock && Date.now() < window._pvBlock && !(e.target.closest && e.target.closest('#imgPreviewOverlay.open, #eduZoom:not([hidden])'))) { e.preventDefault(); e.stopImmediatePropagation(); } }, true); });
+      ['click', 'pointerup', 'touchend'].forEach(function (ty) { document.addEventListener(ty, function (e) { if (window._pvBlock && Date.now() < window._pvBlock && !(e.target.type === 'file') && !(e.target.closest && e.target.closest('#imgPreviewOverlay.open, #eduZoom:not([hidden])'))) { e.preventDefault(); e.stopImmediatePropagation(); } }, true); });
     }
 
     var PV = { list: [], i: 0 };
