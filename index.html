@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvep67aq">
+  <meta name="ry-build" content="mvepafcp">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -5711,7 +5711,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         var fl = function (r, short) { return r.flow === 'ship' ? '<span class="bxv-ship">🚚 배송중' + (short || !od(r) ? '' : ' · ' + escapeHtml(od(r)) + ' 발주') + '</span>' : r.flow === 'order' ? '<span class="bxv-fl">약사 발주 목록</span>' : r.flow === 'review' ? '<span class="bxv-fl">1차 검토 중</span>' : r.order ? '<span class="bxv-fl">자동 발주 예정</span>' : ''; };
         var act = function (r) { return (r.sets || []).length ? ' data-b="' + escapeHtml(r.box) + '" onclick="bxSetPop(this.dataset.b)"' : ''; };
         /* 1019 MJ: 실제로 보니 시안 ④ — 박스를 옆으로 눕힌 통(안에 남은 개수) + 오른쪽 큰 '며칠' · 한 목록 */
-        return '<div class="bxv-key"><span class="k1"><i></i>통 = 남은 재고 (30일치면 가득)</span><span class="k2"><i></i>점선 = 10일 발주선 · 넘어가면 자동 발주</span><span class="k3"><b>8일</b> = 이만큼 버텨요</span></div><div class="bxv-rest">' + arr.map(function (r) {
+        return '<div class="bxv-key"><span class="k1"><i></i>통 = 남은 재고 (30일치면 가득)</span><span class="k2"><i></i>점선 = 10일 발주선 · 통이 점선 왼쪽까지 줄면 자동 발주</span><span class="k3"><b>8일</b> = 이만큼 버텨요</span></div><div class="bxv-rest">' + arr.map(function (r) {
             return '<button type="button" class="bxv-h"' + act(r) + '><span class="bxv-hb"><span class="bxv-ht"><b>' + escapeHtml(bxName(r.box)) + '</b>' + fl(r) + '</span>'
               + '<span class="bxv-tube"><i style="width:' + P(r) + '%;background:' + col(r) + '"></i><s></s><span class="bxv-tx"><b>' + (r.left != null ? r.left.toLocaleString() + '개' : '–') + '</b><em>한 달 ' + (r.month || 0).toLocaleString() + '</em></span></span></span>'
               + '<span class="bxv-hd" style="color:' + col(r) + '">' + dT(r.days) + '일<small>버팀</small></span></button>'; }).join('') + '</div>'
