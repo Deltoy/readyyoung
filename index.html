@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvf15i6b">
+  <meta name="ry-build" content="mvf1r2ga">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -5607,11 +5607,12 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function bxDoneHtml() {
       var l = bxLastAt(), lr = ((SP.box && SP.box.rows) || []).filter(function (r) { return r.at === l; })[0];
       if (l && l.slice(0, 10) === bxToday()) return '<span class="bx-dn ok">✓ 오늘 기입 완료 · <b>' + escapeHtml((lr && lr.by) || '') + '</b> ' + escapeHtml(l.slice(11, 16)) + '</span>';
-      return '';   // 1019 매일 세지 않음 — 마지막으로 센 날은 아래 줄에
+      var t = typeof sdToday === 'function' ? sdToday() : null, am = t && t.am ? [t.am.cn, t.am.jp].filter(Boolean) : [];
+      return '<span class="bx-dn no">⏳ 오늘 아직 안 적었어요' + (am.length ? ' · 오전 세트 담당 <b>' + am.map(escapeHtml).join(' · ') + '</b>' : '') + '</span>';
     }
     function bxDotSync() {
       if (!SP.box) return; var l = bxLastAt(), done = !!l && l.slice(0, 10) === bxToday(), lr = ((SP.box.rows) || []).filter(function (r) { return r.at === l; })[0], d = document.getElementById('bxDot');
-      if (d) { d.hidden = !done; d.classList.toggle('ok', done); d.textContent = done ? '✓ ' + ((lr && lr.by) || '완료') : ''; }   // 1019 매일 세지 않으니 '오늘 아직'은 안 보임
+      if (d) { d.hidden = false; d.classList.toggle('ok', done); d.textContent = done ? '✓ ' + ((lr && lr.by) || '완료') : '오늘 아직'; }
       [].slice.call(document.querySelectorAll('.bx-done')).forEach(function (el) { el.innerHTML = bxDoneHtml(); });
       try { bxDutyPop(); } catch (eDp) {}
     }
@@ -5689,7 +5690,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         var g = '', gm = ''; for (var i = 1; i <= 9; i++) g += bxCell(String(i), i + '번');
         BX_M.forEach(function (i) { gm += bxCell('무지' + i, '무지 ' + i + '번'); });
         body.innerHTML = '<div id="bxTab" class="bx-tab">'
-          + '<details class="bx-card bx-count"><summary><h3>📝 박스 직접 세서 맞추기</h3><small>숫자가 이상할 때만 · 평소엔 판매량으로 자동 계산</small></summary><p class="bx-done"></p><p class="bx-last" id="bxTabLast"></p>' + BX_GUIDE
+          + '<details class="bx-card bx-count"' + (currentSelectedMember === PF_ADMIN ? '' : ' open') + '><summary><h3>📝 오늘 남은 개수 적기</h3><small>매일 아침 오전 세트 담당 · 세면서 박스 위치도 익혀요</small></summary><p class="bx-done"></p><p class="bx-last" id="bxTabLast"></p>' + BX_GUIDE
           + '<div class="bx-grid">' + g + '</div>'
           + '<button type="button" class="bx-more" onclick="var g=document.getElementById(\'bxTabM\'); g.hidden=!g.hidden; this.textContent = g.hidden ? \'＋ 무지박스도 적기\' : \'－ 무지박스 접기\'">＋ 무지박스도 적기</button>'
           + '<div id="bxTabM" class="bx-grid" hidden>' + gm + '</div>'
@@ -5794,8 +5795,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     /* 1018 MJ: 박스 재고는 그날 오전 세트 담당만 — 그 사람이 앱을 열면 위에 알림 (오늘 누가 적으면 사라짐 · × 는 이번에만) */
     function bxDutyPop() {
       var host = document.getElementById('ryTopPops'); if (!host || !SP.box) return;
-      var el = document.getElementById('bxDutyPop'); if (el) el.hidden = true; return;   // 1019 MJ: 판매량 엑셀로 자동 계산 → 오전 세트 담당이 박스를 셀 필요 없음, 알람 끔
-      var me = currentSelectedMember || '', l = bxLastAt(), done = !!l && l.slice(0, 10) === bxToday();
+      var el = document.getElementById('bxDutyPop'), me = currentSelectedMember || '', l = bxLastAt(), done = !!l && l.slice(0, 10) === bxToday();   // 1019 MJ: 다시 켬 — 매일 세면서 박스 위치도 익히게
       var t = typeof sdToday === 'function' ? sdToday() : null, am = t && t.am ? [t.am.cn, t.am.jp].filter(Boolean) : [];
       if (done || window._bxDutyX || am.indexOf(me) < 0) { if (el) el.hidden = true; return; }
       if (!el) { el = document.createElement('div'); el.id = 'bxDutyPop'; el.setAttribute('role', 'status'); host.appendChild(el); }
