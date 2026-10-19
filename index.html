@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvesqp32">
+  <meta name="ry-build" content="mvesw2hc">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -5795,6 +5795,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     }
     function bxPopup(force) {
       try { bxDutyPop(); } catch (eDp) {}
+      var old = document.getElementById('bxPop'); if (old) old.hidden = true; return;   // 1019 MJ: '아크릴박스 주문할 때예요' 알림은 안 띄움 — 부족하면 약사 발주에 자동으로 들어감
       var host = document.getElementById('ryTopPops'); if (!host || !SP.box) return;
       var el = document.getElementById('bxPop');
       var can = false; try { can = typeof sdCanEdit === 'function' && sdCanEdit(); } catch (e) {}
