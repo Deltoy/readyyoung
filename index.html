@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mveyjlb6">
+  <meta name="ry-build" content="mvez1rk8">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -5430,6 +5430,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       pg.classList.add('on'); pg.setAttribute('aria-hidden', 'false');
       document.body.classList.add('sp-open');
       try { bxLoad(); } catch (eBx) {}
+      if (!SP.data) { try { var c0 = JSON.parse(localStorage.getItem(spCacheKey()) || 'null'); if (c0 && c0.sets) SP.data = c0; } catch (eC) {} }   /* 1019 MJ: 세트 상품이 바로 보이게 — 지난번 받은 목록(가격 뺀 것)부터 그리고 서버(8초)는 뒤에서 */
       if (SP.view === 'boxes') spRender();
       if (SP.data && !SP.want) { spRender(); spLoad(true); return; }
       if (SP.data) spApplyWant();
@@ -5472,6 +5473,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           if (rev0 !== SP.rev) { spLoad(true); return; }          // 받아오는 사이에 여기서 저장·삭제가 있었다 → 옛 응답은 버리고 다시 받는다
           var same = SP.data && JSON.stringify([SP.data.sets, SP.data.products]) === JSON.stringify([res.sets, res.products]);
           SP.data = res;
+          try { localStorage.setItem(spCacheKey(), JSON.stringify({ sets: res.sets, products: (res.products || []).map(function (p) { var q = Object.assign({}, p); delete q.cost; delete q.price; return q; }), tagList: res.tagList, customTags: res.customTags })); } catch (eS) {}   /* 사입가·판매가는 저장 안 함 */
           if (SP.want) { spApplyWant(); return; }
           var f = document.getElementById('spFilter');
           if (quiet && (same || SP_AI_RUN || (f && (f.value || document.activeElement === f)))) return;   // 바뀐 게 없거나 입력 중이면 화면을 다시 그리지 않는다
@@ -5521,6 +5523,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         google.script.run.withSuccessHandler(done).withFailureHandler(function () { SP_IMG_BUSY = false; }).refreshImgUrls(rows);
       }, 150);
     }
+    function spCacheKey() { return 'spCache_' + (currentSelectedMember || ''); }
     function spShow(v) { SP.view = v; SP.setId = null; spRender(); document.getElementById('spBody').scrollTop = 0; }
     function spImg(url, cls) {
       return url ? '<img class="' + cls + '" src="' + escapeHtml(url) + '" referrerpolicy="no-referrer" loading="lazy" alt=""' + (cls === 'sp-card-img' ? ' data-no-preview' : '') + ' onerror="this.outerHTML=\'<div class=&quot;' + cls + ' none&quot;>사진을 불러오지 못했어요</div>\'">'
@@ -5535,7 +5538,13 @@ html body #ryLaunchGrid .tl-search{top:56px}
         document.getElementById('spBackBtn').textContent = '✕ 닫기'; document.getElementById('spTitle').textContent = '아크릴박스 재고';
         spSegSync(); return spRenderBoxes();
       }
-      if (!SP.data) return;
+      if (!SP.data) {   /* 1019 MJ: 탭을 누르면 바로 바뀌고 '불러오는 중' — 예전엔 자료가 올 때까지 아무 반응 없었음 */
+        document.getElementById('spSeg').hidden = false; document.getElementById('spNewBtn').hidden = true; document.getElementById('spBackBtn').textContent = '✕ 닫기';
+        document.getElementById('spTitle').textContent = '세트 상품'; spSegSync();
+        document.getElementById('spBody').innerHTML = '<div class="sp-msg"><span class="ry-info-spin"></span>불러오는 중…</div>';
+        if (!SP.busy) spLoad(false);
+        return;
+      }
       var inDetail = SP.view === 'detail';
       document.getElementById('spSeg').hidden = inDetail;
       document.getElementById('spNewBtn').hidden = SP.view !== 'sets';
