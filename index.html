@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvewym1i">
+  <meta name="ry-build" content="mvexbw3m">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1704,6 +1704,8 @@ body.sp-open #appToast{bottom:auto!important;top:calc(68px + env(safe-area-inset
 #bxSheet .bx-save{width:100%;min-height:52px;border:0;border-radius:14px;background:#155EEF;color:#fff;font-size:16px;font-weight:800;margin-top:6px}#bxSheet .bx-save:disabled{opacity:.5}
 .bx-tab{display:flex;flex-direction:column;gap:14px;max-width:900px;margin:0 auto}
 .bx-card{background:#fff;border:1px solid #EAECF0;border-radius:18px;padding:16px}
+.bx-xl p{margin:4px 0 10px;font-size:13.5px;line-height:1.5;color:#475467}.bx-xl .bx-xl-last{font-size:12.5px;color:#667085;margin:-4px 0 10px}.bx-xl .bx-xl-last:empty{display:none}
+.bx-count>summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;min-height:36px}.bx-count>summary::-webkit-details-marker{display:none}.bx-count>summary h3{margin:0}.bx-count>summary small{font-size:12.5px;color:#667085}.bx-count>summary::after{content:'펼치기 ›';margin-left:auto;font-size:13px;color:#155EEF;font-weight:700}.bx-count[open]>summary::after{content:'접기'}
 .bx-card h3{margin:0 0 4px;font-size:17px;font-weight:800;color:#101828}
 .bx-card .bx-last{margin:0 0 12px;font-size:13px;color:#667085;line-height:1.5}
 .bx-card .bx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -5680,16 +5682,18 @@ html body #ryLaunchGrid .tl-search{top:56px}
         var g = '', gm = ''; for (var i = 1; i <= 9; i++) g += bxCell(String(i), i + '번');
         BX_M.forEach(function (i) { gm += bxCell('무지' + i, '무지 ' + i + '번'); });
         body.innerHTML = '<div id="bxTab" class="bx-tab">'
-          + '<section class="bx-card"><h3>오늘 남은 개수 적기</h3><p class="bx-done"></p><p class="bx-last" id="bxTabLast"></p>' + BX_GUIDE
+          + (currentSelectedMember === PF_ADMIN ? '<section class="bx-card bx-xl"><h3>📊 판매량 엑셀로 맞추기</h3><p>매주 금요일 최근 15일 판매량 엑셀을 올리면 세트가 하루에 몇 개씩 나가는지 다시 계산해요 → 남은 박스가 영업일 10일치 아래로 내려가는 날 아침 9시에 자동 발주</p><p class="bx-xl-last" id="bxXlLast"></p><button type="button" class="bx-save" onclick="s15Open()">판매량 엑셀 올리기</button></section>' : '')   // 1019 MJ: 숫자 대신 엑셀 (같은 15일 판매량 엑셀 화면)
+          + '<details class="bx-card bx-count"' + (currentSelectedMember === PF_ADMIN ? '' : ' open') + '><summary><h3>📝 박스 직접 세서 맞추기</h3><small>2주에 한 번 정도면 충분해요</small></summary><p class="bx-done"></p><p class="bx-last" id="bxTabLast"></p>' + BX_GUIDE
           + '<div class="bx-grid">' + g + '</div>'
           + '<button type="button" class="bx-more" onclick="var g=document.getElementById(\'bxTabM\'); g.hidden=!g.hidden; this.textContent = g.hidden ? \'＋ 무지박스도 적기\' : \'－ 무지박스 접기\'">＋ 무지박스도 적기</button>'
           + '<div id="bxTabM" class="bx-grid" hidden>' + gm + '</div>'
           + '<details class="bx-kakao"><summary>' + BX_KSUM + '</summary>' + BX_KHELP + '<textarea rows="5" placeholder="여기를 꾹 눌러 붙여넣기" oninput="bxFillFromText(this.value, \'#bxTab\')"></textarea><p class="bx-kfb" role="status"></p></details>'
           + '<div class="bx-res" role="status"></div>'
-          + '<button type="button" class="bx-save" onclick="bxSave(\'#bxTab\', this)">저장 · 부족하면 1박스 자동 발주</button></section>'
+          + '<button type="button" class="bx-save" onclick="bxSave(\'#bxTab\', this)">저장 · 부족하면 자동 발주</button></details>'
           + '<section class="bx-card" id="bxTabStatus"></section></div>';
       }
       bxTabStatus();
+      try { var xl = document.getElementById('bxXlLast'), si = typeof S15 !== 'undefined' && S15.info, nx = si && s15Next(si.to); if (xl) { xl.textContent = si && si.from ? '마지막 ' + s15Md(si.from) + '~' + s15Md(si.to) + (nx ? ' · 다음은 ' + nx.when : '') : ''; if (!si) s15InfoLoad(true); } } catch (eXl) {}
       if (!SP.box || Date.now() - (SP.boxAt || 0) > 60000) bxLoad();
     }
     function bxTabStatus() { try { bxDotSync(); } catch (eDn) {}
@@ -11699,7 +11703,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function s15Md(v) { var m = String(v || '').match(/^(\d{4})-(\d{2})-(\d{2})$/); return m ? (+m[2]) + '/' + (+m[3]) : ''; }
     function s15Next(to) {
       if (!/^\d{4}-\d{2}-\d{2}$/.test(String(to || ''))) return null;
-      var a = new Date(to + 'T00:00:00'); a.setDate(a.getDate() + 1); var b = new Date(a); b.setDate(b.getDate() + 14);
+      var b = new Date(to + 'T00:00:00'); b.setDate(b.getDate() + 1); while (b.getDay() !== 5) b.setDate(b.getDate() + 1); var a = new Date(b); a.setDate(a.getDate() - 14);   // 1019 MJ: 매주 금요일에 최근 15일 엑셀 (겹쳐도 됨 · 박스 재고 하루 사용량도 이걸로)
       var t = new Date(); t.setHours(0, 0, 0, 0); var left = Math.round((b - t) / 864e5);
       return { from: s15Ymd(a), to: s15Ymd(b), label: s15Md(s15Ymd(a)) + '~' + s15Md(s15Ymd(b)), when: left > 0 ? s15Md(s15Ymd(b)) + '에(' + left + '일 뒤)' : '지금', due: left <= 0 };
     }
@@ -11813,7 +11817,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           s15Render(); s15Dot();
           showToast(cnt + '개 상품 15일 판매량을 바꿨어요' + (r.reset ? ' · 엑셀에 없던 ' + r.reset + '개는 0으로' : '') + (r.skipped ? ' · 시트 수식 칸 ' + r.skipped + '개는 그대로' : ''), 3200);
           try { var pk = xs0.filter(function (x) { return x.pack; }); if (pk.length) setTimeout(function () { alert('📦 묶음 상품은 패키지 수로 합쳤어요\n' + pk.map(function (x) { return '· ' + x.n + ' : 15일 판매 ' + x.q + '개 (' + x.packTxt + ')'; }).join('\n')); }, 200); } catch (ePk) {}   /* 1019 MJ: 엑셀 올리면 레디비타·뉴베인 계산 결과 알려 주기 */
-          try { var nx = s15Next((document.getElementById('s15To') || {}).value); if (nx) setTimeout(function () { alert('다음 15일 판매량은 ' + nx.label + ' 기간으로 ' + nx.when + ' 올려주세요'); }, 400); } catch (eN) {}
+          try { var nx = s15Next((document.getElementById('s15To') || {}).value); if (nx) setTimeout(function () { alert('다음 판매량 엑셀은 ' + nx.when + ' 최근 15일(' + nx.label + ')로 올려주세요'); }, 400); } catch (eN) {}
           loadAllData(true, true, true);
           try { var pl = pl0; if (pl.length) google.script.run.withSuccessHandler(function () { try { if (typeof SP !== 'undefined') SP.data = null; } catch (e3) {} }).saveUnitPrices(pl, per0); } catch (ePr) {}   /* 1017 세트 상세 사입가·판매가 */
           /* 1016 MJ: 같은 엑셀에서 세트 이름을 찾아 세트 15일 판매량도 */
