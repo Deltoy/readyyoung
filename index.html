@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvezxv4a">
+  <meta name="ry-build" content="mvf09b2c">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -5723,7 +5723,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         var g = '', gm = ''; for (var i = 1; i <= 9; i++) g += bxCell(String(i), i + '번');
         BX_M.forEach(function (i) { gm += bxCell('무지' + i, '무지 ' + i + '번'); });
         body.innerHTML = '<div id="bxTab" class="bx-tab">'
-          + (currentSelectedMember === PF_ADMIN ? '<section class="bx-card bx-xl"><h3>📊 주간 판매량 엑셀</h3><p>매주 금요일, 지난주 금요일~이번 주 목요일(금토일월화수목 7일) 판매량(판매량 통계 › 상품별 통계)을 올리면 박스마다 하루에 몇 개씩 나가는지 계산해서 언제 떨어질지 예측해요 → 영업일 10일치 아래로 내려가는 날 아침 9시에 자동 발주</p>'
+          + (currentSelectedMember === PF_ADMIN ? '<section class="bx-card bx-xl"><h3>📊 판매량 엑셀로 박스 계산</h3><p>15일 판매량 엑셀을 올리면 박스 계산도 같이 바뀌어요. 그 사이에 더 자주 맞추고 싶으면 여기서 주간(금~목 7일) 엑셀을 올려도 돼요 — 마지막으로 올린 엑셀 기준으로 박스마다 하루에 몇 개씩 나가는지 계산 → 영업일 10일치 아래로 내려가는 날 아침 9시에 자동 발주 (5번은 한 번에 2박스)</p>'
             + '<div class="bx-xl-per"><input type="date" id="bxWkFrom" aria-label="기간 시작"><span>~</span><input type="date" id="bxWkTo" aria-label="기간 끝"></div><p class="bx-xl-last" id="bxXlLast"></p>'
             + '<input type="file" id="bxWkFile" accept=".xlsx,.xls,.csv" hidden onchange="bxWkPick(this)"><button type="button" class="bx-save" id="bxWkBtn" onclick="document.getElementById(\'bxWkFile\').click()">주간 판매량 엑셀 고르기</button><p class="bx-xl-res" id="bxWkRes" role="status"></p></section>' : '')   // 1019 MJ: 15일 판매량과 따로, 박스 전용 주간 엑셀
           + '<details class="bx-card bx-count"><summary><h3>📝 박스 직접 세서 맞추기</h3><small>숫자가 이상할 때만 · 평소엔 판매량으로 자동 계산</small></summary><p class="bx-done"></p><p class="bx-last" id="bxTabLast"></p>' + BX_GUIDE
@@ -5746,7 +5746,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var rows = (SP.box && SP.box.rows) || [], bad = rows.filter(function (r) { return r.status === 'red' || r.status === 'yellow'; }).length, n = document.getElementById('spBoxN');
       if (n) n.textContent = bad ? bad : '';
       if (!SP.box) { el.innerHTML = '<div class="sp-msg"><span class="ry-info-spin"></span>불러오는 중…</div>'; return; }
-      el.innerHTML = '<h3>박스별 상태</h3><p class="bx-last">🟢 넉넉 · 🟡 영업일 10일치 이하 · 🔴 영업일 5일치 이하 · ⚪ 쓰는 세트 없음<br>🟡 · 🔴가 되면 그 번호가 약사 발주에 자동으로 올라가요 · 1박스 개수를 알면 ‘한 달 + 도착 3일’치 박스 수만큼 (' + (SP.box.week ? '하루 사용 = 주간 판매 엑셀 ' + s15Md(SP.box.week.from) + '~' + s15Md(SP.box.week.to) + ' 세트 판매 ÷ ' + SP.box.week.days + '일' : '한 달 사용 = 세트 15일 판매 × 2') + ')</p><p class="bx-sort">↓ 한 달 사용량 많은 순으로 정렬했어요</p>'
+      el.innerHTML = '<h3>박스별 상태</h3><p class="bx-last">🟢 넉넉 · 🟡 영업일 10일치 이하 · 🔴 영업일 5일치 이하 · ⚪ 쓰는 세트 없음<br>🟡 · 🔴가 되면 그 번호가 약사 발주에 자동으로 올라가요 · 1박스 개수를 알면 ‘한 달 + 도착 3일’치 박스 수만큼 (' + (SP.box.week ? '하루 사용 = 판매 엑셀 ' + s15Md(SP.box.week.from) + '~' + s15Md(SP.box.week.to) + ' 세트 판매 ÷ ' + SP.box.week.days + '일' : '한 달 사용 = 세트 15일 판매 × 2') + ')</p><p class="bx-sort">↓ 한 달 사용량 많은 순으로 정렬했어요</p>'
         + (function () {   /* 1019 MJ: 많이 쓰는 박스 순 · 사용량 모르는 박스·무지박스는 아래에 접어 두기 (무지라도 🟡·🔴면 위에) */
           var TH = '<table class="sp-bp-t"><thead><tr><th>박스</th><th>상태</th><th>남은 개수</th><th>한 달 사용 ▼</th><th>쓰는 세트</th></tr></thead><tbody>', bad = function (r) { return r.status === 'red' || r.status === 'yellow'; };
           var muji = rows.filter(function (r) { return /^무지/.test(r.box) && !bad(r); }), rest = rows.filter(function (r) { return muji.indexOf(r) < 0; });
