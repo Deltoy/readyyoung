@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvexrjig">
+  <meta name="ry-build" content="mvexscon">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -5674,11 +5674,11 @@ html body #ryLaunchGrid .tl-search{top:56px}
       }).withFailureHandler(function () { btn.disabled = false; btn.textContent = label; showToast('저장하지 못했어요 · 인터넷 확인', 2200); }).saveBoxStock(list, me);
     }
     /* 1016 MJ: 세트 화면에 [📦 박스 재고] 탭 — 번호마다 숫자만 넣고 저장 → 신호등 + 🔴면 1박스 자동 요청 */
-    /* 1019 MJ: 주간 판매량 엑셀 — 기본 기간 = 지난 금요일 ~ 이번(최근) 금요일 · s15 엑셀 읽기(s15LoadLib·s15ParseRows) 그대로 → 서버 setBoxWeekSales */
-    function bxFri() { var d = new Date(); d.setHours(0, 0, 0, 0); while (d.getDay() !== 5) d.setDate(d.getDate() - 1); return d; }
+    /* 1019 MJ: 주간 판매량 엑셀 — 금요일에 올림 · 기간 = 지난 금요일 ~ 어제 목요일 (금토일월화수목 7일) · s15 엑셀 읽기(s15LoadLib·s15ParseRows) 그대로 → 서버 setBoxWeekSales */
+    function bxThu() { var d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - 1); while (d.getDay() !== 4) d.setDate(d.getDate() - 1); return d; }
     function bxWkDefaults() {
       var f = document.getElementById('bxWkFrom'), t = document.getElementById('bxWkTo'), w = SP.box && SP.box.week, xl = document.getElementById('bxXlLast'); if (!f) return;
-      if (!t.value) { var b = bxFri(), a = new Date(b); a.setDate(a.getDate() - 7); t.value = s15Ymd(b); f.value = s15Ymd(a); }
+      if (!t.value) { var b = bxThu(), a = new Date(b); a.setDate(a.getDate() - 6); t.value = s15Ymd(b); f.value = s15Ymd(a); }
       if (xl) xl.textContent = w ? '마지막 ' + s15Md(w.from) + '~' + s15Md(w.to) + ' (' + w.days + '일) · 판매 기록 있는 세트 ' + (w.sets || []).length + '종 · ' + w.at.slice(5).replace('-', '/') + ' 올림' : '아직 안 올렸어요 · 그동안은 세트 15일 판매로 계산해요';
     }
     function bxWkPick(inp) {
@@ -5713,7 +5713,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         var g = '', gm = ''; for (var i = 1; i <= 9; i++) g += bxCell(String(i), i + '번');
         BX_M.forEach(function (i) { gm += bxCell('무지' + i, '무지 ' + i + '번'); });
         body.innerHTML = '<div id="bxTab" class="bx-tab">'
-          + (currentSelectedMember === PF_ADMIN ? '<section class="bx-card bx-xl"><h3>📊 주간 판매량 엑셀</h3><p>매주 금요일, 전주 금요일~이번 주 금요일 판매량(판매량 통계 › 상품별 통계)을 올리면 박스마다 하루에 몇 개씩 나가는지 계산해서 언제 떨어질지 예측해요 → 영업일 10일치 아래로 내려가는 날 아침 9시에 자동 발주</p>'
+          + (currentSelectedMember === PF_ADMIN ? '<section class="bx-card bx-xl"><h3>📊 주간 판매량 엑셀</h3><p>매주 금요일, 지난주 금요일~이번 주 목요일(금토일월화수목 7일) 판매량(판매량 통계 › 상품별 통계)을 올리면 박스마다 하루에 몇 개씩 나가는지 계산해서 언제 떨어질지 예측해요 → 영업일 10일치 아래로 내려가는 날 아침 9시에 자동 발주</p>'
             + '<div class="bx-xl-per"><input type="date" id="bxWkFrom" aria-label="기간 시작"><span>~</span><input type="date" id="bxWkTo" aria-label="기간 끝"></div><p class="bx-xl-last" id="bxXlLast"></p>'
             + '<input type="file" id="bxWkFile" accept=".xlsx,.xls,.csv" hidden onchange="bxWkPick(this)"><button type="button" class="bx-save" id="bxWkBtn" onclick="document.getElementById(\'bxWkFile\').click()">주간 판매량 엑셀 고르기</button><p class="bx-xl-res" id="bxWkRes" role="status"></p></section>' : '')   // 1019 MJ: 15일 판매량과 따로, 박스 전용 주간 엑셀
           + '<details class="bx-card bx-count"><summary><h3>📝 박스 직접 세서 맞추기</h3><small>숫자가 이상할 때만 · 평소엔 판매량으로 자동 계산</small></summary><p class="bx-done"></p><p class="bx-last" id="bxTabLast"></p>' + BX_GUIDE
