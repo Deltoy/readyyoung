@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvf0mptx">
+  <meta name="ry-build" content="mvf0plm3">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1704,7 +1704,6 @@ body.sp-open #appToast{bottom:auto!important;top:calc(68px + env(safe-area-inset
 #bxSheet .bx-save{width:100%;min-height:52px;border:0;border-radius:14px;background:#155EEF;color:#fff;font-size:16px;font-weight:800;margin-top:6px}#bxSheet .bx-save:disabled{opacity:.5}
 .bx-tab{display:flex;flex-direction:column;gap:14px;max-width:900px;margin:0 auto}
 .bx-card{background:#fff;border:1px solid #EAECF0;border-radius:18px;padding:16px}
-.bx-xl p{margin:4px 0 10px;font-size:13.5px;line-height:1.5;color:#475467}.bx-xl .bx-xl-last{font-size:12.5px;color:#667085;margin:-4px 0 10px}.bx-xl .bx-xl-last:empty{display:none}
 .bx-count>summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;min-height:36px}.bx-count>summary::-webkit-details-marker{display:none}.bx-count>summary h3{margin:0}.bx-count>summary small{font-size:12.5px;color:#667085}.bx-count>summary::after{content:'펼치기 ›';margin-left:auto;font-size:13px;color:#155EEF;font-weight:700}.bx-count[open]>summary::after{content:'접기'}
 .bx-card h3{margin:0 0 4px;font-size:17px;font-weight:800;color:#101828}
 .bx-card .bx-last{margin:0 0 12px;font-size:13px;color:#667085;line-height:1.5}
@@ -5683,11 +5682,6 @@ html body #ryLaunchGrid .tl-search{top:56px}
       }).withFailureHandler(function () { btn.disabled = false; btn.textContent = label; showToast('저장하지 못했어요 · 인터넷 확인', 2200); }).saveBoxStock(list, me);
     }
     /* 1016 MJ: 세트 화면에 [📦 박스 재고] 탭 — 번호마다 숫자만 넣고 저장 → 신호등 + 🔴면 1박스 자동 요청 */
-    /* 1019 MJ: 박스 계산에 쓴 마지막 판매 엑셀 기간 (15일 판매량 엑셀을 올리면 서버가 같이 바꿈) */
-    function bxWkDefaults() {
-      var w = SP.box && SP.box.week, xl = document.getElementById('bxXlLast'); if (!xl) return;
-      xl.textContent = w ? '박스 계산 기준: ' + s15Md(w.from) + '~' + s15Md(w.to) + ' (' + w.days + '일) 판매 · 세트 ' + (w.sets || []).length + '종 · ' + w.at.slice(5).replace('-', '/') + ' 올림' : '아직 안 올렸어요';
-    }
     function bxOpenTab() { SP.view = 'boxes'; SP.setId = null; openSetPage(); }
     function spRenderBoxes() {
       var body = document.getElementById('spBody');
@@ -5695,7 +5689,6 @@ html body #ryLaunchGrid .tl-search{top:56px}
         var g = '', gm = ''; for (var i = 1; i <= 9; i++) g += bxCell(String(i), i + '번');
         BX_M.forEach(function (i) { gm += bxCell('무지' + i, '무지 ' + i + '번'); });
         body.innerHTML = '<div id="bxTab" class="bx-tab">'
-          + (currentSelectedMember === PF_ADMIN ? '<section class="bx-card bx-xl"><h3>📊 판매량 엑셀로 박스 계산</h3><p>15일 판매량 엑셀 하나만 올리면 상품 15일 판매 · 세트 판매 · 박스마다 하루 사용량이 한 번에 계산돼요 → 남은 박스가 영업일 10일치 아래로 내려가는 날 아침 9시에 자동 발주 (5번은 한 번에 2박스)</p><p class="bx-xl-last" id="bxXlLast"></p><button type="button" class="bx-save" onclick="s15Open()">15일 판매량 엑셀 올리기</button></section>' : '')   // 1019 MJ: 엑셀은 하나로 — 같은 15일 판매량 엑셀 창
           + '<details class="bx-card bx-count"><summary><h3>📝 박스 직접 세서 맞추기</h3><small>숫자가 이상할 때만 · 평소엔 판매량으로 자동 계산</small></summary><p class="bx-done"></p><p class="bx-last" id="bxTabLast"></p>' + BX_GUIDE
           + '<div class="bx-grid">' + g + '</div>'
           + '<button type="button" class="bx-more" onclick="var g=document.getElementById(\'bxTabM\'); g.hidden=!g.hidden; this.textContent = g.hidden ? \'＋ 무지박스도 적기\' : \'－ 무지박스 접기\'">＋ 무지박스도 적기</button>'
@@ -5708,7 +5701,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       bxTabStatus();
       if (!SP.box || Date.now() - (SP.boxAt || 0) > 60000) bxLoad();
     }
-    function bxTabStatus() { try { bxDotSync(); } catch (eDn) {} try { bxWkDefaults(); } catch (eWk) {}
+    function bxTabStatus() { try { bxDotSync(); } catch (eDn) {}
       var el = document.getElementById('bxTabStatus'); if (!el) return;
       [].slice.call(document.querySelectorAll('#bxTab input[data-k]')).forEach(function (inp) { var r = ((SP.box && SP.box.rows) || []).filter(function (x) { return x.box === inp.dataset.k; })[0]; if (r && r.counted != null) inp.placeholder = r.counted; });
       var l = bxLastAt(), lr = ((SP.box && SP.box.rows) || []).filter(function (r) { return r.at === l; })[0], lt = document.getElementById('bxTabLast');
