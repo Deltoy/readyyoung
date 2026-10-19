@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvep05vw">
+  <meta name="ry-build" content="mvep52np">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1664,6 +1664,11 @@ body.sp-open #appToast{bottom:auto!important;top:calc(68px + env(safe-area-inset
 .bxv-r{appearance:none;font:inherit;color:inherit;background:none;border:0;border-top:1px solid #EAECF0;width:100%;display:grid;grid-template-columns:44px minmax(0,1fr) 60px;align-items:center;gap:10px;padding:13px 14px;min-height:48px;cursor:pointer;text-align:left}.bxv-r:first-child{border-top:0}.bxv-r b{font-size:15px}
 .bxv-g{position:relative;height:14px;border-radius:999px;background:#F2F4F7}.bxv-g i{position:absolute;left:0;top:0;bottom:0;border-radius:999px}.bxv-g s{position:absolute;left:33.3%;top:-4px;bottom:-4px;width:2px;background:#101828;opacity:.4}
 .bxv-rd{text-align:right;font-weight:850;font-size:15px;font-variant-numeric:tabular-nums}.bxv-rf{grid-column:2 / 4;margin-top:-4px}.bxv-rf span{margin-top:0}
+.bxv-h{appearance:none;font:inherit;color:inherit;background:none;border:0;border-top:1px solid #EAECF0;width:100%;display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;text-align:left}.bxv-h:first-child{border-top:0}
+.bxv-hb{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}.bxv-ht{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.bxv-ht b{font-size:16px;font-weight:800}.bxv-ht span{margin-top:0}
+.bxv-tube{position:relative;height:32px;border:2.5px solid #D0D5DD;border-radius:10px;overflow:hidden;background:#fff}.bxv-tube i{position:absolute;left:0;top:0;bottom:0;opacity:.3}.bxv-tube s{position:absolute;left:33.3%;top:0;bottom:0;border-left:2px dashed rgba(16,24,40,.5)}
+.bxv-tx{position:absolute;inset:0;display:flex;align-items:center;padding:0 10px;font-variant-numeric:tabular-nums}.bxv-tx b{font-size:13.5px;font-weight:800;color:#101828}.bxv-tx em{margin-left:auto;font-style:normal;font-size:12px;font-weight:650;color:#475467}
+.bxv-hd{width:64px;flex:none;text-align:right;font-size:22px;font-weight:850;line-height:1;font-variant-numeric:tabular-nums}.bxv-hd small{display:block;font-size:11px;color:#98A2B3;font-weight:600;margin-top:4px}.bxv-h:focus-visible{outline:2px solid #155EEF;outline-offset:-2px}
 .bxv-n{margin:8px 2px 0;font-size:12px;color:#98A2B3;line-height:1.5}
 .bxv-t:focus-visible,.bxv-r:focus-visible{outline:2px solid #155EEF;outline-offset:2px}
 .bx-sort{margin:6px 0 8px;display:inline-flex;align-items:center;height:28px;padding:0 11px;border-radius:999px;background:#EFF4FF;color:#155EEF;font-size:13px;font-weight:700}
@@ -5696,7 +5701,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           var muji = rows.filter(function (r) { return /^무지/.test(r.box) && !bad(r); }), rest = rows.filter(function (r) { return muji.indexOf(r) < 0; });
           var used = rest.filter(function (r) { return r.month > 0; }).sort(function (a, b) { return b.month - a.month; }), unk = rest.filter(function (r) { return !(r.month > 0); });
           var tb = function (arr) { return TH + arr.map(bxRowHtml).join('') + '</tbody></table>'; }, fold = function (t, arr) { return arr.length ? '<details class="bx-fold"><summary>' + t + ' <b>' + arr.length + '개</b> <span>펼쳐 보기</span></summary>' + tb(arr) + '</details>' : ''; };
-          return bxViz(used) + fold('⚪ 사용량 모르는 박스', unk) + fold('무지박스', muji);   /* 1019 MJ 시안 ③: 많이 쓰는 TOP 3 = 박스 채움 그림 · 나머지 = 게이지 한 줄 (30일치 = 가득 · 10일 = 발주선) */
+          return bxViz(used) + fold('⚪ 사용량 모르는 박스', unk) + fold('무지박스', muji);   /* 1019 MJ 시안 ④: 눕힌 박스 게이지 (30일치 = 가득 · 10일 = 발주선) */
         })();
       function bxViz(arr) {
         if (!arr.length) return '';
@@ -5704,13 +5709,12 @@ html body #ryLaunchGrid .tl-search{top:56px}
         var od = function (r) { return r.odate && r.odate !== '-' ? String(r.odate).replace(/^\d{4}[-.\/]\s*/, '').replace(/[-.]\s*/, '/') : ''; };
         var fl = function (r, short) { return r.flow === 'ship' ? '<span class="bxv-ship">🚚 배송중' + (short || !od(r) ? '' : ' · ' + escapeHtml(od(r)) + ' 발주') + '</span>' : r.flow === 'order' ? '<span class="bxv-fl">약사 발주 목록</span>' : r.flow === 'review' ? '<span class="bxv-fl">1차 검토 중</span>' : r.order ? '<span class="bxv-fl">자동 발주 예정</span>' : ''; };
         var act = function (r) { return (r.sets || []).length ? ' data-b="' + escapeHtml(r.box) + '" onclick="bxSetPop(this.dataset.b)"' : ''; };
-        var top = arr.slice(0, 3), rest = arr.slice(3);
-        return '<p class="bxv-l">많이 쓰는 TOP ' + top.length + '</p><div class="bxv-top">' + top.map(function (r) {
-            return '<button type="button" class="bxv-t"' + act(r) + ' aria-label="' + escapeHtml(bxName(r.box)) + ' ' + dT(r.days) + '일 버팀"><span class="bxv-b"><i style="height:' + P(r) + '%;background:' + col(r) + '"></i><s></s><b>' + escapeHtml(String(r.box)) + '</b></span>'
-              + '<span class="bxv-d" style="color:' + col(r) + '">' + dT(r.days) + '일</span><span class="bxv-m">' + (r.left != null ? r.left.toLocaleString() + '개 남음' : '') + '</span><span class="bxv-m2">한 달 ' + (r.month || 0).toLocaleString() + '개</span>' + fl(r, true) + '</button>'; }).join('') + '</div>'
-          + (rest.length ? '<p class="bxv-l">나머지</p><div class="bxv-rest">' + rest.map(function (r) {
-            return '<button type="button" class="bxv-r"' + act(r) + '><b>' + escapeHtml(bxName(r.box)) + '</b><span class="bxv-g"><i style="width:' + P(r) + '%;background:' + col(r) + '"></i><s></s></span><span class="bxv-rd" style="color:' + col(r) + '">' + dT(r.days) + '일</span>' + (fl(r) ? '<span class="bxv-rf">' + fl(r) + '</span>' : '') + '</button>'; }).join('') + '</div>' : '')
-          + '<p class="bxv-n">박스 그림·막대 = 남은 날짜 (30일치 = 가득) · 점선·세로선 = 10일 발주선 · 누르면 그 박스를 쓰는 세트</p>';
+        /* 1019 MJ: 실제로 보니 시안 ④ — 박스를 옆으로 눕힌 통(안에 남은 개수) + 오른쪽 큰 '며칠' · 한 목록 */
+        return '<div class="bxv-rest">' + arr.map(function (r) {
+            return '<button type="button" class="bxv-h"' + act(r) + '><span class="bxv-hb"><span class="bxv-ht"><b>' + escapeHtml(bxName(r.box)) + '</b>' + fl(r) + '</span>'
+              + '<span class="bxv-tube"><i style="width:' + P(r) + '%;background:' + col(r) + '"></i><s></s><span class="bxv-tx"><b>' + (r.left != null ? r.left.toLocaleString() + '개' : '–') + '</b><em>한 달 ' + (r.month || 0).toLocaleString() + '</em></span></span></span>'
+              + '<span class="bxv-hd" style="color:' + col(r) + '">' + dT(r.days) + '일<small>버팀</small></span></button>'; }).join('') + '</div>'
+          + '<p class="bxv-n">통이 찬 만큼 = 남은 날짜 (30일치 = 가득) · 점선 = 10일 발주선 · 누르면 그 박스를 쓰는 세트</p>';
       }
       function bxRowHtml(r) {
           var st = BX_ST[r.status] || BX_ST.unknown;
