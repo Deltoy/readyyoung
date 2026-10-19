@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvez1rk8">
+  <meta name="ry-build" content="mvezctgr">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -11675,8 +11675,12 @@ html body #ryLaunchGrid .tl-search{top:56px}
         if (!hit) return; out = out.filter(function (x) { return s15Key(x.n) !== s15Key(pk.to); }); var p = s15Prep(pk.to); p.n = pk.to; p.q = Math.round(q); p.pack = true;
         p.packTxt = pk.from.map(function (f) { var x = out.filter(function (y) { return s15Key(y.n) === s15Key(f[0]); })[0]; return x ? f[0].replace(/^.*?(\d+\s*(?:포|병|ea)).*$/i, '$1') + ' ' + x.q + '개' : ''; }).filter(Boolean).join(' + ') + ' = ' + (Math.round(q * 10) / 10) + '패키지'; out.push(p);
       });
+      /* 1019 MJ: POS 이름이 앱 상품 이름과 다른 주문 상품 → 앱 상품 이름으로 바꾸고 같은 이름끼리 더함 */
+      var seen = {}; out = out.filter(function (x) { var a = S15_ALIAS[s15Key(x.n)]; if (a) Object.assign(x, s15Prep(a), { n: a }); var k = s15Key(x.n); if (seen[k]) { seen[k].q += x.q; return false; } seen[k] = x; return true; });
       return out;
     }
+    var S15_ALIAS = {};   /* POS 판매 상품명 → 앱 주문 상품명 (새로 생기면 여기에 한 줄) */
+    [['닥터 리쥬올 더 PDRN 시그니처 SET', '닥터리쥬올 더 PDRN 시그니처 세트'], ['리쥬올 3-step 어드밴스드 스킨케어 시스템 세트', '닥터 리쥬올 3-step 어드밴스드 스킨케어 시스템']].forEach(function (x) { S15_ALIAS[s15Key(x[0])] = x[1]; });
     var S15_PACKS = [{ to: '레디비타 프리미엄 멀티샷', from: [['레디비타 프리미엄 멀티샷 1ea', 1 / 28], ['레디비타 7병', 7 / 28], ['레디비타 28병', 1]] },
       { to: '뉴베인액(트록세루틴) 28포', from: [['뉴베인액(트록세루틴) 7ml x 1포', 1 / 28], ['뉴베인액(트록세루틴) 7ml x 7포', 7 / 28], ['뉴베인28포', 1]] }];   /* 1019 MJ: 뉴베인도 28포 1패키지 = 1개 */   /* 1019 MJ: 28병 1패키지 = 1개(택배 1상자 = 10패키지) → 낱병·7병도 패키지로 환산 · 새 묶음 상품이 생기면 여기에 한 줄 */
     /* 앱 상품을 이름별로 묶고(같은 상품 여러 줄은 같은 숫자) 엑셀과 맞춘다 */
