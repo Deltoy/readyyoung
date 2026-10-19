@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mveuvk4k">
+  <meta name="ry-build" content="mvewym1i">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -5592,7 +5592,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     /* 1016 MJ: 카톡 대신 물류앱에 바로 — 첫 화면 [📦 박스 재고] → 번호마다 개수(59+139 처럼 적어도 됨) → 저장 = 신호등 계산 + 🔴면 자동 1박스 요청 */
     var BX_M = ['1', '3', '4', '5', '6'];
     function bxToday() { return new Date(Date.now() + 9 * 3600000).toISOString().slice(0, 10); }
-    function bxLastAt() { return ((SP.box && SP.box.rows) || []).reduce(function (m, r) { return r.at && r.at > m ? r.at : m; }, ''); }
+    function bxLastAt() { return ((SP.box && SP.box.rows) || []).reduce(function (m, r) { return r.at && r.at > m && !/^입고 자동/.test(r.by || '') ? r.at : m; }, ''); }   // 1019 입고 자동 기록은 '사람이 센 것'이 아님
     /* 1018 MJ: 오늘 누가 적었는지 표시 — 첫 화면 버튼(✓ 이름 / 오늘 아직) · 박스 재고 탭·시트 맨 위 줄 (오전 세트 담당 이름 같이) */
     function bxDoneHtml() {
       var l = bxLastAt(), lr = ((SP.box && SP.box.rows) || []).filter(function (r) { return r.at === l; })[0];
