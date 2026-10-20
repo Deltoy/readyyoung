@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvgglh3e">
+  <meta name="ry-build" content="mvggmboo">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4847,7 +4847,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function stockBadge(item) {
       if (!item || !item.name) return '';
       var s = stkOf(item);
-      if (!s) return RY_SC ? ' <button type="button" class="ry-stk none" data-n="' + escapeHtml(item.name) + '" onclick="event.stopPropagation(); stkCount(this)" title="실제 재고를 세어서 넣어요">📦 추정 재고 · 입력</button>' : '';   // 1020 MJ: 기록이 없어도 칸은 보이게 — 손으로 넣을 수 있게
+      if (!s) return RY_SC ? ' <button type="button" class="ry-stk none" data-n="' + escapeHtml(item.name) + '" onclick="event.stopPropagation(); stkCount(this)" title="창고 여분을 세어서 넣어요 (매장 진열분은 빼고)">📦 추정 재고 · 입력</button>' : '';   // 1020 MJ: 기록이 없어도 칸은 보이게 — 손으로 넣을 수 있게
       var cls = s.sure && s.est === 0 ? 'red' : '';   // 1020 MJ: 예상 날짜는 빼고 '추정 재고 N개'만, 눈에 띄게
       var txt = !s.sure && s.est === 0 ? '📦 추정 재고 확인 필요' : '📦 추정 재고 <b>' + s.est + '</b>개';
       return ' <button type="button" class="ry-stk ' + cls + '" data-n="' + escapeHtml(item.name) + '" onclick="event.stopPropagation(); stkShow(this)" title="추정 재고">' + txt + '</button>';
@@ -4856,9 +4856,9 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var nm = btn.dataset.n, it = (RY_CAT && RY_CAT.items || []).filter(function (x) { return x.name === nm; })[0] || { name: nm }, s = stkOf(it); if (!s) return;
       var old = document.getElementById('prPop'); if (old) old.remove();
       var d = document.createElement('div'); d.id = 'prPop';
-      d.innerHTML = '<div><span>추정 재고</span><b>약 ' + s.est + '개</b></div><div><span>하루 판매</span><b>' + (Math.round(s.daily * 10) / 10) + '개</b></div>' + ''
+      d.innerHTML = '<div><span>추정 재고 (창고 여분)</span><b>약 ' + s.est + '개</b></div><div><span>하루 판매</span><b>' + (Math.round(s.daily * 10) / 10) + '개</b></div>' + ''
         + '<small>' + escapeHtml(s.how) + ' − 그 뒤 판매 (15일 판매 ÷ 15 × 지난 날) · 반품·파손은 안 빠져요' + (s.sure ? '' : '<br><b style="color:#FEC84B">입고 전에 남아 있던 재고는 몰라서 실제보다 적게 나올 수 있어요. 한 번 세어서 고치면 정확해져요.</b>') + '</small>'
-        + '<button type="button" class="stk-cnt" onclick="stkCount(this)" data-n="' + escapeHtml(nm) + '">✍️ 실제 개수 세서 고치기</button>';
+        + '<button type="button" class="stk-cnt" onclick="stkCount(this)" data-n="' + escapeHtml(nm) + '">✍️ 창고 여분 세서 고치기</button>';
       document.body.appendChild(d);
       var r = btn.getBoundingClientRect(), w = d.offsetWidth, x = Math.max(8, Math.min(window.innerWidth - w - 8, r.left + r.width / 2 - w / 2)), y = r.bottom + 8;
       if (y + d.offsetHeight > window.innerHeight - 8) y = r.top - d.offsetHeight - 8;
@@ -4867,7 +4867,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     }
     function stkCount(btn) {
       if (!checkMemberSelectedOrAlert()) return;
-      var nm = btn.dataset.n, v = prompt('[' + String(nm).split('\n')[0] + ']\n지금 실제로 남은 개수를 적어 주세요 (매장 + 창고)'); if (v == null) return;
+      var nm = btn.dataset.n, v = prompt('[' + String(nm).split('\n')[0] + ']\n지금 창고에 남은 여분 개수를 적어 주세요 (매장 진열분은 빼고)'); if (v == null) return;
       var n = parseInt(String(v).replace(/[^0-9]/g, ''), 10); if (!(n >= 0)) { alert('숫자로 적어 주세요'); return; }
       var pop = document.getElementById('prPop'); if (pop) pop.remove();
       RY_SC = RY_SC || {}; RY_SC[ryPrKey(nm)] = { d: sdLocalDate(new Date()).replace(/-/g, '.'), n: n, by: currentSelectedMember }; try { renderAllViews(); } catch (e) {}
