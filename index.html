@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvga3wuy">
+  <meta name="ry-build" content="mvga6c8f">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9532,15 +9532,15 @@ html body #ryLaunchGrid .tl-search{top:56px}
       raw.split(/[\s\/_\-,·]+/).forEach(function (t) { t = key(t).replace(/^\d+(ml|g|mg|정|포|매|개입|ea|t|캡슐|p)?$/i, ''); if (t.length >= 2) { toks.push(t); var c = t.replace(/^(동아제약|종근당|유한양행|대웅제약|일동제약|광동제약|한미약품|녹십자|보령)[a-z]?/, ''); if (c !== t && c.length >= 2) toks.push(c); } });
       if (!toks.length) return (l._cat = '');
       var nums = (String(l.name || '').match(/\d+/g) || []).filter(function (n) { return n.length <= 4; });
+      var need = Math.min(5, Math.max(3, Math.round(toks.join('').length * 0.4)));   // 낱말 길이 40% 이상 맞아야 (짧은 '크림'·'폼' 만으로는 안 됨)
       var best = null, bs = 0;
       RY_CAT.items.forEach(function (c) {
         var nm = String(c.name || '').split('\n')[0], k = key(nm), w = key(nm.trim().split(/\s+/)[0]), sc = 0;
         toks.forEach(function (t) { if (k.indexOf(t) !== -1) sc += t.length; else if (t.length >= 3 && w.length >= 3 && ryNear(t, w.slice(0, t.length + 1).length === t.length ? w : w.slice(0, t.length))) sc += t.length; });
-        nums.forEach(function (n) { if (new RegExp('(^|\\D)' + n + '(\\D|$)').test(k)) sc += 3; });   // 1020 '신신파스-Rx(덕용30매)' → 30매(대) 쪽으로
-        if (sc > bs) { bs = sc; best = nm; }
+        var tsc = sc; nums.forEach(function (n) { if (tsc > 0 && new RegExp('(^|\\D)' + n + '(\\D|$)').test(k)) sc += 1.5; });   // 1020 '신신파스-Rx(덕용30매)' → 30매(대) 쪽으로 · 숫자만 같은 건 안 셈 ('새 크림 50ml' ≠ '50앰플')
+        if (tsc >= need && sc > bs) { bs = sc; best = nm; }
       });
-      var need = Math.min(5, Math.max(3, Math.round(toks.join('').length * 0.4)));   // 낱말 길이 40% 이상 맞아야 (짧은 '크림'·'폼' 만으로는 안 됨)
-      return (l._cat = best && bs >= need ? best : '');
+      return (l._cat = best || '');
     }
     function invRender(busyMsg) {
       var won = function (v) { return v == null || v === '' ? '' : Math.round(Number(v)).toLocaleString('ko-KR') + '원'; };
