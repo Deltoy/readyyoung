@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvg474i9">
+  <meta name="ry-build" content="mvg4ddbf">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1124,6 +1124,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-who .ry-ava{width:30px!importan
 .inv-line .inv-n{font-size:12px;color:#667085;margin-top:3px}
 .inv-tag{display:inline-block;font-size:12px;font-weight:800;border-radius:999px;padding:2px 9px;margin-top:5px}
 .inv-ok{background:#ECFDF3;color:#067647}.inv-up{background:#FEF3F2;color:#B42318}.inv-warn{background:#FFFAEB;color:#B54708}.inv-no{background:#F2F4F7;color:#475467}
+#tutDim{position:fixed;inset:0;z-index:9990;background:rgba(16,24,40,.55);display:flex;align-items:center;justify-content:center;padding:12px}#tutBox{background:#fff;width:min(560px,100%);max-height:92vh;overflow:auto;border-radius:20px;padding:12px}#tutBox img{width:100%;display:block;border-radius:12px}
 .inv-sec{margin-bottom:6px}.inv-wrong{background:#FEF3F2;border:2px solid #F04438;color:#B42318;border-radius:14px;padding:12px 14px;font-size:15px;line-height:1.5;margin:10px 0}.inv-sec h4{font-size:15px;font-weight:800;margin:12px 0 8px}.inv-sec h4 span{font-weight:600;color:#667085;font-size:12px}.inv-sec h4 a{color:#155EEF}
 .inv-foot{position:sticky;bottom:-16px;background:#fff;padding-top:10px;display:flex;gap:8px}
 .inv-foot button{flex:1;min-height:48px;border-radius:14px;font-weight:800;font-size:15px;border:0}
@@ -5895,6 +5896,37 @@ html body #ryLaunchGrid .tl-search{top:56px}
         + '<button type="button" class="tp-go" onclick="document.getElementById(\'bxDutyPop\').hidden = true; bxOpenTab()">적으러 가기</button><button type="button" class="tp-x" aria-label="닫기" onclick="window._bxDutyX = 1; document.getElementById(\'bxDutyPop\').hidden = true">×</button>';
       el.hidden = false;
     }
+    /* 1020 MJ '직원들에게 명세서 찍는 튜토리얼 알림 · 한 번만 · 확인했으면 안 띄움' — 사람마다 서버(TUT_ACK)에 확인 기록 */
+    var TUT_ID = 'inv1', TUT_IMG = 'https://deltoy.github.io/readyyoung/tut-invoice.jpg', _tutAsk = '';
+    function tutPop() {
+      var me = currentSelectedMember || '', host = document.getElementById('ryTopPops'); if (!me || !host) return;
+      var lk = 'tut_' + TUT_ID + '_' + me, el = document.getElementById('tutPop');
+      try { if (localStorage.getItem(lk)) { if (el) el.hidden = true; return; } } catch (e) {}
+      if (window._tutX === me) return;
+      if (_tutAsk !== me) {   // 이 사람이 확인했는지 서버에 한 번 물음 (다른 폰에서 확인했을 수 있음)
+        _tutAsk = me;
+        google.script.run.withSuccessHandler(function (r) { if (r && r.seen) { try { localStorage.setItem(lk, '1'); } catch (e) {} var e2 = document.getElementById('tutPop'); if (e2) e2.hidden = true; } else if (currentSelectedMember === me) tutShowPop(me); }).withFailureHandler(function () {}).tutSeen(TUT_ID, me);
+        return;
+      }
+    }
+    function tutShowPop(me) {
+      var host = document.getElementById('ryTopPops'); if (!host) return;
+      var el = document.getElementById('tutPop'); if (!el) { el = document.createElement('div'); el.id = 'tutPop'; el.setAttribute('role', 'status'); host.appendChild(el); }
+      el.innerHTML = '<div class="tp-txt"><b class="t">📄 새 기능 · 명세서 찍어 입고</b><p>택배 오면 명세서를 찍어서 한 번에 입고해요 (1분)</p></div>'
+        + '<button type="button" class="tp-go" onclick="tutOpen()">보러 가기</button><button type="button" class="tp-x" aria-label="닫기" onclick="window._tutX = currentSelectedMember; document.getElementById(\'tutPop\').hidden = true">×</button>';
+      el.hidden = false;
+    }
+    function tutOpen() {
+      var d = document.createElement('div'); d.id = 'tutDim';
+      d.innerHTML = '<div id="tutBox" role="dialog" aria-modal="true" aria-label="명세서 입고 튜토리얼"><img src="' + TUT_IMG + '" alt="명세서 찍어 입고하는 방법: 입고 대기 탭의 명세서 찍어 입고 버튼 → 카메라 또는 사진첩 → AI가 읽은 결과 확인 → 고른 상품 입고완료"><div class="inv-foot"><button class="inv-go" onclick="tutClose()">닫기</button></div></div>';
+      document.body.appendChild(d); try { ryLockScroll(true); } catch (e) {}
+      var me = currentSelectedMember || '', el = document.getElementById('tutPop');   // 1020 MJ: 페이지에 들어왔으면 확인한 걸로
+      if (me) { try { localStorage.setItem('tut_' + TUT_ID + '_' + me, '1'); } catch (e) {} google.script.run.withFailureHandler(function () {}).tutAck(TUT_ID, me); }
+      if (el) el.hidden = true;
+    }
+    function tutClose() { var d = document.getElementById('tutDim'); if (d) { d.remove(); try { ryLockScroll(false); } catch (e) {} } }
+    setInterval(function () { try { tutPop(); } catch (e) {} }, 4000);
+
     function bxPopup(force) {
       try { bxDutyPop(); } catch (eDp) {}
       var old = document.getElementById('bxPop'); if (old) old.hidden = true; return;   // 1019 MJ: '아크릴박스 주문할 때예요' 알림은 안 띄움 — 부족하면 약사 발주에 자동으로 들어감
