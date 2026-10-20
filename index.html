@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvg44uq9">
+  <meta name="ry-build" content="mvg474i9">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4775,9 +4775,9 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var p = RY_PR[ryPrKey(item.name)]; if (!p) return '';
       return ' <button type="button" class="ry-pr" data-k="' + escapeHtml(ryPrKey(item.name)) + '" onclick="event.stopPropagation(); prShow(this)" aria-label="사입가 · 판매가 보기" title="사입가 · 판매가"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></button>';
     }
-    var RY_IVL = null, _ivlLoading = false;   /* 1020 명세서 사진 (문준만, 메모리에만) */
+    var RY_IVL = null, _ivlLoading = false;   /* 1020 명세서 사진 (모두 · 메모리에만) */
     function invDocBtn(item) {
-      if (currentSelectedMember !== '문준' || !item || !item.name) return '';
+      if (!item || !item.name || !currentSelectedMember) return '';   // 1020 MJ: 명세서 사진은 직원도 (단가 비교는 문준만)
       if (!RY_IVL) { if (!_ivlLoading && typeof google !== 'undefined' && google.script) { _ivlLoading = true; google.script.run.withSuccessHandler(function (r) { _ivlLoading = false; if (r && r.success) { RY_IVL = r.map || {}; try { renderAllViews(); } catch (e) {} } }).withFailureHandler(function () { _ivlLoading = false; }).getInvoiceLinks(currentSelectedMember); } return ''; }
       var L = RY_IVL[ryPrKey(item.name)]; if (!L || !L.length) return '';
       return ' <button type="button" class="ry-pr ry-ivd" data-k="' + escapeHtml(ryPrKey(item.name)) + '" onclick="event.stopPropagation(); invDocShow(this)" aria-label="명세서 사진 보기" title="명세서 사진">📄</button>';
