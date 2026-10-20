@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvgez8c5">
+  <meta name="ry-build" content="mvgf0qse">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1104,7 +1104,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-who .ry-ava{width:30px!importan
   border:1px solid #F4B4AE!important;border-radius:999px!important;padding:2px 7px!important;text-decoration:none!important;white-space:nowrap;cursor:pointer;flex:none!important}
 .ry-tcancel{display:block;margin:5px auto 0}
 .ry-in-act{flex-direction:row!important;align-items:center;flex-wrap:nowrap!important;gap:6px}
-.ry-in-act .ry-in-btn{flex:1 1 0!important;min-width:0}.ry-in-act .ry-in-who{flex:none;display:flex;align-items:center}.ry-in-act .ry-in-who:empty{display:none}
+.ry-in-act .ry-in-btn{flex:1 1 0!important;min-width:0}.ry-in-act .ry-in-who{flex:none;display:flex;flex-direction:column;align-items:flex-start;gap:3px}.ry-in-od{font-size:12px;color:var(--ry-ink-3);white-space:nowrap}.ry-in-od b{color:var(--ry-ink-2)}.ry-in-act .ry-in-who:empty{display:none}
 @media(min-width:720px){:is(#inboundCardContainer,#delayedCardContainer)>div.ry-inrow{grid-template-columns:104px 120px minmax(0,1fr)!important}.ry-in-act{padding:8px 14px;gap:10px}}
 @media(max-width:380px){:is(#inboundCardContainer,#delayedCardContainer)>div.ry-inrow{grid-template-columns:76px 70px minmax(0,1fr)!important}.ry-in-btn{font-size:11px}}
 
@@ -9395,8 +9395,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           <div class="ry-in-text">
             ${item.isCheckRequested ? `<span class="ry-in-wait">${RYI.searchcheck}관리자 확인대기 (${escapeHtml(item.checkRequester)})</span>` : ''}
             <div class="ry-in-name${nameClass(item)}">${escapeHtml(item.name)} ${endedBadge(item)}</div>
-            <div class="ry-in-meta"><span>발주 <b>${odText(item)}</b></span>${elapsedChip(item)}</div>
-            <div class="ry-in-meta ry-in-sub"><button onclick="cancelSoldOut(${item.rowNumber})" class="ry-in-cancel" title="공급사 품절로 못 들어오는 상품을 취소합니다">${RYI.ban}품절 취소</button>${delayReasonHtml(item)}</div>
+            <div class="ry-in-meta ry-in-sub">${elapsedChip(item)}<button onclick="cancelSoldOut(${item.rowNumber})" class="ry-in-cancel" title="공급사 품절로 못 들어오는 상품을 취소합니다">${RYI.ban}품절 취소</button>${delayReasonHtml(item)}</div>
             ${mrSlot(item, type)}
           </div>
           <div class="ry-in-qty">
@@ -9407,7 +9406,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         </div>
         <div class="ry-in-photo">${imgHtml}</div>
         <div class="ry-in-act">
-          <span class="ry-in-who">${ryWho(item)}</span>
+          <span class="ry-in-who"><span class="ry-in-od">발주 <b>${(function () { var m = String(item.orderDate || '').match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/); return m ? (+m[2]) + '/' + (+m[3]) : '-'; })()}</b></span>${ryWho(item)}</span>
           ${checkBtnCard}
           ${rySatChip(item)}
           <button onclick="completeInbound(${item.rowNumber})" class="ry-in-btn ry-in-ok">
