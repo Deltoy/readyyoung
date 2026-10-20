@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvg2zy3d">
+  <meta name="ry-build" content="mvg34qjz">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -3770,6 +3770,17 @@ html body:not(#_):not(#_) .ry-tools::-webkit-scrollbar{display:none}html body:no
 </style>
 <style>
 /* 1003 계절별 판매 */
+#trCard .ms-cov{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px;margin:8px 0}#trCard .ms-cov span{display:grid;place-items:center;height:28px;border-radius:8px;background:#F2F4F7;color:#98A2B3;font-size:11px;font-weight:600}#trCard .ms-cov span.on{background:#155EEF;color:#fff}
+#trCard .ms-up{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px}#trCard .ms-ym{display:flex;align-items:center;gap:6px;font-size:13px;color:#475467}#trCard .ms-ym input{min-height:44px;border:1px solid #EDEEF0;border-radius:12px;padding:0 10px;font-size:15px}
+#trCard .ms-pick{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:12px;background:#155EEF;color:#fff;font-weight:700;font-size:14px;cursor:pointer}
+#trCard .ms-tip{font-size:12px;color:#667085;margin:6px 0 0;word-break:keep-all}#trCard .ms-lead{font-size:13px;color:#475467;margin:10px 0 4px;word-break:keep-all}
+#trCard .ms-tabs{display:flex;gap:6px;margin-top:12px}html body #trCard .ms-tabs button{min-height:44px;padding:0 16px;border-radius:999px!important;border:1px solid #EDEEF0!important;background:#fff;font-weight:600;font-size:14px;color:#344054;cursor:pointer}html body #trCard .ms-tabs button.on{background:#111827;color:#fff;border-color:#111827!important}#trCard .ms-tabs small{font-size:11px;opacity:.75}
+#trCard .ms-list{display:grid;gap:2px}#trCard .ms-row{display:grid;grid-template-columns:minmax(0,1fr) 96px 52px;align-items:center;gap:10px;min-height:48px;border-top:1px solid #F2F4F7}
+#trCard .ms-n{min-width:0;font-size:14px;font-weight:600;line-height:1.3;word-break:keep-all}#trCard .ms-n small{display:block;font-size:12px;font-weight:500;color:#667085}
+#trCard .ms-spark{display:flex;align-items:flex-end;gap:2px;height:28px}#trCard .ms-spark i{flex:1;min-width:3px;border-radius:2px 2px 0 0;background:#D1E0FF}#trCard .ms-spark i.hi{background:#155EEF}
+#trCard .ms-x{text-align:right;font-size:16px;font-weight:800;color:#155EEF;font-variant-numeric:tabular-nums}
+@media(max-width:420px){#trCard .ms-row{grid-template-columns:minmax(0,1fr) 72px 46px;gap:8px}#trCard .ms-cov span{font-size:10px}}
+#trCard .tr-cov{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0}#trCard .tr-cov span{padding:4px 8px;border-radius:8px;background:#F2F4F7;color:#667085;font-size:11px;font-weight:600}#trCard .tr-cov span.on{background:#155EEF;color:#fff}#trCard .ms-x.dn{color:#B42318}
 #msCard .ms-cov{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px;margin:8px 0}#msCard .ms-cov span{display:grid;place-items:center;height:28px;border-radius:8px;background:#F2F4F7;color:#98A2B3;font-size:11px;font-weight:600}#msCard .ms-cov span.on{background:#155EEF;color:#fff}
 #msCard .ms-up{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px}#msCard .ms-ym{display:flex;align-items:center;gap:6px;font-size:13px;color:#475467}#msCard .ms-ym input{min-height:44px;border:1px solid #EDEEF0;border-radius:12px;padding:0 10px;font-size:15px}
 #msCard .ms-pick{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:12px;background:#155EEF;color:#fff;font-weight:700;font-size:14px;cursor:pointer}
@@ -4498,6 +4509,14 @@ html body #ryLaunchGrid .tl-search{top:56px}
         </div>
         <div id="chInfo" class="ry25-kinfo"></div>
         <div id="chList"></div>
+      </section>
+
+      <section class="ry25-kcard" id="trCard">
+        <div class="ry25-khead">
+          <h3><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>판매 추이</h3>
+          <span class="ry25-kmeta">15일 판매량 엑셀을 올릴 때마다 쌓임</span>
+        </div>
+        <div id="trBody"></div>
       </section>
 
       <section class="ry25-kcard" id="msCard">
@@ -9700,6 +9719,47 @@ html body #ryLaunchGrid .tl-search{top:56px}
         + '<p class="ms-lead">' + sz + '(' + sm.join('·') + '월)에 평소보다 많이 팔린 상품 · 막대 = 올린 달별 판매(진한 막대 = ' + sz + ')</p>' + list
         + (rows.length ? '<p class="ms-tip">' + sz + '이 오기 2~3주 전부터 이 상품들은 발주량을 <b>배수만큼</b> 넉넉히 잡으면 빨리 떨어지지 않아요.</p>' : '');
     }
+    /* ═══ 1020 MJ '15일 판매량을 올릴 때마다 기록을 쌓아 판매 추이를 한눈에 — 잘 나가는 상품 · 시즌 타는 상품' (서버 _15일판매기록_) ═══ */
+    var TR = { data: null, loading: false, at: 0, tab: 'up' };
+    function trLoad(force) {
+      if (TR.loading || (!force && TR.data && Date.now() - TR.at < 600000)) { trRender(); return; }
+      if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+      TR.loading = true; trRender();
+      google.script.run.withSuccessHandler(function (r) { TR.loading = false; TR.at = Date.now(); TR.data = r && r.ok ? r : { ok: false }; trRender(); })
+        .withFailureHandler(function () { TR.loading = false; TR.at = Date.now(); TR.data = { ok: false }; trRender(); }).getSalesTrend();
+    }
+    function trMd(p) { var m = String(p || '').match(/^\d{4}-(\d{2})-(\d{2})~\d{4}-(\d{2})-(\d{2})$/); return m ? (+m[1]) + '/' + (+m[2]) + '~' + (+m[3]) + '/' + (+m[4]) : p; }
+    function trStart() { google.script.run.withSuccessHandler(function (r) { showToast(r && r.success ? trMd(r.per) + ' 기록을 시작했어요 (' + r.saved + '개 상품)' : '기록하지 못했어요', 2600); trLoad(true); }).s15SnapshotNow(currentSelectedMember); }
+    function trRender() {
+      var box = document.getElementById('trBody'); if (!box) return;
+      var d = TR.data;
+      if (!d) { box.innerHTML = '<div class="sr-empty">' + (TR.loading ? '불러오는 중…' : '') + '</div>'; return; }
+      if (!d.ok) { box.innerHTML = '<div class="sr-empty">불러오지 못했어요</div>'; return; }
+      var P = d.periods, n = P.length, admin = msAdmin();
+      if (!n) { box.innerHTML = '<div class="sr-empty">15일 판매량 엑셀을 올릴 때마다 여기에 쌓여요.' + (admin ? ' <button type="button" class="ms-pick" onclick="trStart()">지금 기간부터 기록 시작</button>' : '') + '</div>'; return; }
+      var show = P.slice(-12), off = n - show.length, cur = n - 1, prev = n - 2;
+      var cov = '<div class="tr-cov" aria-label="쌓인 기간">' + show.map(function (p, i) { return '<span class="' + (i === show.length - 1 ? 'on' : '') + '">' + escapeHtml(trMd(p)) + '</span>'; }).join('') + '</div>';
+      var tabs = '<div class="ms-tabs" role="group" aria-label="보기">' + [['up', '🔥 늘어난'], ['down', '📉 줄어든'], ['top', '🏆 많이 팔린']].map(function (t) { return '<button type="button" class="' + (TR.tab === t[0] ? 'on' : '') + '" aria-pressed="' + (TR.tab === t[0]) + '" onclick="TR.tab=\'' + t[0] + '\';trRender()">' + t[1] + '</button>'; }).join('') + '</div>';
+      var info = '<div class="ry25-kinfo">' + n + '번 쌓임 · 마지막 ' + escapeHtml(trMd(P[cur])) + (n < 2 ? ' · 다음 엑셀부터 지난번과 비교해요' : '') + '</div>';
+      var rows = [], lead = '';
+      if (TR.tab === 'top' || n < 2) {
+        rows = d.items.filter(function (x) { return x.q[cur] > 0; }).sort(function (a, b) { return b.q[cur] - a.q[cur]; }).slice(0, 20).map(function (x) { return { x: x, r: x.q[cur] + '개', s: '이번 15일 ' + x.q[cur] + '개' + (n > 1 ? ' · 지난번 ' + x.q[prev] + '개' : '') }; });
+        lead = trMd(P[cur]) + ' 많이 팔린 상품 TOP 20';
+      } else {
+        var up = TR.tab === 'up';
+        rows = d.items.filter(function (x) { var a = x.q[prev], b = x.q[cur]; return up ? b >= 5 && b - a >= 3 && (a === 0 || (b - a) / a >= 0.2) : a >= 5 && a - b >= 3 && (a - b) / a >= 0.2; })
+          .sort(function (a, b) { var da = a.q[cur] - a.q[prev], db = b.q[cur] - b.q[prev]; return up ? db - da : da - db; }).slice(0, 20)
+          .map(function (x) { var a = x.q[prev], b = x.q[cur]; return { x: x, r: a === 0 ? '새로' : (b > a ? '+' : '') + Math.round((b - a) / a * 100) + '%', s: '이번 ' + b + '개 · 지난번 ' + a + '개' }; });
+        lead = up ? '지난번(' + trMd(P[prev]) + ')보다 많이 팔린 상품 · 발주를 늘릴 후보' : '지난번보다 덜 팔린 상품 · 발주를 줄일 후보';
+      }
+      var list = rows.length ? '<div class="ms-list">' + rows.map(function (o) {
+        var q = o.x.q.slice(off), mx = Math.max.apply(null, q.concat([1]));
+        var bars = '<span class="ms-spark" aria-hidden="true">' + q.map(function (v, i) { return '<i class="' + (i === q.length - 1 ? 'hi' : '') + '" style="height:' + Math.max(2, Math.round(v / mx * 100)) + '%"></i>'; }).join('') + '</span>';
+        return '<div class="ms-row"><span class="ms-n">' + escapeHtml(o.x.n) + '<small>' + escapeHtml(o.s) + '</small></span>' + bars + '<b class="ms-x' + (o.r.charAt(0) === '-' ? ' dn' : '') + '">' + escapeHtml(o.r) + '</b></div>';
+      }).join('') + '</div>' : '<div class="sr-empty">눈에 띄게 바뀐 상품이 없어요.</div>';
+      box.innerHTML = info + cov + tabs + '<p class="ms-lead">' + escapeHtml(lead) + ' · 막대 = 기간별 15일 판매(진한 막대 = 이번)</p>' + list
+        + '<p class="ms-tip">기록이 쌓일수록 시즌 상품이 보여요. 1년치를 바로 보려면 아래 <b>계절별 판매</b>에 월별 엑셀을 올려요.' + (admin ? ' 지난 기간 15일 엑셀을 올리면 숫자는 안 바꾸고 이 기록에만 넣어요.' : '') + '</p>';
+    }
     function msYmFrom(rows, fname) {   // 엑셀 위쪽 줄이나 파일 이름에 기간(2025-10-01 ~ 2025-10-31)이 있으면 그 달
       var txt = rows.slice(0, 8).map(function (r) { return r.join(' '); }).join(' ') + ' ' + fname, m = txt.match(/(20\d\d)[.\-\/년\s]*(\d{1,2})[.\-\/월\s]*(\d{1,2})/);
       return m ? m[1] + '-' + String(+m[2]).padStart(2, '0') : '';
@@ -9905,7 +9965,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function renderMonthlyRankingView() {
       renderCategoryStats();
       renderProductRanking();
-      try { srLoad(false); chRender(); msLoad(false); } catch (eSr) {}   /* 1002 · 1003 계절별 판매 */
+      try { srLoad(false); chRender(); msLoad(false); trLoad(false); } catch (eSr) {}   /* 1002 · 1003 계절별 판매 */
       const data = cachedMonthlyRanking || { monthLabel: '이번달', rankingList: [] };
       const labelEl = document.getElementById('rankingMonthLabel');
       if (labelEl) labelEl.innerText = data.monthLabel;
@@ -11970,6 +12030,15 @@ html body #ryLaunchGrid .tl-search{top:56px}
         else if (g.st === 'skip' && g.pick) links[g.key] = '-';
         else if (g.unlink) links[g.key] = null;
       });
+      var fromV = (document.getElementById('s15From') || {}).value || '', toV = (document.getElementById('s15To') || {}).value || '', curTo = S15.info && S15.info.to;
+      if (curTo && toV && toV < curTo) {   /* 1020 지난 기간 엑셀 → 숫자는 그대로, 판매 추이 기록에만 */
+        if (!confirm('이 엑셀(' + fromV + ' ~ ' + toV + ')은 지금 넣어 둔 기간(~' + curTo + ')보다 지난 기간이에요.\n15일 판매 숫자는 그대로 두고 [판매 추이] 기록에만 넣을까요?')) return;
+        S15.busy = 'save'; s15Render();
+        google.script.run.withSuccessHandler(function (r) { S15.busy = false; S15.groups = []; S15.xs = []; s15Render(); showToast(r && r.success ? fromV + '~' + toV + ' 판매 추이 기록에 ' + r.saved + '개 상품을 넣었어요' : ((r && r.message) || '넣지 못했어요'), 3200); try { TR.at = 0; } catch (e) {} })
+          .withFailureHandler(function (e) { S15.busy = false; s15Render(); showToast('넣지 못했어요: ' + (e && e.message || e), 2600); })
+          .s15HistorySave(list, fromV, toV, currentSelectedMember);
+        return;
+      }
       S15.busy = 'save'; s15Render();
       var pl0 = s15PriceList();   /* 저장되면 S15.groups 를 비우니 미리 */
       var xs0 = (S15.xs || []).slice(), per0 = ((document.getElementById('s15From') || {}).value || '') + '~' + ((document.getElementById('s15To') || {}).value || '');
@@ -12855,6 +12924,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         { k: 'ranking', g: 2, ic: RYI.trophy, n: '발주왕', v: k.ranking, kw: '순위 랭킹 직원 성공' },
         { k: 'srcard', g: 2, ic: RYI.search, n: '자주 찾는 상품', v: '검색 순위 · 결과 없음', kw: '검색 순위 수요 결과없음 새상품' },
         { k: 'chcard', g: 2, ic: RYI.star, n: '캐릭터별 판매', v: '산리오·포켓몬…', kw: '캐릭터 산리오 포켓몬 브랜드 판매' },
+        { k: 'trcard', g: 2, ic: RYI.bars, n: '판매 추이', v: '늘어난 · 줄어든 · 많이 팔린', kw: '추이 그래프 트렌드 증가 감소 인기 판매량 기록' },
         { k: 'mscard', g: 2, ic: RYI.cal, n: '계절별 판매', v: MS.data && MS.data.ok ? MS.data.months.length + '/12개월 올림' : '월별 엑셀로 계절 배수', kw: '계절 시즌 성수기 여름 겨울 봄 가을 월별 판매 발주량' },
         { k: 'notices', g: 3, ic: NT_ICON.mega, n: '공지 보관함', v: '카톡 공지 · 증정품', kw: '카톡 공지 증정품 변경' },
         { k: 'setduty', g: 3, ic: RYI.cal, n: '세트 담당표', v: am.length ? '오늘 오전 ' + am[0] + (am.length > 1 ? ' 외 ' + (am.length - 1) : '') : '이번 주', kw: '세트 담당 오전 오후 반차 주간 횟수' },
@@ -12938,7 +13008,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (k === 'loc') { locOpen(); return; }
       if (k === 'scr') { scrOpen(); return; }
       if (k === 'pfauto') { pfaOpen(); return; }
-      if (k === 'srcard' || k === 'chcard' || k === 'mscard') { switchTab('ranking'); setTimeout(function () { var c = document.getElementById(k === 'srcard' ? 'srCard' : k === 'mscard' ? 'msCard' : 'chCard'); if (c) window.scrollTo({ top: Math.max(0, c.getBoundingClientRect().top + window.scrollY - 12), behavior: 'smooth' }); }, 250); return; }
+      if (k === 'srcard' || k === 'chcard' || k === 'mscard' || k === 'trcard') { switchTab('ranking'); setTimeout(function () { var c = document.getElementById(k === 'srcard' ? 'srCard' : k === 'mscard' ? 'msCard' : k === 'trcard' ? 'trCard' : 'chCard'); if (c) window.scrollTo({ top: Math.max(0, c.getBoundingClientRect().top + window.scrollY - 12), behavior: 'smooth' }); }, 250); return; }
       switchTab(k);
       var v = document.getElementById(k + 'View');
       if (v) window.scrollTo({ top: Math.max(0, v.getBoundingClientRect().top + window.scrollY - 12), behavior: 'smooth' });
