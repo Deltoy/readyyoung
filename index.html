@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvg2uxv1">
+  <meta name="ry-build" content="mvg2xcyz">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1151,6 +1151,12 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-who .ry-ava{width:30px!importan
 .ry-info{display:inline-flex!important;align-items:center;justify-content:center;width:24px!important;height:24px!important;min-height:24px!important;min-width:24px!important;padding:0!important;margin:-4px 0 -4px 2px;vertical-align:middle;position:relative;
   border-radius:999px!important;border:1px solid #B8C9E6;background:#F2F6FD;color:var(--ry-brand);font-size:13px;font-weight:700;line-height:1;cursor:pointer;flex:none}
 .ry-info::after{content:'';position:absolute;inset:-10px}
+.ry-pr{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;min-height:24px;padding:0;border-radius:999px;border:0;background:#ECFDF3;color:#067647;vertical-align:middle;position:relative;margin-left:2px}
+.ry-pr svg{width:14px;height:14px}.ry-pr::after{content:'';position:absolute;inset:-10px}
+#prPop{position:fixed;z-index:9995;background:#101828;color:#fff;border-radius:14px;padding:10px 14px;box-shadow:0 10px 30px rgba(16,24,40,.25);font-size:13px;min-width:180px}
+#prPop div{display:flex;justify-content:space-between;gap:16px;line-height:1.7}#prPop span{color:#98A2B3}#prPop b{font-weight:800}
+#prPop small{display:block;margin-top:4px;color:#98A2B3;font-size:11px}
+
 .ry-info:active{background:#DCE8FA;transform:scale(.94)}
 .ry-info-title{display:block;max-width:calc(100% - 64px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #infoBody{max-height:66vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
@@ -4732,7 +4738,35 @@ html body #ryLaunchGrid .tl-search{top:56px}
     var END_TAG = '판매종료';
     function isEnded(item) { return !!(item && String(item.note || '').indexOf(END_TAG) !== -1); }
     function ryNoRc(s) { return String(s == null ? '' : s).replace(/〔품절 재확인[^〕]*〕/g, ' ').replace(/\s{2,}/g, ' ').trim(); }   // 0929 품절 재확인 안내 토막은 품절 판정에서 뺀다
-    function endedBadge(item) { return (typeof evBadge === 'function' ? evBadge(item) : '') + (typeof locBadge === 'function' ? locBadge(item) : '') + (isHiddenItem(item) ? '<span class="ry-end ry-hid">' + RYI.octx + '취급안함</span>' : '') + (isEnded(item) ? '<span class="ry-end">' + RYI.octx + '판매종료</span>' : '') + (String(item && item.note || '').indexOf('〔품절 재확인') !== -1 ? '<span class="ry-rc" title="품절이 풀렸는지 확인 후 주문해 주세요"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/></svg>품절 30일 · 다시 확인해 주세요</span>' : '') + infoBtn(item); }
+    function endedBadge(item) { return (typeof evBadge === 'function' ? evBadge(item) : '') + (typeof locBadge === 'function' ? locBadge(item) : '') + (isHiddenItem(item) ? '<span class="ry-end ry-hid">' + RYI.octx + '취급안함</span>' : '') + (isEnded(item) ? '<span class="ry-end">' + RYI.octx + '판매종료</span>' : '') + (String(item && item.note || '').indexOf('〔품절 재확인') !== -1 ? '<span class="ry-rc" title="품절이 풀렸는지 확인 후 주문해 주세요"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/></svg>품절 30일 · 다시 확인해 주세요</span>' : '') + infoBtn(item) + priceBtn(item); }
+
+    /* 1020 MJ '모든 상품에 사입가와 판매가 · 나만 · 이름 옆 달러 표시를 누르면': 문준일 때만 서버에서 받아 메모리에만 (폰에 저장 안 함) */
+    var RY_PR = null, _prLoading = false;
+    function ryPrKey(n) { return String(n || '').replace(/\s+/g, '').toLowerCase(); }
+    function ryPrLoad() {
+      if (RY_PR || _prLoading || currentSelectedMember !== '문준' || typeof google === 'undefined' || !google.script) return;
+      _prLoading = true;
+      google.script.run.withSuccessHandler(function (r) { _prLoading = false; if (r && r.success && currentSelectedMember === '문준') { RY_PR = r.map || {}; try { renderAllViews(); } catch (e) {} try { if (lastSearchResults && lastSearchResults.length && !document.getElementById('searchResultView').classList.contains('hidden')) ryRenderSearchSafe(lastSearchResults, RY_SR.q); } catch (e2) {} } })
+        .withFailureHandler(function () { _prLoading = false; }).getPriceMap(currentSelectedMember);
+    }
+    function priceBtn(item) {
+      if (currentSelectedMember !== '문준' || !item || !item.name) return '';
+      if (!RY_PR) { ryPrLoad(); return ''; }
+      var p = RY_PR[ryPrKey(item.name)]; if (!p) return '';
+      return ' <button type="button" class="ry-pr" data-k="' + escapeHtml(ryPrKey(item.name)) + '" onclick="event.stopPropagation(); prShow(this)" aria-label="사입가 · 판매가 보기" title="사입가 · 판매가"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></button>';
+    }
+    function prShow(btn) {
+      var old = document.getElementById('prPop'); if (old) { var same = old.dataset.k === btn.dataset.k; old.remove(); if (same) return; }
+      var p = RY_PR && RY_PR[btn.dataset.k]; if (!p) return;
+      var won = function (v) { return v ? Number(v).toLocaleString('ko-KR') + '원' : '-'; }, m = p[0] && p[1] ? Math.round((p[1] - p[0]) / p[1] * 100) : null;
+      var d = document.createElement('div'); d.id = 'prPop'; d.dataset.k = btn.dataset.k; d.setAttribute('role', 'status');
+      d.innerHTML = '<div><span>사입가</span><b>' + won(p[0]) + '</b></div><div><span>판매가</span><b>' + won(p[1]) + '</b></div>' + (m != null ? '<div><span>마진</span><b>' + m + '%</b></div>' : '') + (p[2] ? '<small>' + escapeHtml(p[2]) + ' 판매 엑셀 기준 · 부가세 별도 사입가</small>' : '');
+      document.body.appendChild(d);
+      var r = btn.getBoundingClientRect(), w = d.offsetWidth, x = Math.max(8, Math.min(window.innerWidth - w - 8, r.left + r.width / 2 - w / 2)), y = r.bottom + 8;
+      if (y + d.offsetHeight > window.innerHeight - 8) y = r.top - d.offsetHeight - 8;
+      d.style.left = x + 'px'; d.style.top = y + 'px';
+      setTimeout(function () { document.addEventListener('click', function off(e) { if (!d.contains(e.target)) { d.remove(); document.removeEventListener('click', off, true); } }, true); }, 0);
+    }
 
     /* ===== 상품 정보 AI 메모 (0920) ===== */
     function infoBtn(item) {
