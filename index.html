@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvg5kb32">
+  <meta name="ry-build" content="mvg7wta8">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9536,6 +9536,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
             : l.newItem ? '<span class="inv-tag inv-no">🆕 앱에 없는 상품 · 입고완료 때 새 상품으로 등록하고 문준님께 알려요</span>'
             : '<span class="inv-tag inv-warn">📋 주문 안 한 상품' + (l.catName ? ' · 앱: ' + escapeHtml(l.catName) : '') + ' · 문준님께 알려요</span>';
           else if (dup) tag = '<span class="inv-tag inv-no">다른 명세서에도 있는 같은 상품이에요</span>';
+          else if (s15Score(s15Prep(l.name), s15Prep(l.appName)) < 0.35) tag = '<span class="inv-tag inv-warn">⚠ 이름이 많이 달라요 · 같은 상품인지 확인 (AI 짝)</span>';   // 1020 '페인엔젤프로연질캡슐 → 푸레파인연고' 처럼 AI 가 엉뚱하게 짝지은 것
           else if (l.early) tag = '<span class="inv-tag inv-warn">⚠ 명세서 날짜(' + escapeHtml(r.date) + ')가 발주일(' + escapeHtml(l.orderDate) + ')보다 빨라요 · 이전 주문분일 수 있어요</span>';
           else if (r.wrongStore) tag = '<span class="inv-tag inv-up">⛔ 다른 곳 명세서 · 입고하지 마세요</span>';
           else if (l.qtyOk) { tag = '<span class="inv-tag inv-ok">✓ 수량 맞음' + (l.orderDate ? ' · 발주 ' + escapeHtml(l.orderDate) + ' 이후 명세서' : '') + '</span>'; chk = ' checked'; nOk++; }
