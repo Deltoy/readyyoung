@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvg90tdq">
+  <meta name="ry-build" content="mvg95mzd">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8389,7 +8389,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
               : `<div class="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center text-sm text-slate-400">${RYI.pill}</div>`;
 
             let mgrBadge = `<span class="inline-flex items-center gap-1 bg-blue-50 text-blue-800 border border-blue-200 px-1.5 py-0.2 rounded text-[10px] font-black">${avaHTML(item.inboundManager || '물류관리자','s')} 최종승인: ${escapeHtml(item.inboundManager || '물류관리자')}</span>`;
-            let reqInfo = item.requester ? `<span class="text-[10px] text-slate-400">요청: ${escapeHtml(item.requester)}</span>` : '';
+            let reqInfo = /^주문없이입고/.test(item.requester || '') ? `<span class="inline-flex items-center gap-1 bg-amber-50 text-amber-800 border border-amber-300 px-1.5 py-0.2 rounded text-[10px] font-black" title="물류앱 주문 없이 명세서로 들어온 상품 (약사님 직접 주문 · 본사 직송 등)">📦 ${escapeHtml(item.requester.replace(/^주문없이입고/, '주문 없이 입고'))}</span>`
+              : item.requester ? `<span class="text-[10px] text-slate-400">요청: ${escapeHtml(item.requester)}</span>` : '';   // 1020 MJ: 주문 없이 들어온 상품 태그 (입고내역 검색에 '주문없이' 로 모아 보기)
             const leadDays = daysBetween(item.orderDate, item.inboundDate);
             let leadChip = (leadDays != null && leadDays >= 0)
               ? `<span class="inline-flex items-center gap-1 bg-slate-100 text-slate-700 border border-slate-200 px-1.5 py-0.2 rounded text-[10px] font-black" title="발주일 → 입고일">${RYI.timer}${leadDays}일 소요</span>`
@@ -9625,7 +9626,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       try {   /* 1020 MJ '주문 안 했는데 들어온 상품도 재고로' — 명세서 수량을 그 상품의 입고 기록(추정 재고)에 남김 */
         INVS.forEach(function (r) { if (!r.fid || r.wrongStore) return; var live = {}; (cachedInboundItems || []).forEach(function (it) { live[it.rowNumber] = 1; });
           var nm = (r.lines || []).filter(function (l) { return !(l.row && live[l.row]) && !l.doneName && (l.catName || l.newItem); }).map(function (l) { return { n: l.newItem ? (l.clean || l.name) : l.catName, q: l.appQty != null ? l.appQty : l.qty }; });
-          if (nm.length) google.script.run.withFailureHandler(function () {}).invoiceLinkSave(nm, r.fid, { supplier: r.supplier, date: r.date }, currentSelectedMember);
+          if (nm.length) google.script.run.withFailureHandler(function () {}).invoiceLinkSave(nm, r.fid, { supplier: r.supplier, date: r.date }, currentSelectedMember, true);   // true = 입고내역에 '주문없이입고'로도
         });
         RY_IVL = null;
       } catch (eX) {}
