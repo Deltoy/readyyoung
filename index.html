@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvgcrv3o">
+  <meta name="ry-build" content="mvgczoyb">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9558,7 +9558,9 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var nums = (String(l.name || '').match(/\d+/g) || []).filter(function (n) { return n.length <= 4; });
       var need = Math.min(5, Math.max(3, Math.round(toks.join('').length * 0.4)));   // 낱말 길이 40% 이상 맞아야 (짧은 '크림'·'폼' 만으로는 안 됨)
       var best = null, bs = 0;
-      RY_CAT.items.forEach(function (c) {
+      /* 1020 '페스룸 릴렉스 샤워 → 코빵에어 릴렉스' — 명세서 첫 낱말이 앱에 있는 브랜드면 그 브랜드 상품 중에서만 */
+      var b0 = toks[0], brandItems = b0 && b0.length >= 2 ? RY_CAT.items.filter(function (c) { var w0 = key(String(c.name || '').trim().split(/\s+/)[0]); return w0 === b0 || (b0.length >= 3 && ryNear(w0, b0)) || (w0.length >= 3 && b0.indexOf(w0) === 0) || (b0.length >= 3 && w0.indexOf(b0) === 0); }) : [];
+      (brandItems.length ? brandItems : RY_CAT.items).forEach(function (c) {
         var nm = String(c.name || '').split('\n')[0], k = key(nm), w = key(nm.trim().split(/\s+/)[0]), sc = 0;
         toks.forEach(function (t) { if (k.indexOf(t) !== -1) sc += t.length; else if (t.length >= 3 && w.length >= 3 && ryNear(t, w.slice(0, t.length + 1).length === t.length ? w : w.slice(0, t.length))) sc += t.length; });
         var tsc = sc; nums.forEach(function (n) { if (tsc > 0 && new RegExp('(^|\\D)' + n + '(\\D|$)').test(k)) sc += 1.5; });   // 1020 '신신파스-Rx(덕용30매)' → 30매(대) 쪽으로 · 숫자만 같은 건 안 셈 ('새 크림 50ml' ≠ '50앰플')
