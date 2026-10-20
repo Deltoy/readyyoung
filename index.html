@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvgeoh5t">
+  <meta name="ry-build" content="mvgeqyye">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -2675,6 +2675,12 @@ html:not(#q):not(#w):not(#e) body:not(#r) .pc-only-table tbody tr:active,html:no
   html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pipe .ry25-pipe-top .ry-i{width:18px;height:18px}
   html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pipe .ry25-pipe-l{font-size:12.5px!important;margin-top:4px;white-space:nowrap}
   html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pipe .ry25-pipe-n{font-size:22px!important}
+}
+/* 1020 MJ '품절 취소 옆에 특이사항 · 내용이 길어짐' → 폰에서 칩을 작게, 특이사항은 한 줄로 줄임 */
+@media(max-width:640px){
+  html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-meta .ry-in-cancel,html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-meta .ry-delay{min-height:30px!important;padding:0 9px!important;font-size:12px!important}
+  html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-meta .ry-delay{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-meta{gap:4px!important}
 }
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-qtybox{display:flex!important}
 html:not(#q):not(#w):not(#e) body:not(#r) .pc-only-table td .ry25-qtybox+.boxref,html:not(#q):not(#w):not(#e) body:not(#r) .pc-only-table td .boxref{display:flex!important;flex-wrap:wrap;justify-content:center;align-items:center;gap:2px 4px;width:100%;max-width:100%;box-sizing:border-box}
@@ -12517,7 +12523,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       return '<span class="sd-seat' + (me ? ' me' : '') + '"><span class="sd-team ' + real + '">' + sdTeamLabel(real) + '</span>'
         + (n ? '<b>' + escapeHtml(n) + '</b>' : '<em>' + (sp ? '비움' : '후보 없음') + '</em>') + sdByChip(by, sp) + (c12 ? SD_C12 : '') + '</span>';
     }
-    function sdIsOpen() { try { return localStorage.getItem(SD_OPEN_KEY) === '1'; } catch (e) { return false; } }
+    function sdIsOpen() { try { localStorage.removeItem(SD_OPEN_KEY); } catch (e) {} return false; }   // 1020 MJ: 세트 담당은 항상 접힌 채로 시작 · 펼친 건 기억하지 않음
     function sdApplyOpen(open) {
       var c = document.getElementById('sdCard'), m = document.getElementById('sdMore'), b = document.getElementById('sdTog');
       if (!c) return;
@@ -12527,7 +12533,6 @@ html body #ryLaunchGrid .tl-search{top:56px}
     }
     function sdToggle() {
       var open = document.getElementById('sdCard').getAttribute('data-open') !== '1';
-      try { localStorage.setItem(SD_OPEN_KEY, open ? '1' : '0'); } catch (e) {}
       sdApplyOpen(open);
     }
     /* 0926 지금 담당 중인 조: 오전 10~15시 · 오후 15~23시 (서울 시각) */
