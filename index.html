@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvg4xbyn">
+  <meta name="ry-build" content="mvg51odw">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -12135,25 +12135,26 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var used = {}; (S15.groups || []).forEach(function (g) { if (g.x && (g.st === 'auto' || g.st === 'check')) used[g.x.n] = 1; });
       return (S15.xs || []).filter(function (x) { return !used[x.n] && x.q >= 1 && !x.pack && !/세트|set\b|기획|증정|사은품|쇼핑백|봉투/i.test(x.n); });
     }
+    function s15Unit(n) { return /(^|[\s(])1\s*(포|병|ea|매|개|정|캡슐|앰플|바이알)(\)|\s|$)|낱개|\(1ea\)/i.test(String(n)); }   // '상쾌환스틱 … 1포' · '아임비타1병' 같은 낱개 줄 = 묶음 상품의 일부일 수 있음
     function s15Ai() {
       if (S15.busy) return;
       var gs = S15.groups || [], chk = gs.filter(function (g) { return g.st === 'check' || g.st === 'none'; });
-      var free = (S15.groups || []).filter(function (g) { return g.st === 'none' || g.st === 'check'; });
+      var allG = (S15.groups || []).filter(function (g) { return g.st !== 'skip'; });   // 엑셀에만 있는 이름은 앱 상품 전체에서 후보 (이미 이어진 상품이면 = 같은 상품의 다른 줄 → 새로 등록 안 함)
       var tasks = chk.map(function (g) {   // 앱 상품 → 엑셀 후보 5개
         var a = s15Prep(g.name), top = S15.xs.map(function (x) { return [s15Score(a, x), x]; }).sort(function (p, r) { return r[0] - p[0]; }).slice(0, 5).map(function (p) { return p[1]; });
         if (g.x && top.indexOf(g.x) === -1) top.unshift(g.x);
         return { kind: 'app', g: g, cands: top.slice(0, 6) };
       });
       s15Unclaimed().forEach(function (x) {   // 엑셀 이름 → 아직 안 이어진 앱 상품 후보 5개
-        var top = free.map(function (g) { return [s15Score(s15Prep(g.name), x), g]; }).filter(function (p) { return p[0] >= .35; }).sort(function (p, r) { return r[0] - p[0]; }).slice(0, 5).map(function (p) { return p[1]; });
+        var top = allG.map(function (g) { return [s15Score(s15Prep(g.name), x), g]; }).filter(function (p) { return p[0] >= .35; }).sort(function (p, r) { return r[0] - p[0]; }).slice(0, 5).map(function (p) { return p[1]; });
         tasks.push({ kind: 'xls', x: x, cands: top });
       });
       if (!tasks.length) { showToast('AI로 맞출 게 없어요', 2000); return; }
-      S15.busy = 'ai'; S15.aiMsg = 'AI가 맞추는 중… 0/' + tasks.length; S15.newList = []; s15Render();
-      var i0 = 0, takenX = {}, takenG = {}, applied = 0, wrong = 0;
+      S15.busy = 'ai'; S15.aiMsg = 'AI가 맞추는 중… 0/' + tasks.length; S15.newList = []; S15.unsure = []; s15Render();
+      var i0 = 0, takenX = {}, takenG = {}, applied = 0, wrong = 0, vari = 0;
       var step = function () {
         if (i0 >= tasks.length) {
-          S15.busy = false; S15.aiMsg = '🤖 AI 맞추기 끝 · ' + applied + '개 연결' + (wrong ? ' · 다른 상품 ' + wrong + '개는 건너뛰기' : '') + (S15.newList.length ? ' · 앱에 없는 상품 ' + S15.newList.length + '개' : '');
+          S15.busy = false; S15.aiMsg = '🤖 AI 맞추기 끝 · 확실한 ' + applied + '개 연결' + (wrong ? ' · 엑셀에 없는 ' + wrong + '개' : '') + (S15.unsure.length ? ' · 애매한 ' + S15.unsure.length + '개는 확인해 주세요에 남김' : '') + (vari ? ' · 이미 있는 상품의 다른 줄(낱개 등) ' + vari + '개는 등록 안 함' : '') + (S15.newList.length ? ' · 앱에 없는 상품 ' + S15.newList.length + '개' : '');
           s15Render(); return;
         }
         var part = tasks.slice(i0, i0 + 40); i0 += part.length;
@@ -12163,12 +12164,16 @@ html body #ryLaunchGrid .tl-search{top:56px}
             var p = r.picks[k] || { pick: 0 };
             if (t.kind === 'app') {
               var x = p.pick > 0 ? t.cands[p.pick - 1] : null;
-              if (x && !takenX[x.n]) { t.g.x = x; t.g.st = 'auto'; t.g.pick = true; t.g.ai = true; takenX[x.n] = 1; takenG[t.g.key] = 1; applied++; }
+              if (x && p.sure && !takenX[x.n]) { t.g.x = x; t.g.st = 'auto'; t.g.pick = true; t.g.ai = true; takenX[x.n] = 1; takenG[t.g.key] = 1; applied++; }
+              else if (x) { if (t.g.st === 'none') { t.g.x = x; t.g.st = 'check'; } else t.g.x = x; S15.unsure.push(t.g.name); }   // 애매 → 사람이 확인
               else if (t.g.st === 'check') { t.g.st = 'none'; t.g.ai = true; wrong++; }
             } else if (!p.skip) {
               var g = p.pick > 0 ? t.cands[p.pick - 1] : null;
-              if (g && !takenG[g.key] && !takenX[t.x.n]) { g.x = t.x; g.st = 'auto'; g.pick = true; g.ai = true; takenG[g.key] = 1; takenX[t.x.n] = 1; applied++; }
-              else if (!g) S15.newList.push(t.x);
+              if (g && (g.st === 'auto' || takenG[g.key])) vari++;   // 이미 이어진 앱 상품의 다른 줄 (낱개·묶음·색상) → 새로 등록하지 않음
+              else if (g && p.sure && !takenX[t.x.n]) { g.x = t.x; g.st = 'auto'; g.pick = true; g.ai = true; takenG[g.key] = 1; takenX[t.x.n] = 1; applied++; }
+              else if (g) { if (g.st === 'none') { g.x = t.x; g.st = 'check'; } S15.unsure.push(g.name); }
+              else if (s15Unit(t.x.n)) vari++;   // 낱개 줄인데 짝이 없으면 묶음 상품 확인이 필요 → 등록 안 함
+              else S15.newList.push(t.x);
             }
           });
           S15.aiMsg = 'AI가 맞추는 중… ' + Math.min(i0, tasks.length) + '/' + tasks.length; s15Render(); step();
