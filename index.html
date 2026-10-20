@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvgevxm6">
+  <meta name="ry-build" content="mvgewzen">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4187,7 +4187,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         </div>
         <div id="inboundSearchInfo" class="hidden mt-1.5 text-[11px] font-bold text-emerald-900"></div>
         <div class="flex flex-wrap items-center gap-1.5 mt-2">
-          <button type="button" id="lateShareBtn" onclick="shareLateInbound()" class="ry-lateshare" title="발주 후 7일 넘게 안 들어온 상품 목록을 복사합니다. 카톡방에 붙여넣으세요">
+          <button type="button" id="lateShareBtn" hidden style="display:none!important" onclick="shareLateInbound()" class="ry-lateshare" title="발주 후 7일 넘게 안 들어온 상품 목록을 복사합니다. 카톡방에 붙여넣으세요">
             <svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><span>지연 상품 복사 (카톡용)</span>
             <span id="lateShareCount" class="ry-lateshare-n">0</span>
           </button>
