@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvgdy61e">
+  <meta name="ry-build" content="mvgek8xt">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -12096,6 +12096,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       return s ? ryDot(s) : '';
     }
     function rySatChip(item) {
+      return '';   // 1020 MJ: 이제 명세서를 찍어 입고하니 '토요일에 도착했어요' 버튼은 필요 없음 (명세서 날짜가 남음)
       var s = rySatFor(item);
       if (!s) return '';
       var row = parseInt(item.rowNumber, 10) || 0, on = !!RY_SAT[row];
