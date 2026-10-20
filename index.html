@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvggmboo">
+  <meta name="ry-build" content="mvglajy1">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4846,6 +4846,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     }
     function stockBadge(item) {
       if (!item || !item.name) return '';
+      if ((cachedInboundItems || []).indexOf(item) !== -1) return '';   // 1020 MJ: 입고대기에선 안 보임 (검색·검토 단계에서 봄)
       var s = stkOf(item);
       if (!s) return RY_SC ? ' <button type="button" class="ry-stk none" data-n="' + escapeHtml(item.name) + '" onclick="event.stopPropagation(); stkCount(this)" title="창고 여분을 세어서 넣어요 (매장 진열분은 빼고)">📦 추정 재고 · 입력</button>' : '';   // 1020 MJ: 기록이 없어도 칸은 보이게 — 손으로 넣을 수 있게
       var cls = s.sure && s.est === 0 ? 'red' : '';   // 1020 MJ: 예상 날짜는 빼고 '추정 재고 N개'만, 눈에 띄게
