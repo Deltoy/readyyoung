@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvgm0otv">
+  <meta name="ry-build" content="mvgm5cpm">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -3789,8 +3789,10 @@ html:not(#q):not(#w):not(#e) body:not(#r) .mb-wpc small{font-size:12px;color:var
 @media(max-width:420px){.mb-parts>div{grid-template-columns:1fr;gap:2px}}
 </style>
 <style>
-/* 1020 MJ: 옆으로 넘기는 걸 몰라서 → 폰에선 한눈에 다 보이는 칸 배치 (윗줄 큰 2개: 명세서 입고·박스 재고 / 아래 작은 칸: 새 상품·숙지사항·근무표 / 뷰티 브리핑·교육 자료실) */
-@media(max-width:600px){html body:not(#_):not(#_):not(#_) .ry-tools{display:grid!important;grid-template-columns:repeat(6,1fr);gap:8px!important;overflow:visible!important;margin-right:0!important;padding-right:0!important}html body:not(#_):not(#_):not(#_) .ry-tools>button{min-width:0;justify-content:center;padding:0 6px!important;white-space:nowrap;order:2;grid-column:span 2}html body:not(#_):not(#_):not(#_) .ry-tools>button[onclick^="invOpen"],html body:not(#_):not(#_):not(#_) .ry-tools>button[onclick^="bxOpenTab"]{grid-column:span 3;order:1}html body:not(#_):not(#_):not(#_) .ry-tools>button[onclick^="mbOpenArchive"],html body:not(#_):not(#_):not(#_) .ry-tools>button[onclick^="eduOpen"]{grid-column:span 3}html body:not(#_):not(#_):not(#_) .ry-tools>.ry-more{display:contents}}
+/* 1020 MJ: 폰에선 평소 '명세서 찍어 입고 · 박스 재고'만, [더보기]를 누르면 새 상품·숙지사항·근무표 / 뷰티 브리핑·교육 자료실이 펼쳐짐 (새 글 있으면 더보기에 빨간 점) */
+#qmMore{display:none}
+html:not(#q):not(#w):not(#e) body:not(#r):not(#t) .ry-tools>button[onclick^="invOpen"]{background:#155EEF!important;border-color:#155EEF!important;color:#fff!important;font-weight:700!important;box-shadow:0 4px 12px rgba(21,94,239,.25)}html:not(#q):not(#w):not(#e) body:not(#r):not(#t) .ry-tools>button[onclick^="invOpen"]:active{background:#1849A9!important}
+@media(max-width:600px){html body:not(#_):not(#_):not(#_) .ry-tools{display:grid!important;grid-template-columns:repeat(12,1fr);gap:8px!important;overflow:visible!important;margin-right:0!important;padding-right:0!important}html body:not(#_):not(#_):not(#_) .ry-tools>button{min-width:0;justify-content:center;padding:0 6px!important;white-space:nowrap;order:2;grid-column:span 4}html body:not(#_):not(#_):not(#_) .ry-tools:not(.qm-open)>button:not([onclick^="invOpen"]):not([onclick^="bxOpenTab"]):not(#qmMore){display:none!important}html body:not(#_):not(#_):not(#_) .ry-tools>button[onclick^="invOpen"],html body:not(#_):not(#_):not(#_) .ry-tools>button[onclick^="bxOpenTab"]{grid-column:span 5;order:1}html body:not(#_):not(#_):not(#_) .ry-tools>#qmMore{display:inline-flex!important;grid-column:span 2;order:1;padding:0 2px!important;font-size:12.5px!important;position:relative;color:var(--z-mute,#667085)!important}html body:not(#_):not(#_):not(#_) .ry-tools>#qmMore::after{content:'▾';margin-left:2px;font-size:10px}html body:not(#_):not(#_):not(#_) .ry-tools.qm-open>#qmMore::after{content:'▴'}html body:not(#_):not(#_):not(#_) .ry-tools:has(#rlDot:not([hidden])) #qmMore::before,html body:not(#_):not(#_):not(#_) .ry-tools:has(#eduDot:not([hidden])) #qmMore::before{content:'';position:absolute;top:5px;right:5px;width:8px;height:8px;border-radius:50%;background:#D92D20}html body:not(#_):not(#_):not(#_) .ry-tools>button[onclick^="mbOpenArchive"],html body:not(#_):not(#_):not(#_) .ry-tools>button[onclick^="eduOpen"]{grid-column:span 6}html body:not(#_):not(#_):not(#_) .ry-tools>.ry-more{display:contents}}
 </style>
 <style>
 /* 1003 추천 발주 수량 */
@@ -3947,6 +3949,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         <button type="button" class="ry-ghost ry-quick" onclick="window.open('https://pallang-0258.github.io/seongsu/viewer.html', '_blank', 'noopener')" title="근무표를 새 창으로 열기">근무표</button>
         <button type="button" class="ry-ghost ry-quick" onclick="mbOpenArchive()" title="날짜별 아침 뷰티 브리핑">뷰티 브리핑</button>
         <button type="button" class="ry-ghost ry-quick" onclick="eduOpen()" title="제품 교육 자료">교육 자료실<i id="eduDot" class="mb-dot edu-qdot" hidden aria-label="새 교육 자료"></i></button>
+        <button type="button" id="qmMore" class="ry-ghost" onclick="var t=this.parentNode;t.classList.toggle('qm-open');this.setAttribute('aria-expanded',t.classList.contains('qm-open'))" aria-expanded="false" title="다른 메뉴 펼치기">더보기</button>
         <div class="ry-more">
           <div class="ry-more-menu" id="toolMoreMenu" role="menu" hidden>
             <button type="button" role="menuitem" onclick="closeToolMore(); openCatBrowse()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>카테고리별 보기<small>분류가 비었거나 기타인 상품 고치기</small></button>
