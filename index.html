@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvg8unl4">
+  <meta name="ry-build" content="mvg8xnog">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9573,7 +9573,9 @@ html body #ryLaunchGrid .tl-search{top:56px}
         var wrong = r.wrongStore ? '<div class="inv-wrong">⛔ 이 명세서는 <b>' + escapeHtml(r.receiver || '다른 곳') + '</b> 앞으로 온 거예요.<br>우리는 <b>성수레디영약국</b>이에요. 입고하지 말고 물건을 따로 두고 문준님께 알려 주세요. (문준님 카톡으로도 알렸어요)</div>' : '';
         return '<div class="inv-sec">' + wrong + '<h4>📄 ' + escapeHtml(r.supplier || '거래명세서') + ' <span>' + escapeHtml(r.date || '') + ' · ' + r.lines.length + '줄' + (r.link ? ' · <a href="' + escapeHtml(r.link) + '" target="_blank" rel="noopener">사진</a>' : '') + '</span></h4>' + rows + '</div>';
       }).join('');
-      var head = '<h3>📄 명세서 ' + INVS.length + '장' + (busyMsg ? ' · ' + escapeHtml(busyMsg) : '') + '</h3><div class="inv-sub">' + nLine + '줄 · 수량이 맞는 ' + nOk + '개는 미리 골라 뒀어요</div>';
+      var nFail = INVS.filter(function (r) { return !r.success && r._file; }).length;
+      var head = '<h3>📄 명세서 ' + INVS.length + '장' + (busyMsg ? ' · ' + escapeHtml(busyMsg) : '') + '</h3><div class="inv-sub">' + nLine + '줄 · 수량이 맞는 ' + nOk + '개는 미리 골라 뒀어요</div>'
+        + (nFail > 1 && !busyMsg ? '<button type="button" class="inv-retry" style="width:100%;margin:0 0 8px" onclick="invRetryAll()">↻ 못 읽은 ' + nFail + '장 한 번에 다시 읽기</button>' : '');   // 1020 MJ '여러 장 실패하면 한 번에 다시'
       invShow(head + secs + '<div class="inv-foot"><button class="inv-x" onclick="invClose()">닫기</button><button class="inv-x" onclick="invPick(true)"' + (busyMsg ? ' disabled' : '') + '>📷 한 장 더</button><button class="inv-go" id="invGo" onclick="invDo()">입고완료</button></div>');
       invCount(!!busyMsg);
     }
@@ -9607,6 +9609,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       d.innerHTML = '<div class="iz-top"><b>' + (j + 1) + '번째 명세서</b><span>두 손가락으로 확대 · 아무 데나 누르면 닫혀요</span></div><img src="' + (r._big || r._thumb) + '" alt="' + (j + 1) + '번째 명세서 사진">';
       document.body.appendChild(d);
     }
+    function invRetryAll() { if (INV_BUSY) return; INVS.forEach(function (r, j) { if (!r.success && r._file) INV_Q.push({ f: r._file, j: j }); }); invNext(); }
     function invRetry(j) { var r = INVS[j]; if (!r || !r._file || INV_BUSY) return; INV_Q.unshift({ f: r._file, j: j }); invNext(); }
     function invPicked() { var seen = {}; return Array.prototype.map.call(document.querySelectorAll('#invBox input[type=checkbox]:checked'), function (c) { return INVS[+c.dataset.j].lines[+c.dataset.i].row; }).filter(function (r) { if (!r || seen[r]) return false; seen[r] = 1; return true; }); }
     function invExtras() {   // 명세서마다 [주문 안 한 상품]
