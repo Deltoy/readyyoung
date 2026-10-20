@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvg8oh08">
+  <meta name="ry-build" content="mvg8svo7">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9513,8 +9513,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function invCatOf(l) {   /* 주문에 없는 상품이 앱 목록엔 있는지 (없으면 새 상품) · 1020 '텐텐츄정 / 120T(NEW)' · '동아제약D-판테놀연고' · AI 가 '애크온'을 '애크론'으로 읽은 것 → 낱말 점수 + 브랜드 한 글자 차이까지 */
       if (l._cat !== undefined) return l._cat;
       if (!RY_CAT || !RY_CAT.items) { try { ryCatLoad(true); } catch (e) {} return null; }
-      var key = function (x) { return String(x || '').toLowerCase().replace(/[^가-힣a-z0-9]/g, ''); };
-      var raw = String(l.name || '').replace(/\([^)]*\)|\[[^\]]*\]/g, ' ').replace(String(l.spec || ''), ' ');
+      var key = function (x) { var t = String(x || '').toLowerCase(); if (typeof DUP_SYN !== 'undefined') DUP_SYN.forEach(function (r) { t = t.replace(r[0], r[1]); }); return t.replace(/[^가-힣a-z0-9]/g, ''); };   // 피디알엔=PDRN 같은 표기 차이도
+      var raw = String(l.clean || l.name || '').replace(/\([^)]*\)|\[[^\]]*\]/g, ' ').replace(String(l.spec || ''), ' ');
       var toks = [];
       raw.split(/[\s\/_\-,·]+/).forEach(function (t) { t = key(t).replace(/^\d+(ml|g|mg|정|포|매|개입|ea|t|캡슐|p)?$/i, ''); if (t.length >= 2) { toks.push(t); var c = t.replace(/^(동아제약|종근당|유한양행|대웅제약|일동제약|광동제약|한미약품|녹십자|보령)[a-z]?/, ''); if (c !== t && c.length >= 2) toks.push(c); } });
       if (!toks.length) return (l._cat = '');
@@ -9549,7 +9549,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           if (!has && !l.doneName) { var cn = invCatOf(l); l.catName = cn || ''; l.newItem = cn === ''; }
           if (!has) tag = l.doneName ? '<span class="inv-tag inv-ok">✓ 이미 입고완료 · ' + escapeHtml(l.doneDate + ' · ' + l.doneQty) + '</span><div class="inv-n">' + escapeHtml(l.doneName) + '</div>'
             : l.newItem ? '<span class="inv-tag inv-no">🆕 새 상품으로 등록해요 · ' + escapeHtml(l.clean || l.name) + '</span><div class="inv-n">입고완료(또는 알리기)를 누를 때 등록하고 문준님께 알려요</div>'
-            : '<span class="inv-tag inv-warn">📋 주문 안 한 상품' + (l.catName ? ' · 앱: ' + escapeHtml(l.catName) : '') + ' · 문준님께 알려요</span>';
+            : '<span class="inv-tag inv-warn">📋 주문 안 했는데 들어온 상품 · 문준님께 알려요</span>' + (l.catName ? '<div class="inv-n">앱에 있는 상품으로 보여요: <b>' + escapeHtml(l.catName) + '</b> · 다르면 [다른 상품으로 바꾸기] 또는 [새 상품으로 등록]</div>' : '');
           else if (dup) tag = '<span class="inv-tag inv-no">다른 명세서에도 있는 같은 상품이에요</span>';
           else if (l.early) tag = '<span class="inv-tag inv-warn">⚠ 명세서 날짜(' + escapeHtml(r.date) + ')가 발주일(' + escapeHtml(l.orderDate) + ')보다 빨라요 · 이전 주문분일 수 있어요</span>';
           else if (r.wrongStore) tag = '<span class="inv-tag inv-up">⛔ 다른 곳 명세서 · 입고하지 마세요</span>';
@@ -9561,7 +9561,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
             : '<span class="inv-tag ' + (l.pricePct > 0 ? 'inv-up' : 'inv-ok') + '">' + (l.pricePct > 0 ? '▲ 사입가 ' + l.pricePct + '% 올랐어요' : '▼ 사입가 ' + Math.abs(l.pricePct) + '% 내렸어요') + '</span><div class="inv-n">' + escapeHtml(l.priceHow) + (l.cmpPrice ? ' ' + won(l.cmpPrice) : '') + '</div>';
           return '<label class="inv-line"><input type="checkbox" data-j="' + j + '" data-i="' + i + '"' + chk + (has && !dup && !r.wrongStore ? '' : ' disabled') + ' onchange="invCount()"><div style="flex:1;min-width:0"><b>' + escapeHtml(l.name) + (l.spec ? ' <span style="font-weight:600;color:#667085">' + escapeHtml(l.spec) + '</span>' : '') + '</b>'
             + '<div class="inv-m">명세서 ' + escapeHtml(String(l.qty)) + (has ? ' → 앱: ' + escapeHtml(l.appName) + ' · 주문 ' + escapeHtml(l.orderQty + l.unit) : '') + '</div>' + tag + (l.badPair ? '<div class="inv-n">AI가 \'' + escapeHtml(l.badPair) + '\'와 짝지었는데 이름이 달라서 뺐어요</div>' : '') + (l.note && !l.qtyOk && has ? '<div class="inv-n">' + escapeHtml(l.note) + '</div>' : '') + price
-            + (r.wrongStore ? '' : '<div class="inv-btns"><button type="button" class="inv-alt" onclick="event.preventDefault(); invAlt(' + j + ',' + i + ')">🔁 다른 상품으로 바꾸기</button>' + (!has && !l.newItem ? '<button type="button" class="inv-alt" onclick="event.preventDefault(); invAltPick(' + j + ',' + i + ',0,0)">🆕 새 상품으로 등록</button>' : '') + '</div><div class="inv-pick" id="invpk-' + j + '-' + i + '"></div>') + '</div></label>';
+            + (r.wrongStore ? '' : '<div class="inv-btns"><button type="button" class="inv-alt" onclick="event.preventDefault(); invAlt(' + j + ',' + i + ')">🔁 다른 상품으로 바꾸기</button>' + (!has && !l.newItem && !l.doneName ? '<button type="button" class="inv-alt" onclick="event.preventDefault(); invAltPick(' + j + ',' + i + ',0,0)">🆕 새 상품으로 등록</button>' : '') + '</div><div class="inv-pick" id="invpk-' + j + '-' + i + '"></div>') + '</div></label>';
         }).join('');
         var wrong = r.wrongStore ? '<div class="inv-wrong">⛔ 이 명세서는 <b>' + escapeHtml(r.receiver || '다른 곳') + '</b> 앞으로 온 거예요.<br>우리는 <b>성수레디영약국</b>이에요. 입고하지 말고 물건을 따로 두고 문준님께 알려 주세요. (문준님 카톡으로도 알렸어요)</div>' : '';
         return '<div class="inv-sec">' + wrong + '<h4>📄 ' + escapeHtml(r.supplier || '거래명세서') + ' <span>' + escapeHtml(r.date || '') + ' · ' + r.lines.length + '줄' + (r.link ? ' · <a href="' + escapeHtml(r.link) + '" target="_blank" rel="noopener">사진</a>' : '') + '</span></h4>' + rows + '</div>';
