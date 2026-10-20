@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvgbldhb">
+  <meta name="ry-build" content="mvgbsgaz">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1132,6 +1132,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-who .ry-ava{width:30px!importan
 .inv-must{background:#FEF3F2;border:2px solid #F04438;color:#B42318;border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.5;margin:4px 0 10px}
 .inv-opts button img,.inv-noimg{width:40px;height:40px;object-fit:contain;border-radius:8px;border:1px solid #E4E7EC;background:#fff;flex:none;font-style:normal;display:flex;align-items:center;justify-content:center}.inv-opts button{align-items:center}.inv-opts button span{flex:1;min-width:0}.inv-appimg{display:flex;align-items:center;gap:8px;margin:6px 0 2px;font-size:12px;color:#667085}.inv-appimg img{width:56px;height:56px;object-fit:contain;border-radius:10px;border:1px solid #E4E7EC;background:#fff}
 .inv-match{display:flex;align-items:center;gap:10px;margin:8px 0 4px;padding:10px;border-radius:12px;border:2px solid #84ADFF;background:#EEF4FF}.inv-match img,.inv-match .inv-noimg{width:60px;height:60px;object-fit:contain;border-radius:10px;border:1px solid #E4E7EC;background:#fff;flex:none}.inv-match div{min-width:0}.inv-match small{display:block;font-size:11.5px;font-weight:800;color:#155EEF}.inv-match b{display:block;font-size:15px;font-weight:900;color:#101828;line-height:1.35}.inv-match span{font-size:12px;color:#475467}.inv-match.m-q{border-color:#FEC84B;background:#FFFAEB}.inv-match.m-q small{color:#B54708}.inv-match.m-done{border-color:#ABEFC6;background:#ECFDF3}.inv-match.m-done small{color:#067647}
+#imgPreviewOverlay{z-index:10075!important}
 .inv-sec{margin-bottom:6px}.inv-fail{background:#FFFAEB;border-radius:14px;padding:4px 12px 10px}.inv-failrow{display:flex;gap:12px;align-items:flex-start}.inv-failrow img{width:96px;border-radius:10px;border:1px solid #E4E7EC;flex:none}.inv-retry{min-height:44px;padding:0 14px;border-radius:12px;border:0;background:#155EEF;color:#fff;font-weight:800;font-size:14px;margin:6px 0}.inv-wrong{background:#FEF3F2;border:2px solid #F04438;color:#B42318;border-radius:14px;padding:12px 14px;font-size:15px;line-height:1.5;margin:10px 0}.inv-sec h4{font-size:15px;font-weight:800;margin:12px 0 8px}.inv-sec h4 span{font-weight:600;color:#667085;font-size:12px}.inv-sec h4 a{color:#155EEF}
 .inv-foot{position:sticky;bottom:-16px;background:#fff;padding-top:10px;display:flex;gap:8px}
 .inv-foot button{flex:1;min-height:48px;border-radius:14px;font-weight:800;font-size:15px;border:0}
@@ -9500,10 +9501,22 @@ html body #ryLaunchGrid .tl-search{top:56px}
     }
     function invShow(html) {
       var d = document.getElementById('invDim');
-      if (!d) { d = document.createElement('div'); d.id = 'invDim'; d.onclick = function (e) { if (e.target === d && !INV_BUSY) invClose(); }; d.innerHTML = '<div id="invBox" role="dialog" aria-modal="true" aria-label="거래명세서 입고"></div>'; document.body.appendChild(d); try { ryLockScroll(true); } catch (e) {} }
+      if (!d) { d = document.createElement('div'); d.id = 'invDim'; d.innerHTML = '<div id="invBox" role="dialog" aria-modal="true" aria-label="거래명세서 입고"></div>'; document.body.appendChild(d); try { ryLockScroll(true); } catch (e) {} }
       document.getElementById('invBox').innerHTML = html;
     }
-    function invClose() { var d = document.getElementById('invDim'); if (d) { d.remove(); try { ryLockScroll(false); } catch (e) {} } INVS = []; INV_Q = []; INV_BUSY = false; }
+    function invClose(force) {
+      if (!force && INVS.some(function (r) { return r.success && (r.lines || []).length; }) && !confirm('명세서 확인 창을 닫을까요?\n(입고완료를 안 눌렀으면 읽은 내용이 사라져요)')) return;
+      var d = document.getElementById('invDim'); if (d) { d.remove(); try { ryLockScroll(false); } catch (e) {} } INVS = []; INV_Q = []; INV_BUSY = false; invSave();
+    }
+    /* 1020 MJ '이름 확인하러 사진 눌렀다 돌아오면 명세서 창이 없어져 다시 시작' → 읽은 결과를 이 기기에 잠깐(1시간) 저장했다가 앱이 다시 열리면 이어서 */
+    function invSave() { try { if (!INVS.length) { sessionStorage.removeItem('ry_inv_sess'); localStorage.removeItem('ry_inv_sess'); return; } var lite = INVS.map(function (r) { var o = Object.assign({}, r); delete o._file; delete o._big; return o; }); localStorage.setItem('ry_inv_sess', JSON.stringify({ t: Date.now(), m: currentSelectedMember, v: lite })); } catch (e) {} }
+    var _invRT = 0;
+    function invRestore() {
+      if (!(cachedInboundItems && cachedInboundItems.length) || !currentSelectedMember) { if (_invRT++ < 10) setTimeout(invRestore, 3000); return; }   // 입고대기 목록이 와야 짝이 맞게 보임
+      try { var x = JSON.parse(localStorage.getItem('ry_inv_sess') || 'null'); if (!x || Date.now() - x.t > 3600000 || x.m !== currentSelectedMember || !x.v || !x.v.length) return; if (document.getElementById('invDim')) return;
+        INVS = x.v; INV_Q = []; INV_BUSY = false; invShow(''); invRender(); showToast('보던 명세서를 이어서 열었어요', 2600); } catch (e) {}
+    }
+    setTimeout(function () { try { invRestore(); } catch (e) {} }, 3500);
     function invNext() {
       if (INV_BUSY) return;
       var q = INV_Q.shift(); if (!q) { invRender(); return; }
@@ -9513,7 +9526,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (!INVS.length) invShow('<h3>명세서 읽는 중… ' + (tot > 1 ? nth + '/' + tot + '장' : '') + '</h3><div class="inv-sub">AI 가 품목을 읽고 입고대기 상품과 맞춰 보고 있어요 (한 장에 10초쯤)</div>');
       else invRender(nth + '/' + tot + '장째 읽는 중…');
       var thumb = '', big = '';
-      var fin = function (r) { INV_BUSY = false; r = r && r.success ? r : { success: false, message: (r && r.message) || '읽지 못했어요', lines: [] }; r._file = file; r._thumb = thumb; r._big = r.success ? '' : big; INVS[slot] = r; invNext(); };   // 1020 MJ '건너뛰면 어떤 명세서인지 모르잖아' → 사진을 같이 들고 있다가 보여주고 다시 읽기
+      var fin = function (r) { INV_BUSY = false; r = r && r.success ? r : { success: false, message: (r && r.message) || '읽지 못했어요', lines: [] }; r._file = file; r._thumb = thumb; r._big = big; INVS[slot] = r; invNext(); };   // 1020 MJ '건너뛰면 어떤 명세서인지 모르잖아' → 사진을 같이 들고 있다가 보여주고 다시 읽기
       var done = false, t = setTimeout(function () { if (!done) { done = true; fin({ success: false, message: '시간이 오래 걸려서 건너뛰었어요' }); } }, 75000);
       resizeImageFile(file, 2000, 0.85).then(function (dataUrl) {
         window._invLast = dataUrl; big = dataUrl;
@@ -9596,14 +9609,14 @@ html body #ryLaunchGrid .tl-search{top:56px}
             + (r.wrongStore ? '' : '<div class="inv-btns"><button type="button" class="inv-alt" onclick="event.preventDefault(); invAlt(' + j + ',' + i + ')">🔁 다른 상품으로 바꾸기</button>' + (!has && !l.newItem && !l.doneName ? '<button type="button" class="inv-alt" onclick="event.preventDefault(); invAltPick(' + j + ',' + i + ',0,0)">🆕 새 상품으로 등록</button>' : '') + '</div><div class="inv-pick" id="invpk-' + j + '-' + i + '"></div>') + '</div></label>';
         }).join('');
         var wrong = r.wrongStore ? '<div class="inv-wrong">⛔ 이 명세서는 <b>' + escapeHtml(r.receiver || '다른 곳') + '</b> 앞으로 온 거예요.<br>우리는 <b>성수레디영약국</b>이에요. 입고하지 말고 물건을 따로 두고 문준님께 알려 주세요. (문준님 카톡으로도 알렸어요)</div>' : '';
-        return '<div class="inv-sec">' + wrong + '<h4>📄 ' + escapeHtml(r.supplier || '거래명세서') + ' <span>' + escapeHtml(r.date || '') + ' · ' + r.lines.length + '줄' + (r.link ? ' · <a href="' + escapeHtml(r.link) + '" target="_blank" rel="noopener">사진</a>' : '') + '</span></h4>' + rows + '</div>';
+        return '<div class="inv-sec">' + wrong + '<h4>📄 ' + escapeHtml(r.supplier || '거래명세서') + ' <span>' + escapeHtml(r.date || '') + ' · ' + r.lines.length + '줄' + ((r._big || r._thumb) ? ' · <a href="#" onclick="event.preventDefault(); invZoom(' + j + ')">사진 크게</a>' : r.link ? ' · <a href="' + escapeHtml(r.link) + '" target="_blank" rel="noopener">사진</a>' : '') + '</span></h4>' + rows + '</div>';
       }).join('');
       var nFail = INVS.filter(function (r) { return !r.success && r._file; }).length;
       var head = '<h3>📄 명세서 ' + INVS.length + '장' + (busyMsg ? ' · ' + escapeHtml(busyMsg) : '') + '</h3><div class="inv-sub">' + nLine + '줄 · 수량이 맞는 ' + nOk + '개는 미리 골라 뒀어요</div>'
         + (nFail > 1 && !busyMsg ? '<button type="button" class="inv-retry" style="width:100%;margin:0 0 8px" onclick="invRetryAll()">↻ 못 읽은 ' + nFail + '장 한 번에 다시 읽기</button>' : '');   // 1020 MJ '여러 장 실패하면 한 번에 다시'
       var warnBox = INVS.some(function (r) { return r.success; }) ? '<div class="inv-must">⚠️ <b>입고완료 전에 꼭!</b> 명세서 이름과 <b>앱: ○○</b> 이름이 같은 상품인지 하나씩 확인해 주세요. 다르면 [🔁 다른 상품으로 바꾸기]</div>' : '';   // 1020 MJ '이름 꼭 확인 후 입고완료 — 강조'
       invShow(head + warnBox + secs + '<div class="inv-foot"><button class="inv-x" onclick="invClose()">닫기</button><button class="inv-x" onclick="invPick(true)"' + (busyMsg ? ' disabled' : '') + '>📷 한 장 더</button><button class="inv-go" id="invGo" onclick="invDo()">입고완료</button></div>');
-      invCount(!!busyMsg);
+      invCount(!!busyMsg); invSave();
     }
     /* 1020 MJ 'AI 짝이 잘못돼 있어 — 다시 매칭' → 줄마다 입고대기 · 앱 상품에서 골라 바꾸기 */
     function invAlt(j, i) {
@@ -9661,7 +9674,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         INVS.forEach(function (r) { if (!r.fid || r.wrongStore) return; var nm = (r.lines || []).filter(function (l) { return l.row && rows.indexOf(l.row) !== -1 && byRow[l.row]; }).map(function (l) { return { n: byRow[l.row].name, q: l.appQty != null ? l.appQty : l.qty }; }); if (nm.length) google.script.run.withFailureHandler(function () {}).invoiceLinkSave(nm, r.fid, { supplier: r.supplier, date: r.date }, currentSelectedMember); });
         RY_IVL = null;
       } catch (eL) {}
-      invClose();
+      invClose(true);
       rows.forEach(function (row, i) { setTimeout(function () { completeInbound(row, true); }, i * 400); });
       if (rows.length) setTimeout(function () { showToast('명세서로 ' + rows.length + '개 입고완료 처리했어요', 3000); }, rows.length * 400 + 100);
     }
