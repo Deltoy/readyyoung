@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvg95mzd">
+  <meta name="ry-build" content="mvg9fy3h">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -5951,7 +5951,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       el.hidden = false;
     }
     /* 1020 MJ '직원들에게 명세서 찍는 튜토리얼 알림 · 한 번만 · 확인했으면 안 띄움' — 사람마다 서버(TUT_ACK)에 확인 기록 */
-    var TUT_ID = 'inv1', TUT_IMG = 'https://deltoy.github.io/readyyoung/tut-invoice.jpg', _tutAsk = '';
+    var TUT_ID = 'inv2', TUT_IMGS = ['https://deltoy.github.io/readyyoung/tut-invoice.jpg', 'https://deltoy.github.io/readyyoung/tut-invoice-2.jpg'], _tutAsk = '';   // 1020 2편(이름 다를 때 맞추기 · 새 상품 등록) 추가 → 새 번호라 모두에게 한 번 더
     function tutPop() {
       var me = currentSelectedMember || '', host = document.getElementById('ryTopPops'); if (!me || !host) return;
       var lk = 'tut_' + TUT_ID + '_' + me, el = document.getElementById('tutPop');
@@ -5967,13 +5967,13 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function tutShowPop(me) {
       var host = document.getElementById('ryTopPops'); if (!host) return;
       var el = document.getElementById('tutPop'); if (!el) { el = document.createElement('div'); el.id = 'tutPop'; el.setAttribute('role', 'status'); host.appendChild(el); }
-      el.innerHTML = '<div class="tp-txt"><b class="t">📄 새 기능 · 명세서 찍어 입고</b><p>택배 오면 명세서를 찍어서 한 번에 입고해요 (1분)</p></div>'
+      el.innerHTML = '<div class="tp-txt"><b class="t">📄 명세서 입고 방법 (1편 · 2편)</b><p>찍어서 입고하기 + 이름 다를 때 맞추기 · 새 상품 등록</p></div>'
         + '<button type="button" class="tp-go" onclick="tutOpen()">보러 가기</button><button type="button" class="tp-x" aria-label="닫기" onclick="window._tutX = currentSelectedMember; document.getElementById(\'tutPop\').hidden = true">×</button>';
       el.hidden = false;
     }
     function tutOpen() {
       var d = document.createElement('div'); d.id = 'tutDim';
-      d.innerHTML = '<div id="tutBox" role="dialog" aria-modal="true" aria-label="명세서 입고 튜토리얼"><img src="' + TUT_IMG + '" alt="명세서 찍어 입고하는 방법: 입고 대기 탭의 명세서 찍어 입고 버튼 → 카메라 또는 사진첩 → AI가 읽은 결과 확인 → 고른 상품 입고완료"><div class="inv-foot"><button class="inv-go" onclick="tutClose()">닫기</button></div></div>';
+      d.innerHTML = '<div id="tutBox" role="dialog" aria-modal="true" aria-label="명세서 입고 튜토리얼"><img src="' + TUT_IMGS[0] + '" alt="1편 명세서 찍어 입고하는 방법: 입고 대기 탭의 명세서 찍어 입고 버튼 → 카메라 또는 사진첩 → AI가 읽은 결과 확인 → 고른 상품 입고완료"><img src="' + TUT_IMGS[1] + '" alt="2편 이름이 다를 때: 다른 상품으로 바꾸기로 앱 상품 고르기, 앱에 없으면 새 상품으로 등록 후 입고완료" style="margin-top:12px"><div class="inv-foot"><button class="inv-go" onclick="tutClose()">닫기</button></div></div>';
       document.body.appendChild(d); try { ryLockScroll(true); } catch (e) {}
       var me = currentSelectedMember || '', el = document.getElementById('tutPop');   // 1020 MJ: 페이지에 들어왔으면 확인한 걸로
       if (me) { try { localStorage.setItem('tut_' + TUT_ID + '_' + me, '1'); } catch (e) {} google.script.run.withFailureHandler(function () {}).tutAck(TUT_ID, me); }
