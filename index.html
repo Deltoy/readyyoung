@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvg9m8a4">
+  <meta name="ry-build" content="mvga3wuy">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1131,6 +1131,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-who .ry-ava{width:30px!importan
 .inv-btns{display:flex;flex-wrap:wrap;gap:6px}
 .inv-must{background:#FEF3F2;border:2px solid #F04438;color:#B42318;border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.5;margin:4px 0 10px}
 .inv-opts button img,.inv-noimg{width:40px;height:40px;object-fit:contain;border-radius:8px;border:1px solid #E4E7EC;background:#fff;flex:none;font-style:normal;display:flex;align-items:center;justify-content:center}.inv-opts button{align-items:center}.inv-opts button span{flex:1;min-width:0}.inv-appimg{display:flex;align-items:center;gap:8px;margin:6px 0 2px;font-size:12px;color:#667085}.inv-appimg img{width:56px;height:56px;object-fit:contain;border-radius:10px;border:1px solid #E4E7EC;background:#fff}
+.inv-match{display:flex;align-items:center;gap:10px;margin:8px 0 4px;padding:10px;border-radius:12px;border:2px solid #84ADFF;background:#EEF4FF}.inv-match img,.inv-match .inv-noimg{width:60px;height:60px;object-fit:contain;border-radius:10px;border:1px solid #E4E7EC;background:#fff;flex:none}.inv-match div{min-width:0}.inv-match small{display:block;font-size:11.5px;font-weight:800;color:#155EEF}.inv-match b{display:block;font-size:15px;font-weight:900;color:#101828;line-height:1.35}.inv-match span{font-size:12px;color:#475467}.inv-match.m-q{border-color:#FEC84B;background:#FFFAEB}.inv-match.m-q small{color:#B54708}.inv-match.m-done{border-color:#ABEFC6;background:#ECFDF3}.inv-match.m-done small{color:#067647}
 .inv-sec{margin-bottom:6px}.inv-fail{background:#FFFAEB;border-radius:14px;padding:4px 12px 10px}.inv-failrow{display:flex;gap:12px;align-items:flex-start}.inv-failrow img{width:96px;border-radius:10px;border:1px solid #E4E7EC;flex:none}.inv-retry{min-height:44px;padding:0 14px;border-radius:12px;border:0;background:#155EEF;color:#fff;font-weight:800;font-size:14px;margin:6px 0}.inv-wrong{background:#FEF3F2;border:2px solid #F04438;color:#B42318;border-radius:14px;padding:12px 14px;font-size:15px;line-height:1.5;margin:10px 0}.inv-sec h4{font-size:15px;font-weight:800;margin:12px 0 8px}.inv-sec h4 span{font-weight:600;color:#667085;font-size:12px}.inv-sec h4 a{color:#155EEF}
 .inv-foot{position:sticky;bottom:-16px;background:#fff;padding-top:10px;display:flex;gap:8px}
 .inv-foot button{flex:1;min-height:48px;border-radius:14px;font-weight:800;font-size:15px;border:0}
@@ -9559,9 +9560,9 @@ html body #ryLaunchGrid .tl-search{top:56px}
           var has = l.row && live[l.row], dup = has && seenRow[l.row], tag, chk = '';
           if (has && !dup) seenRow[l.row] = 1;
           if (!has && !l.doneName) { var cn = invCatOf(l); l.catName = cn || ''; l.newItem = cn === ''; }
-          if (!has) tag = l.doneName ? '<span class="inv-tag inv-ok">✓ 이미 입고완료 · ' + escapeHtml(l.doneDate + ' · ' + l.doneQty) + '</span><div class="inv-n">' + escapeHtml(l.doneName) + '</div>'
+          if (!has) tag = l.doneName ? '<span class="inv-tag inv-ok">✓ 이미 입고완료 · ' + escapeHtml(l.doneDate + ' · ' + l.doneQty) + '</span>'
             : l.newItem ? '<span class="inv-tag inv-no">🆕 새 상품으로 등록해요 · ' + escapeHtml(l.clean || l.name) + '</span><div class="inv-n">입고완료(또는 알리기)를 누를 때 등록하고 문준님께 알려요</div>'
-            : '<span class="inv-tag inv-warn">📋 주문 안 했는데 들어온 상품 · 문준님께 알려요</span>' + (l.catName ? '<div class="inv-n">앱에 있는 상품으로 보여요: <b>' + escapeHtml(l.catName) + '</b> · 다르면 [다른 상품으로 바꾸기] 또는 [새 상품으로 등록]</div>' : '');
+            : '<span class="inv-tag inv-warn">📋 주문 안 했는데 들어온 상품 · 문준님께 알려요</span>' + (l.catName ? '<div class="inv-n">위 상자의 상품이 아니면 [🔁 다른 상품으로 바꾸기] 또는 [🆕 새 상품으로 등록]</div>' : '');
           else if (dup) tag = '<span class="inv-tag inv-no">다른 명세서에도 있는 같은 상품이에요</span>';
           else if (l.early) tag = '<span class="inv-tag inv-warn">⚠ 명세서 날짜(' + escapeHtml(r.date) + ')가 발주일(' + escapeHtml(l.orderDate) + ')보다 빨라요 · 이전 주문분일 수 있어요</span>';
           else if (r.wrongStore) tag = '<span class="inv-tag inv-up">⛔ 다른 곳 명세서 · 입고하지 마세요</span>';
@@ -9572,8 +9573,14 @@ html body #ryLaunchGrid .tl-search{top:56px}
             : Math.abs(l.pricePct) < 1 ? '<div class="inv-n">사입가 그대로예요 · ' + escapeHtml(l.priceHow) + '</div>'
             : '<span class="inv-tag ' + (l.pricePct > 0 ? 'inv-up' : 'inv-ok') + '">' + (l.pricePct > 0 ? '▲ 사입가 ' + l.pricePct + '% 올랐어요' : '▼ 사입가 ' + Math.abs(l.pricePct) + '% 내렸어요') + '</span><div class="inv-n">' + escapeHtml(l.priceHow) + (l.cmpPrice ? ' ' + won(l.cmpPrice) : '') + '</div>';
           return '<label class="inv-line"><input type="checkbox" data-j="' + j + '" data-i="' + i + '"' + chk + (has && !dup && !r.wrongStore ? '' : ' disabled') + ' onchange="invCount()"><div style="flex:1;min-width:0"><b>' + escapeHtml(l.name) + (l.spec ? ' <span style="font-weight:600;color:#667085">' + escapeHtml(l.spec) + '</span>' : '') + '</b>'
-            + '<div class="inv-m">명세서 ' + escapeHtml(String(l.qty)) + (has ? ' → 앱: ' + escapeHtml(l.appName) + ' · 주문 ' + escapeHtml(l.orderQty + l.unit) : '') + '</div>'
-            + (function () { var an = has ? l.appName : (l.catName || l.doneName || ''), im = an ? invImgByName(an) : ''; return im ? '<div class="inv-appimg"><img src="' + escapeHtml(im) + '" alt="' + escapeHtml(an) + '" referrerpolicy="no-referrer" loading="lazy" onerror="this.parentNode.remove()"><span>앱 상품 사진 · ' + escapeHtml(an) + '</span></div>' : ''; })() + tag + (l.badPair ? '<div class="inv-n">AI가 \'' + escapeHtml(l.badPair) + '\'와 짝지었는데 이름이 달라서 뺐어요</div>' : '') + (l.note && !l.qtyOk && has ? '<div class="inv-n">' + escapeHtml(l.note) + '</div>' : '') + price
+            + '<div class="inv-m">명세서 수량 <b>' + escapeHtml(String(l.qty)) + '</b></div>'
+            + (function () {   // 1020 MJ '앱에 있는 상품이 회색이라 눈에 안 띄어 — 매칭할 상품을 눈에 띄게': 짝지은 앱 상품을 사진과 함께 큰 상자로
+              var an = has ? l.appName : (l.catName || l.doneName || ''); if (!an) return '';
+              var im = invImgByName(an), kind = has ? 'm-ok' : l.doneName ? 'm-done' : 'm-q';
+              var lab = has ? '🔗 짝지은 앱 상품 (입고대기)' : l.doneName ? '🔗 짝지은 앱 상품 (이미 입고)' : '🔗 앱에 있는 비슷한 상품 · 맞는지 확인';
+              return '<div class="inv-match ' + kind + '">' + (im ? '<img src="' + escapeHtml(im) + '" alt="" referrerpolicy="no-referrer" loading="lazy" onerror="this.outerHTML=\'<i class=&quot;inv-noimg&quot;>📦</i>\'">' : '<i class="inv-noimg">📦</i>')
+                + '<div><small>' + lab + '</small><b>' + escapeHtml(an) + '</b>' + (has ? '<span>주문 ' + escapeHtml(l.orderQty + l.unit) + '</span>' : '') + '</div></div>';
+            })() + tag + (l.badPair ? '<div class="inv-n">AI가 \'' + escapeHtml(l.badPair) + '\'와 짝지었는데 이름이 달라서 뺐어요</div>' : '') + (l.note && !l.qtyOk && has ? '<div class="inv-n">' + escapeHtml(l.note) + '</div>' : '') + price
             + (r.wrongStore ? '' : '<div class="inv-btns"><button type="button" class="inv-alt" onclick="event.preventDefault(); invAlt(' + j + ',' + i + ')">🔁 다른 상품으로 바꾸기</button>' + (!has && !l.newItem && !l.doneName ? '<button type="button" class="inv-alt" onclick="event.preventDefault(); invAltPick(' + j + ',' + i + ',0,0)">🆕 새 상품으로 등록</button>' : '') + '</div><div class="inv-pick" id="invpk-' + j + '-' + i + '"></div>') + '</div></label>';
         }).join('');
         var wrong = r.wrongStore ? '<div class="inv-wrong">⛔ 이 명세서는 <b>' + escapeHtml(r.receiver || '다른 곳') + '</b> 앞으로 온 거예요.<br>우리는 <b>성수레디영약국</b>이에요. 입고하지 말고 물건을 따로 두고 문준님께 알려 주세요. (문준님 카톡으로도 알렸어요)</div>' : '';
