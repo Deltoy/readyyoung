@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvfyyfzj">
+  <meta name="ry-build" content="mvfz1dsu">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -10092,11 +10092,11 @@ html body #ryLaunchGrid .tl-search{top:56px}
         .sort(function (a, b) { return a.end - b.end || b.n - a.n || b.s - a.s || a.i - b.i; })
         .map(function (x) { return x.it; });
     }
-    function ryCatSearch(query) {
+    function ryCatSearch(query, strict) {
       if (!RY_CAT || !RY_CAT.items) return null;
       var hit = ryHitFn(query), out = [];
       for (var i = 0; i < RY_CAT.items.length && out.length < 100; i++) { var it = RY_CAT.items[i]; if (hit(ryKeyOf(it))) out.push(it); }
-      if (!out.length) ryQueryAlts(query).some(function (a) { var h2 = ryHitFn(a); for (var j = 0; j < RY_CAT.items.length && out.length < 40; j++) { var it2 = RY_CAT.items[j]; if (h2(ryKeyOf(it2))) out.push(it2); } return out.length; });
+      if (!out.length && !strict) ryQueryAlts(query).some(function (a) { var h2 = ryHitFn(a); for (var j = 0; j < RY_CAT.items.length && out.length < 40; j++) { var it2 = RY_CAT.items[j]; if (h2(ryKeyOf(it2))) out.push(it2); } return out.length; });
       /* 폰 목록은 최대 5분 전 것 → 지금 화면이 아는 상태 · 사진을 덮어씀 (방금 요청·승인·입고한 것도 바로 맞게) */
       var live = ryLiveMap();
       var nk = function (x) { return String(x || '').replace(/\s+/g, '').toLowerCase(); };
@@ -10122,8 +10122,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var use = function (alts) {
         if (rid !== latestSearchRequestId || !alts || !alts.length) return;
         var seen = {}, out = [], via = '';
-        alts.forEach(function (a) { (ryCatSearch(a) || []).forEach(function (it) { if (!seen[it.rowNumber] && out.length < 60) { seen[it.rowNumber] = 1; out.push(it); if (!via) via = a; } }); });
-        if (out.length) { shown = 1; show(out.concat(loose.filter(function (x) { return !seen[x.rowNumber]; })), '‘' + via + '’(으)로 비슷한 상품'); }
+        alts.forEach(function (a) { if (out.length >= 12) return; (ryCatSearch(a, true) || []).forEach(function (it) { if (!seen[it.rowNumber] && out.length < 40) { seen[it.rowNumber] = 1; out.push(it); if (!via) via = a; } }); });   // 구체적인 말부터, 12개 넘으면 넓은 말은 안 씀
+        if (out.length) { shown = 1; show(out, '‘' + via + '’(으)로 비슷한 상품'); }
       };
       if (RY_HINT[query]) return use(RY_HINT[query]);
       RY_FZWAIT = query;   // 기다리는 동안 '0건 · 새 상품 등록' 대신 '비슷한 상품 찾는 중' (없는 줄 알고 새로 등록하던 것)
@@ -10156,7 +10156,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
             INBOUND:'bg-emerald-100 text-emerald-800', DONE:'bg-slate-200 text-slate-700',
             SOLDOUT:'bg-rose-100 text-rose-700', IDLE:'bg-slate-100 text-slate-600'
           };
-          const mapped = rySortSR(results || []).map(item => ({
+          const mapped = (fz && results === fz.list ? results.filter(x => !(isEnded(x) || isHiddenItem(x))).concat(results.filter(x => isEnded(x) || isHiddenItem(x))) : rySortSR(results || [])).map(item => ({   // 1020 비슷한 상품은 맞는 순서 그대로 (판매종료만 아래)
             ...item,
             statusLabel: _SLAB[item.status] || '미주문',
             statusColor: _SCOL[item.status] || 'bg-slate-100 text-slate-600'
