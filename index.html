@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvgdl2if">
+  <meta name="ry-build" content="mvgdrkca">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9595,7 +9595,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           else if (dup) tag = '<span class="inv-tag inv-no">다른 명세서에도 있는 같은 상품이에요</span>';
           else if (r.wrongStore) tag = '<span class="inv-tag inv-up">⛔ 다른 곳 명세서 · 입고하지 마세요</span>';
           else {   // 1020 MJ '더 들어온 건 괜찮은데 덜 들어왔을 때가 문제' → 주문 수량과 비교해서 모자라면 빨간 경고
-            var oqN = parseFloat(String(l.orderQty || '').replace(/[^0-9.]/g, '')) || 0, aqN = Number(l.appQty != null ? l.appQty : l.qty) || 0, dsc = l.early ? ' · 발주일보다 빠른 명세서' : '';
+            var oqN = parseFloat(String(l.orderQty || '').replace(/[^0-9.]/g, '')) || 0, aqN = Number(l.bundle ? l.qty : (l.appQty != null ? l.appQty : l.qty)) || 0, dsc = l.early ? ' · 발주일보다 빠른 명세서' : '';
             if (l.qtyOk || (oqN > 0 && aqN === oqN)) { tag = '<span class="inv-tag inv-ok">✓ 수량 맞음' + (l.orderDate ? ' · 발주 ' + escapeHtml(l.orderDate) + ' 이후 명세서' : '') + '</span>'; chk = ' checked'; nOk++; }
             else if (oqN > 0 && aqN > oqN) { tag = '<span class="inv-tag inv-ok">✓ 주문 ' + oqN + ' · 명세서 ' + aqN + ' → ' + (aqN - oqN) + '개 더 들어왔어요 (괜찮아요)</span>'; chk = ' checked'; nOk++; }
             else if (oqN > 0 && aqN > 0 && aqN < oqN) tag = '<span class="inv-tag inv-short">⛔ 덜 들어왔어요 · 주문 ' + oqN + ' / 명세서 ' + aqN + ' → ' + (oqN - aqN) + '개 모자라요 · 확인 필요</span>';
@@ -9676,7 +9676,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function invCount(busy) { var b = document.getElementById('invGo'); if (!b) return; var n = invPicked().length, x = invExtras().reduce(function (a, g) { return a + g.ex.length; }, 0); b.disabled = busy || INV_BUSY || (!n && !x); b.textContent = busy || INV_BUSY ? '읽는 중…' : n ? '고른 ' + n + '개 입고완료' + (x ? ' + 알림' : '') : x ? '주문 안 한 ' + x + '개 알리기' : '입고할 상품을 고르세요'; }
     function invDo() {
       var rows = invPicked(), gs = invExtras(), ex = gs.reduce(function (a, g) { return a.concat(g.ex); }, []), nw = ex.filter(function (x) { return x.newItem; }).length; if (!rows.length && !ex.length) return;
-      var shorts = []; INVS.forEach(function (r) { (r.lines || []).forEach(function (l) { if (l.row && rows.indexOf(l.row) !== -1) { var o = parseFloat(String(l.orderQty || '').replace(/[^0-9.]/g, '')) || 0, a = Number(l.appQty != null ? l.appQty : l.qty) || 0; if (o > 0 && a > 0 && a < o) shorts.push(String(l.appName || l.name).slice(0, 20) + ' (' + a + '/' + o + ')'); } }); });
+      var shorts = []; INVS.forEach(function (r) { (r.lines || []).forEach(function (l) { if (l.row && rows.indexOf(l.row) !== -1) { var o = parseFloat(String(l.orderQty || '').replace(/[^0-9.]/g, '')) || 0, a = Number(l.bundle ? l.qty : (l.appQty != null ? l.appQty : l.qty)) || 0; if (o > 0 && a > 0 && a < o) shorts.push(String(l.appName || l.name).slice(0, 20) + ' (' + a + '/' + o + ')'); } }); });
       if (!confirm((shorts.length ? '⛔ 주문보다 덜 들어온 상품이 있어요:\n' + shorts.join('\n') + '\n모자란 건 문준님께 알려 주세요.\n\n' : '') + (rows.length ? '⚠️ 명세서 이름과 앱 상품 이름이 같은지 확인했나요?\n\n' + rows.length + '개를 [✅ 최종 입고완료] 처리할까요?\n' : '') + (ex.length ? '주문 안 한 상품 ' + ex.length + '개는 문준님께 카톡으로 알려요' + (nw ? ' (앱에 없는 ' + nw + '개는 새 상품으로 등록)' : '') + '\n' : '') + (rows.length ? '(실수했을 땐 입고내역 탭의 ⏪ 되돌리기로 복구할 수 있어요)' : ''))) return;
       try {   /* 1020 MJ '주문 안 했는데 들어온 상품도 재고로' — 명세서 수량을 그 상품의 입고 기록(추정 재고)에 남김 */
         INVS.forEach(function (r) { if (!r.fid || r.wrongStore) return; var live = {}; (cachedInboundItems || []).forEach(function (it) { live[it.rowNumber] = 1; });
