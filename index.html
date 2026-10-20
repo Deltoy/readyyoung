@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvg9fy3h">
+  <meta name="ry-build" content="mvg9im42">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1129,6 +1129,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-who .ry-ava{width:30px!importan
 .inv-alt{margin-top:6px;min-height:36px;padding:0 12px;border-radius:10px;border:1px solid #D0D5DD;background:#fff;font-size:12.5px;font-weight:700;color:#344054}.inv-pick input{width:100%;min-height:40px;border:1px solid #D0D5DD;border-radius:10px;padding:0 10px;margin-top:6px;font-size:14px}.inv-opts{display:grid;gap:4px;margin-top:6px}.inv-opts button{display:flex;justify-content:space-between;gap:8px;text-align:left;min-height:40px;padding:6px 10px;border-radius:10px;border:1px solid #E4E7EC;background:#F9FAFB;font-size:13px}.inv-opts b{font-size:11.5px;color:#667085;font-weight:600;white-space:nowrap}
 #invZoom{position:fixed;inset:0;z-index:10080;background:rgba(0,0,0,.92);overflow:auto;touch-action:pinch-zoom pan-x pan-y;padding:56px 8px 24px}#invZoom img{width:100%;height:auto;display:block}#invZoom .iz-top{position:fixed;top:0;left:0;right:0;padding:12px 16px;color:#fff;display:flex;flex-direction:column;background:rgba(0,0,0,.6)}#invZoom .iz-top span{font-size:12px;opacity:.8}
 .inv-btns{display:flex;flex-wrap:wrap;gap:6px}
+.inv-must{background:#FEF3F2;border:2px solid #F04438;color:#B42318;border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.5;margin:4px 0 10px}
 .inv-sec{margin-bottom:6px}.inv-fail{background:#FFFAEB;border-radius:14px;padding:4px 12px 10px}.inv-failrow{display:flex;gap:12px;align-items:flex-start}.inv-failrow img{width:96px;border-radius:10px;border:1px solid #E4E7EC;flex:none}.inv-retry{min-height:44px;padding:0 14px;border-radius:12px;border:0;background:#155EEF;color:#fff;font-weight:800;font-size:14px;margin:6px 0}.inv-wrong{background:#FEF3F2;border:2px solid #F04438;color:#B42318;border-radius:14px;padding:12px 14px;font-size:15px;line-height:1.5;margin:10px 0}.inv-sec h4{font-size:15px;font-weight:800;margin:12px 0 8px}.inv-sec h4 span{font-weight:600;color:#667085;font-size:12px}.inv-sec h4 a{color:#155EEF}
 .inv-foot{position:sticky;bottom:-16px;background:#fff;padding-top:10px;display:flex;gap:8px}
 .inv-foot button{flex:1;min-height:48px;border-radius:14px;font-weight:800;font-size:15px;border:0}
@@ -9579,7 +9580,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var nFail = INVS.filter(function (r) { return !r.success && r._file; }).length;
       var head = '<h3>📄 명세서 ' + INVS.length + '장' + (busyMsg ? ' · ' + escapeHtml(busyMsg) : '') + '</h3><div class="inv-sub">' + nLine + '줄 · 수량이 맞는 ' + nOk + '개는 미리 골라 뒀어요</div>'
         + (nFail > 1 && !busyMsg ? '<button type="button" class="inv-retry" style="width:100%;margin:0 0 8px" onclick="invRetryAll()">↻ 못 읽은 ' + nFail + '장 한 번에 다시 읽기</button>' : '');   // 1020 MJ '여러 장 실패하면 한 번에 다시'
-      invShow(head + secs + '<div class="inv-foot"><button class="inv-x" onclick="invClose()">닫기</button><button class="inv-x" onclick="invPick(true)"' + (busyMsg ? ' disabled' : '') + '>📷 한 장 더</button><button class="inv-go" id="invGo" onclick="invDo()">입고완료</button></div>');
+      var warnBox = INVS.some(function (r) { return r.success; }) ? '<div class="inv-must">⚠️ <b>입고완료 전에 꼭!</b> 명세서 이름과 <b>앱: ○○</b> 이름이 같은 상품인지 하나씩 확인해 주세요. 다르면 [🔁 다른 상품으로 바꾸기]</div>' : '';   // 1020 MJ '이름 꼭 확인 후 입고완료 — 강조'
+      invShow(head + warnBox + secs + '<div class="inv-foot"><button class="inv-x" onclick="invClose()">닫기</button><button class="inv-x" onclick="invPick(true)"' + (busyMsg ? ' disabled' : '') + '>📷 한 장 더</button><button class="inv-go" id="invGo" onclick="invDo()">입고완료</button></div>');
       invCount(!!busyMsg);
     }
     /* 1020 MJ 'AI 짝이 잘못돼 있어 — 다시 매칭' → 줄마다 입고대기 · 앱 상품에서 골라 바꾸기 */
@@ -9622,7 +9624,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function invCount(busy) { var b = document.getElementById('invGo'); if (!b) return; var n = invPicked().length, x = invExtras().reduce(function (a, g) { return a + g.ex.length; }, 0); b.disabled = busy || INV_BUSY || (!n && !x); b.textContent = busy || INV_BUSY ? '읽는 중…' : n ? '고른 ' + n + '개 입고완료' + (x ? ' + 알림' : '') : x ? '주문 안 한 ' + x + '개 알리기' : '입고할 상품을 고르세요'; }
     function invDo() {
       var rows = invPicked(), gs = invExtras(), ex = gs.reduce(function (a, g) { return a.concat(g.ex); }, []), nw = ex.filter(function (x) { return x.newItem; }).length; if (!rows.length && !ex.length) return;
-      if (!confirm((rows.length ? rows.length + '개를 [✅ 최종 입고완료] 처리할까요?\n' : '') + (ex.length ? '주문 안 한 상품 ' + ex.length + '개는 문준님께 카톡으로 알려요' + (nw ? ' (앱에 없는 ' + nw + '개는 새 상품으로 등록)' : '') + '\n' : '') + (rows.length ? '(실수했을 땐 입고내역 탭의 ⏪ 되돌리기로 복구할 수 있어요)' : ''))) return;
+      if (!confirm((rows.length ? '⚠️ 명세서 이름과 앱 상품 이름이 같은지 확인했나요?\n\n' + rows.length + '개를 [✅ 최종 입고완료] 처리할까요?\n' : '') + (ex.length ? '주문 안 한 상품 ' + ex.length + '개는 문준님께 카톡으로 알려요' + (nw ? ' (앱에 없는 ' + nw + '개는 새 상품으로 등록)' : '') + '\n' : '') + (rows.length ? '(실수했을 땐 입고내역 탭의 ⏪ 되돌리기로 복구할 수 있어요)' : ''))) return;
       try {   /* 1020 MJ '주문 안 했는데 들어온 상품도 재고로' — 명세서 수량을 그 상품의 입고 기록(추정 재고)에 남김 */
         INVS.forEach(function (r) { if (!r.fid || r.wrongStore) return; var live = {}; (cachedInboundItems || []).forEach(function (it) { live[it.rowNumber] = 1; });
           var nm = (r.lines || []).filter(function (l) { return !(l.row && live[l.row]) && !l.doneName && (l.catName || l.newItem); }).map(function (l) { return { n: l.newItem ? (l.clean || l.name) : l.catName, q: l.appQty != null ? l.appQty : l.qty }; });
