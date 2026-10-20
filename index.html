@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvg88wx7">
+  <meta name="ry-build" content="mvg89w2f">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1127,6 +1127,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-who .ry-ava{width:30px!importan
 #tutDim{position:fixed;inset:0;z-index:10060;background:rgba(16,24,40,.55);display:flex;align-items:center;justify-content:center;padding:12px}#tutBox{background:#fff;width:min(560px,100%);max-height:92vh;overflow:auto;border-radius:20px;padding:12px}#tutBox img{width:100%;display:block;border-radius:12px}
 .s15-ai{display:grid;gap:8px;margin:10px 0}.s15-ai p{margin:0;font-size:13px;font-weight:700;color:#155EEF}.s15-ai button{min-height:48px;width:100%}.s15-ai button small{display:block;font-size:11px;opacity:.8;font-weight:600}.s15-ai details{font-size:13px;color:#475467}.s15-ai ul{margin:6px 0 0;padding-left:18px;max-height:200px;overflow:auto}
 .inv-alt{margin-top:6px;min-height:36px;padding:0 12px;border-radius:10px;border:1px solid #D0D5DD;background:#fff;font-size:12.5px;font-weight:700;color:#344054}.inv-pick input{width:100%;min-height:40px;border:1px solid #D0D5DD;border-radius:10px;padding:0 10px;margin-top:6px;font-size:14px}.inv-opts{display:grid;gap:4px;margin-top:6px}.inv-opts button{display:flex;justify-content:space-between;gap:8px;text-align:left;min-height:40px;padding:6px 10px;border-radius:10px;border:1px solid #E4E7EC;background:#F9FAFB;font-size:13px}.inv-opts b{font-size:11.5px;color:#667085;font-weight:600;white-space:nowrap}
+#invZoom{position:fixed;inset:0;z-index:10080;background:rgba(0,0,0,.92);overflow:auto;touch-action:pinch-zoom pan-x pan-y;padding:56px 8px 24px}#invZoom img{width:100%;height:auto;display:block}#invZoom .iz-top{position:fixed;top:0;left:0;right:0;padding:12px 16px;color:#fff;display:flex;flex-direction:column;background:rgba(0,0,0,.6)}#invZoom .iz-top span{font-size:12px;opacity:.8}
 .inv-sec{margin-bottom:6px}.inv-fail{background:#FFFAEB;border-radius:14px;padding:4px 12px 10px}.inv-failrow{display:flex;gap:12px;align-items:flex-start}.inv-failrow img{width:96px;border-radius:10px;border:1px solid #E4E7EC;flex:none}.inv-retry{min-height:44px;padding:0 14px;border-radius:12px;border:0;background:#155EEF;color:#fff;font-weight:800;font-size:14px;margin:6px 0}.inv-wrong{background:#FEF3F2;border:2px solid #F04438;color:#B42318;border-radius:14px;padding:12px 14px;font-size:15px;line-height:1.5;margin:10px 0}.inv-sec h4{font-size:15px;font-weight:800;margin:12px 0 8px}.inv-sec h4 span{font-weight:600;color:#667085;font-size:12px}.inv-sec h4 a{color:#155EEF}
 .inv-foot{position:sticky;bottom:-16px;background:#fff;padding-top:10px;display:flex;gap:8px}
 .inv-foot button{flex:1;min-height:48px;border-radius:14px;font-weight:800;font-size:15px;border:0}
@@ -9493,11 +9494,11 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var nth = Math.min(slot, INVS.length) + 1, tot = INVS.length + (q.j >= 0 ? 0 : 1) + INV_Q.length;
       if (!INVS.length) invShow('<h3>명세서 읽는 중… ' + (tot > 1 ? nth + '/' + tot + '장' : '') + '</h3><div class="inv-sub">AI 가 품목을 읽고 입고대기 상품과 맞춰 보고 있어요 (한 장에 10초쯤)</div>');
       else invRender(nth + '/' + tot + '장째 읽는 중…');
-      var thumb = '';
-      var fin = function (r) { INV_BUSY = false; r = r && r.success ? r : { success: false, message: (r && r.message) || '읽지 못했어요', lines: [] }; r._file = file; r._thumb = thumb; INVS[slot] = r; invNext(); };   // 1020 MJ '건너뛰면 어떤 명세서인지 모르잖아' → 사진을 같이 들고 있다가 보여주고 다시 읽기
+      var thumb = '', big = '';
+      var fin = function (r) { INV_BUSY = false; r = r && r.success ? r : { success: false, message: (r && r.message) || '읽지 못했어요', lines: [] }; r._file = file; r._thumb = thumb; r._big = r.success ? '' : big; INVS[slot] = r; invNext(); };   // 1020 MJ '건너뛰면 어떤 명세서인지 모르잖아' → 사진을 같이 들고 있다가 보여주고 다시 읽기
       var done = false, t = setTimeout(function () { if (!done) { done = true; fin({ success: false, message: '시간이 오래 걸려서 건너뛰었어요' }); } }, 75000);
       resizeImageFile(file, 2000, 0.85).then(function (dataUrl) {
-        window._invLast = dataUrl;
+        window._invLast = dataUrl; big = dataUrl;
         try { resizeImageFile(file, 240, 0.6).then(function (u) { thumb = u; var x = INVS[slot]; if (x && x._file === file && !x._thumb) { x._thumb = u; if (!x.success && !INV_BUSY) invRender(); } }, function () {}); } catch (eT) {}
         google.script.run.withSuccessHandler(function (r) { if (done) return; done = true; clearTimeout(t); fin(r); })
           .withFailureHandler(function (e) { if (done) return; done = true; clearTimeout(t); fin({ success: false, message: String(e && e.message || e) }); })
@@ -9532,7 +9533,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var live = {}; (cachedInboundItems || []).forEach(function (it) { live[it.rowNumber] = 1; });
       var nOk = 0, nLine = 0, seenRow = {};
       var secs = INVS.map(function (r, j) {
-        if (!r.success) return '<div class="inv-sec inv-fail"><h4>' + (j + 1) + '번째 명세서 · 읽지 못했어요</h4><div class="inv-failrow">' + (r._thumb ? '<img src="' + r._thumb + '" alt="' + (j + 1) + '번째 명세서 사진">' : '') + '<div><div class="inv-n">' + escapeHtml(r.message || '') + '</div><button type="button" class="inv-retry" onclick="invRetry(' + j + ')"' + (busyMsg ? ' disabled' : '') + '>↻ 이 사진 다시 읽기</button><div class="inv-n">그래도 안 되면 다시 찍어 [📷 한 장 더]로 넣어 주세요</div></div></div></div>';
+        if (!r.success) return '<div class="inv-sec inv-fail"><h4>' + (j + 1) + '번째 명세서 · 읽지 못했어요</h4><div class="inv-failrow">' + (r._thumb ? '<img src="' + r._thumb + '" alt="' + (j + 1) + '번째 명세서 사진 · 눌러서 크게 보기" onclick="invZoom(' + j + ')" style="cursor:zoom-in">' : '') + '<div><div class="inv-n">' + escapeHtml(r.message || '') + '</div><button type="button" class="inv-retry" onclick="invRetry(' + j + ')"' + (busyMsg ? ' disabled' : '') + '>↻ 이 사진 다시 읽기</button><div class="inv-n">그래도 안 되면 다시 찍어 [📷 한 장 더]로 넣어 주세요</div></div></div></div>';
         var rows = r.lines.map(function (l, i) {
           nLine++;
           var al = INV_AL && !l.userPick && !l.alDone && INV_AL[invKey(l.name)];
@@ -9591,6 +9592,12 @@ html body #ryLaunchGrid .tl-search{top:56px}
       else if (row) { var c = (RY_CAT.items || []).filter(function (x) { return x.rowNumber === row; })[0]; l.row = 0; l._cat = c ? String(c.name).split('\n')[0] : ''; }
       else { l.row = 0; l._cat = ''; }
       invRender();
+    }
+    function invZoom(j) {   /* 1020 MJ '읽지 못한 명세서 확대해서 볼 수 있게' — 크게 열고 두 손가락으로 더 확대 */
+      var r = INVS[j]; if (!r || !(r._big || r._thumb)) return;
+      var d = document.createElement('div'); d.id = 'invZoom'; d.onclick = function () { d.remove(); };
+      d.innerHTML = '<div class="iz-top"><b>' + (j + 1) + '번째 명세서</b><span>두 손가락으로 확대 · 아무 데나 누르면 닫혀요</span></div><img src="' + (r._big || r._thumb) + '" alt="' + (j + 1) + '번째 명세서 사진">';
+      document.body.appendChild(d);
     }
     function invRetry(j) { var r = INVS[j]; if (!r || !r._file || INV_BUSY) return; INV_Q.unshift({ f: r._file, j: j }); invNext(); }
     function invPicked() { var seen = {}; return Array.prototype.map.call(document.querySelectorAll('#invBox input[type=checkbox]:checked'), function (c) { return INVS[+c.dataset.j].lines[+c.dataset.i].row; }).filter(function (r) { if (!r || seen[r]) return false; seen[r] = 1; return true; }); }
