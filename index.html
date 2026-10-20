@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvga8kqa">
+  <meta name="ry-build" content="mvga9qy8">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9556,7 +9556,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
             if (ai) { l.row = ai.rowNumber; l.appName = al; l.orderQty = ai.targetQty; l.unit = ai.unit || '개'; var oq0 = parseFloat(String(ai.targetQty).replace(/[^0-9.]/g, '')) || 0; l.qtyOk = oq0 > 0 && Number(l.appQty != null ? l.appQty : l.qty) === oq0; l.userPick = true; }
             else if (!l.doneName) { l.row = 0; l.appName = ''; l._cat = al; l.userPick = true; }
           }
-          if (l.row && !l.userPick && s15Score(s15Prep(l.name), s15Prep(l.appName)) < 0.35) { l.badPair = l.appName; l.row = 0; l.appName = ''; }   // 1020 '노바손크림 → 노스카나' 처럼 AI 가 엉뚱하게 짝지은 건 떼고 앱 목록에서 다시 찾음
+          if (l.row && !l.userPick && s15Score(s15Prep(l.name), s15Prep(l.appName)) < 0.35) { l.badPair = l.appName; l.row = 0; l.appName = ''; }
+          if (l.doneName && !l.userPick && s15Score(s15Prep(l.name), s15Prep(l.doneName)) < 0.35) { l.badPair = l.doneName; l.doneName = ''; }   // '블루필 펩타이드 부스터 → 셀리맥스 레티날샷 (이미 입고)' 같은 엉뚱한 짝도   // 1020 '노바손크림 → 노스카나' 처럼 AI 가 엉뚱하게 짝지은 건 떼고 앱 목록에서 다시 찾음
           var has = l.row && live[l.row], dup = has && seenRow[l.row], tag, chk = '';
           if (has && !dup) seenRow[l.row] = 1;
           if (!has && !l.doneName) { var cn = invCatOf(l); l.catName = cn || ''; l.newItem = cn === ''; }
