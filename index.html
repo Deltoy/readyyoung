@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvg2oepl">
+  <meta name="ry-build" content="mvg2uxv1">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9281,11 +9281,14 @@ html body #ryLaunchGrid .tl-search{top:56px}
 
     /* 1020 MJ '명세서를 찍어 올리면 입고대기에 있는 상품을 찾아서 입고시키고 수량이 맞는지도 체크': AI 가 읽고 짝지은 결과를 보여주고, 고른 것만 입고완료. 단가는 서버가 문준에게만 보냄 */
     var INV = null;
-    function invOpen() {
+    function invOpen() {   // 1020 MJ '사진첩만 나오고 카메라가 안 나와' → 먼저 고르게
       if (!checkMemberSelectedOrAlert()) return;
-      var f = document.getElementById('invFile');
-      if (!f) { f = document.createElement('input'); f.type = 'file'; f.accept = 'image/*'; f.id = 'invFile'; f.style.display = 'none'; f.onchange = function () { var file = f.files && f.files[0]; f.value = ''; if (file) invRead(file); }; document.body.appendChild(f); }
-      f.click();
+      invShow('<h3>📄 거래명세서 입고</h3><div class="inv-sub">명세서 글자가 다 보이게 찍어 주세요. 여러 장이면 한 장씩 해요.</div><div class="inv-foot" style="position:static;flex-direction:column"><button class="inv-go" onclick="invPick(true)">📷 카메라로 찍기</button><button class="inv-x" onclick="invPick(false)">🖼 사진첩에서 고르기</button><button class="inv-x" onclick="invClose()">닫기</button></div>');
+    }
+    function invPick(cam) {
+      var f = document.createElement('input'); f.type = 'file'; f.accept = 'image/*'; if (cam) f.setAttribute('capture', 'environment'); f.style.display = 'none';
+      f.onchange = function () { var file = f.files && f.files[0]; f.remove(); if (file) invRead(file); };
+      document.body.appendChild(f); f.click();
     }
     function invShow(html) {
       var d = document.getElementById('invDim');
@@ -9313,7 +9316,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var rows = r.lines.map(function (l, i) {
         var has = l.row && live[l.row], tag, chk = '';
         if (!has) tag = l.doneName ? '<span class="inv-tag inv-ok">✓ 이미 입고완료 · ' + escapeHtml(l.doneDate + ' · ' + l.doneQty) + '</span><div class="inv-n">' + escapeHtml(l.doneName) + '</div>' : '<span class="inv-tag inv-no">' + (l.row ? '이미 입고됐거나 목록에 없음' : '입고대기에 없음') + '</span>';
-        else if (l.qtyOk) { tag = '<span class="inv-tag inv-ok">✓ 수량 맞음</span>'; chk = ' checked'; nOk++; }
+        else if (l.early) tag = '<span class="inv-tag inv-warn">⚠ 명세서 날짜(' + escapeHtml(r.date) + ')가 발주일(' + escapeHtml(l.orderDate) + ')보다 빨라요 · 이전 주문분일 수 있어요</span>';
+        else if (l.qtyOk) { tag = '<span class="inv-tag inv-ok">✓ 수량 맞음' + (l.orderDate ? ' · 발주 ' + escapeHtml(l.orderDate) + ' 이후 명세서' : '') + '</span>'; chk = ' checked'; nOk++; }
         else tag = '<span class="inv-tag inv-warn">⚠ 수량 확인 · 주문 ' + escapeHtml(l.orderQty + l.unit) + ' / 명세서 ' + escapeHtml(String(l.appQty != null ? l.appQty : l.qty)) + '</span>';
         var price = l.unitPrice != null ? '<div class="inv-n">단가 ' + won(l.unitPrice) + ' (부가세 포함 ' + won(l.unitPrice * 1.1) + ') · 금액 ' + won(l.amount) + '</div>' : '';
         if (l.pricePct != null) price += l.priceOdd ? '<div class="inv-n">' + escapeHtml(l.priceHow) + '와 단위가 달라 보여요 (낱개·박스 확인)</div>'
