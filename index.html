@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvfyndsn">
+  <meta name="ry-build" content="mvfyt25i">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -10108,6 +10108,29 @@ html body #ryLaunchGrid .tl-search{top:56px}
       Object.keys(live).forEach(function (r) { var l = live[r]; if (out.length < 40 && hit(String(l.x.name || '').replace(/\s+/g, '').toLowerCase())) out.push(ryLiveItem(l.x, l)); });
       return out;
     }
+    /* 1020 MJ '외국인이 영어나 한국어로 비슷하게 쳐도 얼추 비슷한 제품': 0건이면 ① 낱말 절반 이상 맞는 상품 ② AI 가 바꿔 준 한국어 검색어(riddle shot → 리들샷)로 다시 찾는다 */
+    function ryLooseSearch(query) {
+      var toks = String(query).toLowerCase().split(/\s+/).filter(function (t) { return t.length >= 2; }), cnt = {}, by = {};
+      if (toks.length < 2) return [];
+      toks.forEach(function (t) { (ryCatSearch(t) || []).forEach(function (it) { cnt[it.rowNumber] = (cnt[it.rowNumber] || 0) + 1; by[it.rowNumber] = it; }); });
+      return Object.keys(cnt).filter(function (r) { return cnt[r] >= Math.ceil(toks.length / 2); }).sort(function (a, b) { return cnt[b] - cnt[a]; }).slice(0, 40).map(function (r) { return by[r]; });
+    }
+    var RY_HINT = {};
+    function ryFuzzySoon(query, rid, show) {
+      var loose = ryLooseSearch(query);
+      if (loose.length) show(loose, '비슷한 상품');
+      var use = function (alts) {
+        if (rid !== latestSearchRequestId || !alts || !alts.length) return;
+        var seen = {}, out = [], via = '';
+        alts.forEach(function (a) { (ryCatSearch(a) || []).forEach(function (it) { if (!seen[it.rowNumber] && out.length < 60) { seen[it.rowNumber] = 1; out.push(it); if (!via) via = a; } }); });
+        if (out.length) show(out.concat(loose.filter(function (x) { return !seen[x.rowNumber]; })), '‘' + via + '’(으)로 비슷한 상품');
+      };
+      if (RY_HINT[query]) return use(RY_HINT[query]);
+      setTimeout(function () {   // 치는 중엔 묻지 않음 — 0.8초 멈췄을 때 한 번만
+        if (rid !== latestSearchRequestId) return;
+        try { google.script.run.withSuccessHandler(function (r) { if (r && r.ok) { RY_HINT[query] = r.alts; use(r.alts); } }).withFailureHandler(function () {}).searchHint(query); } catch (e) {}
+      }, 800);
+    }
     /* 0928 서버 부담 줄이기: 목록은 검색창을 누를 때만 받는다 (앱 열 때 · 시트가 바뀔 때마다 모든 폰이 받던 것 제거) */
     document.addEventListener('focusin', function (e) { if (e.target && e.target.id === 'globalSearchInput') ryCatLoad(false); });
     function executeServerSearch(query) {
@@ -10121,8 +10144,10 @@ html body #ryLaunchGrid .tl-search{top:56px}
 
       const currentRequestId = ++latestSearchRequestId;
       const localHit = ryCatSearch(query);
+      let fz = null;
       const onResults = function(results) {
           if (currentRequestId !== latestSearchRequestId) return;
+          if ((!results || !results.length) && fz) { onResults(fz.list); return; }   // 1020 서버가 0건으로 늦게 와도 '비슷한 상품'을 지우지 않음
           const _SLAB = { REVIEW:'1차검토', ORDER:'발주대기', INBOUND:'입고대기', DONE:'입고완료 · 재주문 가능', SOLDOUT:'품절', IDLE:'미주문' };
           const _SCOL = {
             REVIEW:'bg-indigo-100 text-indigo-700', ORDER:'bg-blue-100 text-blue-700',
@@ -10141,6 +10166,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           if (RY_SR.q === query) mapped.forEach(function (m) { var o = (lastSearchResults || []).find(function (x) { return x.rowNumber === m.rowNumber && x.justRequested; }); if (o) { m.justRequested = true; m.status = o.status; m.statusLabel = o.statusLabel; m.statusColor = o.statusColor; m.targetQty = o.targetQty; } });
           lastSearchResults = mapped;
           ryRenderSearchSafe(mapped, query);
+          if (fz && results === fz.list && resCount) resCount.innerText = `${fz.note} ${mapped.length}건`;
           if (mapped.length) ry25RememberSoon(query);
           srLogSoon(query);   /* 1002 자주 찾는 상품 순위용 기록 */
       };
@@ -10175,6 +10201,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         const giveUp = function () {
           if (over || got || currentRequestId !== latestSearchRequestId) return; over = true;
           if (n === 0) { attempt(1); return; }
+          if (fz) return;   // 1020 비슷한 상품을 이미 보여주는 중
           partNote('서버가 잠깐 느려요 · <button type="button" class="ry-retry-search" style="font-weight:800;color:#155EEF;text-decoration:underline;min-height:32px;padding:0 4px" onclick="handleSearchDebounced()">다시 검색</button>');
         };
         const timer = setTimeout(giveUp, 8000);
@@ -10183,6 +10210,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           .withFailureHandler(function () { clearTimeout(timer); giveUp(); })
           .searchCatalogItems(query);
       };
+      if (localHit && !localHit.length) ryFuzzySoon(query, currentRequestId, function (list, note) { fz = { list: list, note: note }; onResults(list); });
       attempt(0);
     }
 
