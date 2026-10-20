@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvg3drdi">
+  <meta name="ry-build" content="mvg3kjym">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9364,8 +9364,20 @@ html body #ryLaunchGrid .tl-search{top:56px}
         window._invLast = dataUrl;
         google.script.run.withSuccessHandler(function (r) { if (done) return; done = true; clearTimeout(t); fin(r); })
           .withFailureHandler(function (e) { if (done) return; done = true; clearTimeout(t); fin({ success: false, message: String(e && e.message || e) }); })
-          .readInvoice(dataUrl, currentSelectedMember);
+          .readInvoice(dataUrl, currentSelectedMember, invLists());
       }, function () { done = true; clearTimeout(t); fin({ success: false, message: '사진을 열 수 없어요' }); });
+    }
+    function invLists() {   /* 화면이 가진 입고대기 · 최근 입고완료 목록을 같이 보냄 (서버가 다시 읽지 않게) */
+      var pick = function (x) { return { rowNumber: x.rowNumber, name: String(x.name || '').split('\n')[0], targetQty: x.targetQty, unit: x.unit, boxUnit: x.boxUnit, orderDate: x.orderDate, inboundDate: x.inboundDate }; };
+      return { inb: (cachedInboundItems || []).map(pick), done: (cachedHistoryItems || []).filter(function (h) { return !h.isLog; }).slice(0, 300).map(pick) };
+    }
+    function invCatOf(l) {   /* 주문에 없는 상품이 앱 목록엔 있는지 (없으면 새 상품) */
+      if (l._cat !== undefined) return l._cat;
+      var key = function (x) { return String(x || '').replace(/\s+/g, '').toLowerCase(); };
+      var base = key(String(l.name || '').replace(/\([^)]*\)|\[[^\]]*\]/g, '').replace(String(l.spec || ''), '').replace(/\d+(\.\d+)?\s*(ml|g|mg|정|포|매|개입|ea|p|캡슐|t)\b.*$/i, ''));
+      var hit = base.length >= 3 && RY_CAT && RY_CAT.items ? RY_CAT.items.filter(function (c) { var ck = key(String(c.name || '').split('\n')[0]); return ck.indexOf(base) !== -1 || (ck.length >= 4 && base.indexOf(ck) !== -1); })[0] : null;
+      if (!hit && base.length >= 3 && (!RY_CAT || !RY_CAT.items)) { try { ryCatLoad(true); } catch (e) {} }
+      return (l._cat = hit ? String(hit.name || '').split('\n')[0] : (RY_CAT && RY_CAT.items ? '' : null));
     }
     function invRender(busyMsg) {
       var won = function (v) { return v == null || v === '' ? '' : Math.round(Number(v)).toLocaleString('ko-KR') + '원'; };
@@ -9377,6 +9389,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           nLine++;
           var has = l.row && live[l.row], dup = has && seenRow[l.row], tag, chk = '';
           if (has && !dup) seenRow[l.row] = 1;
+          if (!has && !l.doneName) { var cn = invCatOf(l); l.catName = cn || ''; l.newItem = cn === ''; }
           if (!has) tag = l.doneName ? '<span class="inv-tag inv-ok">✓ 이미 입고완료 · ' + escapeHtml(l.doneDate + ' · ' + l.doneQty) + '</span><div class="inv-n">' + escapeHtml(l.doneName) + '</div>'
             : l.newItem ? '<span class="inv-tag inv-no">🆕 앱에 없는 상품 · 입고완료 때 새 상품으로 등록하고 문준님께 알려요</span>'
             : '<span class="inv-tag inv-warn">📋 주문 안 한 상품' + (l.catName ? ' · 앱: ' + escapeHtml(l.catName) : '') + ' · 문준님께 알려요</span>';
