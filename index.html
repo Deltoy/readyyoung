@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvg8xnog">
+  <meta name="ry-build" content="mvg90tdq">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4812,10 +4812,12 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var iv = RY_IVL && RY_IVL[k] && RY_IVL[k].filter(function (x) { return stkDay(x.d) === inbD && x.q > 0; })[0];
       var bu = parseFloat(it.boxUnit) || 0, oq = parseFloat(String(it.targetQty || '').replace(/[^0-9.]/g, '')) || 0;
       var inQty = iv ? iv.q : (it.unit === '박스' && bu ? oq * bu : oq), src = iv ? '명세서' : '주문 수량';
-      var est, how;
-      if (cnt && (inbD == null || cntD >= inbD)) { est = cnt.n - daily * (now - cntD); how = cnt.d.slice(5) + '에 ' + cnt.by + '님이 센 ' + cnt.n + '개'; }
-      else if (inbD != null && inQty > 0) { var carry = cnt ? Math.max(0, cnt.n - daily * (inbD - cntD)) : 0; est = carry + inQty - daily * (now - inbD); how = String(it.inboundDate).slice(5, 10) + ' 입고 ' + inQty + '개(' + src + ')' + (carry ? ' + 그때 남은 약 ' + Math.round(carry) + '개' : ''); }
-      else return null;
+      var est, how, baseD;
+      if (cnt && (inbD == null || cntD >= inbD)) { est = cnt.n - daily * (now - cntD); how = cnt.d.slice(5) + '에 ' + cnt.by + '님이 센 ' + cnt.n + '개'; baseD = cntD; }
+      else if (inbD != null && inQty > 0) { var carry = cnt ? Math.max(0, cnt.n - daily * (inbD - cntD)) : 0; est = carry + inQty - daily * (now - inbD); how = String(it.inboundDate).slice(5, 10) + ' 입고 ' + inQty + '개(' + src + ')' + (carry ? ' + 그때 남은 약 ' + Math.round(carry) + '개' : ''); baseD = inbD; }
+      else { var first = RY_IVL && RY_IVL[k] && RY_IVL[k].filter(function (x) { return x.q > 0; }).slice(-1)[0]; if (!first) return null; baseD = stkDay(first.d) - 0.5; est = -daily * (now - baseD); how = '주문 없이 명세서로 들어온 것만'; }   // 주문 없이 명세서로만 들어온 상품
+      /* 1020 주문 안 했는데 명세서로 들어온 것 (입고일 뒤에 추가로 들어온 수량) */
+      (RY_IVL && RY_IVL[k] || []).forEach(function (x) { var d = stkDay(x.d); if (x.q > 0 && d != null && d > baseD && !(iv && x === iv)) { est += x.q; how += ' + ' + x.d.slice(5) + ' 명세서로 ' + x.q + '개'; } });
       est = Math.max(0, Math.round(est));
       return { est: est, left: daily > 0 ? Math.floor(est / daily) : null, daily: daily, how: how, k: k, sure: !!(cnt && (inbD == null || cntD >= inbD)) || !!iv };   // sure = 센 개수·명세서 수량 기준 (주문 수량만이면 그 전에 남아 있던 재고를 몰라 적게 나올 수 있음)
     }
@@ -9620,6 +9622,13 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function invDo() {
       var rows = invPicked(), gs = invExtras(), ex = gs.reduce(function (a, g) { return a.concat(g.ex); }, []), nw = ex.filter(function (x) { return x.newItem; }).length; if (!rows.length && !ex.length) return;
       if (!confirm((rows.length ? rows.length + '개를 [✅ 최종 입고완료] 처리할까요?\n' : '') + (ex.length ? '주문 안 한 상품 ' + ex.length + '개는 문준님께 카톡으로 알려요' + (nw ? ' (앱에 없는 ' + nw + '개는 새 상품으로 등록)' : '') + '\n' : '') + (rows.length ? '(실수했을 땐 입고내역 탭의 ⏪ 되돌리기로 복구할 수 있어요)' : ''))) return;
+      try {   /* 1020 MJ '주문 안 했는데 들어온 상품도 재고로' — 명세서 수량을 그 상품의 입고 기록(추정 재고)에 남김 */
+        INVS.forEach(function (r) { if (!r.fid || r.wrongStore) return; var live = {}; (cachedInboundItems || []).forEach(function (it) { live[it.rowNumber] = 1; });
+          var nm = (r.lines || []).filter(function (l) { return !(l.row && live[l.row]) && !l.doneName && (l.catName || l.newItem); }).map(function (l) { return { n: l.newItem ? (l.clean || l.name) : l.catName, q: l.appQty != null ? l.appQty : l.qty }; });
+          if (nm.length) google.script.run.withFailureHandler(function () {}).invoiceLinkSave(nm, r.fid, { supplier: r.supplier, date: r.date }, currentSelectedMember);
+        });
+        RY_IVL = null;
+      } catch (eX) {}
       gs.forEach(function (g) { google.script.run.withSuccessHandler(function (r) { if (r && r.added) { showToast('새 상품 ' + r.added + '개 등록했어요 · 문준님께 알렸어요', 3000); try { ryCatLoad(true); } catch (e) {} } }).withFailureHandler(function () {}).invoiceFinish(currentSelectedMember, g.info, g.ex); });
       try {   /* 1020 입고한 상품 ↔ 명세서 사진 (입고내역 📄) */
         var byRow = {}; (cachedInboundItems || []).forEach(function (it) { byRow[it.rowNumber] = it; });
