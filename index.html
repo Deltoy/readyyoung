@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvg8kiw4">
+  <meta name="ry-build" content="mvg8oh08">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1128,6 +1128,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-who .ry-ava{width:30px!importan
 .s15-ai{display:grid;gap:8px;margin:10px 0}.s15-ai p{margin:0;font-size:13px;font-weight:700;color:#155EEF}.s15-ai button{min-height:48px;width:100%}.s15-ai button small{display:block;font-size:11px;opacity:.8;font-weight:600}.s15-ai details{font-size:13px;color:#475467}.s15-ai ul{margin:6px 0 0;padding-left:18px;max-height:200px;overflow:auto}
 .inv-alt{margin-top:6px;min-height:36px;padding:0 12px;border-radius:10px;border:1px solid #D0D5DD;background:#fff;font-size:12.5px;font-weight:700;color:#344054}.inv-pick input{width:100%;min-height:40px;border:1px solid #D0D5DD;border-radius:10px;padding:0 10px;margin-top:6px;font-size:14px}.inv-opts{display:grid;gap:4px;margin-top:6px}.inv-opts button{display:flex;justify-content:space-between;gap:8px;text-align:left;min-height:40px;padding:6px 10px;border-radius:10px;border:1px solid #E4E7EC;background:#F9FAFB;font-size:13px}.inv-opts b{font-size:11.5px;color:#667085;font-weight:600;white-space:nowrap}
 #invZoom{position:fixed;inset:0;z-index:10080;background:rgba(0,0,0,.92);overflow:auto;touch-action:pinch-zoom pan-x pan-y;padding:56px 8px 24px}#invZoom img{width:100%;height:auto;display:block}#invZoom .iz-top{position:fixed;top:0;left:0;right:0;padding:12px 16px;color:#fff;display:flex;flex-direction:column;background:rgba(0,0,0,.6)}#invZoom .iz-top span{font-size:12px;opacity:.8}
+.inv-btns{display:flex;flex-wrap:wrap;gap:6px}
 .inv-sec{margin-bottom:6px}.inv-fail{background:#FFFAEB;border-radius:14px;padding:4px 12px 10px}.inv-failrow{display:flex;gap:12px;align-items:flex-start}.inv-failrow img{width:96px;border-radius:10px;border:1px solid #E4E7EC;flex:none}.inv-retry{min-height:44px;padding:0 14px;border-radius:12px;border:0;background:#155EEF;color:#fff;font-weight:800;font-size:14px;margin:6px 0}.inv-wrong{background:#FEF3F2;border:2px solid #F04438;color:#B42318;border-radius:14px;padding:12px 14px;font-size:15px;line-height:1.5;margin:10px 0}.inv-sec h4{font-size:15px;font-weight:800;margin:12px 0 8px}.inv-sec h4 span{font-weight:600;color:#667085;font-size:12px}.inv-sec h4 a{color:#155EEF}
 .inv-foot{position:sticky;bottom:-16px;background:#fff;padding-top:10px;display:flex;gap:8px}
 .inv-foot button{flex:1;min-height:48px;border-radius:14px;font-weight:800;font-size:15px;border:0}
@@ -9547,7 +9548,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           if (has && !dup) seenRow[l.row] = 1;
           if (!has && !l.doneName) { var cn = invCatOf(l); l.catName = cn || ''; l.newItem = cn === ''; }
           if (!has) tag = l.doneName ? '<span class="inv-tag inv-ok">✓ 이미 입고완료 · ' + escapeHtml(l.doneDate + ' · ' + l.doneQty) + '</span><div class="inv-n">' + escapeHtml(l.doneName) + '</div>'
-            : l.newItem ? '<span class="inv-tag inv-no">🆕 앱에 없는 상품 · 입고완료 때 새 상품으로 등록하고 문준님께 알려요</span>'
+            : l.newItem ? '<span class="inv-tag inv-no">🆕 새 상품으로 등록해요 · ' + escapeHtml(l.clean || l.name) + '</span><div class="inv-n">입고완료(또는 알리기)를 누를 때 등록하고 문준님께 알려요</div>'
             : '<span class="inv-tag inv-warn">📋 주문 안 한 상품' + (l.catName ? ' · 앱: ' + escapeHtml(l.catName) : '') + ' · 문준님께 알려요</span>';
           else if (dup) tag = '<span class="inv-tag inv-no">다른 명세서에도 있는 같은 상품이에요</span>';
           else if (l.early) tag = '<span class="inv-tag inv-warn">⚠ 명세서 날짜(' + escapeHtml(r.date) + ')가 발주일(' + escapeHtml(l.orderDate) + ')보다 빨라요 · 이전 주문분일 수 있어요</span>';
@@ -9560,7 +9561,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
             : '<span class="inv-tag ' + (l.pricePct > 0 ? 'inv-up' : 'inv-ok') + '">' + (l.pricePct > 0 ? '▲ 사입가 ' + l.pricePct + '% 올랐어요' : '▼ 사입가 ' + Math.abs(l.pricePct) + '% 내렸어요') + '</span><div class="inv-n">' + escapeHtml(l.priceHow) + (l.cmpPrice ? ' ' + won(l.cmpPrice) : '') + '</div>';
           return '<label class="inv-line"><input type="checkbox" data-j="' + j + '" data-i="' + i + '"' + chk + (has && !dup && !r.wrongStore ? '' : ' disabled') + ' onchange="invCount()"><div style="flex:1;min-width:0"><b>' + escapeHtml(l.name) + (l.spec ? ' <span style="font-weight:600;color:#667085">' + escapeHtml(l.spec) + '</span>' : '') + '</b>'
             + '<div class="inv-m">명세서 ' + escapeHtml(String(l.qty)) + (has ? ' → 앱: ' + escapeHtml(l.appName) + ' · 주문 ' + escapeHtml(l.orderQty + l.unit) : '') + '</div>' + tag + (l.badPair ? '<div class="inv-n">AI가 \'' + escapeHtml(l.badPair) + '\'와 짝지었는데 이름이 달라서 뺐어요</div>' : '') + (l.note && !l.qtyOk && has ? '<div class="inv-n">' + escapeHtml(l.note) + '</div>' : '') + price
-            + (r.wrongStore ? '' : '<button type="button" class="inv-alt" onclick="event.preventDefault(); invAlt(' + j + ',' + i + ')">🔁 다른 상품으로 바꾸기</button><div class="inv-pick" id="invpk-' + j + '-' + i + '"></div>') + '</div></label>';
+            + (r.wrongStore ? '' : '<div class="inv-btns"><button type="button" class="inv-alt" onclick="event.preventDefault(); invAlt(' + j + ',' + i + ')">🔁 다른 상품으로 바꾸기</button>' + (!has && !l.newItem ? '<button type="button" class="inv-alt" onclick="event.preventDefault(); invAltPick(' + j + ',' + i + ',0,0)">🆕 새 상품으로 등록</button>' : '') + '</div><div class="inv-pick" id="invpk-' + j + '-' + i + '"></div>') + '</div></label>';
         }).join('');
         var wrong = r.wrongStore ? '<div class="inv-wrong">⛔ 이 명세서는 <b>' + escapeHtml(r.receiver || '다른 곳') + '</b> 앞으로 온 거예요.<br>우리는 <b>성수레디영약국</b>이에요. 입고하지 말고 물건을 따로 두고 문준님께 알려 주세요. (문준님 카톡으로도 알렸어요)</div>' : '';
         return '<div class="inv-sec">' + wrong + '<h4>📄 ' + escapeHtml(r.supplier || '거래명세서') + ' <span>' + escapeHtml(r.date || '') + ' · ' + r.lines.length + '줄' + (r.link ? ' · <a href="' + escapeHtml(r.link) + '" target="_blank" rel="noopener">사진</a>' : '') + '</span></h4>' + rows + '</div>';
@@ -9603,7 +9604,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function invPicked() { var seen = {}; return Array.prototype.map.call(document.querySelectorAll('#invBox input[type=checkbox]:checked'), function (c) { return INVS[+c.dataset.j].lines[+c.dataset.i].row; }).filter(function (r) { if (!r || seen[r]) return false; seen[r] = 1; return true; }); }
     function invExtras() {   // 명세서마다 [주문 안 한 상품]
       var live = {}; (cachedInboundItems || []).forEach(function (it) { live[it.rowNumber] = 1; });
-      return INVS.filter(function (r) { return !r.wrongStore; }).map(function (r) { return { info: { supplier: r.supplier, date: r.date }, ex: (r.lines || []).filter(function (l) { return !(l.row && live[l.row]) && !l.doneName; }).map(function (l) { return { name: l.name, qty: l.qty, newItem: !!l.newItem, catName: l.catName || '' }; }) }; }).filter(function (g) { return g.ex.length; });
+      return INVS.filter(function (r) { return !r.wrongStore; }).map(function (r) { return { info: { supplier: r.supplier, date: r.date }, ex: (r.lines || []).filter(function (l) { return !(l.row && live[l.row]) && !l.doneName; }).map(function (l) { return { name: l.newItem && l.clean ? l.clean : l.name, qty: l.qty, newItem: !!l.newItem, catName: l.catName || '' }; }) }; }).filter(function (g) { return g.ex.length; });
     }
     function invCount(busy) { var b = document.getElementById('invGo'); if (!b) return; var n = invPicked().length, x = invExtras().reduce(function (a, g) { return a + g.ex.length; }, 0); b.disabled = busy || INV_BUSY || (!n && !x); b.textContent = busy || INV_BUSY ? '읽는 중…' : n ? '고른 ' + n + '개 입고완료' + (x ? ' + 알림' : '') : x ? '주문 안 한 ' + x + '개 알리기' : '입고할 상품을 고르세요'; }
     function invDo() {
