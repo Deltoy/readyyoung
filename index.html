@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvg5dfwb">
+  <meta name="ry-build" content="mvg5h88z">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1155,7 +1155,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-who .ry-ava{width:30px!importan
   border-radius:999px!important;border:1px solid #B8C9E6;background:#F2F6FD;color:var(--ry-brand);font-size:13px;font-weight:700;line-height:1;cursor:pointer;flex:none}
 .ry-info::after{content:'';position:absolute;inset:-10px}
 .ry-pr{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;min-height:24px;padding:0;border-radius:999px;border:0;background:#ECFDF3;color:#067647;vertical-align:middle;position:relative;margin-left:2px}
-.ry-pr svg{width:14px;height:14px}.ry-ivd{background:#EFF4FF;font-size:12px}.ry-pr::after{content:'';position:absolute;inset:-10px}
+.ry-pr svg{width:14px;height:14px}.ry-stk{display:inline-flex;align-items:center;gap:2px;min-height:24px;padding:0 8px;border-radius:999px;border:0;background:#F2F4F7;color:#344054;font-size:11.5px;font-weight:700;vertical-align:middle;margin-left:4px;position:relative;white-space:nowrap}.ry-stk::after{content:'';position:absolute;inset:-8px}.ry-stk.amb{background:#FFFAEB;color:#B54708}.ry-stk.red{background:#FEF3F2;color:#B42318}#prPop .stk-cnt{margin-top:8px;width:100%;min-height:40px;border-radius:10px;border:0;background:#155EEF;color:#fff;font-weight:800;font-size:13px}.ry-ivd{background:#EFF4FF;font-size:12px}.ry-pr::after{content:'';position:absolute;inset:-10px}
 #prPop{position:fixed;z-index:9995;background:#101828;color:#fff;border-radius:14px;padding:10px 14px;box-shadow:0 10px 30px rgba(16,24,40,.25);font-size:13px;min-width:180px}
 #prPop div{display:flex;justify-content:space-between;gap:16px;line-height:1.7}#prPop span{color:#98A2B3}#prPop b{font-weight:800}
 #prPop small{display:block;margin-top:4px;color:#98A2B3;font-size:11px}
@@ -4760,7 +4760,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     var END_TAG = '판매종료';
     function isEnded(item) { return !!(item && String(item.note || '').indexOf(END_TAG) !== -1); }
     function ryNoRc(s) { return String(s == null ? '' : s).replace(/〔품절 재확인[^〕]*〕/g, ' ').replace(/\s{2,}/g, ' ').trim(); }   // 0929 품절 재확인 안내 토막은 품절 판정에서 뺀다
-    function endedBadge(item) { return (typeof evBadge === 'function' ? evBadge(item) : '') + (typeof locBadge === 'function' ? locBadge(item) : '') + (isHiddenItem(item) ? '<span class="ry-end ry-hid">' + RYI.octx + '취급안함</span>' : '') + (isEnded(item) ? '<span class="ry-end">' + RYI.octx + '판매종료</span>' : '') + (String(item && item.note || '').indexOf('〔품절 재확인') !== -1 ? '<span class="ry-rc" title="품절이 풀렸는지 확인 후 주문해 주세요"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/></svg>품절 30일 · 다시 확인해 주세요</span>' : '') + infoBtn(item) + priceBtn(item) + invDocBtn(item); }
+    function endedBadge(item) { return (typeof evBadge === 'function' ? evBadge(item) : '') + (typeof locBadge === 'function' ? locBadge(item) : '') + (isHiddenItem(item) ? '<span class="ry-end ry-hid">' + RYI.octx + '취급안함</span>' : '') + (isEnded(item) ? '<span class="ry-end">' + RYI.octx + '판매종료</span>' : '') + (String(item && item.note || '').indexOf('〔품절 재확인') !== -1 ? '<span class="ry-rc" title="품절이 풀렸는지 확인 후 주문해 주세요"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/></svg>품절 30일 · 다시 확인해 주세요</span>' : '') + infoBtn(item) + priceBtn(item) + invDocBtn(item) + stockBadge(item); }
 
     /* 1020 MJ '모든 상품에 사입가와 판매가 · 나만 · 이름 옆 달러 표시를 누르면': 문준일 때만 서버에서 받아 메모리에만 (폰에 저장 안 함) */
     var RY_PR = null, _prLoading = false;
@@ -4795,6 +4795,53 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (y + d.offsetHeight > window.innerHeight - 8) y = r.top - d.offsetHeight - 8;
       d.style.left = x + 'px'; d.style.top = y + 'px';
       setTimeout(function () { document.addEventListener('click', function off(e) { if (!d.contains(e.target)) { d.remove(); document.removeEventListener('click', off, true); } }, true); }, 0);
+    }
+    /* ═══ 1020 MJ '명세서 입고 수량 + 15일 판매량으로 지금 몇 개 남았는지 — 직원들도 다 보게'
+       추정 재고 = (센 개수 또는 지난 남은 수) + 입고 수량 − 하루 판매(15일 판매 ÷ 15) × 지난 날 · 입고 수량은 명세서 수량, 없으면 주문 수량 ═══ */
+    var RY_SC = null, _scLoading = false;
+    function stkDay(s) { var m = String(s || '').match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/); return m ? Date.UTC(+m[1], +m[2] - 1, +m[3]) / 864e5 : null; }
+    function stkToday() { var d = new Date(); return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 864e5; }
+    function stkOf(it) {
+      if (!it || !it.name) return null;
+      if (!RY_SC) { if (!_scLoading && typeof google !== 'undefined' && google.script) { _scLoading = true; google.script.run.withSuccessHandler(function (r) { _scLoading = false; RY_SC = (r && r.map) || {}; try { renderAllViews(); } catch (e) {} }).withFailureHandler(function () { _scLoading = false; RY_SC = {}; }).getStockCounts(); } return null; }
+      var k = ryPrKey(it.name), s15 = parseFloat(String(it.sales15 == null ? '' : it.sales15).replace(/[^0-9.]/g, '')) || 0, daily = s15 / 15;
+      var inbD = stkDay(it.inboundDate), cnt = RY_SC[k], cntD = cnt ? stkDay(cnt.d) : null, now = stkToday();
+      var iv = RY_IVL && RY_IVL[k] && RY_IVL[k].filter(function (x) { return stkDay(x.d) === inbD && x.q > 0; })[0];
+      var bu = parseFloat(it.boxUnit) || 0, oq = parseFloat(String(it.targetQty || '').replace(/[^0-9.]/g, '')) || 0;
+      var inQty = iv ? iv.q : (it.unit === '박스' && bu ? oq * bu : oq), src = iv ? '명세서' : '주문 수량';
+      var est, how;
+      if (cnt && (inbD == null || cntD >= inbD)) { est = cnt.n - daily * (now - cntD); how = cnt.d.slice(5) + '에 ' + cnt.by + '님이 센 ' + cnt.n + '개'; }
+      else if (inbD != null && inQty > 0) { var carry = cnt ? Math.max(0, cnt.n - daily * (inbD - cntD)) : 0; est = carry + inQty - daily * (now - inbD); how = String(it.inboundDate).slice(5, 10) + ' 입고 ' + inQty + '개(' + src + ')' + (carry ? ' + 그때 남은 약 ' + Math.round(carry) + '개' : ''); }
+      else return null;
+      est = Math.max(0, Math.round(est));
+      return { est: est, left: daily > 0 ? Math.floor(est / daily) : null, daily: daily, how: how, k: k };
+    }
+    function stockBadge(item) {
+      if (!item || !item.name || item.status === 'INBOUND' || item.status === 'ORDER' || item.status === 'REVIEW') return '';
+      var s = stkOf(item); if (!s) return '';
+      var cls = s.left != null && s.left <= 3 ? 'red' : s.left != null && s.left <= 7 ? 'amb' : '';
+      return ' <button type="button" class="ry-stk ' + cls + '" data-n="' + escapeHtml(item.name) + '" onclick="event.stopPropagation(); stkShow(this)" title="추정 재고">📦 약 ' + s.est + '개' + (s.left != null ? ' · ' + (s.left <= 0 ? '오늘 떨어짐' : s.left + '일') : '') + '</button>';
+    }
+    function stkShow(btn) {
+      var nm = btn.dataset.n, it = (RY_CAT && RY_CAT.items || []).filter(function (x) { return x.name === nm; })[0] || { name: nm }, s = stkOf(it); if (!s) return;
+      var old = document.getElementById('prPop'); if (old) old.remove();
+      var d = document.createElement('div'); d.id = 'prPop';
+      d.innerHTML = '<div><span>추정 재고</span><b>약 ' + s.est + '개</b></div><div><span>하루 판매</span><b>' + (Math.round(s.daily * 10) / 10) + '개</b></div>' + (s.left != null ? '<div><span>떨어질 때까지</span><b>' + s.left + '일</b></div>' : '')
+        + '<small>' + escapeHtml(s.how) + ' − 그 뒤 판매 (15일 판매 ÷ 15 × 지난 날) · 반품·파손은 안 빠져요</small>'
+        + '<button type="button" class="stk-cnt" onclick="stkCount(this)" data-n="' + escapeHtml(nm) + '">✍️ 실제 개수 세서 고치기</button>';
+      document.body.appendChild(d);
+      var r = btn.getBoundingClientRect(), w = d.offsetWidth, x = Math.max(8, Math.min(window.innerWidth - w - 8, r.left + r.width / 2 - w / 2)), y = r.bottom + 8;
+      if (y + d.offsetHeight > window.innerHeight - 8) y = r.top - d.offsetHeight - 8;
+      d.style.left = x + 'px'; d.style.top = y + 'px';
+      setTimeout(function () { document.addEventListener('click', function off(e) { if (!d.contains(e.target)) { d.remove(); document.removeEventListener('click', off, true); } }, true); }, 0);
+    }
+    function stkCount(btn) {
+      if (!checkMemberSelectedOrAlert()) return;
+      var nm = btn.dataset.n, v = prompt('[' + String(nm).split('\n')[0] + ']\n지금 실제로 남은 개수를 적어 주세요 (매장 + 창고)'); if (v == null) return;
+      var n = parseInt(String(v).replace(/[^0-9]/g, ''), 10); if (!(n >= 0)) { alert('숫자로 적어 주세요'); return; }
+      var pop = document.getElementById('prPop'); if (pop) pop.remove();
+      RY_SC = RY_SC || {}; RY_SC[ryPrKey(nm)] = { d: sdLocalDate(new Date()).replace(/-/g, '.'), n: n, by: currentSelectedMember }; try { renderAllViews(); } catch (e) {}
+      google.script.run.withSuccessHandler(function (r) { showToast(r && r.success ? '실제 개수 ' + n + '개로 고쳤어요 · 오늘부터 다시 세요' : '저장하지 못했어요', 2600); }).withFailureHandler(function () { showToast('저장하지 못했어요', 2400); }).saveStockCount(nm, n, currentSelectedMember);
     }
     function prShow(btn) {
       var old = document.getElementById('prPop'); if (old) { var same = old.dataset.k === btn.dataset.k; old.remove(); if (same) return; }
@@ -9519,7 +9566,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       gs.forEach(function (g) { google.script.run.withSuccessHandler(function (r) { if (r && r.added) { showToast('새 상품 ' + r.added + '개 등록했어요 · 문준님께 알렸어요', 3000); try { ryCatLoad(true); } catch (e) {} } }).withFailureHandler(function () {}).invoiceFinish(currentSelectedMember, g.info, g.ex); });
       try {   /* 1020 입고한 상품 ↔ 명세서 사진 (입고내역 📄) */
         var byRow = {}; (cachedInboundItems || []).forEach(function (it) { byRow[it.rowNumber] = it; });
-        INVS.forEach(function (r) { if (!r.fid || r.wrongStore) return; var nm = (r.lines || []).filter(function (l) { return l.row && rows.indexOf(l.row) !== -1 && byRow[l.row]; }).map(function (l) { return byRow[l.row].name; }); if (nm.length) google.script.run.withFailureHandler(function () {}).invoiceLinkSave(nm, r.fid, { supplier: r.supplier, date: r.date }, currentSelectedMember); });
+        INVS.forEach(function (r) { if (!r.fid || r.wrongStore) return; var nm = (r.lines || []).filter(function (l) { return l.row && rows.indexOf(l.row) !== -1 && byRow[l.row]; }).map(function (l) { return { n: byRow[l.row].name, q: l.appQty != null ? l.appQty : l.qty }; }); if (nm.length) google.script.run.withFailureHandler(function () {}).invoiceLinkSave(nm, r.fid, { supplier: r.supplier, date: r.date }, currentSelectedMember); });
         RY_IVL = null;
       } catch (eL) {}
       invClose();
