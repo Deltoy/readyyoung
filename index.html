@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvg4hjd7">
+  <meta name="ry-build" content="mvg4mccq">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1111,7 +1111,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-who .ry-ava{width:30px!importan
 /* ═══ 19. 지연 상품 카톡 공유 버튼 (0920) ═══ */
 .ry-invbtn{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:999px;background:#155EEF;color:#fff;font-weight:800;font-size:13px;border:0}
 .ry-invbtn:active{transform:scale(.97)}
-#invDim{position:fixed;inset:0;z-index:9990;background:rgba(16,24,40,.45);display:flex;align-items:flex-end;justify-content:center}
+#invDim{position:fixed;inset:0;z-index:10050;background:rgba(16,24,40,.45);display:flex;align-items:flex-end;justify-content:center}
 @media(min-width:720px){#invDim{align-items:center}}
 #invBox{background:#fff;width:min(640px,100%);max-height:88vh;overflow:auto;border-radius:20px 20px 0 0;padding:18px 16px calc(16px + env(safe-area-inset-bottom))}
 @media(min-width:720px){#invBox{border-radius:20px}}
@@ -1124,7 +1124,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-who .ry-ava{width:30px!importan
 .inv-line .inv-n{font-size:12px;color:#667085;margin-top:3px}
 .inv-tag{display:inline-block;font-size:12px;font-weight:800;border-radius:999px;padding:2px 9px;margin-top:5px}
 .inv-ok{background:#ECFDF3;color:#067647}.inv-up{background:#FEF3F2;color:#B42318}.inv-warn{background:#FFFAEB;color:#B54708}.inv-no{background:#F2F4F7;color:#475467}
-#tutDim{position:fixed;inset:0;z-index:9990;background:rgba(16,24,40,.55);display:flex;align-items:center;justify-content:center;padding:12px}#tutBox{background:#fff;width:min(560px,100%);max-height:92vh;overflow:auto;border-radius:20px;padding:12px}#tutBox img{width:100%;display:block;border-radius:12px}
+#tutDim{position:fixed;inset:0;z-index:10060;background:rgba(16,24,40,.55);display:flex;align-items:center;justify-content:center;padding:12px}#tutBox{background:#fff;width:min(560px,100%);max-height:92vh;overflow:auto;border-radius:20px;padding:12px}#tutBox img{width:100%;display:block;border-radius:12px}
 .inv-sec{margin-bottom:6px}.inv-fail{background:#FFFAEB;border-radius:14px;padding:4px 12px 10px}.inv-failrow{display:flex;gap:12px;align-items:flex-start}.inv-failrow img{width:96px;border-radius:10px;border:1px solid #E4E7EC;flex:none}.inv-retry{min-height:44px;padding:0 14px;border-radius:12px;border:0;background:#155EEF;color:#fff;font-weight:800;font-size:14px;margin:6px 0}.inv-wrong{background:#FEF3F2;border:2px solid #F04438;color:#B42318;border-radius:14px;padding:12px 14px;font-size:15px;line-height:1.5;margin:10px 0}.inv-sec h4{font-size:15px;font-weight:800;margin:12px 0 8px}.inv-sec h4 span{font-weight:600;color:#667085;font-size:12px}.inv-sec h4 a{color:#155EEF}
 .inv-foot{position:sticky;bottom:-16px;background:#fff;padding-top:10px;display:flex;gap:8px}
 .inv-foot button{flex:1;min-height:48px;border-radius:14px;font-weight:800;font-size:15px;border:0}
@@ -5901,6 +5901,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function tutPop() {
       var me = currentSelectedMember || '', host = document.getElementById('ryTopPops'); if (!me || !host) return;
       var lk = 'tut_' + TUT_ID + '_' + me, el = document.getElementById('tutPop');
+      if (el) el.style.display = document.getElementById('invDim') ? 'none' : '';   // 명세서 창 위로 겹치지 않게
       try { if (localStorage.getItem(lk)) { if (el) el.hidden = true; return; } } catch (e) {}
       if (window._tutX === me) return;
       if (_tutAsk !== me) {   // 이 사람이 확인했는지 서버에 한 번 물음 (다른 폰에서 확인했을 수 있음)
@@ -9434,7 +9435,10 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var full = key(raw.replace(String(l.spec || ''), '')).replace(/\d+(ml|g|mg|정|포|매|개입|ea|t|캡슐)?$/i, '');
       var keys = RY_CAT.items.map(function (c) { return [key(String(c.name || '').split('\n')[0]), c]; });
       var find = function (t) { if (!t || t.length < 3) return null; var h = keys.filter(function (k) { return k[0].indexOf(t) !== -1 || (k[0].length >= 4 && t.indexOf(k[0]) !== -1); })[0]; return h ? h[1] : null; };
-      var hit = find(full) || find(toks[0]) || find((toks[0] || '') + (toks[1] || ''));
+      var hit = find(full);   // 1020 '동아제약D-판테놀연고' · '애크론 딥 클렌징 폼(1개인 세트)' → 낱말마다 (긴 것부터), 앞 회사 이름은 떼고도
+      var sorted = toks.slice().sort(function (a, b) { return b.length - a.length; });
+      for (var i = 0; !hit && i < sorted.length; i++) hit = find(sorted[i]) || find(sorted[i].replace(/^(동아제약|종근당|유한양행|대웅제약|일동제약|광동제약|한미약품|녹십자|보령|jw중외제약)/, '').replace(/^[a-z]/, ''));
+      if (!hit && toks.length > 1) hit = find(toks[0] + toks[1]);
       return (l._cat = hit ? String(hit.name || '').split('\n')[0] : '');
     }
     function invRender(busyMsg) {
