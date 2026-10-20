@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvgmag1f">
+  <meta name="ry-build" content="mvgmf7ld">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -16653,7 +16653,7 @@ setTimeout(function () { EDU.loadedAt = Date.now(); eduLoad(); }, 5000);
 /* ===== 1016 숙지사항 (서버 listRules · saveRule · archiveRule · readRules) ===== */
 var RL = { data: null, topic: '', q: '', edit: null, busy: false, popShown: '' };
 function rlMe() { return (typeof currentSelectedMember !== 'undefined' && currentSelectedMember && currentSelectedMember !== '미선택') ? currentSelectedMember : ''; }
-function rlTopics() { return (RL.data && RL.data.topics) || ['진열', '세트', '스티커·POP', '발주·입고', '계산대·응대', '근무·근태', '기타']; }
+function rlTopics() { return (RL.data && RL.data.topics) || ['물류앱 사용법', '진열', '세트', '스티커·POP', '발주·입고', '계산대·응대', '근무·근태', '기타']; }
 function rlActive() { return ((RL.data && RL.data.rules) || []).filter(function (r) { return !r.archived; }); }
 function rlUnread() { var me = rlMe(); return me ? rlActive().filter(function (r) { return (r.reads || []).indexOf(me) === -1; }) : []; }
 function rlLoad(cb) {
