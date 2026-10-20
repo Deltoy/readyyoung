@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvglajy1">
+  <meta name="ry-build" content="mvgliq7v">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -5882,7 +5882,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var rows = (SP.box && SP.box.rows) || [], bad = rows.filter(function (r) { return r.status === 'red' || r.status === 'yellow'; }).length, n = document.getElementById('spBoxN');
       if (n) n.textContent = bad ? bad : '';
       if (!SP.box) { el.innerHTML = '<div class="sp-msg"><span class="ry-info-spin"></span>불러오는 중…</div>'; return; }
-      el.innerHTML = '<h3>박스별 상태</h3><p class="bx-last">🟢 넉넉 · 🟡 영업일 10일치 이하 (5번은 15일치) · 🔴 영업일 5일치 이하 · ⚪ 쓰는 세트 없음<br>🟡 · 🔴가 되면 그 번호가 약사 발주에 자동으로 올라가요 · 1박스 개수를 알면 ‘한 달 + 도착 3일’치 박스 수만큼 (' + (SP.box.week ? '하루 사용 = 판매 엑셀 ' + s15Md(SP.box.week.from) + '~' + s15Md(SP.box.week.to) + ' 세트 판매 ÷ ' + SP.box.week.days + '일' : '한 달 사용 = 세트 15일 판매 × 2') + ')</p><p class="bx-sort">↓ 한 달 사용량 많은 순으로 정렬했어요</p>'
+      el.innerHTML = '<h3>박스별 상태</h3><p class="bx-last">🟢 넉넉 · 🟡 영업일 10일치 이하 (5번은 600개 아래) · 🔴 영업일 5일치 이하 · ⚪ 쓰는 세트 없음<br>🟡 · 🔴가 되면 그 번호가 약사 발주에 자동으로 올라가요 (5번은 1박스) · 1박스 개수를 알면 ‘한 달 + 도착 3일’치 박스 수만큼 (' + (SP.box.week ? '하루 사용 = 판매 엑셀 ' + s15Md(SP.box.week.from) + '~' + s15Md(SP.box.week.to) + ' 세트 판매 ÷ ' + SP.box.week.days + '일' : '한 달 사용 = 세트 15일 판매 × 2') + ')</p><p class="bx-sort">↓ 한 달 사용량 많은 순으로 정렬했어요</p>'
         + (function () {   /* 1019 MJ: 많이 쓰는 박스 순 · 사용량 모르는 박스·무지박스는 아래에 접어 두기 (무지라도 🟡·🔴면 위에) */
           var TH = '<table class="sp-bp-t"><thead><tr><th>박스</th><th>상태</th><th>남은 개수</th><th>한 달 사용 ▼</th><th>쓰는 세트</th></tr></thead><tbody>', bad = function (r) { return r.status === 'red' || r.status === 'yellow'; };
           var muji = rows.filter(function (r) { return /^무지/.test(r.box) && !bad(r); }), rest = rows.filter(function (r) { return muji.indexOf(r) < 0; });
@@ -5898,7 +5898,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         var L10 = Math.min(90, Math.round(((SP.box && SP.box.cal10) || 10) / 30 * 1000) / 10);   /* 1019 점선 = 영업일 10일 (달력으로 12~14일) */
         var act = function (r) { return (r.sets || []).length ? ' data-b="' + escapeHtml(r.box) + '" onclick="bxSetPop(this.dataset.b)"' : ''; };
         /* 1019 MJ: 실제로 보니 시안 ④ — 박스를 옆으로 눕힌 통(안에 남은 개수) + 오른쪽 큰 '며칠' · 한 목록 */
-        return '<div class="bxv-key"><span class="k1"><i></i>통 = 남은 재고 (30일치면 가득)</span><span class="k2"><i></i>점선 = 발주선 (영업일 10일 · 5번은 15일) · 통이 점선 왼쪽까지 줄면 자동 발주</span><span class="k3"><b>8일</b> = 이만큼 버텨요 · 아래 작은 글씨 = 그중 영업일(월~금)</span></div><div class="bxv-rest">' + arr.map(function (r) {
+        return '<div class="bxv-key"><span class="k1"><i></i>통 = 남은 재고 (30일치면 가득)</span><span class="k2"><i></i>점선 = 발주선 (영업일 10일 · 5번은 600개) · 통이 점선 왼쪽까지 줄면 자동 발주</span><span class="k3"><b>8일</b> = 이만큼 버텨요 · 아래 작은 글씨 = 그중 영업일(월~금)</span></div><div class="bxv-rest">' + arr.map(function (r) {
             return '<button type="button" class="bxv-h"' + act(r) + '><span class="bxv-hb"><span class="bxv-ht"><b>' + escapeHtml(bxName(r.box)) + '</b>' + ((r.sets || []).length ? '<span class="bxv-sc">세트 ' + r.sets.length + '개 ›</span>' : '') + (r.perBox ? '<span class="bxv-pb">1박스 ≈ ' + r.perBox.toLocaleString() + '개</span>' : '') + fl(r) + '</span>'
               + '<span class="bxv-tube"><i style="width:' + P(r) + '%;background:' + col(r) + '"></i><s style="left:' + (r.warnCal ? Math.min(90, Math.round(r.warnCal / 30 * 1000) / 10) : L10) + '%"></s><span class="bxv-tx"><b>' + (r.left != null ? r.left.toLocaleString() + '개' : '–') + '</b><em>한 달 ' + (r.month || 0).toLocaleString() + '</em></span></span></span>'
               + '<span class="bxv-hd" style="color:' + col(r) + '">' + dT(r.days) + '일<small>' + (r.bdays != null && r.days <= 60 ? '영업일 ' + r.bdays + '일' : '버팀') + '</small></span></button>'; }).join('') + '</div>'
