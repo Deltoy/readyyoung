@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvgdrkca">
+  <meta name="ry-build" content="mvgdy61e">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9448,7 +9448,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         .requestInboundCheck(rowNumber, currentSelectedMember);
     }
 
-    function completeInbound(rowNumber, quiet) {
+    function completeInbound(rowNumber, quiet, cb) {
       if (!checkMemberSelectedOrAlert()) return;
       const key = 'complete-' + rowNumber;
       if (inFlight.has(key)) return;
@@ -9470,18 +9470,25 @@ html body #ryLaunchGrid .tl-search{top:56px}
       }
 
       delete RY_SAT[rowNumber];
-      google.script.run
-        .withSuccessHandler(function(res) {
-          inFlight.delete(key);
-          if (res && res.success === false) { alert('입고 처리 안 됨: ' + (res.message || '')); loadAllData(true, false, true); return; }
-          loadAllData(true, true, true);
-        })
-        .withFailureHandler(function(err) {
-          inFlight.delete(key);
-          alert('입고 처리 오류: ' + err.message);
-          loadAllData(true, false, true);
-        })
-        .markInboundComplete(rowNumber, currentSelectedMember, satD);
+      var tries = 0, send = function () {   // 1020 명세서로 여러 개를 한 번에 → 하나씩 차례로 (한꺼번에 보내다 'Failed to fetch' 났음) · 통신 끊기면 2번 더
+        google.script.run
+          .withSuccessHandler(function(res) {
+            inFlight.delete(key);
+            if (res && res.success === false) { if (cb) { cb(false, res.message || ''); return; } alert('입고 처리 안 됨: ' + (res.message || '')); loadAllData(true, false, true); return; }
+            if (cb) { cb(true); return; }
+            loadAllData(true, true, true);
+          })
+          .withFailureHandler(function(err) {
+            var msg = String(err && err.message || err);
+            if (/fetch|network/i.test(msg) && tries++ < 2) { setTimeout(send, 2500 * tries); return; }
+            inFlight.delete(key);
+            if (cb) { cb(false, msg); return; }
+            alert('입고 처리 오류: ' + msg);
+            loadAllData(true, false, true);
+          })
+          .markInboundComplete(rowNumber, currentSelectedMember, satD);
+      };
+      send();
     }
 
     /* 1020 MJ '명세서를 찍어 올리면 입고대기에 있는 상품을 찾아서 입고시키고 수량이 맞는지도 체크': AI 가 읽고 짝지은 결과를 보여주고, 고른 것만 입고완료. 단가는 서버가 문준에게만 보냄 */
@@ -9692,8 +9699,13 @@ html body #ryLaunchGrid .tl-search{top:56px}
         RY_IVL = null;
       } catch (eL) {}
       invClose(true);
-      rows.forEach(function (row, i) { setTimeout(function () { completeInbound(row, true); }, i * 400); });
-      if (rows.length) setTimeout(function () { showToast('명세서로 ' + rows.length + '개 입고완료 처리했어요', 3000); }, rows.length * 400 + 100);
+      var okN = 0, bad = [], k0 = 0, nm = {}; (cachedInboundItems || []).forEach(function (it) { nm[it.rowNumber] = String(it.name).split('\n')[0]; });
+      var next = function () {
+        if (k0 >= rows.length) { loadAllData(true, true, true); if (bad.length) alert('입고 처리 안 된 상품이 있어요 (다시 눌러 주세요):\n' + bad.join('\n')); else showToast('명세서로 ' + okN + '개 입고완료 처리했어요', 3000); return; }
+        var row = rows[k0++]; showToast('입고 처리 중… ' + k0 + '/' + rows.length, 1500);
+        completeInbound(row, true, function (ok, msg) { if (ok) okN++; else bad.push((nm[row] || row + '행') + (msg ? ' · ' + msg : '')); next(); });
+      };
+      if (rows.length) next();
     }
 
     // 🚫 공급사 품절: 입고대기에서 빼고 특이사항에 품절 표시 → 🚫 품절 탭으로 (누르는 즉시 화면 반영)
