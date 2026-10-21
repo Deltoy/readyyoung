@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvhnymbt">
+  <meta name="ry-build" content="mvhog054">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1177,6 +1177,7 @@ html body:not(#_):not(#_):not(#_):not(#_) #qinNewBtn{display:block;width:100%;ma
 #qinBox .qi-l{display:grid;gap:7px;font-size:14px;font-weight:700;color:#344054}#qinBox .qi-l small{font-weight:500;color:#98A2B3}
 #qinBox input[type=text],#qinBox input[type=number]{min-height:52px;border:1.5px solid #D0D5DD;border-radius:14px;padding:0 14px;font-size:17px;font-weight:700;width:100%}
 #qinBox .qi-why{display:grid;grid-template-columns:1fr 1fr;gap:8px}#qinBox .qi-why button{min-height:46px;border:1.5px solid #D0D5DD;border-radius:12px;background:#fff;font-size:14.5px;font-weight:700;color:#344054;cursor:pointer}
+#qinBox #qinEtc{margin-top:2px}#qinBox .qi-why button{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 8px}
 #qinBox .qi-why button.on{border-color:#155EEF;background:#EEF4FF;color:#155EEF}
 #qinBox .qi-ph{display:flex;align-items:center;gap:10px;min-height:52px;border:1.5px dashed #D0D5DD;border-radius:14px;padding:6px 14px;font-size:14.5px;color:#475467;cursor:pointer}#qinBox .qi-ph img{width:40px;height:40px;object-fit:cover;border-radius:8px}
 #qinBox .qi-go{min-height:56px;border:0;border-radius:16px;background:#155EEF;color:#fff;font-size:17px;font-weight:800;cursor:pointer}#qinBox .qi-go:disabled{opacity:.6}
@@ -10880,7 +10881,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function ryFullSigSR(items) { return (currentSelectedMember || '') + '#' + (window.innerWidth >= 768 ? 'w' : 'n') + '#' + (items || []).map(function (x) { return [x.rowNumber, x.status, x.justRequested ? 1 : 0, x.name, x.note, x.targetQty, x.sales15, x.unit, x.boxUnit, x.category, x.imgUrl ? 1 : 0, x.hidden ? 1 : 0, x.memo, x.requester, x.inboundDate, x.orderDate].join('\u0001'); }).join('\u0002'); }
     /* ═══ 1021 MJ '주문요청도 안 하고 명세서도 없는 입고' — 검색 결과 [📦 바로 입고]: 수량 + 이유 (+ 사진 선택) → 서버 quickInbound
        입고내역 '주문없이입고 · 명세서 없음·이유' · 추정 재고에 더함 · 문준 카톡 · row 0 = 앱에 없는 상품(새로 등록) ═══ */
-    var QIN = null, QIN_WHY = ['샘플·증정', '본사 직배송', '다른 지점에서', '모름'];
+    var QIN = null, QIN_WHY0 = ['샘플·증정', '본사 직배송', '다른 지점에서'], QIN_WHY = QIN_WHY0.slice(), QIN_EXTRA = null;   // 1021 MJ: 모름 → 기타(직접 적기) · 기타에 자주 적힌 이유는 버튼으로
     function qinBtn(item) { return item && item.rowNumber && item.status !== 'INBOUND' ? '<button type="button" class="ry-qin" onclick="event.stopPropagation(); qinOpen(' + item.rowNumber + ')" title="주문도 명세서도 없이 들어온 상품 입고">📦 바로 입고</button>' : ''; }
     function qinOpen(row) {
       if (!checkMemberSelectedOrAlert()) return;
@@ -10892,15 +10893,26 @@ html body #ryLaunchGrid .tl-search{top:56px}
       d.innerHTML = '<div class="qi-card"><div class="qi-hd"><b>📦 바로 입고</b><span>주문도 명세서도 없이 들어온 상품</span><button type="button" class="qi-x" aria-label="닫기" onclick="qinClose()">✕</button></div>'
         + (it ? '<div class="qi-name">' + escapeHtml(QIN.name) + '</div>' : '<label class="qi-l">🆕 새 상품 이름 (앱에 보일 이름)<input id="qinName" type="text" autocomplete="off" value="' + escapeHtml(q0) + '" placeholder="예: 신신파스 아렉스 소 42매"></label>')
         + '<label class="qi-l">들어온 수량 (개)<input id="qinQty" type="number" inputmode="numeric" min="1" placeholder="몇 개?"></label>'
-        + '<div class="qi-l">왜 들어왔나요?<div class="qi-why">' + QIN_WHY.map(function (w, i) { return '<button type="button" data-i="' + i + '" onclick="qinWhy(' + i + ')">' + w + '</button>'; }).join('') + '</div></div>'
+        + '<div class="qi-l">왜 들어왔나요?<div class="qi-why" id="qinWhyBox"></div><input id="qinEtc" type="text" maxlength="30" autocomplete="off" placeholder="기타 이유를 적어 주세요 (예: 행사 사은품)" hidden></div>'
         + '<div class="qi-l">사진 <small>(선택 · 상자나 상품)</small><label class="qi-ph"><input id="qinPh" type="file" accept="image/*" capture="environment" onchange="qinPhoto(this)" hidden><span id="qinPhTxt">📷 찍기 / 고르기</span></label></div>'
         + '<button type="button" id="qinGo" class="qi-go" onclick="qinGo()">입고하기</button><p class="qi-note">입고내역에 \'📦 주문 없이 입고\'로 남고, 문준님께 알려요</p></div>';
       d.addEventListener('click', function (e) { if (e.target === d) qinClose(); });
       document.body.appendChild(d);
+      qinWhyRender();
+      if (!QIN_EXTRA) google.script.run.withSuccessHandler(function (r) { QIN_EXTRA = (r && r.list) || []; if (QIN && !QIN.why) qinWhyRender(); }).withFailureHandler(function () {}).getQinReasons();
       setTimeout(function () { var f = document.getElementById(it ? 'qinQty' : 'qinName'); if (f) f.focus(); }, 50);
     }
     function qinClose() { var d = document.getElementById('qinBox'); if (d) d.remove(); QIN = null; }
-    function qinWhy(i) { if (!QIN) return; QIN.why = QIN_WHY[i]; document.querySelectorAll('#qinBox .qi-why button').forEach(function (b) { b.classList.toggle('on', +b.dataset.i === i); }); }
+    function qinWhyRender() {
+      var box = document.getElementById('qinWhyBox'); if (!box) return;
+      QIN_WHY = QIN_WHY0.concat((QIN_EXTRA || []).filter(function (w) { return QIN_WHY0.indexOf(w) === -1; })).concat(['기타']);
+      box.innerHTML = QIN_WHY.map(function (w, i) { return '<button type="button" data-i="' + i + '" onclick="qinWhy(' + i + ')">' + (w === '기타' ? '✏️ 기타' : escapeHtml(w)) + '</button>'; }).join('');
+    }
+    function qinWhy(i) {
+      if (!QIN) return; QIN.why = QIN_WHY[i];
+      document.querySelectorAll('#qinBox .qi-why button').forEach(function (b) { b.classList.toggle('on', +b.dataset.i === i); });
+      var e = document.getElementById('qinEtc'); if (e) { e.hidden = QIN.why !== '기타'; if (!e.hidden) e.focus(); }
+    }
     function qinPhoto(inp) {
       var f = inp.files && inp.files[0], t = document.getElementById('qinPhTxt'); if (!f || !QIN) return;
       t.textContent = '사진 줄이는 중…';
@@ -10912,19 +10924,21 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var n = parseInt(String((document.getElementById('qinQty') || {}).value || '').replace(/[^0-9]/g, ''), 10);
       if (!name) { alert('상품 이름을 적어 주세요'); return; }
       if (!(n > 0 && n < 100000)) { alert('들어온 수량을 숫자로 적어 주세요'); return; }
-      if (!QIN.why) { alert('왜 들어왔는지 하나 골라 주세요 (모르면 [모름])'); return; }
+      if (!QIN.why) { alert('왜 들어왔는지 하나 골라 주세요 (없으면 [기타]에 적기)'); return; }
+      var custom = QIN.why === '기타', why = custom ? String((document.getElementById('qinEtc') || {}).value || '').replace(/\s+/g, ' ').trim() : QIN.why;
+      if (custom && !why) { alert('기타 이유를 적어 주세요'); var ee = document.getElementById('qinEtc'); if (ee) ee.focus(); return; }
       if (!QIN.row && (RY_CAT && RY_CAT.items || []).some(function (x) { return String(x.name).split('\n')[0].replace(/\s+/g, '') === name.replace(/\s+/g, ''); })) { alert('이미 앱에 있는 상품이에요. 검색해서 그 상품의 [📦 바로 입고]를 눌러 주세요.'); return; }
-      if (!confirm('[' + name + '] ' + n + '개 · ' + QIN.why + '\n' + (QIN.row ? '' : '🆕 새 상품으로 등록하고 ') + '입고할까요?')) return;
+      if (!confirm('[' + name + '] ' + n + '개 · ' + why + '\n' + (QIN.row ? '' : '🆕 새 상품으로 등록하고 ') + '입고할까요?')) return;
       var b = document.getElementById('qinGo'); b.disabled = true; b.textContent = '입고하는 중…';
       var q = QIN;
       google.script.run.withSuccessHandler(function (r) {
         if (!r || !r.success) { b.disabled = false; b.textContent = '입고하기'; alert('입고 안 됨: ' + (r && r.message || '다시 눌러 주세요')); return; }
-        qinClose(); RY_IVL = null;
+        qinClose(); RY_IVL = null; if (custom) QIN_EXTRA = null;
         showToast('✓ ' + name + ' ' + n + '개 입고했어요' + (r.added ? ' · 새 상품 등록' : '') + ' · 문준님께 알렸어요', 3200);
         try { if (!q.row) ryCatLoad(true); } catch (e) {}
         try { loadAllData(true, true, true); } catch (e) {}
       }).withFailureHandler(function (e) { b.disabled = false; b.textContent = '입고하기'; alert('입고 오류: ' + (e && e.message ? e.message : e)); })
-        .quickInbound({ name: name, qty: n, reason: q.why, photo: q.photo, isNew: !q.row }, currentSelectedMember);
+        .quickInbound({ name: name, qty: n, reason: why, custom: custom, photo: q.photo, isNew: !q.row }, currentSelectedMember);
     }
     function renderSearchResults(items) {
       var full = ryFullSigSR(items);
