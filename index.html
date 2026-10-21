@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvhj4oof">
+  <meta name="ry-build" content="mvhj7jbb">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1166,6 +1166,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-who .ry-ava{width:30px!importan
 #prPop{position:fixed;z-index:9995;background:#101828;color:#fff;border-radius:14px;padding:10px 14px;box-shadow:0 10px 30px rgba(16,24,40,.25);font-size:13px;min-width:180px}
 #prPop div{display:flex;justify-content:space-between;gap:16px;line-height:1.7}#prPop span{color:#98A2B3}#prPop b{font-weight:800}
 #prPop small{display:block;margin-top:4px;color:#98A2B3;font-size:11px}
+#prPop .pr-staff{margin:6px -6px 0;padding:4px 8px;border-radius:9px;background:rgba(253,176,34,.16);border:1px solid rgba(253,176,34,.55)}#prPop .pr-staff span{color:#FEC84B;font-weight:700}#prPop .pr-staff b{color:#FDB022;font-size:15px}
 
 .ry-info:active{background:#DCE8FA;transform:scale(.94)}
 .ry-info-title{display:block;max-width:calc(100% - 64px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -4882,7 +4883,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var p = RY_PR && RY_PR[btn.dataset.k]; if (!p) return;
       var won = function (v) { return v ? Number(v).toLocaleString('ko-KR') + '원' : '-'; }, m = p[0] && p[1] ? Math.round((p[1] / 1.1 - p[0]) / (p[1] / 1.1) * 100) : null;   // 1021 직원가 = 사입가×1.2 (10원 반올림) · 판매가는 부가세 포함, 사입가는 부가세 별도 → 같은 기준으로
       var d = document.createElement('div'); d.id = 'prPop'; d.dataset.k = btn.dataset.k; d.setAttribute('role', 'status');
-      d.innerHTML = '<div><span>사입가</span><b>' + won(p[0]) + '</b></div><div><span>판매가</span><b>' + won(p[1]) + '</b></div>' + (p[0] ? '<div><span>직원가 · 사입가×1.2</span><b>' + won(Math.round(p[0] * 1.2 / 10) * 10) + '</b></div>' : '') + (m != null ? '<div><span>마진</span><b>' + m + '%</b></div>' : '') + '<small>' + (p[2] ? escapeHtml(p[2]) + ' 판매 엑셀 기준 · ' : '') + '사입가는 부가세 별도, 판매가는 포함 · 마진은 부가세 빼고 계산</small>';
+      d.innerHTML = '<div><span>사입가</span><b>' + won(p[0]) + '</b></div><div><span>판매가</span><b>' + won(p[1]) + '</b></div>' + (m != null ? '<div><span>마진</span><b>' + m + '%</b></div>' : '') + (p[0] ? '<div class="pr-staff"><span>직원가 · 사입가×1.2</span><b>' + won(Math.round(p[0] * 1.2 / 10) * 10) + '</b></div>' : '') + '<small>' + (p[2] ? escapeHtml(p[2]) + ' 판매 엑셀 기준 · ' : '') + '사입가는 부가세 별도, 판매가는 포함 · 마진은 부가세 빼고 계산</small>';
       document.body.appendChild(d);
       var r = btn.getBoundingClientRect(), w = d.offsetWidth, x = Math.max(8, Math.min(window.innerWidth - w - 8, r.left + r.width / 2 - w / 2)), y = r.bottom + 8;
       if (y + d.offsetHeight > window.innerHeight - 8) y = r.top - d.offsetHeight - 8;
