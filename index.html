@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvhj7jbb">
+  <meta name="ry-build" content="mvhniw6s">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4667,7 +4667,21 @@ html body #ryLaunchGrid .tl-search{top:56px}
     }
 
     let sharedMemberList = ['문준', '관리약사'];
-    let currentSelectedMember = '문준';
+    let currentSelectedMember = '';   // 1021 처음 들어온 기기는 이름 없음 (전엔 '문준' 이 기본이라 누구나 물류관리자로 보였음)
+    /* 1021 MJ: 물류관리자 문준은 비밀번호(4자리) 넣어야 고를 수 있음 — 이 기기 기억 가능. 이 패치 전에 이미 문준이던 기기(MJ 폰·컴퓨터)는 그대로 통과
+       ponytail: 화면 잠금일 뿐 (서버는 이름만 믿음) — 진짜 막아야 하면 서버에서 기기 토큰 확인 */
+    const RY_ADMIN = '문준', PIN_H = 96545;
+    function ryPinHash(v) { return String(v).split('').reduce(function (h, c) { return (h * 131 + c.charCodeAt(0)) % 1000003; }, 17); }
+    function ryAdminOk() { try { return localStorage.getItem('ry_admin_ok') === '1'; } catch (e) { return false; } }
+    function ryAdminInit(saved) { try { if (localStorage.getItem('ry_admin_v') !== '1') { if (saved === RY_ADMIN) localStorage.setItem('ry_admin_ok', '1'); localStorage.setItem('ry_admin_v', '1'); } } catch (e) {} }
+    function ryAdminGate(name) {
+      if (name !== RY_ADMIN || ryAdminOk()) return true;
+      var v = prompt('물류관리자(' + RY_ADMIN + ') 비밀번호를 넣어 주세요');
+      if (v == null) return false;
+      if (ryPinHash(String(v).trim()) !== PIN_H) { alert('비밀번호가 달라요'); return false; }
+      if (confirm('이 기기에서는 다음부터 비밀번호를 안 물어볼까요?\n(내 폰·내 컴퓨터일 때만 [확인])')) { try { localStorage.setItem('ry_admin_ok', '1'); } catch (e) {} }
+      return true;
+    }
     let isFilterCheckRequestedOnly = false;
     let cachedMonthlyRanking = { monthLabel: '이번달', rankingList: [] };
     let pendingPhotoRow = null;
@@ -7570,7 +7584,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
       setupImagePreview();
       try {
         const savedMyName = localStorage.getItem('s_selected_member');
-        if (savedMyName && savedMyName.trim()) {
+        ryAdminInit(savedMyName && savedMyName.trim());
+        if (savedMyName && savedMyName.trim() && (savedMyName.trim() !== RY_ADMIN || ryAdminOk())) {
           currentSelectedMember = savedMyName.trim();
         }
       } catch(e) {}
@@ -7582,7 +7597,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
         if (typeof google !== 'undefined' && google.script && google.script.url && google.script.url.getLocation) {
           google.script.url.getLocation(function(loc) {
             const me = (loc && loc.parameter && loc.parameter.me) ? String(loc.parameter.me).trim() : '';
-            if (!me) return;
+            if (!me || me === currentSelectedMember) return;
+            if (me === RY_ADMIN && !ryAdminOk()) return;   // 1021 ?me=문준 링크로는 못 들어옴 (이름 변경에서 비밀번호)
             currentSelectedMember = me;
             try { localStorage.setItem('s_selected_member', me); } catch(e) {}
             if (sharedMemberList.indexOf(me) === -1) sharedMemberList.push(me);
@@ -7696,6 +7712,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
 
     function selectMember(name, e) {
       if (e) e.stopPropagation();
+      if (!ryAdminGate(name)) return;
       currentSelectedMember = name;
       try {
         localStorage.setItem('s_selected_member', name);
@@ -7721,8 +7738,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
       // 낙관적 반영
       sharedMemberList = sharedMemberList.filter(n => n !== name);
       if (currentSelectedMember === name) {
-        currentSelectedMember = sharedMemberList[0] || '';
-        try { localStorage.setItem('s_selected_member', currentSelectedMember); } catch(err) {}
+        currentSelectedMember = '';   // 1021 남은 첫 이름(문준)으로 넘어가지 않게
+        try { localStorage.removeItem('s_selected_member'); } catch(err) {}
       }
       renderDropdownItems();
 
