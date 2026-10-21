@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvhozd17">
+  <meta name="ry-build" content="mvi4rk0k">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -13195,7 +13195,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function ntOnSearch(v) { NT.q = String(v || ''); clearTimeout(_ntQT); _ntQT = setTimeout(function () { if (typeof ryFloor === 'function') ryFloor(); ntRender(); }, 150); }
     function ntSetTag(t) { NT.tag = NT.tag === t ? '' : t; if (typeof ryFloor === 'function') ryFloor(); ntRender(); }   /* 목록이 짧아져도 누른 칩이 제자리 (받침) */
     function ntMatch(n) {
-      if (NT.tag && n.tag !== NT.tag) return false;
+      if (NT.tag && n.tag !== NT.tag && !(NT.tag === '이벤트' && n.ev)) return false;   // 1021 MJ: 증정 공지에 붙인 🎁 배지(ev)도 '이벤트' 칩·배지 누르기에서 보이게
       var q = ntNorm(NT.q); if (!q) return true;
       var names = [].concat(n.before || [], n.after || [], n.effectiveAfter || []).map(function (x) { return x.name; }).join(' ');
       return ntNorm([n.title, n.body, names].concat((n.corrections || []).map(function (c) { return c.title + ' ' + c.body; })).join(' ')).indexOf(q) !== -1;
