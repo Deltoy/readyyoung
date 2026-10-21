@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvhotg94">
+  <meta name="ry-build" content="mvhozd17">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9687,7 +9687,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
             })() + tag + (l.badPair ? '<div class="inv-n">AI가 \'' + escapeHtml(l.badPair) + '\'와 짝지었는데 이름이 달라서 뺐어요</div>' : '') + (l.note && !l.qtyOk && has ? '<div class="inv-n">' + escapeHtml(l.note) + '</div>' : '') + price
             + (r.wrongStore ? '' : '<div class="inv-btns"><button type="button" class="inv-alt" onclick="event.preventDefault(); invAlt(' + j + ',' + i + ')">🔁 다른 상품으로 바꾸기</button>' + (!has && !l.newItem && !l.doneName ? '<button type="button" class="inv-alt" onclick="event.preventDefault(); invAltPick(' + j + ',' + i + ',0,0)">🆕 새 상품으로 등록</button>' : '') + '</div><div class="inv-pick" id="invpk-' + j + '-' + i + '"></div>') + '</div></label>';
         }).join('');
-        var wrong = r.wrongStore ? '<div class="inv-wrong">⛔ 이 명세서는 <b>' + escapeHtml(r.receiver || '다른 곳') + '</b> 앞으로 온 거예요.<br>우리는 <b>성수레디영약국</b>이에요. 입고하지 말고 물건을 따로 두고 문준님께 알려 주세요. (문준님 카톡으로도 알렸어요)<br><button type="button" class="inv-retry" style="background:#fff;color:#B42318;border:1.5px solid #F04438;margin-top:8px" onclick="if(confirm(\'이 명세서가 우리 약국 것이 맞나요? (본사·대표님 이름으로 온 것 등)\')){INVS[' + j + '].wrongStore=false;invRender();}">우리 약국 것이 맞아요 → 입고 가능하게</button></div>' : '';   // 1020 MJ '주식회사 레디영도 우리한테 온 거야'
+        var wrong = r.wrongStore ? '<div class="inv-wrong">⛔ 이 명세서는 <b>' + escapeHtml(r.receiver || '다른 곳') + '</b> 앞으로 온 거예요.<br>우리는 <b>성수레디영약국</b>이에요. 입고하지 말고 물건을 따로 두고 문준님께 알려 주세요. (문준님 카톡으로도 알렸어요)<br><button type="button" class="inv-retry" style="background:#fff;color:#B42318;border:1.5px solid #F04438;margin-top:8px" onclick="if(confirm(\'이 명세서가 우리 약국 것이 맞나요? (본사·대표님 이름으로 온 것 등)\')){INVS[' + j + '].wrongStore=false;invRender();}">우리 약국 것이 맞아요 → 입고 가능하게</button></div>' : invPlanS(r) ? '<div class="inv-wrong" style="background:#FFFAEB;border-color:#FEC84B;color:#93370D">⚠️ 받는 곳이 <b>' + escapeHtml(r.receiver || '플랜에스의원') + '</b>이에요 (자회사).<br>우리 매장으로 넘어온 물건이 맞는지 <b>한 번 더 확인</b>하고 입고해 주세요.</div>' : '';   // 1020 MJ '주식회사 레디영도 우리한테 온 거야'
         return '<div class="inv-sec">' + wrong + '<h4>📄 ' + escapeHtml(r.supplier || '거래명세서') + ' <span>' + escapeHtml(r.date || '') + ' · ' + r.lines.length + '줄' + ((r._big || r._thumb) ? ' · <a href="#" onclick="event.preventDefault(); invZoom(' + j + ')">사진 크게</a>' : r.link ? ' · <a href="' + escapeHtml(r.link) + '" target="_blank" rel="noopener">사진</a>' : '') + '</span></h4>' + rows + '</div>';
       }).join('');
       var nFail = INVS.filter(function (r) { return !r.success && r._file; }).length;
@@ -9744,9 +9744,11 @@ html body #ryLaunchGrid .tl-search{top:56px}
       return INVS.filter(function (r) { return !r.wrongStore; }).map(function (r) { return { info: { supplier: r.supplier, date: r.date }, ex: (r.lines || []).filter(function (l) { return !(l.row && live[l.row]) && !l.doneName; }).map(function (l) { return { name: l.newItem && l.clean ? l.clean : l.name, qty: l.qty, newItem: !!l.newItem, catName: l.catName || '' }; }) }; }).filter(function (g) { return g.ex.length; });
     }
     function invCount(busy) { var b = document.getElementById('invGo'); if (!b) return; var n = invPicked().length, x = invExtras().reduce(function (a, g) { return a + g.ex.length; }, 0); b.disabled = busy || INV_BUSY || (!n && !x); b.textContent = busy || INV_BUSY ? '읽는 중…' : n ? '고른 ' + n + '개 입고완료' + (x ? ' + 알림' : '') : x ? '주문 안 한 ' + x + '개 알리기' : '입고할 상품을 고르세요'; }
+    function invPlanS(r) { return !!r && !r.wrongStore && /플랜에스/.test(String(r.receiver || '').replace(/\s+/g, '')); }   // 1021 MJ: 자회사 플랜에스의원 앞 명세서 — 막지 말고 한 번 더 확인만
     function invDo() {
       var rows = invPicked(), gs = invExtras(), ex = gs.reduce(function (a, g) { return a.concat(g.ex); }, []), nw = ex.filter(function (x) { return x.newItem; }).length; if (!rows.length && !ex.length) return;
       var shorts = []; INVS.forEach(function (r) { (r.lines || []).forEach(function (l) { if (l.row && rows.indexOf(l.row) !== -1) { var o = parseFloat(String(l.orderQty || '').replace(/[^0-9.]/g, '')) || 0, a = Number(l.bundle ? l.qty : (l.appQty != null ? l.appQty : l.qty)) || 0; if (o > 0 && a > 0 && a < o) shorts.push(String(l.appName || l.name).slice(0, 20) + ' (' + a + '/' + o + ')'); } }); });
+      if (INVS.some(invPlanS) && !confirm('⚠️ 플랜에스의원(자회사) 앞으로 온 명세서가 있어요.\n우리 매장으로 넘어온 물건이 맞는지 한 번 더 확인했나요?')) return;
       if (!confirm((shorts.length ? '⛔ 주문보다 덜 들어온 상품이 있어요:\n' + shorts.join('\n') + '\n모자란 건 문준님께 알려 주세요.\n\n' : '') + (rows.length ? '⚠️ 명세서 이름과 앱 상품 이름이 같은지 확인했나요?\n\n' + rows.length + '개를 [✅ 최종 입고완료] 처리할까요?\n' : '') + (ex.length ? '주문 안 한 상품 ' + ex.length + '개는 문준님께 카톡으로 알려요' + (nw ? ' (앱에 없는 ' + nw + '개는 새 상품으로 등록)' : '') + '\n' : '') + (rows.length ? '(실수했을 땐 입고내역 탭의 ⏪ 되돌리기로 복구할 수 있어요)' : ''))) return;
       try {   /* 1020 MJ '주문 안 했는데 들어온 상품도 재고로' — 명세서 수량을 그 상품의 입고 기록(추정 재고)에 남김 */
         INVS.forEach(function (r) { if (!r.fid || r.wrongStore) return; var live = {}; (cachedInboundItems || []).forEach(function (it) { live[it.rowNumber] = 1; });
