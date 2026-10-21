@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvhi7o3q">
+  <meta name="ry-build" content="mvhj4oof">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4880,9 +4880,9 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function prShow(btn) {
       var old = document.getElementById('prPop'); if (old) { var same = old.dataset.k === btn.dataset.k; old.remove(); if (same) return; }
       var p = RY_PR && RY_PR[btn.dataset.k]; if (!p) return;
-      var won = function (v) { return v ? Number(v).toLocaleString('ko-KR') + '원' : '-'; }, m = p[0] && p[1] ? Math.round((p[1] / 1.1 - p[0]) / (p[1] / 1.1) * 100) : null;   // 판매가는 부가세 포함, 사입가는 부가세 별도 → 같은 기준으로
+      var won = function (v) { return v ? Number(v).toLocaleString('ko-KR') + '원' : '-'; }, m = p[0] && p[1] ? Math.round((p[1] / 1.1 - p[0]) / (p[1] / 1.1) * 100) : null;   // 1021 직원가 = 사입가×1.2 (10원 반올림) · 판매가는 부가세 포함, 사입가는 부가세 별도 → 같은 기준으로
       var d = document.createElement('div'); d.id = 'prPop'; d.dataset.k = btn.dataset.k; d.setAttribute('role', 'status');
-      d.innerHTML = '<div><span>사입가</span><b>' + won(p[0]) + '</b></div><div><span>판매가</span><b>' + won(p[1]) + '</b></div>' + (m != null ? '<div><span>마진</span><b>' + m + '%</b></div>' : '') + '<small>' + (p[2] ? escapeHtml(p[2]) + ' 판매 엑셀 기준 · ' : '') + '사입가는 부가세 별도, 판매가는 포함 · 마진은 부가세 빼고 계산</small>';
+      d.innerHTML = '<div><span>사입가</span><b>' + won(p[0]) + '</b></div><div><span>판매가</span><b>' + won(p[1]) + '</b></div>' + (p[0] ? '<div><span>직원가 · 사입가×1.2</span><b>' + won(Math.round(p[0] * 1.2 / 10) * 10) + '</b></div>' : '') + (m != null ? '<div><span>마진</span><b>' + m + '%</b></div>' : '') + '<small>' + (p[2] ? escapeHtml(p[2]) + ' 판매 엑셀 기준 · ' : '') + '사입가는 부가세 별도, 판매가는 포함 · 마진은 부가세 빼고 계산</small>';
       document.body.appendChild(d);
       var r = btn.getBoundingClientRect(), w = d.offsetWidth, x = Math.max(8, Math.min(window.innerWidth - w - 8, r.left + r.width / 2 - w / 2)), y = r.bottom + 8;
       if (y + d.offsetHeight > window.innerHeight - 8) y = r.top - d.offsetHeight - 8;
