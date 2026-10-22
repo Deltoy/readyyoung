@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvjaajyk">
+  <meta name="ry-build" content="mvjad4lx">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -10651,8 +10651,9 @@ html body #ryLaunchGrid .tl-search{top:56px}
       Object.keys(RY_ALIAS).forEach(function (k) { if (k === t || (t.length >= 3 && k.indexOf(t) === 0)) out = out.concat(RY_ALIAS[k].map(function (x) { return x.replace(/\s+/g, '').toLowerCase(); })); });
       return out;
     }
-    /* 1022 MJ '코엔쿨로 쳐도 코앤쿨이 나오게' — 소리가 같은 ㅐ/ㅔ · ㅒ/ㅖ 는 같은 글자로 (앤=엔 · 캐어=케어 · 래=레) */
-    function ryFold(t) { return String(t || '').replace(/[가-힣]/g, function (c) { var x = c.charCodeAt(0) - 0xAC00, v = Math.floor(x / 28) % 21; return v === 1 || v === 3 ? String.fromCharCode(c.charCodeAt(0) + 4 * 28) : c; }); }
+    /* 1022 MJ '코엔쿨로 쳐도 코앤쿨이 나오게' */
+    /* 1022 MJ '영어가 한글로 바뀐 말은 애매한 표기도 다 검색되게' → ㅐㅒㅖㅙㅚㅞ=ㅔ · 된소리=예사소리(ㄲㄸㅃㅆㅉ) · ㅈ·ㅊ 뒤 ㅑㅕㅛㅠ=ㅏㅓㅗㅜ (쥬=주) */
+    function ryFold(t) { return String(t || '').replace(/[가-힣]/g, function (c) { var x = c.charCodeAt(0) - 0xAC00, l = Math.floor(x / 588), v = Math.floor(x / 28) % 21, e = x % 28; l = { 1: 0, 4: 3, 8: 7, 10: 9, 13: 12 }[l] != null ? { 1: 0, 4: 3, 8: 7, 10: 9, 13: 12 }[l] : l; v = { 1: 5, 3: 5, 7: 5, 10: 5, 11: 5, 15: 5 }[v] != null ? 5 : v; if (l === 12 || l === 14) v = { 2: 0, 6: 4, 12: 8, 17: 13 }[v] != null ? { 2: 0, 6: 4, 12: 8, 17: 13 }[v] : v; return String.fromCharCode(0xAC00 + (l * 21 + v) * 28 + e); }); }
     function ryHitFn(query) {
       var q = ryFold(String(query).replace(/\s+/g, '').toLowerCase());
       var toks = String(query).toLowerCase().split(/\s+/).filter(Boolean).map(ryAliasOf).map(function (vs) { return vs.map(ryFold); });   // 띄어 쓴 낱말마다 (영어면 한글 이름도) 모두 들어 있으면
