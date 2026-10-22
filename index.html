@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvjdaxjl">
+  <meta name="ry-build" content="mvjdhy82">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -5868,7 +5868,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
             + '<button type="button" class="md-x" onclick="MD.list.splice(' + i + ',1);mdRender()" aria-label="빼기">✕</button></div>';
         }).join('') : '<div class="md-empty">아직 적은 세트가 없어요<br>아래 <b>[＋ 세트 추가]</b>로 만든 세트를 골라 주세요</div>')
         + '<button type="button" class="md-add" onclick="mdPick()">＋ 세트 추가</button><div id="mdPick"></div></div>'
-        + '<div class="md-foot"><span id="mdSum"></span><button type="button" class="np-save" id="mdSave" onclick="mdSave()">저장 · 박스에서 빼기</button></div>';
+        + '<div class="md-foot"><span id="mdSum"></span><button type="button" class="np-save" id="mdSave" onclick="mdSave()">저장</button></div>';
       mdSum();
     }
     /* 1022 MJ '캘린더 형식이면 며칠에 뭘 만들었는지 바로' — 날짜 칸에 그날 합계 · 누르면 그날 기록 */
@@ -5910,7 +5910,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var b = document.getElementById('mdSave'); b.disabled = true; b.textContent = '저장 중…';
       var date = MD.data.date, slot = MD.slot;
       google.script.run.withSuccessHandler(function (r) {
-        b.disabled = false; b.textContent = '저장 · 박스에서 빼기';
+        b.disabled = false; b.textContent = '저장';
         if (!r || !r.success) { alert('저장 안 됨: ' + ((r && r.message) || '')); return; }
         var ids = {}; list.forEach(function (x) { ids[x.id] = x.q; });
         MD.data.rows = MD.data.rows.filter(function (x) { return !(x.slot === slot); }).concat(list.map(function (x) { return { d: date, slot: slot, id: x.id, q: x.q }; }));
@@ -5921,7 +5921,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         try { MD.data.rows = MD.data.rows; var mo = MD.data.month = MD.data.month || {}, m0 = mo[date] = mo[date] || { am: 0, pm: 0 }; m0[slot] = r.total; MD.data.stub = false; mdCachePut(MD.data); } catch (eC) {}
         if (r.boxes) { SP.box = Object.assign({}, SP.box || {}, { success: true, rows: r.boxes }); SP.boxAt = Date.now(); try { bxDotSync(); } catch (eD) {} }   // 박스 재고 탭도 새 숫자로
         mdRender();
-      }).withFailureHandler(function (e) { b.disabled = false; b.textContent = '저장 · 박스에서 빼기'; alert('저장 오류: ' + (e && e.message ? e.message : e)); }).saveSetMade(date, slot, list, currentSelectedMember);
+      }).withFailureHandler(function (e) { b.disabled = false; b.textContent = '저장'; alert('저장 오류: ' + (e && e.message ? e.message : e)); }).saveSetMade(date, slot, list, currentSelectedMember);
     }
     function spRenderSets() {
       var s15n = function (s) { return s.s15 === '' || s.s15 == null ? -1 : +s.s15 || 0; };
