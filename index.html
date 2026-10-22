@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvjcvqm4">
+  <meta name="ry-build" content="mvjczf11">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1538,6 +1538,13 @@ body.sp-open{overflow:hidden}
 .md-ph{flex:none;width:48px;height:48px;border-radius:10px;overflow:hidden;background:var(--ry-sunken);display:flex;align-items:center;justify-content:center;font-size:22px}.md-ph img{width:100%;height:100%;object-fit:cover}
 .md-nm{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.md-nm b{font-size:14.5px;font-weight:700;line-height:1.3;color:var(--ry-ink);word-break:keep-all;overflow-wrap:anywhere}.md-nm i{font-style:normal;font-size:12px;color:#5925DC;font-weight:600}.md-nm i.no{color:var(--ry-ink-3)}
 .md-q{flex:none;width:68px;min-height:44px;border:1.5px solid #B2CCFF;border-radius:12px;text-align:center;font-size:18px;font-weight:800;color:#155EEF;background:#F5F8FF}
+.md-cal{margin:10px 12px 0;background:#fff;border:1px solid var(--ry-line);border-radius:16px;padding:8px}
+.md-cal-h{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:2px 2px 6px}.md-cal-h b{font-size:14.5px;color:var(--ry-ink)}.md-cal-h button{width:40px;min-height:36px!important;border:0;border-radius:10px!important;background:var(--ry-sunken);color:var(--ry-ink-2)}.md-cal-h button:disabled{opacity:.35}
+.md-cal-w,.md-cal-g{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}.md-cal-w span{text-align:center;font-size:11px;color:var(--ry-ink-3);padding:2px 0}
+.md-c{min-height:50px!important;padding:3px 0!important;border:0;border-radius:10px!important;background:var(--ry-sunken);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:1px;overflow:hidden}
+.md-c i{font-style:normal;font-size:11.5px;color:var(--ry-ink-2);font-weight:600}.md-c b{font-size:15px;font-weight:800;color:#155EEF;line-height:1.1}.md-c em{font-style:normal;font-size:8.5px;color:var(--ry-ink-3);white-space:nowrap;letter-spacing:-.03em}
+.md-c.we i{color:#D92D20}.md-c.today{box-shadow:inset 0 0 0 1.5px #84ADFF}.md-c.sel{background:#155EEF}.md-c.sel i,.md-c.sel b,.md-c.sel em{color:#fff}.md-c.fut{opacity:.4}
+.md-day{flex:1;font-size:17px;font-weight:800;color:var(--ry-ink)}
 .md-x{flex:none;width:36px;min-height:36px!important;border:0;border-radius:10px!important;background:var(--ry-sunken);color:var(--ry-ink-3);font-size:14px}
 .md-add{width:100%;min-height:50px;border:1.5px dashed #84ADFF;border-radius:14px!important;background:#F5F8FF;color:#155EEF;font-size:15px;font-weight:800}
 .md-empty{padding:22px 10px;text-align:center;color:var(--ry-ink-3);font-size:14px;line-height:1.6}.md-empty b{color:#155EEF}
@@ -5825,7 +5832,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       d.rows.forEach(function (x) { if (x.slot !== sl) { other.n++; other.q += x.q; } });
       var byId = {}; d.sets.forEach(function (st) { byId[st.id] = st; });
       var duty = (d.duty && d.duty[sl]) || [];
-      document.getElementById('spBody').innerHTML = '<div class="md-top"><input type="date" id="mdDate" value="' + d.date + '" max="' + mdToday() + '" onchange="MD.data=null;MD.date=this.value;mdRender()" aria-label="날짜">'
+      document.getElementById('spBody').innerHTML = mdCal(d) + '<div class="md-top"><b class="md-day">' + (+d.date.slice(5, 7)) + '/' + (+d.date.slice(8)) + ' (' + '일월화수목금토'.charAt(new Date(d.date + 'T00:00:00+09:00').getDay()) + ')</b>'
         + '<div class="md-slot" role="radiogroup"><button type="button" class="' + (sl === 'am' ? 'on' : '') + '" onclick="MD.slot=\'am\';mdRender()">☀️ 오전</button><button type="button" class="' + (sl === 'pm' ? 'on' : '') + '" onclick="MD.slot=\'pm\';mdRender()">🌙 오후</button></div></div>'
         + '<div class="md-duty">' + (sl === 'am' ? '오전' : '오후') + ' 세트 담당 <b>' + (duty.length ? escapeHtml(duty.join(' · ')) : '근무표에 없음') + '</b>' + (other.n ? ' <span>· ' + (sl === 'am' ? '오후' : '오전') + '에 적은 것 ' + other.n + '종 ' + other.q + '개</span>' : '') + '</div>'
         + '<div class="md-list">' + (MD.list.length ? MD.list.map(function (x, i) {
@@ -5838,6 +5845,19 @@ html body #ryLaunchGrid .tl-search{top:56px}
         + '<button type="button" class="md-add" onclick="mdPick()">＋ 세트 추가</button><div id="mdPick"></div></div>'
         + '<div class="md-foot"><span id="mdSum"></span><button type="button" class="np-save" id="mdSave" onclick="mdSave()">저장 · 박스에서 빼기</button></div>';
       mdSum();
+    }
+    /* 1022 MJ '캘린더 형식이면 며칠에 뭘 만들었는지 바로' — 날짜 칸에 그날 합계 · 누르면 그날 기록 */
+    function mdCal(d) {
+      var y = +d.date.slice(0, 4), m = +d.date.slice(5, 7), first = new Date(Date.UTC(y, m - 1, 1)), days = new Date(Date.UTC(y, m, 0)).getUTCDate(), pad = first.getUTCDay(), today = mdToday(), mo = d.month || {};
+      var tot = 0, cells = ''; for (var i = 0; i < pad; i++) cells += '<span></span>';
+      for (var dd = 1; dd <= days; dd++) {
+        var ds = y + '-' + ('0' + m).slice(-2) + '-' + ('0' + dd).slice(-2), x = mo[ds], n = x ? x.am + x.pm : 0; tot += n;
+        var cls = (ds === d.date ? ' sel' : '') + (ds === today ? ' today' : '') + (ds > today ? ' fut' : '') + ((new Date(ds + 'T00:00:00Z').getUTCDay() % 6) === 0 ? ' we' : '');
+        cells += '<button type="button" class="md-c' + cls + '"' + (ds > today ? ' disabled' : '') + ' onclick="MD.data=null;MD.date=\'' + ds + '\';mdRender()"><i>' + dd + '</i>' + (n ? '<b>' + n + '</b>' + (x.am && x.pm ? '<em>오전' + x.am + '·오후' + x.pm + '</em>' : '<em>' + (x.am ? '오전' : '오후') + '</em>') : '') + '</button>';
+      }
+      var pm = m === 1 ? (y - 1) + '-12' : y + '-' + ('0' + (m - 1)).slice(-2), nm = m === 12 ? (y + 1) + '-01' : y + '-' + ('0' + (m + 1)).slice(-2), nmOk = nm + '-01' <= today;
+      return '<div class="md-cal"><div class="md-cal-h"><button type="button" onclick="MD.data=null;MD.date=\'' + pm + '-01\';mdRender()" aria-label="지난달">◀</button><b>' + y + '년 ' + m + '월 · 만든 세트 ' + tot + '개</b><button type="button"' + (nmOk ? '' : ' disabled') + ' onclick="MD.data=null;MD.date=\'' + nm + '-01\';mdRender()" aria-label="다음 달">▶</button></div>'
+        + '<div class="md-cal-w">' + '일월화수목금토'.split('').map(function (w) { return '<span>' + w + '</span>'; }).join('') + '</div><div class="md-cal-g">' + cells + '</div></div>';
     }
     function mdPick() {
       var box = document.getElementById('mdPick'); if (!box) return;
