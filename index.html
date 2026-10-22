@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mviyajzo">
+  <meta name="ry-build" content="mviycgmn">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -12400,6 +12400,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var f = inp.files && inp.files[0]; inp.value = '';
       if (!f) return;
       S15.file = f.name; S15.busy = 'read'; s15Render();
+      try { if (!RY_CAT || !RY_CAT.items) ryCatLoad(true); } catch (eC) {}   // 1022 새 상품 등록 전 비슷한 상품 찾기용 전체 목록
       s15LoadLib(function (err) {
         if (err) { S15.busy = false; s15Render('엑셀 읽기 도구를 못 불러왔어요. 인터넷 연결을 확인해 주세요.'); return; }
         var rd = new FileReader();
@@ -12524,7 +12525,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
               else if (g && p.sure && !takenX[t.x.n] && s15SafeAi(g.name, t.x)) { g.x = t.x; g.st = 'auto'; g.pick = true; g.ai = true; takenG[g.key] = 1; takenX[t.x.n] = 1; applied++; }
               else if (g) { if (g.st === 'none' || g.st === 'check') { g.x = t.x; g.st = 'check'; g.aiSug = true; } S15.unsure.push(g.name); }
               else if (s15Unit(t.x.n) || takenX[t.x.n]) vari++;   // 낱개 줄인데 짝이 없으면 묶음 상품 확인이 필요 → 등록 안 함
-              else { var cn = typeof invCatOf === 'function' ? invCatOf({ name: t.x.n, spec: '' }) : ''; if (cn) { vari++; (S15.similar = S15.similar || []).push(t.x.n + ' ≈ ' + cn); } else S15.newList.push(t.x); }   // 앱에 비슷한 이름이 있으면 새로 등록하지 않고 확인 목록으로 (중복 등록 막기)
+              else { var cn = typeof invCatOf === 'function' ? invCatOf({ name: t.x.n, spec: '' }) : ''; if (cn || cn === null) { vari++; (S15.similar = S15.similar || []).push(t.x.n + ' ≈ ' + (cn || '(상품 목록을 못 불러와 확인 못 함)')); } else S15.newList.push(t.x); }   // 1022 목록을 못 불러왔으면(null) 자동 등록하지 않음   // 앱에 비슷한 이름이 있으면 새로 등록하지 않고 확인 목록으로 (중복 등록 막기)
             }
           });
           S15.aiMsg = 'AI가 맞추는 중… ' + Math.min(i0, tasks.length) + '/' + tasks.length; s15Render(); step();
