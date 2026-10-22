@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvj3ba4o">
+  <meta name="ry-build" content="mvj3d1xa">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9764,7 +9764,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var live = {}; (cachedInboundItems || []).forEach(function (it) { live[it.rowNumber] = 1; });
       return INVS.filter(function (r) { return !r.wrongStore; }).map(function (r) { return { info: { supplier: r.supplier, date: r.date }, ex: (r.lines || []).filter(function (l) { return !(l.row && live[l.row]) && !l.doneName && !l.exOff; }).map(function (l) { return { name: l.newItem && l.clean ? l.clean : l.name, qty: l.qty, newItem: !!l.newItem, catName: l.catName || '' }; }) }; }).filter(function (g) { return g.ex.length; });
     }
-    function invCount(busy) { var b = document.getElementById('invGo'); if (!b) return; var n = invPicked().length, x = invExtras().reduce(function (a, g) { return a + g.ex.length; }, 0); b.disabled = busy || INV_BUSY || (!n && !x); b.textContent = busy || INV_BUSY ? '읽는 중…' : n + x ? '고른 ' + (n + x) + '개 입고확인' : '입고할 상품을 고르세요';   // 1022 MJ '알림이 아니라 입고확인 버튼으로' }
+    function invCount(busy) { var b = document.getElementById('invGo'); if (!b) return; var n = invPicked().length, x = invExtras().reduce(function (a, g) { return a + g.ex.length; }, 0); b.disabled = busy || INV_BUSY || (!n && !x); b.textContent = busy || INV_BUSY ? '읽는 중…' : n + x ? '고른 ' + (n + x) + '개 입고확인' : '입고할 상품을 고르세요'; }   // 1022 MJ '알림이 아니라 입고확인 버튼으로'
     function invPlanS(r) { return !!r && !r.wrongStore && /플랜에스/.test(String(r.receiver || '').replace(/\s+/g, '')); }   // 1021 MJ: 자회사 플랜에스의원 앞 명세서 — 막지 말고 한 번 더 확인만
     function invDo() {
       var rows = invPicked(), gs = invExtras(), ex = gs.reduce(function (a, g) { return a.concat(g.ex); }, []), nw = ex.filter(function (x) { return x.newItem; }).length; if (!rows.length && !ex.length) return;
