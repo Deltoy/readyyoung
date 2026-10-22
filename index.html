@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvj0q4yk">
+  <meta name="ry-build" content="mvj383oc">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9662,7 +9662,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function invRender(busyMsg) {
       var won = function (v) { return v == null || v === '' ? '' : Math.round(Number(v)).toLocaleString('ko-KR') + '원'; };
       var live = {}; (cachedInboundItems || []).forEach(function (it) { live[it.rowNumber] = 1; });
-      var nOk = 0, nLine = 0, seenRow = {};
+      var nOk = 0, nEx = 0, nLine = 0, seenRow = {};
       var secs = INVS.map(function (r, j) {
         if (!r.success) return '<div class="inv-sec inv-fail"><h4>' + (j + 1) + '번째 명세서 · 읽지 못했어요</h4><div class="inv-failrow">' + (r._thumb ? '<img src="' + r._thumb + '" alt="' + (j + 1) + '번째 명세서 사진 · 눌러서 크게 보기" onclick="invZoom(' + j + ')" style="cursor:zoom-in">' : '') + '<div><div class="inv-n">' + escapeHtml(r.message || '') + '</div><button type="button" class="inv-retry" onclick="invRetry(' + j + ')"' + (busyMsg ? ' disabled' : '') + '>↻ 이 사진 다시 읽기</button><div class="inv-n">그래도 안 되면 다시 찍어 [📷 한 장 더]로 넣어 주세요</div></div></div></div>';
         var rows = r.lines.map(function (l, i) {
@@ -9680,7 +9680,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           if (!has && !l.doneName) { var cn = invCatOf(l); l.catName = cn || ''; l.newItem = cn === ''; }
           if (!has) tag = l.doneName ? '<span class="inv-tag inv-ok">✓ 이미 입고완료 · ' + escapeHtml(l.doneDate + ' · ' + l.doneQty) + '</span>'
             : l.newItem ? '<span class="inv-tag inv-no">🆕 새 상품으로 등록해요 · ' + escapeHtml(l.clean || l.name) + '</span><div class="inv-n">입고완료(또는 알리기)를 누를 때 이 이름으로 등록하고 문준님께 알려요 <button type="button" class="inv-alt" style="margin:4px 0 0" onclick="event.preventDefault(); invRename(' + j + ',' + i + ')">✏️ 이름 고치기</button></div>'
-            : '<span class="inv-tag inv-warn">📋 주문 안 했는데 들어온 상품 · 문준님께 알려요</span>' + (l.catName ? '<div class="inv-n">위 상자의 상품이 아니면 [🔁 다른 상품으로 바꾸기] 또는 [🆕 새 상품으로 등록]</div>' : '');
+            : '<span class="inv-tag inv-warn">📋 주문 안 했는데 들어온 상품 · 체크된 채로 두면 재고에 넣고 문준님께 알려요 · 실제로 없으면 체크 해제</span>' + (l.catName ? '<div class="inv-n">위 상자의 상품이 아니면 [🔁 다른 상품으로 바꾸기] 또는 [🆕 새 상품으로 등록]</div>' : '');
           else if (dup) tag = '<span class="inv-tag inv-no">다른 명세서에도 있는 같은 상품이에요</span>';
           else if (r.wrongStore) tag = '<span class="inv-tag inv-up">⛔ 다른 곳 명세서 · 입고하지 마세요</span>';
           else {   // 1020 MJ '더 들어온 건 괜찮은데 덜 들어왔을 때가 문제' → 주문 수량과 비교해서 모자라면 빨간 경고
@@ -9691,12 +9691,13 @@ html body #ryLaunchGrid .tl-search{top:56px}
             else tag = '<span class="inv-tag inv-warn">⚠ 수량 확인 · 주문 ' + escapeHtml(l.orderQty + l.unit) + ' / 명세서 ' + escapeHtml(String(aqN || l.qty)) + '</span>';
             if (dsc && chk) { chk = ''; nOk--; tag += '<span class="inv-tag inv-warn">⚠ 명세서 날짜(' + escapeHtml(r.date) + ')가 발주일(' + escapeHtml(l.orderDate) + ')보다 빨라요 · 이전 주문분일 수 있어요</span>'; }
           }
+          var isEx = !has && !l.doneName && !r.wrongStore; if (isEx && !l.exOff) { chk = ' checked'; nEx++; }   // 1022 MJ '주문 안 한 물건은 체크가 안 된다고' → 미리 체크, 해제하면 알림·재고에서 빠짐
           var price = l.unitPrice != null ? '<div class="inv-n">단가 ' + won(l.unitPrice) + ' (부가세 포함 ' + won(l.unitPrice * 1.1) + ') · 금액 ' + won(l.amount) + '</div>' : '';
           if (l.priceSus) price += '<div class="inv-n" style="color:#B42318;font-weight:700">⚠️ 사입가 ' + (l.pricePct > 0 ? '+' : '') + l.pricePct + '% · ' + escapeHtml(l.priceSus) + ' — 맞는 상품인지 확인해 주세요</div>';
           else if (l.pricePct != null) price += l.priceOdd ? '<div class="inv-n">' + escapeHtml(l.priceHow) + '와 단위가 달라 보여요 (낱개·박스 확인)</div>'
             : Math.abs(l.pricePct) < 1 ? '<div class="inv-n">사입가 그대로예요 · ' + escapeHtml(l.priceHow) + '</div>'
             : '<span class="inv-tag ' + (l.pricePct > 0 ? 'inv-up' : 'inv-ok') + '">' + (l.pricePct > 0 ? '▲ 사입가 ' + l.pricePct + '% 올랐어요' : '▼ 사입가 ' + Math.abs(l.pricePct) + '% 내렸어요') + '</span><div class="inv-n">' + escapeHtml(l.priceHow) + (l.cmpPrice ? ' ' + won(l.cmpPrice) : '') + '</div>';
-          return '<label class="inv-line"><input type="checkbox" data-j="' + j + '" data-i="' + i + '"' + chk + (has && !dup && !r.wrongStore ? '' : ' disabled') + ' onchange="invCount()"><div style="flex:1;min-width:0"><b>' + escapeHtml(l.name) + (l.spec ? ' <span style="font-weight:600;color:#667085">' + escapeHtml(l.spec) + '</span>' : '') + '</b>'
+          return '<label class="inv-line"><input type="checkbox" data-j="' + j + '" data-i="' + i + '"' + chk + (isEx ? ' data-x="1"' : '') + (isEx || (has && !dup && !r.wrongStore) ? '' : ' disabled') + ' onchange="' + (isEx ? 'INVS[' + j + '].lines[' + i + '].exOff=!this.checked;invSave();' : '') + 'invCount()"><div style="flex:1;min-width:0"><b>' + escapeHtml(l.name) + (l.spec ? ' <span style="font-weight:600;color:#667085">' + escapeHtml(l.spec) + '</span>' : '') + '</b>'
             + '<div class="inv-m">명세서 수량 <b>' + escapeHtml(String(l.qty)) + '</b>' + (l.bundle ? ' <span class="inv-tag inv-ok" style="margin:0 0 0 4px">묶음 ' + escapeHtml(l.bundle) + '</span>' : '') + '</div>'
             + (function () {   // 1020 MJ '앱에 있는 상품이 회색이라 눈에 안 띄어 — 매칭할 상품을 눈에 띄게': 짝지은 앱 상품을 사진과 함께 큰 상자로
               var an = has ? l.appName : (l.catName || l.doneName || ''); if (!an) return '';
@@ -9711,7 +9712,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         return '<div class="inv-sec">' + wrong + '<h4>📄 ' + escapeHtml(r.supplier || '거래명세서') + ' <span>' + escapeHtml(r.date || '') + ' · ' + r.lines.length + '줄' + ((r._big || r._thumb) ? ' · <a href="#" onclick="event.preventDefault(); invZoom(' + j + ')">사진 크게</a>' : r.link ? ' · <a href="' + escapeHtml(r.link) + '" target="_blank" rel="noopener">사진</a>' : '') + '</span></h4>' + rows + '</div>';
       }).join('');
       var nFail = INVS.filter(function (r) { return !r.success && r._file; }).length;
-      var head = '<h3>📄 명세서 ' + INVS.length + '장' + (busyMsg ? ' · ' + escapeHtml(busyMsg) : '') + '</h3><div class="inv-sub">' + nLine + '줄 · 수량이 맞는 ' + nOk + '개는 미리 골라 뒀어요</div>'
+      var head = '<h3>📄 명세서 ' + INVS.length + '장' + (busyMsg ? ' · ' + escapeHtml(busyMsg) : '') + '</h3><div class="inv-sub">' + nLine + '줄 · 수량이 맞는 ' + nOk + '개' + (nEx ? ' · 주문 안 한 ' + nEx + '개' : '') + '는 미리 골라 뒀어요 · 실제로 없는 건 체크 해제</div>'
         + (nFail > 1 && !busyMsg ? '<button type="button" class="inv-retry" style="width:100%;margin:0 0 8px" onclick="invRetryAll()">↻ 못 읽은 ' + nFail + '장 한 번에 다시 읽기</button>' : '');   // 1020 MJ '여러 장 실패하면 한 번에 다시'
       var warnBox = INVS.some(function (r) { return r.success; }) ? '<div class="inv-must">⚠️ <b>입고완료 전에 꼭!</b> 명세서 이름과 <b>앱: ○○</b> 이름이 같은 상품인지 하나씩 확인해 주세요. 다르면 [🔁 다른 상품으로 바꾸기]</div>' : '';   // 1020 MJ '이름 꼭 확인 후 입고완료 — 강조'
       invShow(head + warnBox + secs + '<div class="inv-foot"><button class="inv-x" onclick="invClose()">닫기</button><button class="inv-x" onclick="invPick(true)"' + (busyMsg ? ' disabled' : '') + '>📷 한 장 더</button><button class="inv-go" id="invGo" onclick="invDo()">입고완료</button></div>');
@@ -9758,10 +9759,10 @@ html body #ryLaunchGrid .tl-search{top:56px}
     }
     function invRetryAll() { if (INV_BUSY) return; INVS.forEach(function (r, j) { if (!r.success && r._file) INV_Q.push({ f: r._file, j: j }); }); invNext(); }
     function invRetry(j) { var r = INVS[j]; if (!r || !r._file || INV_BUSY) return; INV_Q.unshift({ f: r._file, j: j }); invNext(); }
-    function invPicked() { var seen = {}; return Array.prototype.map.call(document.querySelectorAll('#invBox input[type=checkbox]:checked'), function (c) { return INVS[+c.dataset.j].lines[+c.dataset.i].row; }).filter(function (r) { if (!r || seen[r]) return false; seen[r] = 1; return true; }); }
+    function invPicked() { var seen = {}; return Array.prototype.map.call(document.querySelectorAll('#invBox input[type=checkbox]:checked:not([data-x])'), function (c) { return INVS[+c.dataset.j].lines[+c.dataset.i].row; }).filter(function (r) { if (!r || seen[r]) return false; seen[r] = 1; return true; }); }
     function invExtras() {   // 명세서마다 [주문 안 한 상품]
       var live = {}; (cachedInboundItems || []).forEach(function (it) { live[it.rowNumber] = 1; });
-      return INVS.filter(function (r) { return !r.wrongStore; }).map(function (r) { return { info: { supplier: r.supplier, date: r.date }, ex: (r.lines || []).filter(function (l) { return !(l.row && live[l.row]) && !l.doneName; }).map(function (l) { return { name: l.newItem && l.clean ? l.clean : l.name, qty: l.qty, newItem: !!l.newItem, catName: l.catName || '' }; }) }; }).filter(function (g) { return g.ex.length; });
+      return INVS.filter(function (r) { return !r.wrongStore; }).map(function (r) { return { info: { supplier: r.supplier, date: r.date }, ex: (r.lines || []).filter(function (l) { return !(l.row && live[l.row]) && !l.doneName && !l.exOff; }).map(function (l) { return { name: l.newItem && l.clean ? l.clean : l.name, qty: l.qty, newItem: !!l.newItem, catName: l.catName || '' }; }) }; }).filter(function (g) { return g.ex.length; });
     }
     function invCount(busy) { var b = document.getElementById('invGo'); if (!b) return; var n = invPicked().length, x = invExtras().reduce(function (a, g) { return a + g.ex.length; }, 0); b.disabled = busy || INV_BUSY || (!n && !x); b.textContent = busy || INV_BUSY ? '읽는 중…' : n ? '고른 ' + n + '개 입고완료' + (x ? ' + 알림' : '') : x ? '주문 안 한 ' + x + '개 알리기' : '입고할 상품을 고르세요'; }
     function invPlanS(r) { return !!r && !r.wrongStore && /플랜에스/.test(String(r.receiver || '').replace(/\s+/g, '')); }   // 1021 MJ: 자회사 플랜에스의원 앞 명세서 — 막지 말고 한 번 더 확인만
@@ -9772,7 +9773,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (!confirm((shorts.length ? '⛔ 주문보다 덜 들어온 상품이 있어요:\n' + shorts.join('\n') + '\n모자란 건 문준님께 알려 주세요.\n\n' : '') + (rows.length ? '⚠️ 명세서 이름과 앱 상품 이름이 같은지 확인했나요?\n\n' + rows.length + '개를 [✅ 최종 입고완료] 처리할까요?\n' : '') + (ex.length ? '주문 안 한 상품 ' + ex.length + '개는 문준님께 카톡으로 알려요' + (nw ? ' (앱에 없는 ' + nw + '개는 새 상품으로 등록)' : '') + '\n' : '') + (rows.length ? '(실수했을 땐 입고내역 탭의 ⏪ 되돌리기로 복구할 수 있어요)' : ''))) return;
       try {   /* 1020 MJ '주문 안 했는데 들어온 상품도 재고로' — 명세서 수량을 그 상품의 입고 기록(추정 재고)에 남김 */
         INVS.forEach(function (r) { if (!r.fid || r.wrongStore) return; var live = {}; (cachedInboundItems || []).forEach(function (it) { live[it.rowNumber] = 1; });
-          var nm = (r.lines || []).filter(function (l) { return !(l.row && live[l.row]) && !l.doneName && (l.catName || l.newItem); }).map(function (l) { return { n: l.newItem ? (l.clean || l.name) : l.catName, q: l.appQty != null ? l.appQty : l.qty, iv: l.name }; });
+          var nm = (r.lines || []).filter(function (l) { return !(l.row && live[l.row]) && !l.doneName && !l.exOff && (l.catName || l.newItem); }).map(function (l) { return { n: l.newItem ? (l.clean || l.name) : l.catName, q: l.appQty != null ? l.appQty : l.qty, iv: l.name }; });
           if (nm.length) google.script.run.withFailureHandler(function () {}).invoiceLinkSave(nm, r.fid, { supplier: r.supplier, date: r.date }, currentSelectedMember, true);   // true = 입고내역에 '주문없이입고'로도
         });
         RY_IVL = null;
