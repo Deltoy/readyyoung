@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvj6qesl">
+  <meta name="ry-build" content="mvj77eij">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8768,12 +8768,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function boxChipHtml(item) {   /* 1022 MJ: 15일 판매처럼 색 알약 · '📦 16개입' (누르면 고치기) */
       var t = String(item.boxUnit == null ? '' : item.boxUnit).trim(), m = t.match(/^(\d+)\s*(.*)$/);
       return '<button type="button" class="ry25-b s15b bxb' + (t ? '' : ' none') + '" title="1박스에 들어있는 수량 · 눌러서 고치기" onclick="event.stopPropagation(); ryBoxEdit(' + item.rowNumber + ')">📦 '
-        + (!t ? '입수 넣기' : m ? '<b>' + m[1] + '</b>' + escapeHtml(m[2] || '개입') : escapeHtml(t)) + '</button>'
-        + ryBonusHtml(item);
-    }
-    function ryBonusHtml(item) {   /* 1022 MJ '어느 정도 주문하면 덤을 꼭 줘' — 명세서에서 읽은 덤 조건 '🎁 50+50' (50개 사면 50개 덤) */
-      var b = String(item.bonus || '').match(/^(\d+)\+(\d+)$/);
-      return b ? '<span class="ry25-b s15b bnb" title="지난 명세서: ' + b[1] + '개 사면 ' + b[2] + '개 덤">🎁 <b>' + b[1] + '</b>+' + b[2] + '</span>' : '';
+        + (!t ? '입수 넣기' : m ? '<b>' + m[1] + '</b>' + escapeHtml(m[2] || '개입') : escapeHtml(t)) + '</button>';
     }
     function ryBoxEdit(row) {   /* 1022 MJ: 검색 카드의 '박스 N' 눌러 1박스 수량 고치기 */
       var it = boxItems_().find(function (x) { return x.rowNumber === row; });
@@ -14074,7 +14069,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-stat.s15 input[id^="m-sales15-"]:f
 html:not(#q):not(#w):not(#e) body:not(#r) .ry-stat.s15.s15-na .ry-u,html:not(#q):not(#w):not(#e) body:not(#r) .ry-stat.s15.s15-z .ry-u{opacity:.8}
 html:not(#q):not(#w):not(#e) body:not(#r) .s15b{display:inline-flex;align-items:baseline;gap:3px;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums;vertical-align:middle}
 html:not(#q):not(#w):not(#e) body:not(#r) .s15b b{font-size:15px;font-weight:800}
-html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b{background:#F2F4F7}html:not(#q):not(#w):not(#e) body:not(#r) .s15b.bnb{border:0;background:#FFF4E5;color:#B54708;display:inline-flex!important;align-items:center;gap:2px;height:26px!important;min-height:0!important;padding:0 10px!important;border-radius:999px!important;font-size:12px!important;font-weight:600!important}html:not(#q):not(#w):not(#e) body:not(#r) .s15b.bnb b{font-size:15px;font-weight:800}html:not(#q):not(#w):not(#e) body:not(#r) .s15b.bxb{border:0;background:#F4F3FF;color:#5925DC;font-family:inherit;cursor:pointer;line-height:1;display:inline-flex!important;align-items:center;gap:3px;height:26px!important;min-height:0!important;padding:0 10px!important;border-radius:999px!important;margin:0}html:not(#q):not(#w):not(#e) body:not(#r) .s15b.bxb.none{background:#F2F4F7;color:#98A2B3}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b{background:#F2F4F7}html:not(#q):not(#w):not(#e) body:not(#r) .s15b.bxb{border:0;background:#F4F3FF;color:#5925DC;font-family:inherit;cursor:pointer;line-height:1;display:inline-flex!important;align-items:center;gap:3px;height:26px!important;min-height:0!important;padding:0 10px!important;border-radius:999px!important;margin:0}html:not(#q):not(#w):not(#e) body:not(#r) .s15b.bxb.none{background:#F2F4F7;color:#98A2B3}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b.s15-t1{background:#F5F6F8;color:#111827}html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b.s15-t2{background:#EEF4FF;color:#155EEF}html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b.s15-t3{background:#155EEF;color:#fff}html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b.s15-z{color:#98A2B3}
 </style>
 <style>
