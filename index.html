@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvj0brtg">
+  <meta name="ry-build" content="mvj0fy8t">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -10668,7 +10668,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var nk = function (x) { return String(x || '').replace(/\s+/g, '').toLowerCase(); }, cat = {}, g = {};
       ((RY_CAT && RY_CAT.items) || []).forEach(function (it) { cat[nk(it.name)] = it.rowNumber; });
       list.forEach(function (x) { if (x) (g[nk(x.name)] = g[nk(x.name)] || []).push(x); });
-      return list.filter(function (x) { if (!x) return false; var v = g[nk(x.name)]; if (v.length < 2) return true; var want = cat[nk(x.name)], pick = v.filter(function (y) { return y.rowNumber === want; })[0] || v[0]; return x === pick; });
+      return list.filter(function (x) { if (!x) return false; var v = g[nk(x.name)]; if (v.length < 2) return true; var vis = v.filter(function (y) { return !y.hidden && !/취급안함/.test(String(y.note || '')); }), pool = vis.length ? vis : v, want = cat[nk(x.name)], pick = pool.filter(function (y) { return y.rowNumber === want; })[0] || pool[0]; return x === pick; });   // 숨긴(취급안함) 옛 줄보다 보이는 줄
     }
     function ryCatSearch(query, strict) {
       if (!RY_CAT || !RY_CAT.items) return null;
