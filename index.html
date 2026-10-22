@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvjcb92d">
+  <meta name="ry-build" content="mvjciiew">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1531,6 +1531,15 @@ body.sp-open{overflow:hidden}
 .sp-back{justify-self:start}.sp-new{justify-self:end;background:#fff!important;color:var(--ry-brand)!important;border-color:#fff!important}
 .sp-seg{flex:none;display:flex;gap:4px;padding:8px 12px;background:#fff;border-bottom:1px solid var(--ry-line)}
 .sp-seg[hidden]{display:none}
+.md-top{display:flex;gap:8px;align-items:center;padding:12px 12px 6px}.md-top input[type=date]{flex:1;min-height:44px;border:1px solid var(--ry-line);border-radius:12px;padding:0 10px;font-size:15px;font-weight:700;background:#fff;color:var(--ry-ink)}
+.md-slot{display:flex;gap:4px}.md-slot button{min-height:44px;padding:0 14px;border-radius:12px!important;border:1px solid var(--ry-line);background:#fff;font-size:14px;font-weight:700;color:var(--ry-ink-2)}.md-slot button.on{background:#155EEF;border-color:#155EEF;color:#fff}
+.md-duty{padding:2px 14px 10px;font-size:13.5px;color:var(--ry-ink-2)}.md-duty b{color:var(--ry-ink)}.md-duty span{color:var(--ry-ink-3)}
+.md-list{display:grid;gap:6px;padding:0 12px 96px}.md-row{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--ry-line);border-radius:14px;padding:8px 10px}
+.md-ph{flex:none;width:48px;height:48px;border-radius:10px;overflow:hidden;background:var(--ry-sunken);display:flex;align-items:center;justify-content:center;font-size:22px}.md-ph img{width:100%;height:100%;object-fit:cover}
+.md-nm{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.md-nm b{font-size:14.5px;font-weight:700;line-height:1.3;color:var(--ry-ink);word-break:keep-all;overflow-wrap:anywhere}.md-nm i{font-style:normal;font-size:12px;color:#5925DC;font-weight:600}.md-nm i.no{color:var(--ry-ink-3)}
+.md-q{flex:none;width:68px;min-height:44px;border:1.5px solid #B2CCFF;border-radius:12px;text-align:center;font-size:18px;font-weight:800;color:#155EEF;background:#F5F8FF}
+.md-foot{position:sticky;bottom:0;display:flex;gap:10px;align-items:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,.96);border-top:1px solid var(--ry-line)}.md-foot span{flex:1;font-size:14px;color:var(--ry-ink-2)}.md-foot b{color:#155EEF;font-size:17px}.md-foot .np-save{flex:none;width:auto;padding:0 18px}
+
 .sp-seg button{flex:1;min-height:44px;border-radius:10px!important;border:0;background:var(--ry-sunken);color:var(--ry-ink-2);font-size:13.5px;font-weight:700}
 .sp-seg button.on{background:var(--ry-ink);color:#fff}
 .sp-seg i{font-style:normal;font-size:11px;font-weight:800;margin-left:3px;opacity:.85}
@@ -5763,9 +5772,14 @@ html body #ryLaunchGrid .tl-search{top:56px}
                  : '<div class="' + cls + ' none">📷 샘플 사진 없음</div>';
     }
     function spSegSync() {
-      [['spSegSets', 'sets'], ['spSegTags', 'tags'], ['spSegBox', 'boxes']].forEach(function (x) { var b = document.getElementById(x[0]); if (b) { b.classList.toggle('on', SP.view === x[1]); b.setAttribute('aria-selected', SP.view === x[1]); } });
+      [['spSegSets', 'sets'], ['spSegTags', 'tags'], ['spSegBox', 'boxes'], ['spSegMade', 'made']].forEach(function (x) { var b = document.getElementById(x[0]); if (b) { b.classList.toggle('on', SP.view === x[1]); b.setAttribute('aria-selected', SP.view === x[1]); } });
     }
     function spRender() {
+      if (SP.view === 'made') {   /* 1022 MJ: 오전·오후 세트 담당이 만든 세트 개수 → 아크릴박스 자동 소진 */
+        document.getElementById('spSeg').hidden = false; document.getElementById('spNewBtn').hidden = true;
+        document.getElementById('spBackBtn').textContent = '✕ 닫기'; document.getElementById('spTitle').textContent = '오늘 만든 세트';
+        spSegSync(); return mdRender();
+      }
       if (SP.view === 'boxes') {   /* 1016 MJ: 박스 재고는 세트 자료(느림) 없이도 바로 */
         document.getElementById('spSeg').hidden = false; document.getElementById('spNewBtn').hidden = true;
         document.getElementById('spBackBtn').textContent = '✕ 닫기'; document.getElementById('spTitle').textContent = '아크릴박스 재고';
@@ -5788,6 +5802,49 @@ html body #ryLaunchGrid .tl-search{top:56px}
       document.getElementById('spTitle').textContent = SP.view === 'tags' ? '용도별 상품' : '세트 상품';   /* 1016 MJ: 용도별 상품 탭은 숨김 (다른 화면에서 여는 링크는 그대로) */
       if (SP.view === 'tags') return spRenderTags();
       spRenderSets();
+    }
+    /* ── 1022 오늘 만든 세트 기록 (종이 대신) — 서버 getSetMade · saveSetMade (저장하면 박스 남은 개수에서 바로 빠짐) ── */
+    var MD = { date: '', slot: '', data: null, busy: false };
+    function mdToday() { var d = new Date(Date.now() + 9 * 3600e3); return d.toISOString().slice(0, 10); }
+    function mdLoad(date) {
+      MD.busy = true; MD.date = date; document.getElementById('spBody').innerHTML = '<div class="sp-msg"><span class="ry-info-spin"></span>불러오는 중…</div>';
+      google.script.run.withSuccessHandler(function (r) { MD.busy = false; if (!r || !r.success) { document.getElementById('spBody').innerHTML = '<div class="sp-msg">불러오지 못했어요<button type="button" class="ry-info-sub" onclick="mdLoad(MD.date)">다시 시도</button></div>'; return; } MD.data = r; mdRender(); })
+        .withFailureHandler(function () { MD.busy = false; document.getElementById('spBody').innerHTML = '<div class="sp-msg">불러오지 못했어요<button type="button" class="ry-info-sub" onclick="mdLoad(MD.date)">다시 시도</button></div>'; }).getSetMade(date);
+    }
+    function mdRender() {
+      if (!MD.slot) MD.slot = new Date(Date.now() + 9 * 3600e3).getUTCHours() < 14 ? 'am' : 'pm';
+      if (!MD.data || MD.data.date !== (MD.date || mdToday())) { if (!MD.busy) mdLoad(MD.date || mdToday()); return; }
+      var d = MD.data, sl = MD.slot, mine = {}, other = { n: 0, q: 0 };
+      d.rows.forEach(function (x) { if (x.slot === sl) mine[x.id] = x.q; else { other.n++; other.q += x.q; } });
+      var s15n = function (s) { return s.s15 === '' || s.s15 == null ? -1 : +s.s15 || 0; }, sets = d.sets.slice().sort(function (a, b) { return (mine[b.id] ? 1 : 0) - (mine[a.id] ? 1 : 0) || s15n(b) - s15n(a); });
+      var duty = (d.duty && d.duty[sl]) || [], tot = Object.keys(mine).reduce(function (a, k) { return a + mine[k]; }, 0);
+      document.getElementById('spBody').innerHTML = '<div class="md-top"><input type="date" id="mdDate" value="' + d.date + '" max="' + mdToday() + '" onchange="MD.data=null;MD.date=this.value;mdRender()" aria-label="날짜">'
+        + '<div class="md-slot" role="radiogroup"><button type="button" class="' + (sl === 'am' ? 'on' : '') + '" onclick="MD.slot=\'am\';mdRender()">☀️ 오전</button><button type="button" class="' + (sl === 'pm' ? 'on' : '') + '" onclick="MD.slot=\'pm\';mdRender()">🌙 오후</button></div></div>'
+        + '<div class="md-duty">' + (sl === 'am' ? '오전' : '오후') + ' 세트 담당 <b>' + (duty.length ? escapeHtml(duty.join(' · ')) : '근무표에 없음') + '</b>' + (other.n ? ' <span>· ' + (sl === 'am' ? '오후' : '오전') + '에 적은 것 ' + other.n + '종 ' + other.q + '개</span>' : '') + '</div>'
+        + '<div class="md-list">' + sets.map(function (st) {
+          return '<label class="md-row"><span class="md-ph">' + (st.photo ? '<img src="' + escapeHtml(st.photo) + '" alt="" referrerpolicy="no-referrer" loading="lazy" onerror="this.style.visibility=\'hidden\'">' : '🎁') + '</span>'
+            + '<span class="md-nm"><b>' + escapeHtml(st.name) + '</b>' + (st.box ? '<i>📦 ' + escapeHtml(st.box) + '</i>' : '<i class="no">박스 번호 없음</i>') + '</span>'
+            + '<input type="number" inputmode="numeric" min="0" max="999" class="md-q" data-id="' + escapeHtml(st.id) + '" value="' + (mine[st.id] || '') + '" placeholder="0" oninput="mdSum()" aria-label="' + escapeHtml(st.name) + ' 만든 개수"></label>';
+        }).join('') + '</div>'
+        + '<div class="md-foot"><span id="mdSum">' + (tot ? '합계 <b>' + tot + '</b>개' : '만든 개수를 넣어 주세요') + '</span><button type="button" class="np-save" id="mdSave" onclick="mdSave()">저장 · 박스에서 빼기</button></div>';
+    }
+    function mdSum() { var t = 0, n = 0; document.querySelectorAll('#spBody .md-q').forEach(function (i) { var v = parseInt(i.value, 10) || 0; if (v > 0) { t += v; n++; } }); var el = document.getElementById('mdSum'); if (el) el.innerHTML = t ? n + '종 · 합계 <b>' + t + '</b>개' : '만든 개수를 넣어 주세요'; }
+    function mdSave() {
+      if (!checkMemberSelectedOrAlert()) return;
+      var list = [].map.call(document.querySelectorAll('#spBody .md-q'), function (i) { return { id: i.dataset.id, q: parseInt(i.value, 10) || 0 }; }).filter(function (x) { return x.q > 0; });
+      var b = document.getElementById('mdSave'); b.disabled = true; b.textContent = '저장 중…';
+      var date = MD.data.date, slot = MD.slot;
+      google.script.run.withSuccessHandler(function (r) {
+        b.disabled = false; b.textContent = '저장 · 박스에서 빼기';
+        if (!r || !r.success) { alert('저장 안 됨: ' + ((r && r.message) || '')); return; }
+        var ids = {}; list.forEach(function (x) { ids[x.id] = x.q; });
+        MD.data.rows = MD.data.rows.filter(function (x) { return !(x.slot === slot); }).concat(list.map(function (x) { return { d: date, slot: slot, id: x.id, q: x.q }; }));
+        var bx = {}; MD.data.sets.forEach(function (st) { if (ids[st.id] && st.box) bx[String(st.box).replace(/\s|번/g, '')] = 1; });
+        var left = (r.boxes || []).filter(function (o) { return bx[o.box]; }).map(function (o) { return o.box + '번 ' + (o.left == null ? '?' : o.left + '개 남음'); });
+        showToast('✓ ' + (slot === 'am' ? '오전' : '오후') + ' ' + r.saved + '종 ' + r.total + '개 저장' + (left.length ? ' · ' + left.join(' · ') : ''), 4000);
+        if (r.boxes) { SP.box = Object.assign({}, SP.box || {}, { success: true, rows: r.boxes }); SP.boxAt = Date.now(); try { bxDotSync(); } catch (eD) {} }   // 박스 재고 탭도 새 숫자로
+        mdRender();
+      }).withFailureHandler(function (e) { b.disabled = false; b.textContent = '저장 · 박스에서 빼기'; alert('저장 오류: ' + (e && e.message ? e.message : e)); }).saveSetMade(date, slot, list, currentSelectedMember);
     }
     function spRenderSets() {
       var s15n = function (s) { return s.s15 === '' || s.s15 == null ? -1 : +s.s15 || 0; };
@@ -13755,6 +13812,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     <button type="button" id="spSegSets" role="tab" onclick="spShow('sets')">🎁 세트 상품 <i id="spSetCnt"></i></button>
     <button type="button" id="spSegTags" role="tab" onclick="spShow('tags')" hidden>🏷 용도별 상품</button>
     <button type="button" id="spSegBox" role="tab" onclick="spShow('boxes')">📦 박스 재고<i id="spBoxN"></i></button>
+    <button type="button" id="spSegMade" role="tab" onclick="spShow('made')">📝 만든 세트</button>
   </div>
   <main id="spBody" class="sp-body"></main>
 </div>
