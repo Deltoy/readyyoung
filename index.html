@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvjc6iyh">
+  <meta name="ry-build" content="mvjcb92d">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9153,20 +9153,20 @@ html body #ryLaunchGrid .tl-search{top:56px}
       document.getElementById('drDim').classList.add('on');
       document.getElementById('drSheet').classList.add('on');
     }
-    /* 1022 MJ '사용중단 선택 버튼도 넣어줘 — 그럼 취급안함이 되는 거야': 입고 대기에서 빼고 특이사항 '취급안함' (검색 › 숨긴 상품에서 다시 꺼낼 수 있음) */
+    /* 1022 MJ '사용중단 선택 버튼' → '소진 후 판매종료로, 한 달 지나면 취급안함 자동': 입고 대기에서 빼고 판매종료 (서버가 30일 뒤 취급안함) */
     function drStopUse() {
       var item = DELAY_CUR; if (!item) return;
       var name = String(item.name || ''), row = item.rowNumber;
-      if (!confirm('[' + name.split('\n')[0] + ']\n사용 중단할까요?\n\n입고 대기에서 빠지고 취급안함이 돼요 (주문·검색 목록에서 숨겨져요)')) return;
+      if (!confirm('[' + name.split('\n')[0] + ']\n사용 중단할까요?\n\n입고 대기에서 빠지고 \'소진 후 판매종료\'가 돼요 (남은 재고는 계속 팔아요)\n30일 지나면 자동으로 취급안함이 돼요')) return;
       var key = 'stop-' + row; if (inFlight.has(key)) return; inFlight.add(key);
       var idx = cachedInboundItems.findIndex(function (x) { return x.rowNumber === row; }), back = idx !== -1 ? cachedInboundItems.splice(idx, 1)[0] : null;
-      closeDelayReason(); renderAllViews(); persistSnapshot(); showToast('사용 중단 · 취급안함으로 바꿨어요');
+      closeDelayReason(); renderAllViews(); persistSnapshot(); showToast('사용 중단 · 소진 후 판매종료 (30일 뒤 취급안함)');
       google.script.run.withSuccessHandler(function (res) {
         inFlight.delete(key);
         if (!res || res.success === false) { if (back) cachedInboundItems.splice(idx, 0, back); renderAllViews(); alert('사용 중단 처리 안 됨: ' + ((res && res.message) || '')); return; }
         loadAllData(true, true, true);
       }).withFailureHandler(function (e) { inFlight.delete(key); if (back) cachedInboundItems.splice(idx, 0, back); renderAllViews(); alert('사용 중단 오류: ' + (e && e.message ? e.message : e)); })
-        .hideProduct(row, name, currentSelectedMember || '');
+        .stopUseProduct(row, name, currentSelectedMember || '');
     }
     function closeDelayReason() { document.getElementById('drDim').classList.remove('on'); document.getElementById('drSheet').classList.remove('on'); }
     function quickDelayReason(t) { var ta = document.getElementById('drText'), cur = ta.value.trim(); ta.value = cur ? (cur.indexOf(t) !== -1 ? cur : cur + ' · ' + t) : t; ta.focus(); }
