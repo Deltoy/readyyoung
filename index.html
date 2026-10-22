@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mviuz41l">
+  <meta name="ry-build" content="mviyajzo">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -12411,7 +12411,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
             if (!xs || !xs.length) { s15Render('이 파일에서 "판매 상품명" · "판매수량" 열을 못 찾았어요. 판매량 통계 › 상품별 통계 엑셀을 올려 주세요.'); return; }
             S15.xs = xs; S15.open = {};
             S15.groups = s15Match(xs, (S15.info && S15.info.links) || {});
-            s15Render();
+            s15Render(); s15Ai(true);   /* 1022 MJ: 엑셀 올리면 AI 맞추기 → 팔렸는데 앱에 없는 상품은 바로 새 상품 등록 */
           } catch (e) { S15.busy = false; s15Render('엑셀을 읽지 못했어요 (' + (e && e.message || e) + ')'); }
         };
         rd.readAsArrayBuffer(f);
@@ -12487,7 +12487,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var clash = va.length && vb.length && !va.some(function (w) { return vb.indexOf(w) !== -1; });
       return sc >= 0.6 && !clash;
     }
-    function s15Ai() {
+    function s15Ai(auto) {
       if (S15.busy) return;
       var gs = S15.groups || [], chk = gs.filter(function (g) { return g.st === 'check' || g.st === 'none'; });
       var allG = (S15.groups || []).filter(function (g) { return g.st !== 'skip'; });   // 엑셀에만 있는 이름은 앱 상품 전체에서 후보 (이미 이어진 상품이면 = 같은 상품의 다른 줄 → 새로 등록 안 함)
@@ -12500,13 +12500,13 @@ html body #ryLaunchGrid .tl-search{top:56px}
         var top = allG.map(function (g) { return [s15Score(s15Prep(g.name), x), g]; }).filter(function (p) { return p[0] >= .35; }).sort(function (p, r) { return r[0] - p[0]; }).slice(0, 5).map(function (p) { return p[1]; });
         tasks.push({ kind: 'xls', x: x, cands: top });
       });
-      if (!tasks.length) { showToast('AI로 맞출 게 없어요', 2000); return; }
+      if (!tasks.length) { if (!auto) showToast('AI로 맞출 게 없어요', 2000); return; }
       S15.busy = 'ai'; S15.aiMsg = 'AI가 맞추는 중… 0/' + tasks.length; S15.newList = []; S15.unsure = []; S15.similar = []; s15Render();
       var i0 = 0, takenX = {}, takenG = {}, applied = 0, wrong = 0, vari = 0;
       var step = function () {
         if (i0 >= tasks.length) {
           S15.busy = false; S15.aiMsg = '🤖 AI 맞추기 끝 · 확실한 ' + applied + '개 자동 연결' + (wrong ? ' · 엑셀에 없는 ' + wrong + '개' : '') + (S15.unsure.length ? ' · 애매한 ' + S15.unsure.length + '개는 AI 추천을 걸어 확인해 주세요에 (맞으면 \'맞아요\' 한 번)' : '') + (vari ? ' · 이미 있는 상품의 다른 줄(낱개 등) ' + vari + '개는 등록 안 함' : '') + (S15.newList.length ? ' · 앱에 없는 상품 ' + S15.newList.length + '개' : '');
-          s15Render(); return;
+          s15Render(); s15RegisterNew(true); return;
         }
         var part = tasks.slice(i0, i0 + 40); i0 += part.length;
         var send = part.map(function (t) { return t.kind === 'app' ? { q: t.g.name, c: t.cands.map(function (x) { return x.n; }) } : { q: t.x.n, c: t.cands.map(function (g) { return g.name; }) }; });
@@ -12532,9 +12532,9 @@ html body #ryLaunchGrid .tl-search{top:56px}
       };
       step();
     }
-    function s15RegisterNew() {
-      var L = (S15.newList || []).filter(function (x) { return !x.done; }); if (!L.length || S15.busy) return;
-      if (!confirm('엑셀에서 팔리는데 앱에 없는 ' + L.length + '개를 새 상품으로 등록할까요?\n15일 판매량도 같이 넣어요. (분류는 AI가 정해요)')) return;
+    function s15RegisterNew(auto) {
+      var L = (S15.newList || []).filter(function (x) { return !x.done && x.q > 0; }); if (!L.length || S15.busy) return;   // 팔린 기록 있는 것만
+      if (!auto && !confirm('엑셀에서 팔리는데 앱에 없는 ' + L.length + '개를 새 상품으로 등록할까요?\n15일 판매량도 같이 넣어요. (분류는 AI가 정해요)')) return;
       S15.busy = 'reg'; S15.aiMsg = '새 상품 등록 중… (1분쯤)'; s15Render();
       google.script.run.withSuccessHandler(function (r) {
         S15.busy = false;
