@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvj4c6xq">
+  <meta name="ry-build" content="mvj5afkc">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -16649,7 +16649,9 @@ setTimeout(function () { EDU.loadedAt = Date.now(); eduLoad(); }, 5000);
 #rlView .rl-arch{display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:999px!important;background:#F2F4F7;color:#475467;font-size:11.5px;font-weight:700}
 #rlView .rl-meta{margin-left:auto;font-size:12px;color:#98A2B3;white-space:nowrap}
 #rlView .rl-card h3{margin:10px 0 0;font-size:17px;line-height:1.45;font-weight:700!important;color:#101828;letter-spacing:-.2px;word-break:keep-all}
-#rlView .rl-body{margin:6px 0 0;font-size:15px;line-height:1.6;color:#344054;white-space:pre-wrap;word-break:keep-all}
+#rlView .rl-body{margin:6px 0 0;font-size:15px;line-height:1.6;color:#344054;white-space:pre-wrap;word-break:keep-all;overflow-wrap:anywhere}
+/* 1022 MJ '아이폰에서 일본어 글자가 선을 넘어가' — keep-all 은 띄어쓰기 없는 일본어·중국어를 한 줄로 늘려 버림 → 이 언어는 글자 단위로 줄바꿈 */
+html body [lang=ja],html body [lang=zh]{word-break:normal!important;line-break:strict;overflow-wrap:anywhere}
 #rlView .rl-ph{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
 #rlView .rl-ph.n1{grid-template-columns:1fr}
 #rlView .rl-ph.n3{grid-template-columns:repeat(3,1fr)}
