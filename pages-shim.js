@@ -37,14 +37,19 @@
         }
       });
   }
-  function send(fn, args, ok, fail, uo) {
+  function send(fn, args, ok, fail, uo, n) {
     if (fn === 'getWebAppUrl') { setTimeout(function () { ok && ok(location.origin + location.pathname, uo); }); return; }   /* 전용 링크는 이 화면 주소로 */
     if (locked || !k) { showGate(); return; }
     post(fn, args, k).then(function (j) {
       if (j && j.__auth) { locked = true; showGate(j.__err); return; }
       if (j && j.__err) { if (fail) fail(new Error(j.__err), uo); else console.error(fn, j.__err); return; }
       ok && ok(j, uo);
-    }, function (e) { if (fail) fail(e, uo); else console.error(fn, e); });
+    }, function (e) {
+      /* 1022 'Failed to fetch' (구글 응답 주소가 잠깐 404) — 읽기만 하는 호출은 2번 더 (쓰기는 서버에서 이미 됐을 수 있어 그대로 알림) */
+      n = n || 0;
+      if (/^(get|list|search)/.test(fn) && n < 2 && /fetch|network|load/i.test(String(e && e.message || e))) { setTimeout(function () { send(fn, args, ok, fail, uo, n + 1); }, 2000 * (n + 1)); return; }
+      if (fail) fail(e, uo); else console.error(fn, e);
+    });
   }
   function runner(ok, fail, uo) {
     return new Proxy({}, { get: function (_, name) {

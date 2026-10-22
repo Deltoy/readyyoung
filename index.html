@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvj85ncg">
+  <meta name="ry-build" content="mvj8jx9m">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -42,14 +42,19 @@
         }
       });
   }
-  function send(fn, args, ok, fail, uo) {
+  function send(fn, args, ok, fail, uo, n) {
     if (fn === 'getWebAppUrl') { setTimeout(function () { ok && ok(location.origin + location.pathname, uo); }); return; }   /* 전용 링크는 이 화면 주소로 */
     if (locked || !k) { showGate(); return; }
     post(fn, args, k).then(function (j) {
       if (j && j.__auth) { locked = true; showGate(j.__err); return; }
       if (j && j.__err) { if (fail) fail(new Error(j.__err), uo); else console.error(fn, j.__err); return; }
       ok && ok(j, uo);
-    }, function (e) { if (fail) fail(e, uo); else console.error(fn, e); });
+    }, function (e) {
+      /* 1022 'Failed to fetch' (구글 응답 주소가 잠깐 404) — 읽기만 하는 호출은 2번 더 (쓰기는 서버에서 이미 됐을 수 있어 그대로 알림) */
+      n = n || 0;
+      if (/^(get|list|search)/.test(fn) && n < 2 && /fetch|network|load/i.test(String(e && e.message || e))) { setTimeout(function () { send(fn, args, ok, fail, uo, n + 1); }, 2000 * (n + 1)); return; }
+      if (fail) fail(e, uo); else console.error(fn, e);
+    });
   }
   function runner(ok, fail, uo) {
     return new Proxy({}, { get: function (_, name) {
@@ -12358,9 +12363,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
       { to: '릴리이브 스칼프턴 시카 피디알엔 딥클린 샴푸', from: [['릴리이브 스칼프턴턴시카 PDRN딥크린샴푸', 1], ['릴리이브 스칼프턴 시카 PDRN 딥클린 샴푸', 1]] },
       { to: '라라올라액 20ml x 30바이알', from: [['라라올라액(L-아스파르트산-L-아르기닌', 1 / 30]] },
       { to: '한강멸균거즈(小) 5장 3호 (5cm*5cm*8겹)', from: [['한강멸균거즈 5x5 ３호 1매', 1 / 5]] },
-      /* 1022 MJ 'A 60g 2포 10팩 · B 30g(3g x 10p) 이름만 다르고 같은 거야, B 가 1포씩 팔고 있어서' — 낱포(2개입·3g 1개입) = 1/10 + 10팩 = 1 → 두 줄 다 같은 숫자 */
-      { to: '상쾌환숙취해소 60g 2포 10팩', from: [['상쾌환숙취해소 2개입', 1 / 10], ['큐원 상쾌환 숙취해소 3g 1개입', 1 / 10], ['큐원 상쾌환 숙취해소 2p*10pack', 1]] },
-      { to: '상쾌환 숙취해소 30g(3g x 10p)', from: [['상쾌환숙취해소 2개입', 1 / 10], ['큐원 상쾌환 숙취해소 3g 1개입', 1 / 10], ['큐원 상쾌환 숙취해소 2p*10pack', 1]] },
+      /* 1022 MJ '한 박스 = 3g 2포짜리 10팩(10봉지)' · '2p*10pack 이 1개(한 박스) 팔린 것' — 앱 1개 = 박스 · 2개입(1봉지) = 1/10 · 3g 1개입(1포) = 1/20 · 옛 이름 2줄(60g 2포 10팩 / 30g 3g x 10p)은 하나로 합침 */
+      { to: '큐원 상쾌환 숙취해소 3g x 2포 x 10팩', from: [['큐원 상쾌환 숙취해소 2p*10pack', 1], ['상쾌환숙취해소 2개입', 1 / 10], ['큐원 상쾌환 숙취해소 3g 1개입', 1 / 20]] },
       /* 1022 MJ '1팩 10포인데 1포씩도 팔아서 판매량이 애매해' — 상쾌환 스틱 맛별: 1포 = 1/10팩 + 10개입 */
       { to: '상쾌환 스틱형 (망고맛) 10개입', from: [['상쾌환스틱 망고맛 1포', 1 / 10], ['상쾌환스틱 망고맛 10개입', 1]] },
       { to: '상쾌환 샤인머스캣맛 10개입', from: [['상쾌환스틱 샤인머스캣맛 1포', 1 / 10], ['상쾌환스틱 샤인머스캣맛 10개입', 1]] },
