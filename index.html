@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mviytnsq">
+  <meta name="ry-build" content="mviyziki">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8667,7 +8667,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
             <div class="ry-oc-name">${escapeHtml(item.name)} ${endedBadge(item)}</div>
             ${mrSlot(item, type)}
             <div class="ry-oc-meta"><span class="ry-stat s15 ${s15Tier(item.sales15)}" title="최근 15일 동안 팔린 수량"><span class="ry-s15l">15일 판매</span> ${type === 'review' ? sales15InputHtml(item, true) : `<b class="whitespace-nowrap">${escapeHtml(s15Txt(item.sales15))}</b>`}<span class="ry-u">개</span></span>
-              ${type === 'review' || type === 'order' ? `<span class="ry-stat box" title="1박스에 몇 개가 들어있는지">${boxRefHtml(item, true)}</span>` : `<span class="ry-stat box" style="cursor:pointer" title="눌러서 1박스 수량 고치기" onclick="event.stopPropagation(); ryBoxEdit(${item.rowNumber})"><span class="ry-s15l">1박스 =</span> <b>${escapeHtml(item.boxUnit || '-')}</b><span class="ry-u">개 ✏️</span></span>`}</div>
+              ${type === 'review' || type === 'order' ? `<span class="ry-stat box" title="1박스에 몇 개가 들어있는지">${boxRefHtml(item, true)}</span>` : boxChipHtml(item)}</div>
             <div class="ry-oc-tags">
               ${reqBadge}
               ${catChip(item)}
@@ -8761,6 +8761,11 @@ html body #ryLaunchGrid .tl-search{top:56px}
         + '<span>개</span>' + calc + '</div>';
     }
     function boxItems_() { return [].concat(cachedReviewItems || [], cachedOrderItems || [], (typeof lastSearchResults !== 'undefined' && lastSearchResults) || [], (typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) || []); }   // 1022 검색 결과에서도 고칠 수 있게
+    function boxChipHtml(item) {   /* 1022 MJ: 15일 판매처럼 색 알약 · '📦 16개입' (누르면 고치기) */
+      var t = String(item.boxUnit == null ? '' : item.boxUnit).trim(), m = t.match(/^(\d+)\s*(.*)$/);
+      return '<button type="button" class="ry25-b s15b bxb' + (t ? '' : ' none') + '" title="1박스에 들어있는 수량 · 눌러서 고치기" onclick="event.stopPropagation(); ryBoxEdit(' + item.rowNumber + ')">📦 '
+        + (!t ? '입수 넣기' : m ? '<b>' + m[1] + '</b>' + escapeHtml(m[2] || '개입') : escapeHtml(t)) + '</button>';
+    }
     function ryBoxEdit(row) {   /* 1022 MJ: 검색 카드의 '박스 N' 눌러 1박스 수량 고치기 */
       var it = boxItems_().find(function (x) { return x.rowNumber === row; });
       var v = prompt('1박스에 몇 개가 들어있나요?\n(숫자로 · 비우면 지워요)', it ? String(it.boxUnit == null ? '' : it.boxUnit).trim() : '');
@@ -11045,7 +11050,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
             <div class="ry25-pc-row" onclick="event.stopPropagation()">
               ${ry25StatusBadge(item)}
               ${!item._mo && /^\d+(\.\d+)?$/.test(String(item.sales15 == null ? '' : item.sales15).trim()) ? `<span class="ry25-b s15b ${s15Tier(item.sales15)}" title="최근 15일 판매 수량">15일 판매 <b>${escapeHtml(String(item.sales15).trim())}</b>개</span>` : ''}
-              <button type="button" class="ry25-b" style="cursor:pointer;font:inherit" title="눌러서 1박스 수량 고치기" onclick="event.stopPropagation(); ryBoxEdit(${item.rowNumber})">${boxTxt ? `박스 ${escapeHtml(boxTxt)}${/^[0-9]+$/.test(boxTxt) ? '개' : ''}` : '박스 입수 넣기'} ✏️</button>
+              ${boxChipHtml(item)}
               ${catChip(item)}
               ${typeof eduChip === 'function' ? eduChip(item.name) : ''}
               ${item._mo ? moChips(item._mo) : (item.status === 'DONE' && item.inboundDate ? `<span class="ry25-pc-sub">입고 ${escapeHtml(item.inboundDate)}</span>` : '')}
@@ -14044,7 +14049,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-stat.s15 input[id^="m-sales15-"]:f
 html:not(#q):not(#w):not(#e) body:not(#r) .ry-stat.s15.s15-na .ry-u,html:not(#q):not(#w):not(#e) body:not(#r) .ry-stat.s15.s15-z .ry-u{opacity:.8}
 html:not(#q):not(#w):not(#e) body:not(#r) .s15b{display:inline-flex;align-items:baseline;gap:3px;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums;vertical-align:middle}
 html:not(#q):not(#w):not(#e) body:not(#r) .s15b b{font-size:15px;font-weight:800}
-html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b{background:#F2F4F7}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b{background:#F2F4F7}html:not(#q):not(#w):not(#e) body:not(#r) .s15b.bxb{border:0;background:#F4F3FF;color:#5925DC;font-family:inherit;cursor:pointer;line-height:1.4}html:not(#q):not(#w):not(#e) body:not(#r) .s15b.bxb.none{background:#F2F4F7;color:#98A2B3}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b.s15-t1{background:#F5F6F8;color:#111827}html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b.s15-t2{background:#EEF4FF;color:#155EEF}html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b.s15-t3{background:#155EEF;color:#fff}html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b.s15-z{color:#98A2B3}
 </style>
 <style>
