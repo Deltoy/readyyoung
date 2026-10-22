@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvjarx2y">
+  <meta name="ry-build" content="mvjc1i6l">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8794,6 +8794,17 @@ html body #ryLaunchGrid .tl-search{top:56px}
       return '<button type="button" class="ry25-b s15b bxb' + (t ? '' : ' none') + '" title="1박스에 들어있는 수량 · 눌러서 고치기" onclick="event.stopPropagation(); ryBoxEdit(' + item.rowNumber + ')">📦 '
         + (!t ? '입수 넣기' : m ? '<b>' + m[1] + '</b>' + escapeHtml(m[2] || '개입') : escapeHtml(t)) + '</button>';
     }
+    function ryS15Edit(row) {   /* 1022 MJ '15일 판매량도 버튼 누르면 수정 가능하게' — 검색 카드 알약 */
+      var it = boxItems_().find(function (x) { return x.rowNumber === row; }), cur = it ? String(it.sales15 == null ? '' : it.sales15).trim() : '';
+      var v = prompt('15일 판매 수량 (숫자만 · 비우면 지워요)\n' + (it ? String(it.name).split('\n')[0] : ''), cur); if (v === null) return;
+      v = v.trim(); if (v === cur) return; if (v !== '' && !Number.isFinite(Number(v))) { alert('숫자만 넣어 주세요'); return; }
+      var set = function (val) { boxItems_().forEach(function (x) { if (x.rowNumber === row) x.sales15 = val; }); [cachedReviewItems, cachedOrderItems, cachedInboundItems, cachedHistoryItems, cachedStockCheckItems].forEach(function (a) { (a || []).forEach(function (x) { if (x.rowNumber === row) x.sales15 = val; }); }); try { ryCatSave(RY_CAT); } catch (e) {} renderAllViews(); try { var sv = document.getElementById('searchResultView'); if (sv && !sv.classList.contains('hidden') && lastSearchResults && lastSearchResults.length) renderSearchResults(lastSearchResults); } catch (e2) {} };
+      set(v === '' ? '-' : v);
+      google.script.run.withSuccessHandler(function (res) {
+        if (res && res.success === false) { alert('15일 판매 저장 안 됨: ' + (res.message || '')); set(cur); return; }
+        showToast('✓ 15일 판매 ' + (v === '' ? '지움' : v + '개') + ' 저장');
+      }).withFailureHandler(function (e) { alert('15일 판매 저장 오류: ' + (e && e.message ? e.message : e)); set(cur); }).updateSales15(row, v, it ? it.name : '');
+    }
     function ryBoxEdit(row) {   /* 1022 MJ: 검색 카드의 '박스 N' 눌러 1박스 수량 고치기 */
       var it = boxItems_().find(function (x) { return x.rowNumber === row; });
       var v = prompt('1박스에 몇 개가 들어있나요?\n(숫자로 · 비우면 지워요)', it ? String(it.boxUnit == null ? '' : it.boxUnit).trim() : '');
@@ -11095,7 +11106,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
             <div class="ry25-pc-name">${escapeHtml(item.name)} ${endedBadge(item)}</div>
             <div class="ry25-pc-row" onclick="event.stopPropagation()">
               ${ry25StatusBadge(item)}
-              ${!item._mo && /^\d+(\.\d+)?$/.test(String(item.sales15 == null ? '' : item.sales15).trim()) ? `<span class="ry25-b s15b ${s15Tier(item.sales15)}" title="최근 15일 판매 수량">15일 판매 <b>${escapeHtml(String(item.sales15).trim())}</b>개</span>` : ''}
+              ${!item._mo && /^\d+(\.\d+)?$/.test(String(item.sales15 == null ? '' : item.sales15).trim()) ? `<button type="button" class="ry25-b s15b s15e ${s15Tier(item.sales15)}" title="최근 15일 판매 수량 · 눌러서 고치기" onclick="event.stopPropagation(); ryS15Edit(${item.rowNumber})">15일 판매 <b>${escapeHtml(String(item.sales15).trim())}</b>개</button>` : ''}
               ${boxChipHtml(item)}
               ${catChip(item)}
               ${typeof eduChip === 'function' ? eduChip(item.name) : ''}
@@ -14110,7 +14121,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-stat.s15 input[id^="m-sales15-"]:f
 html:not(#q):not(#w):not(#e) body:not(#r) .ry-stat.s15.s15-na .ry-u,html:not(#q):not(#w):not(#e) body:not(#r) .ry-stat.s15.s15-z .ry-u{opacity:.8}
 html:not(#q):not(#w):not(#e) body:not(#r) .s15b{display:inline-flex;align-items:baseline;gap:3px;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums;vertical-align:middle}
 html:not(#q):not(#w):not(#e) body:not(#r) .s15b b{font-size:15px;font-weight:800}
-html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b{background:#F2F4F7}html:not(#q):not(#w):not(#e) body:not(#r) .s15b.bxb{border:0;background:#F4F3FF;color:#5925DC;font-family:inherit;cursor:pointer;line-height:1;display:inline-flex!important;align-items:center;gap:3px;height:26px!important;min-height:0!important;padding:0 10px!important;border-radius:999px!important;margin:0}html:not(#q):not(#w):not(#e) body:not(#r) .s15b.bxb.none{background:#F2F4F7;color:#98A2B3}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b{background:#F2F4F7}html:not(#q):not(#w):not(#e) body:not(#r) .s15b.s15e{border:0;font-family:inherit;cursor:pointer;line-height:1;display:inline-flex!important;align-items:center;gap:3px;height:26px!important;min-height:0!important;padding:0 10px!important;border-radius:999px!important;margin:0}html:not(#q):not(#w):not(#e) body:not(#r) .s15b.bxb{border:0;background:#F4F3FF;color:#5925DC;font-family:inherit;cursor:pointer;line-height:1;display:inline-flex!important;align-items:center;gap:3px;height:26px!important;min-height:0!important;padding:0 10px!important;border-radius:999px!important;margin:0}html:not(#q):not(#w):not(#e) body:not(#r) .s15b.bxb.none{background:#F2F4F7;color:#98A2B3}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b.s15-t1{background:#F5F6F8;color:#111827}html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b.s15-t2{background:#EEF4FF;color:#155EEF}html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b.s15-t3{background:#155EEF;color:#fff}html:not(#q):not(#w):not(#e) body:not(#r) .ry25-b.s15b.s15-z{color:#98A2B3}
 </style>
 <style>
