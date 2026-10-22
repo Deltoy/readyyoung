@@ -23,9 +23,19 @@
     try { history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q.toString() : '') + location.hash); } catch (e) {}
   }
   var locked = false;
-  function post(fn, args, key) {
+  /* 1022 MJ '주문 요청이 저장되지 않았어요 (Unexpected token <, <!DOCTYPE)' — 서버가 잠깐 JSON 대신 구글 오류 페이지(HTML)를 줄 때가 있다
+     (배포가 바뀌는 순간 · 구글 쪽 일시 오류). 그럴 땐 1.5 · 4 · 8초 뒤 자동으로 다시 보내고, 그래도 안 되면 알아듣기 쉬운 말로 */
+  function post(fn, args, key, n) {
+    n = n || 0;
     return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ rpc: fn, args: args, k: key }) })
-      .then(function (r) { return r.json(); });
+      .then(function (r) { return r.text(); })
+      .then(function (t) {
+        try { return JSON.parse(t); } catch (e) {
+          if (n < 3) return new Promise(function (res) { setTimeout(res, [1500, 4000, 8000][n]); }).then(function () { return post(fn, args, key, n + 1); });
+          var m = /<title>([^<]*)/i.exec(t || '');
+          throw new Error('서버가 잠깐 응답하지 않았어요. 잠시 뒤 다시 눌러 주세요.' + (m ? ' (' + m[1].trim().slice(0, 40) + ')' : ''));
+        }
+      });
   }
   function send(fn, args, ok, fail, uo) {
     if (fn === 'getWebAppUrl') { setTimeout(function () { ok && ok(location.origin + location.pathname, uo); }); return; }   /* 전용 링크는 이 화면 주소로 */
