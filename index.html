@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvjad4lx">
+  <meta name="ry-build" content="mvjarx2y">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8724,6 +8724,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (inFlight.has(key)) return;
       inFlight.add(key);
       showToast('발주 승인 · 최종 발주로 넘겼어요');
+      const _nm = ryNameOf(rowNumber);
       const itemIdx = cachedReviewItems.findIndex(it => it.rowNumber === rowNumber);
       if (itemIdx !== -1) {
         const item = cachedReviewItems.splice(itemIdx, 1)[0];
@@ -8733,8 +8734,9 @@ html body #ryLaunchGrid .tl-search{top:56px}
       }
 
       google.script.run
-        .withSuccessHandler(function() {
+        .withSuccessHandler(function(res) {
           inFlight.delete(key);
+          if (res && res.success === false) alert('발주 승인 안 됨: ' + (res.message || ''));
           loadAllData(true, true, true);
         })
         .withFailureHandler(function(err) {
@@ -8742,7 +8744,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           alert('발주 승인 처리 오류: ' + err.message);
           loadAllData(true, false, true);
         })
-        .approveOrderToPharmacist(rowNumber);
+        .approveOrderToPharmacist(rowNumber, _nm);
     }
 
     function toggleUnit(rowNumber) {
@@ -9031,6 +9033,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (inFlight.has(key)) return;
       inFlight.add(key);
       showToast('주문 완료 · 입고대기로 넘겼어요');
+      const _nm = ryNameOf(rowNumber);
       const idx = cachedOrderItems.findIndex(it => it.rowNumber === rowNumber);
       if (idx !== -1) {
         const item = cachedOrderItems.splice(idx, 1)[0];
@@ -9050,7 +9053,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           alert('주문 완료 처리 오류: ' + (err && err.message ? err.message : err));
           loadAllData(true, false, true);
         })
-        .confirmOrderPlaced(rowNumber, currentSelectedMember);
+        .confirmOrderPlaced(rowNumber, currentSelectedMember, _nm);
     }
     function rejectOrder(rowNumber, skipConfirm) {
       const key = 'reject-' + rowNumber;
@@ -9059,7 +9062,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       inFlight.add(key);
       showToast('재고있음 처리 · 재고확인으로 옮겼어요');
       // 누르는 즉시 [재고확인] 탭에도 보이게 (서버 재조회는 1~2분 걸릴 수 있어서 기다리지 않음)
-      const rejected = cachedReviewItems.find(it => it.rowNumber === rowNumber) || cachedOrderItems.find(it => it.rowNumber === rowNumber);
+      const rejected = cachedReviewItems.find(it => it.rowNumber === rowNumber) || cachedOrderItems.find(it => it.rowNumber === rowNumber), _nm = ryNameOf(rowNumber);
       cachedReviewItems = cachedReviewItems.filter(it => it.rowNumber !== rowNumber);
       cachedOrderItems = cachedOrderItems.filter(it => it.rowNumber !== rowNumber);
       if (rejected) {
@@ -9081,7 +9084,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           alert('반려 처리 오류: ' + err.message);
           loadAllData(true, false, true);
         })
-        .rejectOrderHasStock(rowNumber, currentSelectedMember || '');   /* 1019 누른 사람 */
+        .rejectOrderHasStock(rowNumber, currentSelectedMember || '', _nm);   /* 1019 누른 사람 */
     }
 
     /* ===== 입고 지연 사유 (0921) — 최종 입고완료가 되면 서버에서 자동으로 지워진다 ===== */
