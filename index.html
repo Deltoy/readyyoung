@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvizfqeo">
+  <meta name="ry-build" content="mvj0brtg">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -10664,6 +10664,12 @@ html body #ryLaunchGrid .tl-search{top:56px}
         .sort(function (a, b) { return a.end - b.end || b.n - a.n || b.s - a.s || a.i - b.i; })
         .map(function (x) { return x.it; });
     }
+    function ryDedupeName(list) {   /* 1022 같은 이름이 다른 행 번호로 두 번(옛 줄·새 줄) → 전체 목록(RY_CAT)이 아는 행 하나만 */
+      var nk = function (x) { return String(x || '').replace(/\s+/g, '').toLowerCase(); }, cat = {}, g = {};
+      ((RY_CAT && RY_CAT.items) || []).forEach(function (it) { cat[nk(it.name)] = it.rowNumber; });
+      list.forEach(function (x) { if (x) (g[nk(x.name)] = g[nk(x.name)] || []).push(x); });
+      return list.filter(function (x) { if (!x) return false; var v = g[nk(x.name)]; if (v.length < 2) return true; var want = cat[nk(x.name)], pick = v.filter(function (y) { return y.rowNumber === want; })[0] || v[0]; return x === pick; });
+    }
     function ryCatSearch(query, strict) {
       if (!RY_CAT || !RY_CAT.items) return null;
       var hit = ryHitFn(query), out = [];
@@ -10721,6 +10727,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       let fz = null;
       const onResults = function(results) {
           if (currentRequestId !== latestSearchRequestId) return;
+          if (results && results.length) results = results.filter(function (x, i, a) { return !x || a.findIndex(function (y) { return y && y.rowNumber === x.rowNumber; }) === i; }), results = ryDedupeName(results);   /* 1022 행이 밀린 뒤 옛 줄·새 줄이 같은 행 번호로 겹쳐 같은 상품이 두 번 보이던 것 */
           if ((!results || !results.length) && fz && fz.list.length) { onResults(fz.list); return; }   // 1020 서버가 0건으로 늦게 와도 '비슷한 상품'을 지우지 않음
           const _SLAB = { REVIEW:'1차검토', ORDER:'발주대기', INBOUND:'입고대기', DONE:'입고완료 · 재주문 가능', SOLDOUT:'품절', IDLE:'미주문' };
           const _SCOL = {
@@ -10753,7 +10760,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           /* 1001 시트에서 행이 지워져 번호가 밀렸을 때: 서버 결과에 같은 이름이 다른 행으로 오면 폰 쪽 행 번호를 바로 고친다 (메모·주문·재주문이 엉뚱한 상품으로 가던 문제) */
           var byName = {}; r.forEach(function (x) { if (x && x.name) byName[String(x.name).replace(/\s+/g, '').toLowerCase()] = x; });
           var moved = 0; localHit.forEach(function (l) { var sv = byName[String(l.name || '').replace(/\s+/g, '').toLowerCase()]; if (sv && sv.rowNumber && sv.rowNumber !== l.rowNumber) { var old = l.rowNumber; l.rowNumber = sv.rowNumber; l.status = sv.status || l.status; moved++; try { (RY_CAT.items || []).forEach(function (it) { if (it.rowNumber === old && it.name === l.name) it.rowNumber = sv.rowNumber; }); } catch (eM) {} } });
-          if (moved) { try { ryCatSave(); } catch (eS2) {} }
+          if (moved) { try { var seenR = {}; RY_CAT.items = (RY_CAT.items || []).filter(function (it) { if (seenR[it.rowNumber]) return false; seenR[it.rowNumber] = 1; return true; }); ryCatSave(); } catch (eS2) {} }   // 1022 고친 행 번호가 다른 줄과 겹치면 하나만
           var have = {}; localHit.forEach(function (x) { have[x.rowNumber] = x; });
           var extra = r.filter(function (x) { return x && x.rowNumber && !have[x.rowNumber]; }), changed = moved > 0;
           var haveN = {}; localHit.forEach(function (x) { haveN[String(x.name || '').replace(/\s+/g, '').toLowerCase()] = x; });
