@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mviycgmn">
+  <meta name="ry-build" content="mviytnsq">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8667,7 +8667,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
             <div class="ry-oc-name">${escapeHtml(item.name)} ${endedBadge(item)}</div>
             ${mrSlot(item, type)}
             <div class="ry-oc-meta"><span class="ry-stat s15 ${s15Tier(item.sales15)}" title="최근 15일 동안 팔린 수량"><span class="ry-s15l">15일 판매</span> ${type === 'review' ? sales15InputHtml(item, true) : `<b class="whitespace-nowrap">${escapeHtml(s15Txt(item.sales15))}</b>`}<span class="ry-u">개</span></span>
-              ${type === 'review' || type === 'order' ? `<span class="ry-stat box" title="1박스에 몇 개가 들어있는지">${boxRefHtml(item, true)}</span>` : (item.boxUnit ? `<span class="ry-stat box" title="1박스에 몇 개가 들어있는지"><span class="ry-s15l">1박스 =</span> <b>${escapeHtml(item.boxUnit)}</b><span class="ry-u">개</span></span>` : '')}</div>
+              ${type === 'review' || type === 'order' ? `<span class="ry-stat box" title="1박스에 몇 개가 들어있는지">${boxRefHtml(item, true)}</span>` : `<span class="ry-stat box" style="cursor:pointer" title="눌러서 1박스 수량 고치기" onclick="event.stopPropagation(); ryBoxEdit(${item.rowNumber})"><span class="ry-s15l">1박스 =</span> <b>${escapeHtml(item.boxUnit || '-')}</b><span class="ry-u">개 ✏️</span></span>`}</div>
             <div class="ry-oc-tags">
               ${reqBadge}
               ${catChip(item)}
@@ -8760,11 +8760,17 @@ html body #ryLaunchGrid .tl-search{top:56px}
         + ' onkeydown="if (event.key === \'Enter\') this.blur();">'
         + '<span>개</span>' + calc + '</div>';
     }
+    function boxItems_() { return [].concat(cachedReviewItems || [], cachedOrderItems || [], (typeof lastSearchResults !== 'undefined' && lastSearchResults) || [], (typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) || []); }   // 1022 검색 결과에서도 고칠 수 있게
+    function ryBoxEdit(row) {   /* 1022 MJ: 검색 카드의 '박스 N' 눌러 1박스 수량 고치기 */
+      var it = boxItems_().find(function (x) { return x.rowNumber === row; });
+      var v = prompt('1박스에 몇 개가 들어있나요?\n(숫자로 · 비우면 지워요)', it ? String(it.boxUnit == null ? '' : it.boxUnit).trim() : '');
+      if (v !== null) saveBoxRef(row, { value: v.trim() });
+    }
     function saveBoxRef(rowNumber, srcEl) {
       var pc = document.getElementById('boxref-' + rowNumber);
       var mo = document.getElementById('m-boxref-' + rowNumber);
       var raw = String(srcEl && srcEl.value !== undefined ? srcEl.value : '').trim();
-      var cur = [].concat(cachedReviewItems || [], cachedOrderItems || []).find(function (it) { return it.rowNumber === rowNumber; });
+      var cur = boxItems_().find(function (it) { return it.rowNumber === rowNumber; });
       var before = cur ? String(cur.boxUnit == null ? '' : cur.boxUnit).trim() : '';
       if (raw === before) return;                                  // 안 바뀌었으면 저장 안 함
       if (raw !== '' && !raw.replace(/[^0-9]/g, '')) {             // 숫자가 하나도 없으면 되돌림
@@ -8777,14 +8783,14 @@ html body #ryLaunchGrid .tl-search{top:56px}
       inFlight.add(key);
       if (pc) pc.value = raw;
       if (mo) mo.value = raw;
-      [].concat(cachedReviewItems || [], cachedOrderItems || []).forEach(function (it) { if (it.rowNumber === rowNumber) it.boxUnit = raw; });
+      boxItems_().forEach(function (it) { if (it.rowNumber === rowNumber) it.boxUnit = raw; });
       persistSnapshot();
       renderAllViews();                                            // '= N개' 계산도 다시
       google.script.run
         .withSuccessHandler(function (res) {
           inFlight.delete(key);
           if (!res || res.success === false) {
-            [].concat(cachedReviewItems || [], cachedOrderItems || []).forEach(function (it) { if (it.rowNumber === rowNumber) it.boxUnit = before; });
+            boxItems_().forEach(function (it) { if (it.rowNumber === rowNumber) it.boxUnit = before; });
             renderAllViews();
             alert('1박스 수량 저장 안 됨: ' + ((res && res.message) || ''));
             return;
@@ -8795,7 +8801,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         })
         .withFailureHandler(function (err) {
           inFlight.delete(key);
-          [].concat(cachedReviewItems || [], cachedOrderItems || []).forEach(function (it) { if (it.rowNumber === rowNumber) it.boxUnit = before; });
+          boxItems_().forEach(function (it) { if (it.rowNumber === rowNumber) it.boxUnit = before; });
           renderAllViews();
           alert('1박스 수량 저장 오류: ' + (err && err.message ? err.message : err));
         })
@@ -11039,7 +11045,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
             <div class="ry25-pc-row" onclick="event.stopPropagation()">
               ${ry25StatusBadge(item)}
               ${!item._mo && /^\d+(\.\d+)?$/.test(String(item.sales15 == null ? '' : item.sales15).trim()) ? `<span class="ry25-b s15b ${s15Tier(item.sales15)}" title="최근 15일 판매 수량">15일 판매 <b>${escapeHtml(String(item.sales15).trim())}</b>개</span>` : ''}
-              ${boxTxt ? `<span class="ry25-b">박스 ${escapeHtml(boxTxt)}${/^[0-9]+$/.test(boxTxt) ? '개' : ''}</span>` : ''}
+              <button type="button" class="ry25-b" style="cursor:pointer;font:inherit" title="눌러서 1박스 수량 고치기" onclick="event.stopPropagation(); ryBoxEdit(${item.rowNumber})">${boxTxt ? `박스 ${escapeHtml(boxTxt)}${/^[0-9]+$/.test(boxTxt) ? '개' : ''}` : '박스 입수 넣기'} ✏️</button>
               ${catChip(item)}
               ${typeof eduChip === 'function' ? eduChip(item.name) : ''}
               ${item._mo ? moChips(item._mo) : (item.status === 'DONE' && item.inboundDate ? `<span class="ry25-pc-sub">입고 ${escapeHtml(item.inboundDate)}</span>` : '')}
