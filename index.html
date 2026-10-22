@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvj8jx9m">
+  <meta name="ry-build" content="mvj9ebk7">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -7447,8 +7447,10 @@ html body #ryLaunchGrid .tl-search{top:56px}
       setPhotoBtnState(rowNumber, '⏳', '처리중');
       resizeImageFile(file, 1000, 0.82).then(dataUrl => {
         setPhotoBtnState(rowNumber, '☁', '업로드중');
-        google.script.run
+        var tries = 0, up = function () { google.script.run
           .withSuccessHandler(function(res) {
+            if (res && res.busy && tries++ < 3) { setTimeout(up, 2500 * tries); return; }
+            phNext();
             if (!res || !res.success) {
               alert('사진 등록 실패: ' + (res && res.error ? res.error : '알 수 없는 오류'));
               resetPhotoBtn(rowNumber);
@@ -7475,10 +7477,12 @@ html body #ryLaunchGrid .tl-search{top:56px}
             }, 1500);
           })
           .withFailureHandler(function(err) {
+            phNext();
             alert('사진 업로드 오류: ' + (err && err.message ? err.message : err));
             resetPhotoBtn(rowNumber);
           })
-          .uploadProductPhoto(rowNumber, dataUrl, ryNameOf(rowNumber));
+          .uploadProductPhoto(rowNumber, dataUrl, ryNameOf(rowNumber)); };
+        PH_Q.push(up); if (!PH_BUSY) phNext();   // 1022 MJ '사진 3개 연속으로 올렸더니 안 바뀌었어' → 서버엔 하나씩 차례로
       }).catch(e => {
         alert('사진 처리 중 오류: ' + (e && e.message ? e.message : e));
         resetPhotoBtn(rowNumber);
@@ -7511,6 +7515,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
       }).getSheetFilterInfo();
     }
 
+    var PH_Q = [], PH_BUSY = false, PH_RT = null;
+    function phNext() { var f = PH_Q.shift(); PH_BUSY = !!f; if (f) f(); }
     function applyNewPhoto(rowNumber, url) {
       [cachedReviewItems, cachedOrderItems, cachedInboundItems, cachedHistoryItems, cachedStockCheckItems].forEach(arr => {
         (arr || []).forEach(it => { if (it.rowNumber === rowNumber) it.imgUrl = url; });
@@ -7522,10 +7528,11 @@ html body #ryLaunchGrid .tl-search{top:56px}
       renderAllViews();
       const sView = document.getElementById('searchResultView');
       const inputEl = document.getElementById('globalSearchInput');
-      if (sView && !sView.classList.contains('hidden') && inputEl && inputEl.value.trim()) {
-        executeServerSearch(inputEl.value.trim());
-      }
-      loadAllData(true, true, true);
+      clearTimeout(PH_RT); PH_RT = setTimeout(function again() {   // 1022 연속으로 올리면 다 끝난 뒤 한 번만 서버에서 다시 (중간에 받은 옛 목록이 새 사진을 덮던 것)
+        if (PH_BUSY || PH_Q.length) { PH_RT = setTimeout(again, 1500); return; }
+        if (sView && !sView.classList.contains('hidden') && inputEl && inputEl.value.trim()) executeServerSearch(inputEl.value.trim());
+        loadAllData(true, true, true);
+      }, 2500);
       try { var npd = document.getElementById('nophDim'); if (npd && !npd.hidden) nophRender(); } catch (e) {}   // 0930 사진 없는 상품 목록에서 지움
     }
 
