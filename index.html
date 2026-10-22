@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvj43gr5">
+  <meta name="ry-build" content="mvj4c6xq">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9698,7 +9698,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
             if (dsc && chk) { chk = ''; nOk--; tag += '<span class="inv-tag inv-warn">⚠ 명세서 날짜(' + escapeHtml(r.date) + ')가 발주일(' + escapeHtml(l.orderDate) + ')보다 빨라요 · 이전 주문분일 수 있어요</span>'; }
           }
           var isEx = !has && !l.doneName && !r.wrongStore; if (isEx && !l.exOff) { chk = ' checked'; nEx++; }   // 1022 MJ '주문 안 한 물건은 체크가 안 된다고' → 미리 체크, 해제하면 알림·재고에서 빠짐
-          var price = l.unitPrice != null ? '<div class="inv-n">단가 ' + won(l.unitPrice) + ' (부가세 포함 ' + won(l.unitPrice * 1.1) + ') · 금액 ' + won(l.amount) + '</div>' : '';
+          var price = l.unitPrice != null ? '<div class="inv-n">사입가 ' + won(l.unitPrice) + ' (부가세 별도 · 포함하면 ' + won(l.unitPrice * 1.1) + ') · 금액 ' + won(l.amount) + '</div>' : '';
           if (l.priceSus) price += '<div class="inv-n" style="color:#B42318;font-weight:700">⚠️ 사입가 ' + (l.pricePct > 0 ? '+' : '') + l.pricePct + '% · ' + escapeHtml(l.priceSus) + ' — 맞는 상품인지 확인해 주세요</div>';
           else if (l.pricePct != null) price += l.priceOdd ? '<div class="inv-n">' + escapeHtml(l.priceHow) + '와 단위가 달라 보여요 (낱개·박스 확인)</div>'
             : Math.abs(l.pricePct) < 1 ? '<div class="inv-n">사입가 그대로예요 · ' + escapeHtml(l.priceHow) + '</div>'
