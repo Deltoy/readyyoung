@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvkelpgi">
+  <meta name="ry-build" content="mvkeucvy">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9925,7 +9925,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           var has = l.row && live[l.row], dup = has && seenRow[l.row], tag, chk = '';
           if (has && !dup) seenRow[l.row] = 1;
           if (!has && !l.doneName) { var cn = invCatOf(l); l.catName = cn || ''; l.newItem = cn === ''; }
-          if (!has && !l.doneName && l.catName && !l.userPick) { var hd = invDoneByLog(l, r.date); if (hd) { l.doneName = l.catName; l.doneDate = String(hd.inboundDate).slice(0, 10); l.doneQty = hd.targetQty + (hd.unit || '개'); } }   // 1023
+          if (!has && !l.doneName && l.catName && !l.userPick && !l.doneSkip) { var hd = invDoneByLog(l, r.date); if (hd) { l.doneName = l.catName; l.doneDate = String(hd.inboundDate).slice(0, 10); l.doneQty = hd.targetQty + (hd.unit || '개'); } }   // 1023
           if (!has) tag = l.doneName ? '<span class="inv-tag inv-ok">✓ 이미 입고완료 · ' + escapeHtml(l.doneDate + ' · ' + l.doneQty) + '</span>'
             : l.newItem ? '<span class="inv-tag inv-no">🆕 새 상품으로 등록해요 · ' + escapeHtml(l.clean || l.name) + '</span><div class="inv-n">[입고확인]을 누르면 이 이름으로 새 상품 등록해요 <button type="button" class="inv-alt" style="margin:4px 0 0" onclick="event.preventDefault(); invRename(' + j + ',' + i + ')">✏️ 이름 고치기</button></div>'
             : '<span class="inv-tag inv-warn">📋 주문 안 했는데 들어온 상품 · 체크하고 [입고확인]을 누르면 재고에 들어가요 · 실제로 없으면 체크 해제</span>' + (l.catName ? '<div class="inv-n">위 상자의 상품이 아니면 [🔁 다른 상품으로 바꾸기] 또는 [🆕 새 상품으로 등록]</div>' : '');
@@ -9941,6 +9941,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           }
           var vAn = has && !dup ? l.appName : (!has && !l.doneName && !l.newItem ? l.catName : ''), vw = vAn && !l.userPick && !l.nameOk && !r.wrongStore ? invVariantDiff(l.name + ' ' + (l.spec || ''), vAn) : '';   // 1023
           if (vw && has && chk) { chk = ''; nOk--; }
+          var isDone = !has && !!l.doneName && !r.wrongStore;   // 1023 MJ '주문 안 한 상품 체크가 안 돼' — '이미 입고완료'로 짝지어진 줄은 체크칸이 잠겨 있었음 → 눌러서 또 들어온 걸로 넣을 수 있게
           var isEx = !has && !l.doneName && !r.wrongStore; if (vw && isEx && l.exOff == null) l.exOff = true; if (isEx && !l.exOff) { chk = ' checked'; nEx++; }
           if (vw) tag = '<div class="inv-vw">⚠️ <b>이름이 달라요</b> · ' + escapeHtml(vw) + '<br>박스에 적힌 이름을 한 번 더 보고, 같은 상품이면 <button type="button" class="inv-alt" style="margin:4px 0 0" onclick="event.preventDefault(); invSame(' + j + ',' + i + ')">✓ 같은 상품 맞아요</button> · 다르면 아래 [🔁 다른 상품으로 바꾸기]나 [🆕 새 상품으로 등록]</div>' + tag;   // 1022 MJ '주문 안 한 물건은 체크가 안 된다고' → 미리 체크, 해제하면 알림·재고에서 빠짐
           var price = l.unitPrice != null ? '<div class="inv-n">사입가 ' + (l.packK ? '1개 ' : '') + won(l.unitPrice) + (l.packK && l.packUp ? ' (명세서 1단위 ' + won(l.packUp) + ' ÷ ' + l.packK + ')' : '') + ' (부가세 별도 · 포함하면 ' + won(l.unitPrice * 1.1) + ') · 금액 ' + won(l.amount) + '</div>' : '';   // 1023 낱개로 바꾼 줄은 1개 값
@@ -9948,7 +9949,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           else if (l.pricePct != null) price += l.priceOdd ? '<div class="inv-n">' + escapeHtml(l.priceHow) + '와 단위가 달라 보여요 (낱개·박스 확인)</div>'
             : Math.abs(l.pricePct) < 1 ? '<div class="inv-n">사입가 그대로예요 · ' + escapeHtml(l.priceHow) + '</div>'
             : '<span class="inv-tag ' + (l.pricePct > 0 ? 'inv-up' : 'inv-ok') + '">' + (l.pricePct > 0 ? '▲ 사입가 ' + l.pricePct + '% 올랐어요' : '▼ 사입가 ' + Math.abs(l.pricePct) + '% 내렸어요') + '</span><div class="inv-n">' + escapeHtml(l.priceHow) + (l.cmpPrice ? ' ' + won(l.cmpPrice) : '') + '</div>';
-          return '<label class="inv-line"><input type="checkbox" data-j="' + j + '" data-i="' + i + '"' + chk + (isEx ? ' data-x="1"' : '') + (isEx || (has && !dup && !r.wrongStore) ? '' : ' disabled') + ' onchange="' + (isEx ? 'INVS[' + j + '].lines[' + i + '].exOff=!this.checked;invSave();' : '') + 'invCount()"><div style="flex:1;min-width:0"><b>' + escapeHtml(l.name) + (l.spec ? ' <span style="font-weight:600;color:#667085">' + escapeHtml(l.spec) + '</span>' : '') + '</b>'
+          return '<label class="inv-line"><input type="checkbox" data-j="' + j + '" data-i="' + i + '"' + chk + (isEx ? ' data-x="1"' : '') + (isEx || isDone || (has && !dup && !r.wrongStore) ? '' : ' disabled') + ' onchange="' + (isDone ? 'invDoneTog(' + j + ',' + i + ',this);return;' : isEx ? 'INVS[' + j + '].lines[' + i + '].exOff=!this.checked;invSave();' : '') + 'invCount()"><div style="flex:1;min-width:0"><b>' + escapeHtml(l.name) + (l.spec ? ' <span style="font-weight:600;color:#667085">' + escapeHtml(l.spec) + '</span>' : '') + '</b>'
             + '<div class="inv-m">명세서 수량 <b>' + escapeHtml(String(l.qty)) + '</b>' + (!l.bundle && l.appQty != null && Number(l.appQty) !== Number(l.qty) ? ' → 낱개 <b>' + escapeHtml(String(l.appQty)) + '</b>개' + (l.packK ? ' <small>(×' + escapeHtml(String(l.packK)) + ' · 규격 보고 바꿈)</small>' : '') : '') + (l.bundle ? ' <span class="inv-tag inv-ok" style="margin:0 0 0 4px">묶음 ' + escapeHtml(l.bundle) + '</span>' : '') + '</div>'
             + (function () {   // 1020 MJ '앱에 있는 상품이 회색이라 눈에 안 띄어 — 매칭할 상품을 눈에 띄게': 짝지은 앱 상품을 사진과 함께 큰 상자로
               var an = has ? l.appName : (l.catName || l.doneName || ''); if (!an) return '';
@@ -10041,6 +10042,11 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var wa = words(A).filter(function (w) { return !STOP.test(w) && fb.indexOf(w) < 0; }), wb = words(B).filter(function (w) { return !STOP.test(w) && fa.indexOf(w) < 0; });
       if (wa.length && wb.length) out.push("명세서 '" + wa.slice(0, 2).join(' ') + "' ↔ 앱 '" + wb.slice(0, 2).join(' ') + "'");
       return out.slice(0, 2).join(' · ');
+    }
+    function invDoneTog(j, i, el) {
+      var l = INVS[j] && INVS[j].lines[i]; if (!l) return;
+      if (!confirm('이 상품은 ' + (l.doneDate || '') + '에 ' + (l.doneQty || '') + ' 이미 입고완료됐어요.\n이번에 또 들어온 게 맞나요? (맞으면 주문 안 한 상품으로 입고해요)')) { el.checked = false; return; }
+      l.doneSkip = l.doneName; l._cat = l.doneName; l.doneName = ''; l.exOff = false; l.nameOk = true; invSave(); invRender();   // 짝은 그 상품 그대로 (이름 비교는 이미 끝남)
     }
     function invSame(j, i) {
       var l = INVS[j] && INVS[j].lines[i]; if (!l) return; var an = l.appName || l.catName;
