@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvki6e4u">
+  <meta name="ry-build" content="mvki7nwa">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -6697,6 +6697,13 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (document.getElementById('setPage').classList.contains('on')) spBack();
     });
 
+    /* 1023 MJ 'PC에서는 esc 누르면 이 창만 없어지게' — 입고하기 · 바로 입고 · 튜토리얼 창 (먼저 받아서 뒤 화면은 그대로) */
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      var z = document.getElementById('eduZoom'); if (z && !z.hidden) return;   // 그림 확대 보기가 위에 있으면 그것부터 (아래 자료실 처리)
+      var hit = document.getElementById('tutDim') ? tutClose : document.getElementById('qinBox') ? qinClose : document.getElementById('invDim') ? function () { invClose(); } : null;
+      if (hit) { e.stopImmediatePropagation(); hit(); }
+    }, true);
     /* ── 상단 도구 줄의 '더보기' (가끔 쓰는 카테고리별 보기 · 중복 정리) ── */
     function closeToolMore() { var m = document.getElementById('toolMoreMenu'), b = document.getElementById('toolMoreBtn'); if (m) m.hidden = true; if (b) b.setAttribute('aria-expanded', 'false'); }
     function toggleToolMore(ev) {
