@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvkcxka4">
+  <meta name="ry-build" content="mvke318f">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -2341,7 +2341,7 @@ html body:not(#_):not(#_) .ry-delay.has{border:0!important;background:var(--ry-w
 .ry-mr-ok,.ry-mr-x{height:32px!important;min-height:0!important;padding:0 14px;border-radius:9px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--ry-line);background:var(--ry-surface);color:var(--ry-ink-2)}
 .ry-mr-ok{background:var(--ry-brand);border-color:var(--ry-brand);color:#fff}
 @media (min-width:721px){.ry-mr-ed{max-width:360px}}
-.inv-vw{margin:6px 0;padding:10px 12px;border-radius:12px;background:#FEF3F2;border:1.5px solid #FDA29B;color:#912018;font-size:13px;line-height:1.5}.inv-vw b{color:#B42318}
+.inv-vw{margin:6px 0;padding:10px 12px;border-radius:12px;background:#FEF3F2;border:1.5px solid #FDA29B;color:#912018;font-size:13px;line-height:1.5}.lg{padding:4px 0 24px;display:grid;gap:10px}.lg-h{font-size:13px;color:#667085;line-height:1.5;margin:0 2px}.lg-err{color:#B42318;font-size:14px}.lg-c{background:#fff;border-radius:16px;padding:14px 16px;display:grid;gap:6px;box-shadow:0 0 0 1px rgba(16,24,40,.06)}.lg-c.bad{box-shadow:0 0 0 1.5px #FDA29B;background:#FFFBFA}.lg-t{display:flex;align-items:baseline;justify-content:space-between;gap:8px}.lg-t>b{font-size:18px}.lg-n{font-size:14px;color:#475467}.lg-n b{font-size:22px;color:#101828}.lg-s{font-size:14px;color:#344054;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px}.lg-s small,.lg-f small{color:#98A2B3}.lg-d{margin-left:auto;font-weight:700;color:#475467}.lg-c.bad .lg-d{color:#B42318}.lg-f{font-size:13px;color:#667085}.lg-k{font-size:13px;color:#475467;background:#F2F4F7;border-radius:10px;padding:6px 10px}.lg-k b{color:#B42318}.lg-b{display:flex;gap:8px;margin-top:4px}.lg-b button{flex:1;min-height:40px;border-radius:10px;border:0;background:#F2F4F7;color:#155EEF;font-weight:600;font-size:14px}.inv-vw b{color:#B42318}
 </style>
 <style id="ry25-design">
 /* ═══════════ 0925 디자인 시스템 — 밝은 머리 · 파이프라인 · 카드 (맨 마지막에 둬서 이전 규칙을 덮는다) ═══════════
@@ -5788,9 +5788,15 @@ html body #ryLaunchGrid .tl-search{top:56px}
                  : '<div class="' + cls + ' none">📷 샘플 사진 없음</div>';
     }
     function spSegSync() {
-      [['spSegSets', 'sets'], ['spSegTags', 'tags'], ['spSegBox', 'boxes'], ['spSegMade', 'made']].forEach(function (x) { var b = document.getElementById(x[0]); if (b) { b.classList.toggle('on', SP.view === x[1]); b.setAttribute('aria-selected', SP.view === x[1]); } });
+      [['spSegSets', 'sets'], ['spSegTags', 'tags'], ['spSegBox', 'boxes'], ['spSegMade', 'made'], ['spSegLedger', 'ledger']].forEach(function (x) { var b = document.getElementById(x[0]); if (b) { b.classList.toggle('on', SP.view === x[1]); b.setAttribute('aria-selected', SP.view === x[1]); } });
+      var lb = document.getElementById('spSegLedger'); if (lb) lb.hidden = String(currentSelectedMember || '').trim() !== '문준';   // 1023 박스 장부는 문준만
     }
     function spRender() {
+      if (SP.view === 'ledger' && String(currentSelectedMember || '').trim() === '문준') {   /* 1023 MJ 박스 장부 (문준만) */
+        document.getElementById('spSeg').hidden = false; document.getElementById('spNewBtn').hidden = true;
+        document.getElementById('spBackBtn').textContent = '✕ 닫기'; document.getElementById('spTitle').textContent = '박스 장부';
+        spSegSync(); return lgRender();
+      }
       if (SP.view === 'made') {   /* 1022 MJ: 오전·오후 세트 담당이 만든 세트 개수 → 아크릴박스 자동 소진 */
         document.getElementById('spSeg').hidden = false; document.getElementById('spNewBtn').hidden = true;
         document.getElementById('spBackBtn').textContent = '✕ 닫기'; document.getElementById('spTitle').textContent = '오늘 만든 세트';
@@ -5818,6 +5824,36 @@ html body #ryLaunchGrid .tl-search{top:56px}
       document.getElementById('spTitle').textContent = SP.view === 'tags' ? '용도별 상품' : '세트 상품';   /* 1016 MJ: 용도별 상품 탭은 숨김 (다른 화면에서 여는 링크는 그대로) */
       if (SP.view === 'tags') return spRenderTags();
       spRenderSets();
+    }
+    /* ── 1023 MJ '직원들이 대충 세는 것 같아 — 센 숫자와 자동 시스템이 얼마나 다른지 내가 볼게' — 박스 장부 (문준만 · 서버 getBoxLedger · boxLedgerSave)
+       장부 = 시작(맞춘) 개수 + 입고 − 만든 세트 − 빼기 · 직원이 센 숫자와 나란히 · 판매 엑셀은 검산만 ── */
+    var LG = null;
+    function lgRender() {
+      var b = document.getElementById('spBody'), me = currentSelectedMember || '';
+      if (!LG) {
+        b.innerHTML = '<div class="sp-msg"><span class="ry-info-spin"></span>불러오는 중…</div>';
+        google.script.run.withSuccessHandler(function (r) { LG = r && r.success ? r : { rows: [], err: (r && r.message) || '못 불러왔어요' }; if (SP.view === 'ledger') lgRender(); })
+          .withFailureHandler(function () { LG = { rows: [], err: '못 불러왔어요 · 인터넷 확인' }; if (SP.view === 'ledger') lgRender(); }).getBoxLedger(me);
+        return;
+      }
+      var md = function (t) { return String(t || '').slice(5, 16).replace('-', '/'); }, rows = (LG.rows || []).filter(function (o) { return o.ledger != null; });
+      b.innerHTML = '<div class="lg"><p class="lg-h"><b>장부</b> = 시작(맞춘) 개수 + 입고 − 만든 세트 − 빼기 · 직원이 센 숫자와 따로 셈 · 차이가 크면 빨간색<br>판매 엑셀은 빼지 않고 검산만 해요 (박스는 세트 만들 때 이미 써서, 빼면 두 번 빠져요)</p>'
+        + (LG.err ? '<p class="lg-err">' + escapeHtml(LG.err) + '</p>' : '') + (!rows.length && !LG.err ? '<p class="lg-h">직원이 센 숫자가 아직 없어요</p>' : '')
+        + rows.map(function (o) {
+          var d = o.diff, big = d != null && Math.abs(d) >= Math.max(20, Math.round(Math.abs(o.ledger) * 0.05)), ck = o.check && LG.madeFrom && LG.madeFrom <= o.check.from ? o.check : null;
+          return '<section class="lg-c' + (big ? ' bad' : '') + '"><div class="lg-t"><b>' + escapeHtml(bxName(o.box)) + '</b><span class="lg-n">장부 <b>' + o.ledger.toLocaleString() + '</b>개</span></div>'
+            + '<div class="lg-s">' + (o.staff ? '직원이 센 숫자 <b>' + o.staff.n.toLocaleString() + '</b> <small>' + md(o.staff.at) + ' · ' + escapeHtml(o.staff.by || '') + '</small><span class="lg-d">' + (d === 0 ? '같아요' : '차이 ' + (d > 0 ? '+' : '') + d.toLocaleString()) + '</span>' : '직원이 센 숫자 없음') + '</div>'
+            + '<div class="lg-f">' + (o.base.kind === '맞춤' ? '맞춘 개수 ' : '시작 ') + o.base.n.toLocaleString() + ' <small>' + md(o.base.at) + '</small> + 입고 ' + o.inb.toLocaleString() + ' − 만든 세트 ' + o.made.toLocaleString() + (o.minus ? ' − 빼기 ' + o.minus.toLocaleString() : '') + '</div>'
+            + (ck ? '<div class="lg-k">검산 ' + s15Md(ck.from) + '~' + s15Md(ck.to) + ' · 판매 ' + ck.sold + ' · 만든 ' + ck.made + (ck.sold - ck.made > 30 ? ' <b>만든 세트 기록이 빠진 것 같아요</b>' : '') + '</div>' : '')
+            + '<div class="lg-b"><button type="button" data-b="' + escapeHtml(o.box) + '" onclick="lgSet(this.dataset.b, \'맞춤\')">이 숫자로 맞추기</button><button type="button" data-b="' + escapeHtml(o.box) + '" onclick="lgSet(this.dataset.b, \'빼기\')">− 빼기</button></div></section>';
+        }).join('') + '</div>';
+    }
+    function lgSet(box, kind) {
+      var n = prompt(kind === '맞춤' ? bxName(box) + ' 지금 몇 개예요?\n(직접 센 숫자 → 장부를 이 숫자로 다시 시작해요)' : bxName(box) + ' 몇 개 뺄까요? (깨짐·샘플 등)'); if (n == null) return;
+      var v = parseInt(String(n).replace(/[^0-9]/g, ''), 10); if (!(v >= 0)) { showToast('숫자로 적어 주세요', 1800); return; }
+      var memo = kind === '빼기' ? (prompt('이유 (안 적어도 돼요)') || '') : '직접 셈';
+      google.script.run.withSuccessHandler(function (r) { if (!r || !r.success) { showToast((r && r.message) || '저장하지 못했어요', 2200); return; } LG = r; lgRender(); showToast('저장했어요', 1500); })
+        .withFailureHandler(function () { showToast('저장하지 못했어요 · 인터넷 확인', 2200); }).boxLedgerSave(currentSelectedMember || '', box, kind, v, memo);
     }
     /* ── 1022 오늘 만든 세트 기록 (종이 대신) — 서버 getSetMade · saveSetMade (저장하면 박스 남은 개수에서 바로 빠짐) ── */
     var MD = { date: '', slot: '', data: null, busy: false };
@@ -7783,6 +7819,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           currentSelectedMember = savedMyName.trim();
         }
       } catch(e) {}
+      setTimeout(function () { try { dutyWarn(true); } catch (eDw) {} }, 5000);   // 1023 앱 열 때 이름 확인
 
       updateProfileTextDisplay();
 
@@ -7911,6 +7948,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (!ryAdminGate(name)) return;
       currentSelectedMember = name;
       var ob = document.getElementById('ryOnb'); if (ob) ob.remove();
+      try { dutyWarn(true); } catch (eDw) {}   // 1023
       try {
         localStorage.setItem('s_selected_member', name);
       } catch(e) {}
@@ -9716,8 +9754,25 @@ html body #ryLaunchGrid .tl-search{top:56px}
         .requestInboundCheck(rowNumber, currentSelectedMember);
     }
 
+    /* 1023 MJ '근무 안 하는 사람 이름으로는 입고 안 되게' — 서버 inboundDutyCheck (괜찮으면 5분 기억) · 서버의 입고 함수들도 한 번 더 막음 */
+    var DUTY_OK = {};
+    function dutyGate(go) {
+      var me = currentSelectedMember || '', ok = function () { DUTY_OK[me] = Date.now(); go(); };
+      if (DUTY_OK[me] && Date.now() - DUTY_OK[me] < 300000) return go();
+      if (typeof google === 'undefined' || !google.script || typeof google.script.run.inboundDutyCheck !== 'function') return ok();
+      google.script.run.withSuccessHandler(function (r) { if (r && r.success === false && r.message) { alert('⛔ ' + r.message); return; } ok(); }).withFailureHandler(ok).inboundDutyCheck(me);
+    }
+    /* 1023 MJ '근무 안 하는 이름이 골라져 있으면 이름 확인해 달라고 알림' — 이름 고를 때 · 앱 열 때 · 다시 켤 때(20분에 한 번) */
+    var DUTY_WARN_AT = 0;
+    function dutyWarn(force) {
+      var me = currentSelectedMember || ''; if (!me || (!force && Date.now() - DUTY_WARN_AT < 1200000)) return; DUTY_WARN_AT = Date.now();
+      if (typeof google === 'undefined' || !google.script || typeof google.script.run.inboundDutyCheck !== 'function') return;
+      google.script.run.withSuccessHandler(function (r) { if (r && r.success === false && r.message && me === currentSelectedMember) alert('⚠️ 지금 근무 중인 이름이 아닌 것 같아요\n\n골라진 이름: ' + me + '\n내 이름이 맞는지 확인해 주세요.\n(근무 중이 아닌 이름으로는 입고가 안 돼요 · 오른쪽 위 이름을 눌러 바꿀 수 있어요)'); else if (r && r.success) DUTY_OK[me] = Date.now(); }).withFailureHandler(function () {}).inboundDutyCheck(me);
+    }
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') dutyWarn(false); });
     function completeInbound(rowNumber, quiet, cb) {
       if (!checkMemberSelectedOrAlert()) return;
+      if (!quiet && !(DUTY_OK[currentSelectedMember || ''] && Date.now() - DUTY_OK[currentSelectedMember || ''] < 300000)) { dutyGate(function () { completeInbound(rowNumber, quiet, cb); }); return; }   // 1023
       const key = 'complete-' + rowNumber;
       if (inFlight.has(key)) return;
       const satD = rySatDateFor(rowNumber);   /* 0925: '토요일에 도착했어요' 를 눌렀으면 그 토요일 (아니면 빈 값 = 오늘) */
@@ -9998,7 +10053,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
     }
     function invCount(busy) { var b = document.getElementById('invGo'); if (!b) return; var n = invPicked().length, x = invExtras().reduce(function (a, g) { return a + g.ex.length; }, 0); b.disabled = busy || INV_BUSY || (!n && !x); b.textContent = busy || INV_BUSY ? '읽는 중…' : n + x ? '고른 ' + (n + x) + '개 입고확인' : '입고할 상품을 고르세요'; }   // 1022 MJ '알림이 아니라 입고확인 버튼으로'
     function invPlanS(r) { return !!r && !r.wrongStore && /플랜에스/.test(String(r.receiver || '').replace(/\s+/g, '')); }   // 1021 MJ: 자회사 플랜에스의원 앞 명세서 — 막지 말고 한 번 더 확인만
-    function invDo() {
+    function invDo() { if (checkMemberSelectedOrAlert()) dutyGate(invDo_); }   // 1023 근무 중인 사람만
+    function invDo_() {
       var rows = invPicked(), gs = invExtras(), ex = gs.reduce(function (a, g) { return a.concat(g.ex); }, []), nw = ex.filter(function (x) { return x.newItem; }).length; if (!rows.length && !ex.length) return;
       var shorts = []; INVS.forEach(function (r) { (r.lines || []).forEach(function (l) { if (l.row && rows.indexOf(l.row) !== -1) { var o = parseFloat(String(l.orderQty || '').replace(/[^0-9.]/g, '')) || 0, a = Number(l.bundle ? l.qty : (l.appQty != null ? l.appQty : l.qty)) || 0; if (o > 0 && a > 0 && a < o) shorts.push(String(l.appName || l.name).slice(0, 20) + ' (' + a + '/' + o + ')'); } }); });
       if (INVS.some(invPlanS) && !confirm('⚠️ 플랜에스의원(자회사) 앞으로 온 명세서가 있어요.\n우리 매장으로 넘어온 물건이 맞는지 한 번 더 확인했나요?')) return;
@@ -11183,7 +11239,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
       t.textContent = '사진 줄이는 중…';
       resizeImageFile(f, 1400, 0.8).then(function (u) { if (!QIN) return; QIN.photo = u; t.innerHTML = '<img src="' + u + '" alt="고른 사진"> ✓ 사진 넣었어요 · 다시 찍으려면 누르기'; }, function () { t.textContent = '사진을 못 읽었어요 · 다시 눌러 주세요'; });
     }
-    function qinGo() {
+    function qinGo() { if (QIN) dutyGate(qinGo_); }   // 1023 근무 중인 사람만
+    function qinGo_() {
       if (!QIN) return;
       var name = QIN.row ? QIN.name : String((document.getElementById('qinName') || {}).value || '').replace(/\s+/g, ' ').trim();
       var n = parseInt(String((document.getElementById('qinQty') || {}).value || '').replace(/[^0-9]/g, ''), 10);
@@ -13930,6 +13987,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
     <button type="button" id="spSegTags" role="tab" onclick="spShow('tags')" hidden>🏷 용도별 상품</button>
     <button type="button" id="spSegBox" role="tab" onclick="spShow('boxes')">📦 박스 재고<i id="spBoxN"></i></button>
     <button type="button" id="spSegMade" role="tab" onclick="spShow('made')">📝 만든 세트</button>
+    <button type="button" id="spSegLedger" role="tab" onclick="LG = null; spShow('ledger')" hidden>📒 박스 장부</button>
   </div>
   <main id="spBody" class="sp-body"></main>
 </div>
