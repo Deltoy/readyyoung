@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvkgf40l">
+  <meta name="ry-build" content="mvkgg7rg">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4002,7 +4002,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       <div class="ry-tools">
         <button type="button" id="newProductBtn" onclick="openNewProduct()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>새 상품 등록</button>
         <button type="button" class="ry-ghost ry-quick" onclick="rlOpen()" title="일하면서 알아야 할 규칙 (주제별)">숙지사항<i id="rlDot" class="rl-btn-n" hidden></i></button>
-        <button type="button" class="ry-ghost ry-quick" onclick="invOpen()" title="거래명세서를 찍으면 입고대기 상품을 찾아 수량을 맞춰 보고 한 번에 입고완료">📄 명세서 <span class="qm-long">찍어 </span>입고</button>
+        <button type="button" class="ry-ghost ry-quick" onclick="invOpen()" title="명세서 · 명세서 없이 온 주문 · 주문 안 한 상품을 한 화면에서 한 번에 입고">📦 입고하기</button>
         <button type="button" class="ry-ghost ry-quick" onclick="openSetPage(); spShow('sets')" title="세트 상품 · 박스 재고 · 오늘 만든 세트 기록">🎁 세트 상품<i id="bxDot" class="bx-today" hidden>박스 아직</i></button>
         <button type="button" class="ry-ghost ry-quick" onclick="window.open('https://pallang-0258.github.io/seongsu/viewer.html', '_blank', 'noopener')" title="근무표를 새 창으로 열기">근무표</button>
         <button type="button" class="ry-ghost ry-quick" onclick="mbOpenArchive()" title="날짜별 아침 뷰티 브리핑">뷰티 브리핑</button>
@@ -4254,7 +4254,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
             <svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><span>지연 상품 복사 (카톡용)</span>
             <span id="lateShareCount" class="ry-lateshare-n">0</span>
           </button>
-          <button type="button" id="invBtn" onclick="invOpen()" class="ry-invbtn" title="거래명세서를 찍으면 입고대기 상품을 찾아 수량을 맞춰 보고 한 번에 입고완료"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg><span>명세서 찍어 입고</span></button>
+          <button type="button" id="invBtn" onclick="invOpen()" class="ry-invbtn" title="거래명세서를 찍으면 입고대기 상품을 찾아 수량을 맞춰 보고 한 번에 입고완료"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg><span>입고하기 (명세서·명세서 없이 온 것)</span></button>
           <button type="button" id="locSortBtn" onclick="locSortToggle()" aria-pressed="false" title="창고 위치(구역-선반-칸) 걷는 순서로 · 위치 없는 상품은 맨 아래"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg><span>위치 순</span></button>
           <div id="leadStatLine" class="hidden inline-flex items-center gap-1 bg-white/70 border border-emerald-200 rounded-lg px-2 py-1 text-[11px] text-emerald-900 font-semibold"></div>
         </div>
