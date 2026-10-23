@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvkezfr8">
+  <meta name="ry-build" content="mvkf7rq4">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -17029,6 +17029,11 @@ html body [lang=ja],html body [lang=zh]{word-break:normal!important;line-break:s
 #ntPop[hidden]{display:none!important}
 #rjPop[hidden]{display:none!important}
 #ryTopPops>div{pointer-events:auto}
+#ryTopPops.force{left:0;top:0;right:0;bottom:0;transform:none;width:auto;z-index:95;background:rgba(16,24,40,.55);justify-content:center;align-items:center;padding:24px 16px;pointer-events:auto}
+#ryTopPops.force>div{width:min(420px,100%)}
+#ryTopPops.force>#ntPop,#ryTopPops.force>#rlPop,#ryTopPops.force>#eduPop,#ryTopPops.force>#tutPop,#ryTopPops.force>#rjPop{flex-wrap:wrap;padding:18px!important}
+#ryTopPops.force #ntPop .tp-x,#ryTopPops.force #rlPop .tp-x,#ryTopPops.force #eduPop .tp-x,#ryTopPops.force #tutPop .tp-x,#ryTopPops.force #rjPop .tp-x{display:none!important}
+#ryTopPops.force .tp-go{flex:1 0 100%;min-height:46px;font-size:16px}
 #rlPop,#ntPop,#eduPop,#rjPop,#bxPop,#bxDutyPop,#tutPop{pointer-events:auto;background:#fff;border:1px solid #FECDCA;border-radius:18px!important;box-shadow:0 12px 32px rgba(16,24,40,.18)!important;padding:14px 16px}
 #rlPop b.t,#ntPop b.t{display:block;font-weight:700!important;font-size:15px;color:#101828;margin-bottom:4px}
 #rlPop p,#ntPop p{margin:0;font-size:13.5px;color:#475467;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -17145,6 +17150,17 @@ html body [lang=ja],html body [lang=zh]{word-break:normal!important;line-break:s
   <button type="button" id="rlArchBtn" class="rl-archb" hidden onclick="rlArchive()">보관함으로 옮기기</button>
 </div>
 <div id="ryTopPops"><div id="eduPop" hidden role="status"></div><div id="ntPop" hidden role="status"></div><div id="rlPop" hidden role="status"></div></div>
+<script>
+/* 1023 MJ '직원들이 알림을 그냥 무시 — 강제로 한 번씩 보게 하고, 본 다음엔 안 뜨게': 공지·숙지사항·교육·명세서 튜토리얼·재고있음 알림은
+   화면 가운데 큰 창(뒤 어둡게)으로 · × 없이 [보기]로만 닫힘 (보기 = 내용 열기 + 본 걸로 기록 → 다시 안 뜸) */
+(function () {
+  var host = document.getElementById('ryTopPops'), F = ['ntPop', 'rlPop', 'eduPop', 'tutPop', 'rjPop'];
+  if (!host || !window.MutationObserver) return;
+  var sync = function () { host.classList.toggle('force', F.some(function (id) { var e = document.getElementById(id); return e && !e.hidden && e.style.display !== 'none'; })); };
+  new MutationObserver(sync).observe(host, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden', 'style'] });
+  sync();
+})();
+</script>
 <script>
 /* ===== 1016 숙지사항 (서버 listRules · saveRule · archiveRule · readRules) ===== */
 var RL = { data: null, topic: '', q: '', edit: null, busy: false, popShown: '', lang: '' };
@@ -17356,7 +17372,7 @@ function eduPopSync() {
   L.forEach(function (n) { n.slots.forEach(function (s) { all.push(s.t); if (me && s.who.some(function (w) { return w.indexOf(me) !== -1 || me.indexOf(w) !== -1; })) mine = s; }); });
   var lg = (typeof RL !== 'undefined' && RL.lang) || '', T = { ja: ['今日 ', ' 研修です', '今日は本社研修があります', '見る'], zh: ['今天 ', ' 有培训', '今天有总部培训', '查看'] }[lg] || ['오늘 ', ' 교육이에요', '오늘 본사 교육이 있어요', '보기'];
   el.innerHTML = '<div class="tp-txt"><b class="t">🎓 ' + (mine ? T[0] + escapeHtml(mine.t) + T[1] : T[2]) + '</b><p>' + escapeHtml(mine ? L[0].title : all.join(' · ') + ' · ' + L[0].title) + '</p></div>'
-    + '<button type="button" class="tp-go" onclick="ntOpen()">' + T[3] + '</button><button type="button" class="tp-x" aria-label="오늘 닫기" data-k="' + escapeHtml(key) + '" onclick="try { localStorage.setItem(this.dataset.k, \'1\'); } catch (e) {} document.getElementById(\'eduPop\').hidden = true">×</button>';
+    + '<button type="button" class="tp-go" data-k="' + escapeHtml(key) + '" onclick="try { localStorage.setItem(this.dataset.k, \'1\'); } catch (e) {} document.getElementById(\'eduPop\').hidden = true; ntOpen()">' + T[3] + '</button><button type="button" class="tp-x" aria-label="오늘 닫기" data-k="' + escapeHtml(key) + '" onclick="try { localStorage.setItem(this.dataset.k, \'1\'); } catch (e) {} document.getElementById(\'eduPop\').hidden = true">×</button>';
   el.hidden = false;
 }
 function ntMarkSeen() {
