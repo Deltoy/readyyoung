@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvjfbmm5">
+  <meta name="ry-build" content="mvkcxka4">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -2341,6 +2341,7 @@ html body:not(#_):not(#_) .ry-delay.has{border:0!important;background:var(--ry-w
 .ry-mr-ok,.ry-mr-x{height:32px!important;min-height:0!important;padding:0 14px;border-radius:9px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;border:1.5px solid var(--ry-line);background:var(--ry-surface);color:var(--ry-ink-2)}
 .ry-mr-ok{background:var(--ry-brand);border-color:var(--ry-brand);color:#fff}
 @media (min-width:721px){.ry-mr-ed{max-width:360px}}
+.inv-vw{margin:6px 0;padding:10px 12px;border-radius:12px;background:#FEF3F2;border:1.5px solid #FDA29B;color:#912018;font-size:13px;line-height:1.5}.inv-vw b{color:#B42318}
 </style>
 <style id="ry25-design">
 /* ═══════════ 0925 디자인 시스템 — 밝은 머리 · 파이프라인 · 카드 (맨 마지막에 둬서 이전 규칙을 덮는다) ═══════════
@@ -9869,6 +9870,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           var has = l.row && live[l.row], dup = has && seenRow[l.row], tag, chk = '';
           if (has && !dup) seenRow[l.row] = 1;
           if (!has && !l.doneName) { var cn = invCatOf(l); l.catName = cn || ''; l.newItem = cn === ''; }
+          if (!has && !l.doneName && l.catName && !l.userPick) { var hd = invDoneByLog(l, r.date); if (hd) { l.doneName = l.catName; l.doneDate = String(hd.inboundDate).slice(0, 10); l.doneQty = hd.targetQty + (hd.unit || '개'); } }   // 1023
           if (!has) tag = l.doneName ? '<span class="inv-tag inv-ok">✓ 이미 입고완료 · ' + escapeHtml(l.doneDate + ' · ' + l.doneQty) + '</span>'
             : l.newItem ? '<span class="inv-tag inv-no">🆕 새 상품으로 등록해요 · ' + escapeHtml(l.clean || l.name) + '</span><div class="inv-n">[입고확인]을 누르면 이 이름으로 새 상품 등록해요 <button type="button" class="inv-alt" style="margin:4px 0 0" onclick="event.preventDefault(); invRename(' + j + ',' + i + ')">✏️ 이름 고치기</button></div>'
             : '<span class="inv-tag inv-warn">📋 주문 안 했는데 들어온 상품 · 체크하고 [입고확인]을 누르면 재고에 들어가요 · 실제로 없으면 체크 해제</span>' + (l.catName ? '<div class="inv-n">위 상자의 상품이 아니면 [🔁 다른 상품으로 바꾸기] 또는 [🆕 새 상품으로 등록]</div>' : '');
@@ -9882,7 +9884,10 @@ html body #ryLaunchGrid .tl-search{top:56px}
             else tag = '<span class="inv-tag inv-warn">⚠ 수량 확인 · 주문 ' + escapeHtml(l.orderQty + l.unit) + ' / 명세서 ' + escapeHtml(String(aqN || l.qty)) + '</span>';
             if (dsc && chk) { chk = ''; nOk--; tag += '<span class="inv-tag inv-warn">⚠ 명세서 날짜(' + escapeHtml(r.date) + ')가 발주일(' + escapeHtml(l.orderDate) + ')보다 빨라요 · 이전 주문분일 수 있어요</span>'; }
           }
-          var isEx = !has && !l.doneName && !r.wrongStore; if (isEx && !l.exOff) { chk = ' checked'; nEx++; }   // 1022 MJ '주문 안 한 물건은 체크가 안 된다고' → 미리 체크, 해제하면 알림·재고에서 빠짐
+          var vAn = has && !dup ? l.appName : (!has && !l.doneName && !l.newItem ? l.catName : ''), vw = vAn && !l.userPick && !l.nameOk && !r.wrongStore ? invVariantDiff(l.name + ' ' + (l.spec || ''), vAn) : '';   // 1023
+          if (vw && has && chk) { chk = ''; nOk--; }
+          var isEx = !has && !l.doneName && !r.wrongStore; if (vw && isEx && l.exOff == null) l.exOff = true; if (isEx && !l.exOff) { chk = ' checked'; nEx++; }
+          if (vw) tag = '<div class="inv-vw">⚠️ <b>이름이 달라요</b> · ' + escapeHtml(vw) + '<br>박스에 적힌 이름을 한 번 더 보고, 같은 상품이면 <button type="button" class="inv-alt" style="margin:4px 0 0" onclick="event.preventDefault(); invSame(' + j + ',' + i + ')">✓ 같은 상품 맞아요</button> · 다르면 아래 [🔁 다른 상품으로 바꾸기]나 [🆕 새 상품으로 등록]</div>' + tag;   // 1022 MJ '주문 안 한 물건은 체크가 안 된다고' → 미리 체크, 해제하면 알림·재고에서 빠짐
           var price = l.unitPrice != null ? '<div class="inv-n">사입가 ' + won(l.unitPrice) + ' (부가세 별도 · 포함하면 ' + won(l.unitPrice * 1.1) + ') · 금액 ' + won(l.amount) + '</div>' : '';
           if (l.priceSus) price += '<div class="inv-n" style="color:#B42318;font-weight:700">⚠️ 사입가 ' + (l.pricePct > 0 ? '+' : '') + l.pricePct + '% · ' + escapeHtml(l.priceSus) + ' — 맞는 상품인지 확인해 주세요</div>';
           else if (l.pricePct != null) price += l.priceOdd ? '<div class="inv-n">' + escapeHtml(l.priceHow) + '와 단위가 달라 보여요 (낱개·박스 확인)</div>'
@@ -9951,6 +9956,42 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function invRetryAll() { if (INV_BUSY) return; INVS.forEach(function (r, j) { if (!r.success && r._file) INV_Q.push({ f: r._file, j: j }); }); invNext(); }
     function invRetry(j) { var r = INVS[j]; if (!r || !r._file || INV_BUSY) return; INV_Q.unshift({ f: r._file, j: j }); invNext(); }
     function invPicked() { var seen = {}; return Array.prototype.map.call(document.querySelectorAll('#invBox input[type=checkbox]:checked:not([data-x])'), function (c) { return INVS[+c.dataset.j].lines[+c.dataset.i].row; }).filter(function (r) { if (!r || seen[r]) return false; seen[r] = 1; return true; }); }
+    /* 1023 지난 명세서를 다시 찍으면 그 주문은 이미 입고완료라 입고대기에 없음 → '주문 안 한 상품'으로 또 들어가 두 번 잡힘 (10/20 안티푸라민 100×2 등 9줄).
+       서버의 '최근 입고완료'는 오늘부터 10일이라 오래된 명세서는 못 찾음 → 명세서 날짜 −1~+7일 안에 같은 상품·같은 수량 입고 기록이 있으면 '이미 입고완료' */
+    function invDay(s) {
+      s = String(s || '').trim(); var m = s.match(/(20\d{2})\D{0,3}(\d{1,2})\D{0,3}(\d{1,2})/) || s.match(/^()(\d{2})[.\/-](\d{1,2})[.\/-](\d{1,2})/), y, mo, d;
+      if (m && m.length === 5) { y = 2000 + +m[2]; mo = +m[3]; d = +m[4]; } else if (m) { y = +m[1]; mo = +m[2]; d = +m[3]; }
+      else if ((m = s.match(/^(\d{1,2})\/(\d{1,2})$/))) { y = new Date().getFullYear(); mo = +m[1]; d = +m[2]; } else return null;
+      return mo >= 1 && mo <= 12 && d >= 1 && d <= 31 ? Date.UTC(y, mo - 1, d) / 864e5 : null;
+    }
+    function invDoneByLog(l, ivDate) {
+      var d0 = invDay(ivDate), k = ryPrKey(String(l.catName || '').split('\n')[0]), q = Number(l.appQty != null ? l.appQty : l.qty) || 0;
+      if (d0 == null || !k || !q) return null;
+      return (cachedHistoryItems || []).filter(function (h) { var d = invDay(h.inboundDate); return d != null && d >= d0 - 1 && d <= d0 + 7 && ryPrKey(String(h.name).split('\n')[0]) === k && (parseFloat(h.targetQty) || 0) === q; })[0] || null;
+    }
+    /* 1023 MJ '명세서랑 전혀 다른 게 입고 기록에 잡혀 있어' (수면엔 릴잠→수면엔프라임, 3개입 샤이닝 에디션→낱개, 발바닥용 6매→8매)
+       명세서 이름과 짝지은 앱 이름에서 ① 숫자+단위(10g·6매·30정)가 다르거나 ② 에디션·세트·기획·N개입 이 명세서에만 있거나
+       ③ 양쪽에 서로 없는 이름 낱말이 있으면 '이름이 달라요' — 체크를 꺼 두고 [✓ 같은 상품 맞아요]를 눌러야 들어감 (누르면 _명세서연결_ 로 기억) */
+    function invVariantDiff(inv, app) {
+      var A = String(inv || '').toLowerCase().replace(/[x*]/g, '×'), B = String(app || '').toLowerCase().replace(/[x*]/g, '×');
+      var flat = function (t) { return t.replace(/[^0-9a-z가-힣]/g, ''); }, fa = flat(A), fb = flat(B), out = [];
+      var U = { c: '캡슐', t: '정', tab: '정', ea: '개', p: '포', cp: '캡슐' };
+      var specs = function (t) { var o = {}; t.replace(/(\d+(?:\.\d+)?)\s*(ml|mg|g|매|정|포|캡슐|cp|tab|c|t|개입|ea|병|p)(?![a-z])/g, function (m, n, u) { u = U[u] || u; (o[u] = o[u] || []).push(+n); return m; }); return o; };
+      var sa = specs(A), sb = specs(B);
+      Object.keys(sa).forEach(function (u) { if (sb[u] && !sa[u].some(function (n) { return sb[u].indexOf(n) >= 0 || fb.indexOf(n + u) >= 0; }) && !sb[u].some(function (n) { return fa.indexOf(n + u) >= 0; })) out.push(sa[u][0] + u + ' ↔ ' + sb[u][0] + u); });   // '오메가3600mg' 처럼 붙은 숫자는 같은 걸로
+      ['에디션', '세트', '기획', '묶음', '증정', '1+1', '2+1', '대용량', '리필'].forEach(function (k) { if (fa.indexOf(k) >= 0 && fb.indexOf(k) < 0) out.push("명세서에만 '" + k + "'"); });
+      if (/\d+\s*개입|×\s*\d+\s*개/.test(A) && !/개입|×\s*\d+\s*개/.test(B)) out.push('명세서는 여러 개 묶음');
+      var STOP = /^(주식회사|그린스토어|약국|파우치|신형|구형|리뉴얼|진천|수출|이천생산|연질캡슐|캡슐|크림|연고|ml|mg|ea|cs|box|pak|팩|정|액|겔)$/;
+      var words = function (t) { return t.replace(/\([^)]*\)|\[[^\]]*\]/g, ' ').match(/[가-힣a-z]{2,}/g) || []; };   // 괄호 안(성분·제조사·리뉴얼 표시)은 이름 낱말로 안 봄
+      var wa = words(A).filter(function (w) { return !STOP.test(w) && fb.indexOf(w) < 0; }), wb = words(B).filter(function (w) { return !STOP.test(w) && fa.indexOf(w) < 0; });
+      if (wa.length && wb.length) out.push("명세서 '" + wa.slice(0, 2).join(' ') + "' ↔ 앱 '" + wb.slice(0, 2).join(' ') + "'");
+      return out.slice(0, 2).join(' · ');
+    }
+    function invSame(j, i) {
+      var l = INVS[j] && INVS[j].lines[i]; if (!l) return; var an = l.appName || l.catName;
+      l.nameOk = true; l.exOff = false; invSave(); invRender();
+      try { if (an && currentSelectedMember) google.script.run.withFailureHandler(function () {}).invoiceAliasSave(l.name, an, currentSelectedMember); } catch (e) {}
+    }
     function invExtras() {   // 명세서마다 [주문 안 한 상품]
       var live = {}; (cachedInboundItems || []).forEach(function (it) { live[it.rowNumber] = 1; });
       return INVS.filter(function (r) { return !r.wrongStore; }).map(function (r) { return { info: { supplier: r.supplier, date: r.date }, ex: (r.lines || []).filter(function (l) { return !(l.row && live[l.row]) && !l.doneName && !l.exOff; }).map(function (l) { return { name: l.newItem && l.clean ? l.clean : l.name, qty: l.qty, newItem: !!l.newItem, catName: l.catName || '' }; }) }; }).filter(function (g) { return g.ex.length; });
@@ -11117,7 +11158,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       d.innerHTML = '<div class="qi-card"><div class="qi-hd"><b>📦 바로 입고</b><span>주문도 명세서도 없이 들어온 상품</span><button type="button" class="qi-x" aria-label="닫기" onclick="qinClose()">✕</button></div>'
         + (it ? '<div class="qi-name">' + escapeHtml(QIN.name) + '</div>' : '<label class="qi-l">🆕 새 상품 이름 (앱에 보일 이름)<input id="qinName" type="text" autocomplete="off" value="' + escapeHtml(q0) + '" placeholder="예: 신신파스 아렉스 소 42매"></label>')
         + '<label class="qi-l">들어온 수량 (개)<input id="qinQty" type="number" inputmode="numeric" min="1" placeholder="몇 개?"></label>'
-        + '<div class="qi-l">왜 들어왔나요?<div class="qi-why" id="qinWhyBox"></div><input id="qinEtc" type="text" maxlength="30" autocomplete="off" placeholder="기타 이유를 적어 주세요 (예: 행사 사은품)" hidden></div>'
+        + '<div class="qi-l">특별한 이유가 있나요? <small>(있을 때만 고르기 · 안 고르면 그냥 \'주문없이입고\')</small><div class="qi-why" id="qinWhyBox"></div><input id="qinEtc" type="text" maxlength="30" autocomplete="off" placeholder="기타 이유를 적어 주세요 (예: 행사 사은품)" hidden></div>'
         + '<div class="qi-l">사진 <small>(선택 · 상자나 상품)</small><label class="qi-ph"><input id="qinPh" type="file" accept="image/*" capture="environment" onchange="qinPhoto(this)" hidden><span id="qinPhTxt">📷 찍기 / 고르기</span></label></div>'
         + '<button type="button" id="qinGo" class="qi-go" onclick="qinGo()">입고하기</button><p class="qi-note">입고내역에 \'📦 주문 없이 입고\'로 남아요</p></div>';
       d.addEventListener('click', function (e) { if (e.target === d) qinClose(); });
@@ -11133,8 +11174,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
       box.innerHTML = QIN_WHY.map(function (w, i) { return '<button type="button" data-i="' + i + '" onclick="qinWhy(' + i + ')">' + (w === '기타' ? '✏️ 기타' : escapeHtml(w)) + '</button>'; }).join('');
     }
     function qinWhy(i) {
-      if (!QIN) return; QIN.why = QIN_WHY[i];
-      document.querySelectorAll('#qinBox .qi-why button').forEach(function (b) { b.classList.toggle('on', +b.dataset.i === i); });
+      if (!QIN) return; QIN.why = QIN.why === QIN_WHY[i] ? '' : QIN_WHY[i];   // 1023 한 번 더 누르면 취소
+      document.querySelectorAll('#qinBox .qi-why button').forEach(function (b) { b.classList.toggle('on', !!QIN.why && +b.dataset.i === i); });
       var e = document.getElementById('qinEtc'); if (e) { e.hidden = QIN.why !== '기타'; if (!e.hidden) e.focus(); }
     }
     function qinPhoto(inp) {
@@ -11148,17 +11189,16 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var n = parseInt(String((document.getElementById('qinQty') || {}).value || '').replace(/[^0-9]/g, ''), 10);
       if (!name) { alert('상품 이름을 적어 주세요'); return; }
       if (!(n > 0 && n < 100000)) { alert('들어온 수량을 숫자로 적어 주세요'); return; }
-      if (!QIN.why) { alert('왜 들어왔는지 하나 골라 주세요 (없으면 [기타]에 적기)'); return; }
-      var custom = QIN.why === '기타', why = custom ? String((document.getElementById('qinEtc') || {}).value || '').replace(/\s+/g, ' ').trim() : QIN.why;
-      if (custom && !why) { alert('기타 이유를 적어 주세요'); var ee = document.getElementById('qinEtc'); if (ee) ee.focus(); return; }
+      var custom = QIN.why === '기타', why = custom ? String((document.getElementById('qinEtc') || {}).value || '').replace(/\s+/g, ' ').trim() : QIN.why || '';   // 1023 MJ '사유는 특별한 일 있을 때만' — 비면 서버가 '주문없이입고 · 명세서 없음'
+      if (custom && !why) custom = false;   // 기타를 눌러 놓고 안 적었으면 그냥 주문없이입고
       if (!QIN.row && (RY_CAT && RY_CAT.items || []).some(function (x) { return String(x.name).split('\n')[0].replace(/\s+/g, '') === name.replace(/\s+/g, ''); })) { alert('이미 앱에 있는 상품이에요. 검색해서 그 상품의 [📦 바로 입고]를 눌러 주세요.'); return; }
-      if (!confirm('[' + name + '] ' + n + '개 · ' + why + '\n' + (QIN.row ? '' : '🆕 새 상품으로 등록하고 ') + '입고할까요?')) return;
+      if (!confirm('[' + name + '] ' + n + '개 · ' + (why || '주문없이입고') + '\n' + (QIN.row ? '' : '🆕 새 상품으로 등록하고 ') + '입고할까요?')) return;
       var b = document.getElementById('qinGo'); b.disabled = true; b.textContent = '입고하는 중…';
       var q = QIN;
       google.script.run.withSuccessHandler(function (r) {
         if (!r || !r.success) { b.disabled = false; b.textContent = '입고하기'; alert('입고 안 됨: ' + (r && r.message || '다시 눌러 주세요')); return; }
         qinClose(); RY_IVL = null; if (custom) QIN_EXTRA = null;
-        showToast('✓ ' + name + ' ' + n + '개 입고했어요' + (r.added ? ' · 새 상품 등록' : ''), 3200);
+        showToast(r.dup ? '✓ 이미 입고돼 있어요 · ' + name + ' ' + n + '개 (두 번 안 넣었어요)' : '✓ ' + name + ' ' + n + '개 입고했어요' + (r.added ? ' · 새 상품 등록' : ''), 3200);   // 1023
         try { if (!q.row) ryCatLoad(true); } catch (e) {}
         try { loadAllData(true, true, true); } catch (e) {}
       }).withFailureHandler(function (e) { b.disabled = false; b.textContent = '입고하기'; alert('입고 오류: ' + (e && e.message ? e.message : e)); })
