@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvkp8klt">
+  <meta name="ry-build" content="mvkph9yj">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1532,6 +1532,7 @@ body.sp-open{overflow:hidden}
 .md-top{display:flex;gap:8px;align-items:center;padding:12px 12px 6px}.md-top input[type=date]{flex:1;min-height:44px;border:1px solid var(--ry-line);border-radius:12px;padding:0 10px;font-size:15px;font-weight:700;background:#fff;color:var(--ry-ink)}
 .md-slot{display:flex;gap:4px}.md-slot button{min-height:44px;padding:0 14px;border-radius:12px!important;border:1px solid var(--ry-line);background:#fff;font-size:14px;font-weight:700;color:var(--ry-ink-2)}.md-slot button.on{background:#155EEF;border-color:#155EEF;color:#fff}
 .md-duty{padding:2px 14px 10px;font-size:13.5px;color:var(--ry-ink-2)}.md-duty b{color:var(--ry-ink)}.md-duty span{color:var(--ry-ink-3)}
+.md-by{font-style:normal;font-size:11.5px;color:#667085;font-weight:600}.md-lock{margin-top:4px;padding:12px;border-radius:12px;background:#F2F4F7;color:#475467;font-size:13px;font-weight:600;text-align:center}.md-st{font-style:normal;font-size:12.5px;color:#667085;font-weight:600;text-align:right}.md-st.ok{color:#067647}.md-st.bad{color:#B42318}.md-q:disabled{background:#F9FAFB;color:#344054;opacity:1}
 .md-list{display:grid;gap:6px;padding:0 12px 96px}.md-row{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--ry-line);border-radius:14px;padding:8px 10px}
 .md-ph{flex:none;width:48px;height:48px;border-radius:10px;overflow:hidden;background:var(--ry-sunken);display:flex;align-items:center;justify-content:center;font-size:22px}.md-ph img{width:100%;height:100%;object-fit:cover}
 .md-nm{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.md-nm b{font-size:14.5px;font-weight:700;line-height:1.3;color:var(--ry-ink);word-break:keep-all;overflow-wrap:anywhere}.md-nm i{font-style:normal;font-size:12px;color:#5925DC;font-weight:600}.md-nm i.no{color:var(--ry-ink-3)}
@@ -5894,30 +5895,31 @@ html body #ryLaunchGrid .tl-search{top:56px}
       }).withFailureHandler(function () { MD.busy = false; if (!quiet) document.getElementById('spBody').innerHTML = '<div class="sp-msg">불러오지 못했어요<button type="button" class="ry-info-sub" onclick="mdLoad(MD.date)">다시 시도</button></div>'; }).getSetMade(date);
     }
     function mdRender() {
-      if (!MD.slot) MD.slot = new Date(Date.now() + 9 * 3600e3).getUTCHours() < 14 ? 'am' : 'pm';
+      if (!MD.slotPicked) MD.slot = mdNowSlot();
       var want = MD.date || mdToday();
       if (!MD.data || MD.data.date !== want) {
         var c = mdCacheGet(want) || mdStub(want);
         if (!c) { mdLoad(want); return; }
         MD.data = c; MD.listKey = ''; mdLoad(want, true);   // 바로 그리고 뒤에서 새로
       }
-      var d = MD.data, sl = MD.slot, other = { n: 0, q: 0 };
+      if (!MD.slotPicked && mdPmDuty(MD.data)) MD.slot = 'pm';
+      var d = MD.data, sl = MD.slot, other = { n: 0, q: 0 }, lk = mdLocked(d.date, sl);
       if (MD.listKey !== d.date + sl) { MD.listKey = d.date + sl; MD.list = d.rows.filter(function (x) { return x.slot === sl; }).map(function (x) { return { id: x.id, q: x.q }; }); }   // 1022 MJ '세트가 다 나오기보다 추가를 눌러 고른 것만'
       d.rows.forEach(function (x) { if (x.slot !== sl) { other.n++; other.q += x.q; } });
       var byId = {}; d.sets.forEach(function (st) { byId[st.id] = st; });
       var duty = (d.duty && d.duty[sl]) || [], slotTot = { am: 0, pm: 0 }; d.rows.forEach(function (x) { if (x.slot !== sl) slotTot[x.slot === 'am' ? 'am' : 'pm'] += x.q; }); slotTot[sl] = MD.list.reduce(function (a, x) { return a + (x.q || 0); }, 0);   // 1022 MJ '오전·오후 사람들이 만든 총 세트 수'
       document.getElementById('spBody').innerHTML = mdCal(d) + '<div class="md-top"><b class="md-day">' + (+d.date.slice(5, 7)) + '/' + (+d.date.slice(8)) + ' (' + '일월화수목금토'.charAt(new Date(d.date + 'T00:00:00+09:00').getDay()) + ')</b>'
-        + '<div class="md-slot" role="radiogroup"><button type="button" class="' + (sl === 'am' ? 'on' : '') + '" onclick="MD.slot=\'am\';mdRender()">☀️ 오전 <b id="mdTam">' + (slotTot.am || '') + '</b></button><button type="button" class="' + (sl === 'pm' ? 'on' : '') + '" onclick="MD.slot=\'pm\';mdRender()">🌙 오후 <b id="mdTpm">' + (slotTot.pm || '') + '</b></button></div></div>'
+        + '<div class="md-slot" role="radiogroup"><button type="button" class="' + (sl === 'am' ? 'on' : '') + '" onclick="MD.slot=\'am\';MD.slotPicked=true;mdRender()">☀️ 오전 <b id="mdTam">' + (slotTot.am || '') + '</b></button><button type="button" class="' + (sl === 'pm' ? 'on' : '') + '" onclick="MD.slot=\'pm\';MD.slotPicked=true;mdRender()">🌙 오후 <b id="mdTpm">' + (slotTot.pm || '') + '</b></button></div></div>'
         + '<div class="md-duty">' + (sl === 'am' ? '오전' : '오후') + ' 세트 담당 <b>' + (duty.length ? escapeHtml(duty.join(' · ')) : '근무표에 없음') + '</b> · 만든 세트 총 <b class="md-tot" id="mdTot">' + slotTot[sl] + '</b>개' + (other.n ? ' <span>· ' + (sl === 'am' ? '오후' : '오전') + '에 적은 것 ' + other.n + '종 ' + other.q + '개</span>' : '') + '</div>'
         + '<div class="md-list">' + (MD.list.length ? MD.list.map(function (x, i) {
           var st = byId[x.id] || { name: '(지워진 세트)', box: '' };
           return '<div class="md-row"><span class="md-ph">' + (st.photo ? '<img src="' + escapeHtml(st.photo) + '" alt="" referrerpolicy="no-referrer" loading="lazy" onerror="this.style.visibility=\'hidden\'">' : '🎁') + '</span>'
-            + '<span class="md-nm"><b>' + escapeHtml(st.name) + '</b>' + (st.box ? '<i>📦 ' + escapeHtml(st.box) + '</i>' : '<i class="no">박스 번호 없음</i>') + '</span>'
-            + '<input type="number" inputmode="numeric" min="0" max="999" class="md-q" data-i="' + i + '" value="' + (x.q || '') + '" placeholder="개수" oninput="MD.list[' + i + '].q=parseInt(this.value,10)||0;mdSum()" aria-label="' + escapeHtml(st.name) + ' 만든 개수">'
-            + '<button type="button" class="md-x" onclick="MD.list.splice(' + i + ',1);mdRender()" aria-label="빼기">✕</button></div>';
-        }).join('') : '<div class="md-empty">아직 적은 세트가 없어요<br>아래 <b>[＋ 세트 추가]</b>로 만든 세트를 골라 주세요</div>')
-        + '<button type="button" class="md-add" onclick="mdPick()">＋ 세트 추가</button><div id="mdPick"></div></div>'
-        + '<div class="md-foot"><span id="mdSum"></span><button type="button" class="np-save" id="mdSave" onclick="mdSave()">저장</button></div>';
+            + '<span class="md-nm"><b>' + escapeHtml(st.name) + '</b>' + (st.box ? '<i>📦 ' + escapeHtml(st.box) + '</i>' : '<i class="no">박스 번호 없음</i>') + '<em class="md-by" id="mdBy' + i + '">' + mdByTxt(x.id) + '</em></span>'
+            + '<input type="number" inputmode="numeric" min="0" max="999" class="md-q" data-i="' + i + '" value="' + (x.q || '') + '" placeholder="개수"' + (lk ? ' disabled' : ' oninput="MD.list[' + i + '].q=parseInt(this.value,10)||0;mdSum();mdAuto()" onchange="mdAuto(true)"') + ' aria-label="' + escapeHtml(st.name) + ' 만든 개수">'
+            + (lk ? '' : '<button type="button" class="md-x" onclick="MD.list.splice(' + i + ',1);mdRender();mdAuto(true)" aria-label="빼기">✕</button>') + '</div>';
+        }).join('') : '<div class="md-empty">' + (lk ? '적은 세트가 없어요' : '아직 적은 세트가 없어요<br>아래 <b>[＋ 세트 추가]</b>로 만든 세트를 골라 주세요') + '</div>')
+        + (lk ? '<div class="md-lock">🔒 ' + escapeHtml(lk) + '</div>' : '<button type="button" class="md-add" onclick="mdPick()">＋ 세트 추가</button><div id="mdPick"></div>') + '</div>'
+        + '<div class="md-foot"><span id="mdSum"></span><em class="md-st" id="mdSt">' + (lk ? '' : '숫자를 넣으면 바로 저장돼요') + '</em></div>';   // 1023 MJ '저장 버튼이 있으니까 헷갈려 — 세트 추가하고 숫자 넣으면 자동 저장'
       mdSum();
     }
     /* 1022 MJ '캘린더 형식이면 며칠에 뭘 만들었는지 바로' — 날짜 칸에 그날 합계 · 누르면 그날 기록 */
@@ -5952,25 +5954,53 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var ins = document.querySelectorAll('#spBody .md-q'), last = ins[ins.length - 1]; if (last) { last.focus(); try { last.scrollIntoView({ block: 'center' }); } catch (e) {} }
     }
     function mdSum() { var t = 0, n = 0; (MD.list || []).forEach(function (x) { if (x.q > 0) { t += x.q; n++; } }); var el = document.getElementById('mdSum'); if (el) el.innerHTML = t ? n + '종 · 합계 <b>' + t + '</b>개' : '만든 개수를 넣어 주세요'; var a = document.getElementById('mdTot'); if (a) a.textContent = t; var b = document.getElementById(MD.slot === 'am' ? 'mdTam' : 'mdTpm'); if (b) b.textContent = t || ''; }
+    /* 1023 MJ '오전 시간이 지나면 오전 세트 추가 안 되게 — 그 담당 시간에만' · '오후 세트 담당은 4시 30분부터' → 16:30 전 오전 · 16:30부터 오후 (서버 madeSlotLock_ 와 같음) · 문준·물류관리자는 고치기용으로 다 됨 */
+    function mdNowSlot() { var d = new Date(Date.now() + 9 * 3600e3); return d.getUTCHours() * 60 + d.getUTCMinutes() < 16 * 60 + 30 ? 'am' : 'pm'; }
+    /* 1023 MJ '오후 담당 세트 근무자가 일찍 와서 오전에 적으면 알아서 오후로' — 근무표 오후 세트 담당(오전 담당 아님)은 오늘 오후 칸으로 열리고 오후에만 */
+    function mdIsDuty(names) { var m = String(currentSelectedMember || '').trim(); return !!m && (names || []).some(function (k) { k = String(k || '').trim(); return k === m || (k.length > m.length && k.slice(-m.length) === m); }); }
+    function mdPmDuty(d) { return !!(d && d.duty) && d.date === mdToday() && mdIsDuty(d.duty.pm) && !mdIsDuty(d.duty.am); }
+    function mdLocked(date, slot) {
+      if (['문준', '물류관리자'].indexOf(currentSelectedMember) >= 0) return '';
+      if (date !== mdToday()) return '지난 날짜는 볼 수만 있어요 · 고칠 게 있으면 문준 님께';
+      if (mdPmDuty(MD.data)) return slot === 'pm' ? '' : '오후 세트 담당이라 오후 칸에 적어요';
+      var now = mdNowSlot(); return slot === now ? '' : now === 'pm' ? '오전 시간(오후 4시 30분 전)이 지나서 오전에는 더 못 적어요 · 오후에 적어 주세요' : '오후 세트는 오후 4시 30분부터 적을 수 있어요';
+    }
+    /* 1023 MJ '누가 한 건지도 나오게' — 줄마다 처음 적은 사람 · 시각 */
+    function mdByTxt(id) { var r = MD.data && (MD.data.rows || []).filter(function (x) { return x.slot === MD.slot && x.id === id; })[0]; return r && r.by ? '✍️ ' + escapeHtml(r.by) + (r.at ? ' ' + escapeHtml(String(r.at).slice(11, 16)) : '') : ''; }
+    var _mdT = 0;
+    function mdAuto(now) { clearTimeout(_mdT); if (now) mdSave(); else _mdT = setTimeout(mdSave, 900); }
     function mdSave() {
-      if (!checkMemberSelectedOrAlert()) return;
-      var list = (MD.list || []).filter(function (x) { return x.q > 0; });
-      if (!list.length && !confirm((MD.slot === 'am' ? '오전' : '오후') + ' 기록을 비울까요?')) return;
-      var b = document.getElementById('mdSave'); b.disabled = true; b.textContent = '저장 중…';
-      var date = MD.data.date, slot = MD.slot;
+      clearTimeout(_mdT);
+      if (!MD.data || mdLocked(MD.data.date, MD.slot)) return;
+      if (!currentSelectedMember || currentSelectedMember === '미선택') { checkMemberSelectedOrAlert(); return; }
+      if (MD.saving) { MD.again = true; return; }   // 저장 중에 또 바꾸면 끝나고 한 번 더
+      var list = (MD.list || []).filter(function (x) { return x.q > 0; }), date = MD.data.date, slot = MD.slot, key = JSON.stringify(list);
+      if (MD.savedKey === date + slot + key) return;
+      var st = document.getElementById('mdSt'); if (st) { st.className = 'md-st'; st.textContent = '저장 중…'; }
+      MD.saving = true;
+      var done = function () { MD.saving = false; if (MD.again) { MD.again = false; mdSave(); } };
       google.script.run.withSuccessHandler(function (r) {
-        b.disabled = false; b.textContent = '저장';
-        if (!r || !r.success) { alert('저장 안 됨: ' + ((r && r.message) || '')); return; }
-        var ids = {}; list.forEach(function (x) { ids[x.id] = x.q; });
-        MD.data.rows = MD.data.rows.filter(function (x) { return !(x.slot === slot); }).concat(list.map(function (x) { return { d: date, slot: slot, id: x.id, q: x.q }; }));
-        MD.listKey = '';
-        var bx = {}; MD.data.sets.forEach(function (st) { if (ids[st.id] && st.box) bx[String(st.box).replace(/\s|번/g, '')] = 1; });
-        var left = (r.boxes || []).filter(function (o) { return bx[o.box]; }).map(function (o) { return o.box + '번 ' + (o.left == null ? '?' : o.left + '개 남음'); });
-        showToast('✓ ' + (slot === 'am' ? '오전' : '오후') + ' ' + r.saved + '종 ' + r.total + '개 저장' + (left.length ? ' · ' + left.join(' · ') : ''), 4000);
-        try { MD.data.rows = MD.data.rows; var mo = MD.data.month = MD.data.month || {}, m0 = mo[date] = mo[date] || { am: 0, pm: 0 }; m0[slot] = r.total; MD.data.stub = false; mdCachePut(MD.data); } catch (eC) {}
+        var st2 = document.getElementById('mdSt');
+        if (r && r.toSlot === 'pm' && slot === 'am' && MD.data.date === date) {   // 오후 담당이 오전 칸에 적음 → 오후 칸에 합쳐서 다시 저장
+          var pmL = MD.data.rows.filter(function (x) { return x.slot === 'pm'; }).map(function (x) { return { id: x.id, q: x.q }; });
+          list.forEach(function (x) { var h = pmL.filter(function (y) { return y.id === x.id; })[0]; if (h) h.q += x.q; else pmL.push({ id: x.id, q: x.q }); });
+          MD.slot = 'pm'; MD.slotPicked = false; MD.list = pmL; MD.listKey = date + 'pm'; MD.saving = false; mdRender(); showToast('오후 세트 담당이라 오후 칸으로 옮겨 적었어요', 3000); mdSave(); return;
+        }
+        if (!r || !r.success) { done(); if (st2) { st2.className = 'md-st bad'; st2.textContent = '저장 안 됨 · ' + ((r && r.message) || ''); } if (r && r.locked) showToast((r && r.message) || '', 3500); return; }
+        MD.savedKey = date + slot + key;
+        var got = r.rows || list.map(function (x) { return { id: x.id, q: x.q, by: currentSelectedMember, at: '' }; });
+        MD.data.rows = MD.data.rows.filter(function (x) { return x.slot !== slot; }).concat(got.map(function (x) { return { d: date, slot: slot, id: x.id, q: x.q, by: x.by, at: x.at }; }));
+        try { var mo = MD.data.month = MD.data.month || {}, m0 = mo[date] = mo[date] || { am: 0, pm: 0 }; m0[slot] = r.total; MD.data.stub = false; mdCachePut(MD.data); } catch (eC) {}
         if (r.boxes) { SP.box = Object.assign({}, SP.box || {}, { success: true, rows: r.boxes }); SP.boxAt = Date.now(); try { bxDotSync(); } catch (eD) {} }   // 박스 재고 탭도 새 숫자로
-        mdRender();
-      }).withFailureHandler(function (e) { b.disabled = false; b.textContent = '저장'; alert('저장 오류: ' + (e && e.message ? e.message : e)); }).saveSetMade(date, slot, list, currentSelectedMember);
+        if (MD.data.date === date && MD.slot === slot) {   // 적는 중인 칸은 그대로 두고 달력 · 적은 사람 · 상태만 바꿈
+          var cal = document.querySelector('#spBody .md-cal'); if (cal) cal.outerHTML = mdCal(MD.data);
+          (MD.list || []).forEach(function (x, i) { var e = document.getElementById('mdBy' + i); if (e) e.innerHTML = mdByTxt(x.id); });
+          var ids = {}, bx = {}; list.forEach(function (x) { ids[x.id] = 1; }); MD.data.sets.forEach(function (s0) { if (ids[s0.id] && s0.box) bx[String(s0.box).replace(/\s|번/g, '')] = 1; });
+          var left = (r.boxes || []).filter(function (o) { return bx[o.box]; }).map(function (o) { return o.box + '번 ' + (o.left == null ? '?' : o.left + '개 남음'); });
+          if (st2) { st2.className = 'md-st ok'; st2.textContent = '✓ 저장됨 ' + new Date(Date.now() + 9 * 3600e3).toISOString().slice(11, 16) + (left.length ? ' · ' + left.join(' · ') : ''); }
+        }
+        done();
+      }).withFailureHandler(function (e) { done(); var st3 = document.getElementById('mdSt'); if (st3) { st3.className = 'md-st bad'; st3.textContent = '저장 오류 · 인터넷 확인 후 숫자를 다시 넣어 주세요'; } }).saveSetMade(date, slot, list, currentSelectedMember);
     }
     function spRenderSets() {
       var s15n = function (s) { return s.s15 === '' || s.s15 == null ? -1 : +s.s15 || 0; };
