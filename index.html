@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvkwteug">
+  <meta name="ry-build" content="mvl3hy9a">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -5940,7 +5940,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         + rows.map(function (o) {
           var d = o.diff, big = d != null && Math.abs(d) >= Math.max(20, Math.round(Math.abs(o.ledger) * 0.05)), ck = o.check && LG.madeFrom && LG.madeFrom <= o.check.from ? o.check : null;
           return '<section class="lg-c' + (big ? ' bad' : '') + '"><div class="lg-t"><b>' + escapeHtml(bxName(o.box)) + '</b><span class="lg-n">장부 <b>' + o.ledger.toLocaleString() + '</b>개</span></div>'
-            + '<div class="lg-s">' + (o.staff ? '직원이 센 숫자 <b>' + o.staff.n.toLocaleString() + '</b> <small>' + md(o.staff.at) + ' · ' + escapeHtml(o.staff.by || '') + '</small><span class="lg-d">' + (d === 0 ? '같아요' : '차이 ' + (d > 0 ? '+' : '') + d.toLocaleString()) + '</span>' : '직원이 센 숫자 없음') + '</div>'
+            + '<div class="lg-s">' + (o.staff ? '직원이 센 숫자 <b>' + o.staff.n.toLocaleString() + '</b> <small>' + md(o.staff.at) + ' · ' + escapeHtml(o.staff.by || '') + '</small><span class="lg-d">' + (o.stale ? '<small>맞춘 뒤 아직 안 셈 · 다음에 세면 비교</small>' : (d === 0 ? '같아요' : '차이 ' + (d > 0 ? '+' : '') + d.toLocaleString()) + (o.atCount != null && o.atCount !== o.ledger ? '<small> · 센 때 장부 ' + o.atCount.toLocaleString() + '</small>' : '')) + '</span>' : '직원이 센 숫자 없음') + '</div>'
             + '<div class="lg-f">' + (o.base.kind === '맞춤' ? '맞춘 개수 ' : '시작 ') + o.base.n.toLocaleString() + ' <small>' + md(o.base.at) + '</small> + 입고 ' + o.inb.toLocaleString() + ' − 만든 세트 ' + o.made.toLocaleString() + (o.minus ? ' − 빼기 ' + o.minus.toLocaleString() : '') + '</div>'
             + (ck ? '<div class="lg-k">검산 ' + s15Md(ck.from) + '~' + s15Md(ck.to) + ' · 판매 ' + ck.sold + ' · 만든 ' + ck.made + (ck.sold - ck.made > 30 ? ' <b>만든 세트 기록이 빠진 것 같아요</b>' : '') + '</div>' : '')
             + '<div class="lg-b"><button type="button" data-b="' + escapeHtml(o.box) + '" onclick="lgSet(this.dataset.b, \'맞춤\')">이 숫자로 맞추기</button><button type="button" data-b="' + escapeHtml(o.box) + '" onclick="lgSet(this.dataset.b, \'빼기\')">− 빼기</button></div></section>';
