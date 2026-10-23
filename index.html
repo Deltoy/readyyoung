@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvkj884d">
+  <meta name="ry-build" content="mvkk3rk7">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9901,7 +9901,9 @@ html body #ryLaunchGrid .tl-search{top:56px}
     }
     function inb1Add(row, name) {
       var lv = (cachedInboundItems || []).filter(function (it) { return it.rowNumber === row; })[0];
-      if (lv && !inb1InvRows()[row]) { INB1.pick[row] = true; inb1Save(); invRender(); showToast('입고대기에 있는 주문이라 ②에 체크했어요', 2600); return; }   // 주문한 상품이면 주문에 붙임
+      var onInv = inb1InvRows()[row] || INVS.some(function (r) { return !r.wrongStore && (r.lines || []).some(function (l) { return !l.exOff && String(l.catName || l.appName || '').replace(/\s+/g, '') === String(name).replace(/\s+/g, ''); }); });
+      if (onInv) { showToast('이미 ① 명세서에 있는 상품이에요 (두 번 안 넣어요)', 2600); return; }   // 1023 테스트에서 찾음: 명세서로 잡힌 상품을 ③에서 또 고르면 두 번 들어갈 뻔
+      if (lv) { INB1.pick[row] = true; inb1Save(); invRender(); showToast('입고대기에 있는 주문이라 ②에 체크했어요', 2600); return; }   // 주문한 상품이면 주문에 붙임
       if (INB1.add.some(function (a) { return a.row === row; })) return;
       var ci = (RY_CAT && RY_CAT.items || []).filter(function (x) { return x.rowNumber === row; })[0], bu = ci ? parseInt(ci.boxUnit, 10) || 0 : 0;
       INB1.add.push({ row: row, name: name, qty: 0, bu: bu > 1 ? bu : 0 }); inb1Save(); invRender();
