@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvkqjsqc">
+  <meta name="ry-build" content="mvkqllu9">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -17370,13 +17370,17 @@ function rlBadge() {
   var n = rlUnread().length, d = document.getElementById('rlDot'); if (d) { d.hidden = !n; d.textContent = n; d.setAttribute('aria-label', '안 읽은 숙지사항 ' + n + '개'); }
   rlPopup();
 }
+/* 1023 MJ '공지 · 숙지사항 × 누르면 더 이상 안 나오게' — ×를 누를 때 안 읽은 규칙들을 이 폰에 기억 → 그 규칙들로는 다시 안 뜸 (새 규칙이 생기면 그때만) · 읽음 기록(누가 봤는지)은 안 건드림 */
+function rlPopXKey() { return 'rl_popx|' + rlMe(); }
+function rlPopX(un) { var ids = []; try { ids = JSON.parse(localStorage.getItem(rlPopXKey()) || '[]'); } catch (e) {} return un.every(function (r) { return ids.indexOf(String(r.id)) !== -1; }); }
+function rlPopXSave() { var ids = []; try { ids = JSON.parse(localStorage.getItem(rlPopXKey()) || '[]'); } catch (e) {} rlUnread().forEach(function (r) { if (ids.indexOf(String(r.id)) === -1) ids.push(String(r.id)); }); RL.popShown = rlMe() + '|' + rlUnread().length; try { localStorage.setItem(rlPopXKey(), JSON.stringify(ids.slice(-300))); } catch (e) {} }
 /* 앱을 열 때: 안 읽은 규칙이 있으면 위에 한 번 알려 줌 ([나중에]는 이 화면에서만 닫힘 — 다음에 열면 또) */
 function rlPopup() {
   var el = document.getElementById('rlPop'), un = rlUnread(), me = rlMe();
   if (!el) return;
-  if (!un.length || !document.getElementById('rlView').hidden || RL.popShown === me + '|' + un.length) { if (!un.length) el.hidden = true; return; }
+  if (!un.length || !document.getElementById('rlView').hidden || RL.popShown === me + '|' + un.length || rlPopX(un)) { el.hidden = true; return; }
   el.innerHTML = '<div class="tp-txt"><b class="t">📌 ' + rlW('새 숙지사항') + ' ' + un.length + '</b><p>' + escapeHtml(rlTx(un[0]).title) + '</p></div>'
-    + '<button type="button" class="tp-go" onclick="document.getElementById(\'rlPop\').hidden = true; rlOpen(\'new\')">' + rlW('보기') + '</button><button type="button" class="tp-x" aria-label="나중에 보기" onclick="RL.popShown = rlMe() + \'|\' + rlUnread().length; document.getElementById(\'rlPop\').hidden = true">×</button>';
+    + '<button type="button" class="tp-go" onclick="document.getElementById(\'rlPop\').hidden = true; rlOpen(\'new\')">' + rlW('보기') + '</button><button type="button" class="tp-x" aria-label="닫기 (다시 안 뜸)" onclick="rlPopXSave(); document.getElementById(\'rlPop\').hidden = true">×</button>';
   el.hidden = false;
 }
 function rlOpen(mode) {
@@ -17541,7 +17545,7 @@ function ntNotify() {
   var sig = rlMe() + '|' + nw.map(function (n) { return n.id; }).join(',');
   if (!nw.length || NT.popClosed === sig || !document.getElementById('noticeView').classList.contains('hidden')) { pop.hidden = true; return; }
   pop.innerHTML = '<div class="tp-txt"><b class="t">📢 새 공지 ' + nw.length + '개</b><p>[' + escapeHtml(nw[0].tag || '공지') + '] ' + escapeHtml(nw[0].title) + '</p></div>'
-    + '<button type="button" class="tp-go" onclick="ntOpen()">보기</button><button type="button" class="tp-x" aria-label="나중에 보기" data-s="' + escapeHtml(sig) + '" onclick="NT.popClosed = this.dataset.s; document.getElementById(\'ntPop\').hidden = true">×</button>';
+    + '<button type="button" class="tp-go" onclick="ntOpen()">보기</button><button type="button" class="tp-x" aria-label="닫기 (다시 안 뜸)" data-s="' + escapeHtml(sig) + '" onclick="NT.popClosed = this.dataset.s; ntMarkSeen()">×</button>';   // 1023 MJ '× 누르면 더 이상 안 나오게' → 본 것과 같게 (새 공지가 올라오면 그때만 다시)
   pop.hidden = false;
 }
 /* 1022 MJ: 교육 있는 날 알림 — 서버가 준 eduToday (제목에 '교육' 공지의 오늘 시간표) · [×]는 오늘 하루 닫힘 */
