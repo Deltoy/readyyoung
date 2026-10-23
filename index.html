@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvkne7l1">
+  <meta name="ry-build" content="mvknkdyg">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -12755,6 +12755,23 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var seen = {}; out = out.filter(function (x) { var a = S15_ALIAS[s15Key(x.n)]; if (a) Object.assign(x, s15Prep(a), { n: a }); var k = s15Key(x.n); if (seen[k]) { seen[k].q += x.q; return false; } seen[k] = x; return true; });
       return out;
     }
+    /* 1023 MJ '트렌드랩 약국 베스트에 엑셀 넣는 걸 잊어 — 물류앱 15일 엑셀을 거기도' → 같은 엑셀을 트렌드랩 모양으로 [순위, 상품명, 제조사, 판매수량, 매출, 할인, 사입가, 순이익, 이익률] (트렌드랩 pbParse 와 같은 규칙) → 저장 뒤 savePosSales */
+    function s15PosRows(a) {
+      var nb = function (v) { if (typeof v === 'number') return isFinite(v) ? v : 0; var n = Number(String(v == null ? '' : v).replace(/[^\d.\-]/g, '')); return isFinite(n) ? n : 0; };
+      for (var i = 0; i < Math.min(a.length, 30); i++) {
+        var h = (a[i] || []).map(function (x) { return String(x == null ? '' : x).replace(/\s+/g, ''); }), f = function (re) { for (var j = 0; j < h.length; j++) if (re.test(h[j])) return j; return -1; };
+        var c = { name: f(/^(판매)?상품명$|^품명$|^제품명$/), maker: f(/^제조사$/), qty: f(/^판매수량$|^수량$/), sales: f(/^매출(금액|액)?$|^판매금액$/), disc: f(/^할인(금액)?$/), cost: f(/^사입가$|^매입가$|^원가$/), profit: f(/^순이익$/), rate: f(/^이익률/) };
+        if (c.name < 0 || c.qty < 0) continue;
+        var g = function (r, k) { return c[k] < 0 ? '' : r[c[k]]; }, out = [];
+        a.slice(i + 1).forEach(function (r) {
+          var nm = String(g(r, 'name') == null ? '' : g(r, 'name')).replace(/\s+/g, ' ').trim(), q = nb(g(r, 'qty')), sv = nb(g(r, 'sales')), co = nb(g(r, 'cost'));
+          if (!nm || nm === '미등록상품' || /^(합계|총계|소계)/.test(nm) || !(q > 0) || (c.sales >= 0 && sv <= 0 && co <= 0)) return;   /* 안 팔린 줄 · 쿠폰처럼 금액 없는 줄 */
+          out.push([0, nm.slice(0, 120), String(g(r, 'maker') || '').slice(0, 40), q, sv, nb(g(r, 'disc')), co, nb(g(r, 'profit')), nb(g(r, 'rate'))]);
+        });
+        return out.sort(function (x, y) { return y[3] - x[3]; }).slice(0, 3000);
+      }
+      return null;
+    }
     var S15_ALIAS = {};   /* POS 판매 상품명 → 앱 주문 상품명 (새로 생기면 여기에 한 줄) */
     [['닥터 리쥬올 더 PDRN 시그니처 SET', '닥터리쥬올 더 PDRN 시그니처 세트'], ['리쥬올 3-step 어드밴스드 스킨케어 시스템 세트', '닥터 리쥬올 3-step 어드밴스드 스킨케어 시스템']].forEach(function (x) { S15_ALIAS[s15Key(x[0])] = x[1]; });
     var S15_PACKS = [{ to: '레디비타 프리미엄 멀티샷', from: [['레디비타 프리미엄 멀티샷 1ea', 1 / 28], ['레디비타 7병', 7 / 28], ['레디비타 28병', 1]] },
@@ -12877,7 +12894,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
         rd.onload = function () {
           try {
             var wb = XLSX.read(new Uint8Array(rd.result), { type: 'array' });
-            var xs = s15ParseRows(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: '' }));
+            var aoa = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: '' }), xs = s15ParseRows(aoa);
+            try { S15.pos = s15PosRows(aoa); } catch (ePos) { S15.pos = null; }
             S15.busy = false;
             if (!xs || !xs.length) { s15Render('이 파일에서 "판매 상품명" · "판매수량" 열을 못 찾았어요. 판매량 통계 › 상품별 통계 엑셀을 올려 주세요.'); return; }
             S15.xs = xs; S15.open = {};
@@ -13037,7 +13055,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       }
       S15.busy = 'save'; s15Render();
       var pl0 = s15PriceList();   /* 저장되면 S15.groups 를 비우니 미리 */
-      var xs0 = (S15.xs || []).slice(), per0 = ((document.getElementById('s15From') || {}).value || '') + '~' + ((document.getElementById('s15To') || {}).value || '');
+      var pos0 = S15.pos, pf0 = S15.file || '', xs0 = (S15.xs || []).slice(), per0 = ((document.getElementById('s15From') || {}).value || '') + '~' + ((document.getElementById('s15To') || {}).value || '');
       google.script.run
         .withSuccessHandler(function (r) {
           S15.busy = false;
@@ -13051,6 +13069,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           try { var pk = xs0.filter(function (x) { return x.pack; }); if (pk.length) setTimeout(function () { alert('📦 묶음 상품은 패키지 수로 합쳤어요\n' + pk.map(function (x) { return '· ' + x.n + ' : 15일 판매 ' + x.q + '개 (' + x.packTxt + ')'; }).join('\n')); }, 200); } catch (ePk) {}   /* 1019 MJ: 엑셀 올리면 레디비타·뉴베인 계산 결과 알려 주기 */
           try { var nx = s15Next((document.getElementById('s15To') || {}).value); if (nx) setTimeout(function () { alert('다음 15일 판매량은 ' + nx.label + ' 기간으로 ' + nx.when + ' 올려주세요'); }, 400); } catch (eN) {}
           loadAllData(true, true, true);
+          try { if (pos0 && pos0.length) google.script.run.withSuccessHandler(function (x) { if (x && x.ok) setTimeout(function () { showToast('트렌드랩 약국 베스트에도 같은 엑셀을 넣었어요 (' + x.n + '개)', 2600); }, 3400); }).savePosSales(pos0, { from: (document.getElementById('s15From') || {}).value || '', to: (document.getElementById('s15To') || {}).value || '', fileName: pf0 }, currentSelectedMember); S15.pos = null; } catch (ePs) {}   /* 1023 트렌드랩이 읽어 감 */
           try { var pl = pl0; if (pl.length) google.script.run.withSuccessHandler(function () { try { if (typeof SP !== 'undefined') SP.data = null; } catch (e3) {} }).saveUnitPrices(pl, per0); } catch (ePr) {}   /* 1017 세트 상세 사입가·판매가 */
           /* 1016 MJ: 같은 엑셀에서 세트 이름을 찾아 세트 15일 판매량도 */
           try { google.script.run.withSuccessHandler(function () { try { if (typeof SP !== 'undefined') { SP.data = null; } } catch (e2) {} try { SP.boxAt = 0; bxLoad(); } catch (e3) {} }).setSetSales15(xs0.map(function (x) { return { n: x.n, q: x.q, p: x.price }; }), per0); } catch (eSet) {}
