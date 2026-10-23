@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvkqllu9">
+  <meta name="ry-build" content="mvkututg">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -2349,6 +2349,13 @@ html body:not(#_):not(#_) .ry-delay.has{border:0!important;background:var(--ry-w
   html body #historyGroupContainer > div{overflow:clip!important}
   html body #historyGroupContainer .hist-date-head{position:sticky!important;top:0;z-index:6;box-shadow:0 1px 0 #E2E8F0,0 6px 10px -8px rgba(16,24,40,.3)}
 }
+/* 1023 MJ: 폰 카드 목록 맨 위에 지금 보는 칸 이름 고정 (PC 표 머리줄 고정과 같은 뜻) */
+.m-stick{display:none}
+@media (max-width:1023px){
+  html body .m-stick{display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:7;margin:12px 0 -6px!important;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.96);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 1px 0 #E4E7EC,0 6px 12px -8px rgba(16,24,40,.3);font-size:14.5px;font-weight:800;color:#101828;letter-spacing:-.01em}
+  html body .m-stick::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c);flex:none}
+  html body .m-stick:has(+ .mobile-only-card:empty){display:none}
+}
 </style>
 <style id="ry25-design">
 /* ═══════════ 0925 디자인 시스템 — 밝은 머리 · 파이프라인 · 카드 (맨 마지막에 둬서 이전 규칙을 덮는다) ═══════════
@@ -4191,6 +4198,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           <tbody id="reviewTableBody" class="divide-y divide-slate-100"></tbody>
         </table>
       </div>
+      <div class="m-stick" aria-hidden="true" style="--c:#4F46E5">1단계 · 검토 대기</div>
       <div id="reviewCardContainer" class="mobile-only-card grid grid-cols-1 gap-2.5"></div>
 
       <div id="reviewEmpty" class="hidden bg-white p-10 text-center rounded-2xl shadow-sm border border-dashed border-slate-300">
@@ -4230,6 +4238,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           <tbody id="readyTableBody" class="divide-y divide-slate-100"></tbody>
         </table>
       </div>
+      <div class="m-stick" aria-hidden="true" style="--c:#155EEF">2단계 · 최종 발주 대기</div>
       <div id="readyCardContainer" class="mobile-only-card grid grid-cols-1 gap-2.5"></div>
 
       <div id="orderEmpty" class="hidden bg-white p-10 text-center rounded-2xl shadow-sm border border-dashed border-slate-300">
@@ -4292,6 +4301,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           <tbody id="inboundTableBody" class="divide-y divide-slate-100"></tbody>
         </table>
       </div>
+      <div class="m-stick" aria-hidden="true" style="--c:#039855">3단계 · 입고 대기 · 배송 중인 상품</div>
       <div id="inboundCardContainer" class="mobile-only-card grid grid-cols-1 gap-2.5"></div>
 
       <div id="inboundEmpty" class="hidden bg-white p-10 text-center rounded-2xl shadow-sm border border-dashed border-slate-300">
@@ -4391,6 +4401,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           <tbody id="soldOutTableBody" class="divide-y divide-rose-100"></tbody>
         </table>
       </div>
+      <div class="m-stick" aria-hidden="true" style="--c:#D92D20">품절 보류 품목</div>
       <div id="soldOutCardContainer" class="mobile-only-card grid grid-cols-1 gap-2.5"></div>
 
       <div id="soldOutEmpty" class="hidden bg-white p-10 text-center rounded-2xl shadow-sm border border-dashed border-rose-200">
@@ -4429,6 +4440,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           <tbody id="delayedTableBody" class="divide-y divide-rose-100"></tbody>
         </table>
       </div>
+      <div class="m-stick" aria-hidden="true" style="--c:#D92D20">발주 7일 이상 미입고</div>
       <div id="delayedCardContainer" class="mobile-only-card grid grid-cols-1 gap-2.5"></div>
 
       <div id="delayedEmpty" class="hidden bg-white p-10 text-center rounded-2xl shadow-sm border border-dashed border-emerald-300">
@@ -4468,6 +4480,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           <tbody id="stockCheckTableBody" class="divide-y divide-amber-100/50"></tbody>
         </table>
       </div>
+      <div class="m-stick" aria-hidden="true" style="--c:#DC6803">오늘 재고확인 · 주문 취소 품목</div>
       <div id="stockCheckCardContainer" class="mobile-only-card grid grid-cols-1 gap-2.5"></div>
 
       <div id="stockCheckEmpty" class="hidden bg-white p-12 text-center rounded-2xl shadow-sm border border-dashed border-amber-200">
