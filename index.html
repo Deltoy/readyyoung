@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvkfle3i">
+  <meta name="ry-build" content="mvkfn6ht">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8801,8 +8801,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
         actionButtons = type === 'soldout' ? `
           <button type="button" onclick="reorderSoldOut(${item.rowNumber})" class="ry25-approve ry-so-re">재주문 요청</button>` : ryCanConfirmOrder() ? `
           <div class="ry25-act">
-            <button type="button" onclick="rejectOrder(${item.rowNumber})" class="ry25-reject">재고있음</button>
             <button type="button" onclick="confirmOrderPlaced(${item.rowNumber})" class="ry25-approve">주문 완료</button>
+            <button type="button" onclick="rejectOrder(${item.rowNumber})" class="ry25-reject">재고있음</button>
           </div>` : `
           <button onclick="rejectOrder(${item.rowNumber})" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-black transition whitespace-nowrap">
             <span class="em">❌ </span>재고있음 (취소)
