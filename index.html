@@ -1,10 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvkvz2y1">
+  <meta name="ry-build" content="mvkwteug">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
+/* 1023 MJ '카톡에서 주소를 누르면 카톡 안 브라우저로 열려 이름 고르기·설치가 안 돼' → 카톡 안이면 바로 밖으로 (아이폰 사파리 · 갤럭시 크롬)
+   ?k= 가 지워지기 전(아래)에 주소 그대로 넘긴다. 자동으로 안 넘어가는 폰은 큰 버튼(사용자가 누르면 대부분 넘어감) + 메뉴 안내 */
+(function () {
+  var ua = navigator.userAgent || '';
+  if (!/KAKAOTALK/i.test(ua)) return;
+  var url = location.href, and = /Android/i.test(ua), br = and ? '크롬' : '사파리', brRo = and ? '크롬으로' : '사파리로';
+  var ext = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(url);
+  var chrome = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end';
+  var go = function (u) { try { location.href = u; } catch (e) {} };
+  var tried = false;
+  try { tried = sessionStorage.getItem('ry_kx') === '1'; sessionStorage.setItem('ry_kx', '1'); } catch (e) {}
+  var btn = function (t, u, main) { return '<a href="' + u + '" style="display:block;padding:17px;border-radius:14px;font-size:18px;font-weight:800;text-decoration:none;' + (main ? 'background:#155EEF;color:#fff' : 'background:#F2F4F7;color:#101828') + '">' + t + '</a>'; };
+  var card = function () {
+    if (!document.body) { document.addEventListener('DOMContentLoaded', card); return; }
+    var d = document.createElement('div'); d.id = 'ryKx';
+    d.setAttribute('style', 'position:fixed;inset:0;z-index:2147483647;background:#fff;display:flex;flex-direction:column;justify-content:center;gap:14px;padding:24px;text-align:center;color:#101828;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif');
+    d.innerHTML = '<div style="font-size:44px">📲</div><b style="font-size:23px">' + br + '에서 열어 주세요</b>'
+      + '<p style="margin:0 0 6px;font-size:16px;line-height:1.6;color:#475467">카톡 안에서는 이름 고르기와 앱 설치가 안 돼요.<br>아래 버튼을 누르면 ' + brRo + ' 넘어가요.</p>'
+      + btn(brRo + ' 열기', and ? chrome : ext, true) + (and ? btn('다른 브라우저로 열기', ext) : '')
+      + '<p style="margin:6px 0 0;font-size:14px;line-height:1.6;color:#667085">그래도 안 넘어가면: 화면 오른쪽 아래 <b>⋮</b> (또는 <b>···</b>) → <b>다른 브라우저로 열기</b></p>';
+    document.body.appendChild(d);
+    window.addEventListener('load', function () { document.body.appendChild(d); });   // 암호 창 등 나중에 붙는 것보다 위에
+    if (!tried) go(and ? chrome : ext);   // 안내를 먼저 그리고 이동 (먼저 이동하면 넘어가지 못한 폰은 빈 화면) · 같은 카톡 창에서 두 번째부턴 자동 이동 안 함 (크롬 없는 폰에서 계속 도는 것 막기)
+  };
+  card();
+})();
 (function () {
   /* 0927 이름을 고르면 주소에 ?me=이름 을 붙인다 → 그 상태로 '홈 화면에 추가'하면 열 때마다 내 이름으로 (직원별 전용 앱) */
   try {
@@ -14,6 +40,7 @@
       if (k === 's_selected_member' && v && this === window.localStorage) {
         var q = new URLSearchParams(location.search);
         if (q.get('me') !== String(v)) { q.set('me', String(v)); q.delete('k'); history.replaceState(history.state, '', location.pathname + '?' + q.toString() + location.hash); }
+        setTimeout(function () { try { window.ryInstallOffer && window.ryInstallOffer(); } catch (e) {} }, 800);
       }
     };
   } catch (e) {}
@@ -71,6 +98,7 @@
 
   var gate = null;
   function showGate(msg) {
+    if (/KAKAOTALK/i.test(navigator.userAgent || '')) return;   /* 1023 카톡 안에선 '브라우저로 열기' 안내만 (암호는 넘어간 브라우저에서) */
     if (!document.body) { document.addEventListener('DOMContentLoaded', function () { showGate(msg); }); return; }
     if (gate) { if (msg) gate.querySelector('.m').textContent = msg; return; }
     gate = document.createElement('div'); gate.id = 'ryGate';
@@ -114,6 +142,30 @@
   setInterval(function () { if (fresh && !busy()) location.reload(); }, 15000);
   setInterval(check, 600000); setTimeout(check, 60000);
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') { if (fresh) location.reload(); else check(); } });
+})();
+/* 1023 MJ '이름 설정과 설치를 바로' — 크롬이 설치할 수 있다고 알려 주면(beforeinstallprompt) 이름을 고른 뒤 아래에 [📲 앱으로 설치] 한 번
+   아이폰 사파리는 설치 버튼을 웹에서 띄울 수 없어 '공유 → 홈 화면에 추가' 안내만. 이미 설치된 앱 안 · [나중에] 누른 날은 안 띄움 */
+(function () {
+  var ev = null, ua = navigator.userAgent || '', ios = /iPhone|iPad|iPod/i.test(ua) && !/CriOS|FxiOS|KAKAOTALK/i.test(ua);
+  var inApp = function () { try { return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch (e) { return false; } };
+  var today = function () { var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); };
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); ev = e; offer(); });
+  function offer() {
+    if (inApp() || document.getElementById('ryInst') || /KAKAOTALK/i.test(ua) || !(ev || ios)) return;
+    var me = ''; try { me = localStorage.getItem('s_selected_member') || ''; if (localStorage.getItem('ry_inst_no') === today()) return; } catch (x) {}
+    if (!me || !document.body) return;
+    var d = document.createElement('div'); d.id = 'ryInst'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', '앱으로 설치');
+    d.setAttribute('style', 'position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:10090;background:#fff;border:1px solid #E4E7EC;border-radius:18px;box-shadow:0 12px 32px -8px rgba(16,24,40,.35);padding:14px;display:flex;align-items:center;gap:10px;font-family:inherit');
+    d.innerHTML = '<div style="flex:1;min-width:0;font-size:15px;line-height:1.45;color:#101828"><b>📲 ' + me + ' 님 앱으로 설치</b><br><span style="font-size:13px;color:#475467">' + (ev ? '홈 화면에 아이콘이 생기고 열 때마다 내 이름으로 열려요' : '아래 <b>공유</b> 버튼 → <b>홈 화면에 추가</b>') + '</span></div>'
+      + (ev ? '<button type="button" data-go style="flex:none;min-height:48px;padding:0 16px;border:0;border-radius:12px;background:#155EEF;color:#fff;font-size:16px;font-weight:800">설치</button>' : '')
+      + '<button type="button" data-no style="flex:none;min-height:48px;padding:0 12px;border:0;border-radius:12px;background:#F2F4F7;color:#344054;font-size:14px;font-weight:700">나중에</button>';
+    var go = d.querySelector('[data-go]');
+    if (go) go.onclick = function () { var e = ev; ev = null; d.remove(); try { e.prompt(); } catch (x) {} };
+    d.querySelector('[data-no]').onclick = function () { try { localStorage.setItem('ry_inst_no', today()); } catch (x) {} d.remove(); };
+    document.body.appendChild(d);
+  }
+  window.ryInstallOffer = offer;
+  window.addEventListener('load', function () { setTimeout(offer, 1500); });
 })();
 </script>
   <base target="_top">
