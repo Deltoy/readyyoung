@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvkfk50w">
+  <meta name="ry-build" content="mvkfle3i">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8793,8 +8793,8 @@ html body #ryLaunchGrid .tl-search{top:56px}
       if (type === 'review') {
         actionButtons = `
           <div class="ry25-act">
-            <button type="button" onclick="rejectOrder(${item.rowNumber})" class="ry25-reject">재고있음</button>
             <button type="button" onclick="approveOrder(${item.rowNumber})" data-approve-row="${item.rowNumber}" class="ry25-approve">발주 승인</button>
+            <button type="button" onclick="rejectOrder(${item.rowNumber})" class="ry25-reject">재고있음</button>
           </div>
         `;
       } else {
