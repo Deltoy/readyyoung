@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvkeucvy">
+  <meta name="ry-build" content="mvkezfr8">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4921,13 +4921,17 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var inbD = stkDay(it.inboundDate), cnt = RY_SC[k], cntD = cnt ? stkDay(cnt.d) : null, now = stkToday();
       var iv = RY_IVL && RY_IVL[k] && RY_IVL[k].filter(function (x) { return stkDay(x.d) === inbD && x.q > 0; })[0];
       var bu = parseFloat(it.boxUnit) || 0, oq = parseFloat(String(it.targetQty || '').replace(/[^0-9.]/g, '')) || 0;
-      var inQty = iv ? iv.q : (it.unit === '박스' && bu ? oq * bu : oq), src = iv ? '명세서' : '주문 수량';
+      var boxQ = function (q) { return it.unit === '박스' && bu > 1 && q > 0 && q < bu && q <= 20 ? q * bu : q; };   // 1023 MJ '아렉스 소 입고됐는데 추정 재고가 안 늘어' — 박스 단위 상품은 명세서 연결 수량이 박스 수(1)일 때가 있음 → × 1박스 개수(60)
+      var inQty = iv ? boxQ(iv.q) : (it.unit === '박스' && bu ? oq * bu : oq), src = iv ? '명세서' : '주문 수량';
       var est, how, baseD;
-      if (cnt && (inbD == null || cntD >= inbD)) { est = cnt.n - daily * (now - cntD); how = cnt.d.slice(5) + '에 ' + cnt.by + '님이 센 ' + cnt.n + '개'; baseD = cntD; }
-      else if (inbD != null && inQty > 0) { var carry = cnt ? Math.max(0, cnt.n - daily * (inbD - cntD)) : 0; est = carry + inQty - daily * (now - inbD); how = String(it.inboundDate).slice(5, 10) + ' 입고 ' + inQty + '개(' + src + ')' + (carry ? ' + 그때 남은 약 ' + Math.round(carry) + '개' : ''); baseD = inbD; }
-      else { var first = RY_IVL && RY_IVL[k] && RY_IVL[k].filter(function (x) { return x.q > 0; }).slice(-1)[0]; if (!first) return null; baseD = stkDay(first.d) - 0.5; est = -daily * (now - baseD); how = '주문 없이 명세서로 들어온 것만'; }   // 주문 없이 명세서로만 들어온 상품
-      /* 1020 주문 안 했는데 명세서로 들어온 것 (입고일 뒤에 추가로 들어온 수량) */
-      (RY_IVL && RY_IVL[k] || []).forEach(function (x) { var d = stkDay(x.d); if (x.q > 0 && d != null && d > baseD && !(iv && x === iv)) { est += x.q; how += ' + ' + x.d.slice(5) + ' 명세서로 ' + x.q + '개'; } });
+      if (cnt && (inbD == null || cntD >= inbD)) { est = cnt.n; how = cnt.d.slice(5) + '에 ' + cnt.by + '님이 센 ' + cnt.n + '개'; baseD = cntD; }
+      else if (inbD != null && inQty > 0) { var carry = cnt ? Math.max(0, cnt.n - daily * (inbD - cntD)) : 0; est = carry + inQty; how = String(it.inboundDate).slice(5, 10) + ' 입고 ' + inQty + '개(' + src + ')' + (carry ? ' + 그때 남은 약 ' + Math.round(carry) + '개' : ''); baseD = inbD; }
+      else { var first = RY_IVL && RY_IVL[k] && RY_IVL[k].filter(function (x) { return x.q > 0; }).slice(-1)[0]; if (!first) return null; baseD = stkDay(first.d) - 0.5; est = 0; how = '주문 없이 명세서로 들어온 것만'; }   // 주문 없이 명세서로만 들어온 상품
+      /* 1020 주문 안 했는데 명세서로 들어온 것 (입고일 뒤에 추가로 들어온 수량) · 1023 날짜 순으로 — 재고는 0 밑으로 안 내려감 (전엔 −90 + 300 = 210 처럼 모자란 만큼 새 입고에서 빠졌음) */
+      var t = baseD;
+      (RY_IVL && RY_IVL[k] || []).filter(function (x) { var d = stkDay(x.d); return x.q > 0 && d != null && d > baseD && !(iv && x === iv); }).sort(function (a, b) { return stkDay(a.d) - stkDay(b.d); })
+        .forEach(function (x) { var d = stkDay(x.d), q = boxQ(x.q); est = Math.max(0, est - daily * (d - t)) + q; t = d; if (how.indexOf('명세서로 들어온 것만') < 0 || x !== first) how += ' + ' + x.d.slice(5) + ' 명세서로 ' + q + '개'; });
+      est = est - daily * (now - t);
       est = Math.max(0, Math.round(est));
       return { est: est, left: daily > 0 ? Math.floor(est / daily) : null, daily: daily, how: how, k: k, sure: !!(cnt && (inbD == null || cntD >= inbD)) || !!iv };   // sure = 센 개수·명세서 수량 기준 (주문 수량만이면 그 전에 남아 있던 재고를 몰라 적게 나올 수 있음)
     }
@@ -9925,6 +9929,15 @@ html body #ryLaunchGrid .tl-search{top:56px}
           var has = l.row && live[l.row], dup = has && seenRow[l.row], tag, chk = '';
           if (has && !dup) seenRow[l.row] = 1;
           if (!has && !l.doneName) { var cn = invCatOf(l); l.catName = cn || ''; l.newItem = cn === ''; }
+          if (!has && !l.doneName && l.catName && !l.userPick) {   // 1023 MJ '아렉스 중 1박스가 주문 안 한 상품으로 들어가 주문은 입고대기에 남음' — 짝지은 앱 상품이 입고대기에 있으면 그 주문에 붙임
+            var lv = (cachedInboundItems || []).filter(function (x) { return String(x.name).split('\n')[0].replace(/\s+/g, '') === String(l.catName).replace(/\s+/g, ''); })[0];
+            if (lv && live[lv.rowNumber] && !seenRow[lv.rowNumber]) {
+              var oq5 = parseFloat(String(lv.targetQty).replace(/[^0-9.]/g, '')) || 0, bu5 = parseFloat(lv.boxUnit) || 0, q5 = Number(l.appQty != null ? l.appQty : l.qty) || 0;
+              l.row = lv.rowNumber; l.appName = l.catName; l.orderQty = lv.targetQty; l.unit = lv.unit || '개'; l.catName = ''; l.newItem = false;
+              if (l.unit === '박스' && bu5 > 1 && q5 === oq5 * bu5) l.appQty = oq5;   // 300개 = 1박스
+              l.qtyOk = oq5 > 0 && Number(l.appQty != null ? l.appQty : l.qty) === oq5; has = live[l.row]; dup = false; seenRow[l.row] = 1;
+            }
+          }
           if (!has && !l.doneName && l.catName && !l.userPick && !l.doneSkip) { var hd = invDoneByLog(l, r.date); if (hd) { l.doneName = l.catName; l.doneDate = String(hd.inboundDate).slice(0, 10); l.doneQty = hd.targetQty + (hd.unit || '개'); } }   // 1023
           if (!has) tag = l.doneName ? '<span class="inv-tag inv-ok">✓ 이미 입고완료 · ' + escapeHtml(l.doneDate + ' · ' + l.doneQty) + '</span>'
             : l.newItem ? '<span class="inv-tag inv-no">🆕 새 상품으로 등록해요 · ' + escapeHtml(l.clean || l.name) + '</span><div class="inv-n">[입고확인]을 누르면 이 이름으로 새 상품 등록해요 <button type="button" class="inv-alt" style="margin:4px 0 0" onclick="event.preventDefault(); invRename(' + j + ',' + i + ')">✏️ 이름 고치기</button></div>'
