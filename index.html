@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="ry-build" content="mvkututg">
+  <meta name="ry-build" content="mvkv3ovx">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -6265,7 +6265,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
       el.hidden = false;
     }
     /* 1020 MJ '직원들에게 명세서 찍는 튜토리얼 알림 · 한 번만 · 확인했으면 안 띄움' — 사람마다 서버(TUT_ACK)에 확인 기록 */
-    var TUT_ID = 'inb1', TUT_IMGS = ['https://deltoy.github.io/readyyoung/tut-inbound-1.jpg?v=2', 'https://deltoy.github.io/readyyoung/tut-inbound-2.jpg'], _tutAsk = '';   // 1023 MJ '입고 과정 재정리 튜토리얼' → 새 번호라 모두에게 한 번 (작은 알림)   // 1020 2편(이름 다를 때 맞추기 · 새 상품 등록) 추가 → 새 번호라 모두에게 한 번 더
+    var TUT_ID = 'inb1', TUT_IMGS = ['https://deltoy.github.io/readyyoung/tut-inbound-1.jpg?v=2', 'https://deltoy.github.io/readyyoung/tut-inbound-2.jpg?v=2'], _tutAsk = '';   // 1023 MJ '입고 과정 재정리 튜토리얼' → 새 번호라 모두에게 한 번 (작은 알림)   // 1020 2편(이름 다를 때 맞추기 · 새 상품 등록) 추가 → 새 번호라 모두에게 한 번 더
     function tutPop() {
       var me = currentSelectedMember || '', host = document.getElementById('ryTopPops'); if (!me || !host) return;
       var lk = 'tut_' + TUT_ID + '_' + me, el = document.getElementById('tutPop');
@@ -6281,13 +6281,13 @@ html body #ryLaunchGrid .tl-search{top:56px}
     function tutShowPop(me) {
       var host = document.getElementById('ryTopPops'); if (!host) return;
       var el = document.getElementById('tutPop'); if (!el) { el = document.createElement('div'); el.id = 'tutPop'; el.setAttribute('role', 'status'); host.appendChild(el); }
-      el.innerHTML = '<div class="tp-txt"><b class="t">📦 새 입고 방법 · [입고하기] 한 화면</b><p>명세서 · 명세서 없이 온 주문 · 주문 안 한 것을 버튼 하나로</p></div>'
+      el.innerHTML = '<div class="tp-txt"><b class="t">📦 새 입고 방법 · [입고하기] 한 화면</b><p>명세서 · 명세서 없이 온 주문 · 주문내역 없는 상품을 버튼 하나로</p></div>'
         + '<button type="button" class="tp-go" onclick="tutOpen()">보러 가기</button><button type="button" class="tp-x" aria-label="닫기" onclick="window._tutX = currentSelectedMember; document.getElementById(\'tutPop\').hidden = true">×</button>';
       el.hidden = false;
     }
     function tutOpen() {
       var d = document.createElement('div'); d.id = 'tutDim';
-      d.innerHTML = '<div id="tutBox" role="dialog" aria-modal="true" aria-label="입고 방법 튜토리얼"><p class="tut-hint">🔍 그림을 누르면 크게 보여요 · 두 손가락으로 더 확대</p><img onclick="eduZoomOpen(this.src)" style="cursor:zoom-in" src="' + TUT_IMGS[0] + '" alt="1/2 첫 화면 입고하기 버튼 → 명세서 찍기 → AI가 입고대기 상품과 짝지어 체크, 이름이 같은지 확인"><img onclick="eduZoomOpen(this.src)" src="' + TUT_IMGS[1] + '" alt="2/2 명세서 없이 온 주문은 온 것만 체크, 주문 안 한 것은 검색해서 수량 적기, 맨 아래 입고확인 한 번" style="margin-top:12px;cursor:zoom-in"><div class="inv-foot"><button class="inv-go" onclick="tutClose()">닫기</button></div></div>';
+      d.innerHTML = '<div id="tutBox" role="dialog" aria-modal="true" aria-label="입고 방법 튜토리얼"><p class="tut-hint">🔍 그림을 누르면 크게 보여요 · 두 손가락으로 더 확대</p><img onclick="eduZoomOpen(this.src)" style="cursor:zoom-in" src="' + TUT_IMGS[0] + '" alt="1/2 첫 화면 입고하기 버튼 → 명세서 찍기 → AI가 입고대기 상품과 짝지어 체크, 이름이 같은지 확인"><img onclick="eduZoomOpen(this.src)" src="' + TUT_IMGS[1] + '" alt="2/2 명세서 없이 온 주문은 온 것만 체크, 주문내역 없는 상품은 검색해서 수량 적기, 맨 아래 입고확인 한 번" style="margin-top:12px;cursor:zoom-in"><div class="inv-foot"><button class="inv-go" onclick="tutClose()">닫기</button></div></div>';
       document.body.appendChild(d); try { ryLockScroll(true); } catch (e) {}
       var me = currentSelectedMember || '', el = document.getElementById('tutPop');   // 1020 MJ: 페이지에 들어왔으면 확인한 걸로
       if (me) { try { localStorage.setItem('tut_' + TUT_ID + '_' + me, '1'); } catch (e) {} google.script.run.withFailureHandler(function () {}).tutAck(TUT_ID, me); }
@@ -9912,7 +9912,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
               + (im ? '<img src="' + escapeHtml(im) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : '<i class="inv-noimg">📦</i>') + '<span><b>' + escapeHtml(nm) + '</b><small>주문 ' + escapeHtml(String(it.targetQty || '') + (it.unit || '개')) + (it.requester ? ' · ' + escapeHtml(it.requester) : '') + (it.location ? ' · 📍' + escapeHtml(it.location) : '') + '</small></span>'
               + '<span class="inb1-got" onclick="event.stopPropagation()"><small>온 수량</small><input type="number" inputmode="numeric" min="1" data-g="' + it.rowNumber + '" value="' + escapeHtml(String(INB1.got[it.rowNumber] != null ? INB1.got[it.rowNumber] : (parseInt(it.targetQty, 10) || ''))) + '" onclick="event.preventDefault(); this.focus()" oninput="INB1.got[' + it.rowNumber + '] = parseInt(this.value, 10) || 0; inb1Save()"><small>' + escapeHtml(it.unit || '개') + '</small></span></label>'; }).join('')   // 1023 MJ '주문 수량과 다르게 오면' — 체크하면 '온 수량' 칸 (기본 = 주문 수량)
         + (list.length ? '' : '<div class="inv-n">입고대기 상품이 모두 명세서로 잡혔어요</div>') + '</div>';
-      var c = '<div class="inb1-h">③ 주문 안 했는데 온 것 <span>명세서 없음 · 검색 → 고르기 → 수량 · 여러 개면 계속 검색</span></div><input type="search" id="inb1S" class="inb1-q" placeholder="상품 이름 검색 (예: 판콜)" enterkeyhint="search" value="' + escapeHtml(INB1.s || '') + '" onfocus="inb1Top(this)" oninput="INB1.s = this.value; inb1Search(this.value)"><div id="inb1R" class="inb1-r"></div><div id="inb1A">' + inb1RowsHtml() + '</div><div id="inb1Pad" style="height:' + (INB1.pad || 0) + 'px"></div>';
+      var c = '<div class="inb1-h">③ 주문내역 없는 상품 <span>명세서 없음 · 검색 → 고르기 → 수량 · 여러 개면 계속 검색</span></div><input type="search" id="inb1S" class="inb1-q" placeholder="상품 이름 검색 (예: 판콜)" enterkeyhint="search" value="' + escapeHtml(INB1.s || '') + '" onfocus="inb1Top(this)" oninput="INB1.s = this.value; inb1Search(this.value)"><div id="inb1R" class="inb1-r"></div><div id="inb1A">' + inb1RowsHtml() + '</div><div id="inb1Pad" style="height:' + (INB1.pad || 0) + 'px"></div>';
       return '<div class="inb1-c">' + b + '</div><div class="inb1-c">' + c + '</div>';   // 1023 MJ 'PC에서 3가지 입고 방법이 스크롤 없이 보이게' — PC 는 ①②③ 세 칸
     }
     /* 1023 MJ '주문 안 한 게 여러 개 오면 검색할 때 화면이 왔다갔다 · 키보드가 검색하는 걸 가려' → ③ 줄만 다시 그림(창 전체 X) · 새로 고른 건 검색칸 바로 밑(맨 위)에 · 검색칸 누르면 창 위쪽으로 */
@@ -10084,7 +10084,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
           if (!has && !l.doneName && l.catName && !l.userPick && !l.doneSkip) { var hd = invDoneByLog(l, r.date); if (hd) { l.doneName = l.catName; l.doneDate = String(hd.inboundDate).slice(0, 10); l.doneQty = hd.targetQty + (hd.unit || '개'); } }   // 1023
           if (!has) tag = l.doneName ? '<span class="inv-tag inv-ok">✓ 이미 입고완료 · ' + escapeHtml(l.doneDate + ' · ' + l.doneQty) + '</span>'
             : l.newItem ? '<span class="inv-tag inv-no">🆕 새 상품으로 등록해요 · ' + escapeHtml(l.clean || l.name) + '</span><div class="inv-ph">' + (l.photo ? '<img src="' + l.photo + '" alt="찍은 상품 사진" onclick="event.preventDefault(); invLinePhoto(' + j + ',' + i + ')">' : '') + '<button type="button" class="inv-alt" onclick="event.preventDefault(); invLinePhoto(' + j + ',' + i + ')">' + (l.photo ? '📷 다시 찍기' : '📷 상품 사진 찍기 (앱에 사진으로 들어가요)') + '</button></div><div class="inv-n">[입고확인]을 누르면 이 이름으로 새 상품 등록해요 <button type="button" class="inv-alt" style="margin:4px 0 0" onclick="event.preventDefault(); invRename(' + j + ',' + i + ')">✏️ 이름 고치기</button></div>'
-            : '<span class="inv-tag inv-warn">📋 주문 안 했는데 들어온 상품 · 체크하고 [입고확인]을 누르면 재고에 들어가요 · 실제로 없으면 체크 해제</span>' + (l.catName ? '<div class="inv-n">위 상자의 상품이 아니면 [🔁 다른 상품으로 바꾸기] 또는 [🆕 새 상품으로 등록]</div>' : '');
+            : '<span class="inv-tag inv-warn">📋 주문내역 없는 상품 · 체크하고 [입고확인]을 누르면 재고에 들어가요 · 실제로 없으면 체크 해제</span>' + (l.catName ? '<div class="inv-n">위 상자의 상품이 아니면 [🔁 다른 상품으로 바꾸기] 또는 [🆕 새 상품으로 등록]</div>' : '');
           else if (dup) tag = '<span class="inv-tag inv-no">다른 명세서에도 있는 같은 상품이에요</span>';
           else if (r.wrongStore) tag = r.holdWhy ? '<span class="inv-tag inv-warn">⚠️ 이미 들어간 명세서라 빼 뒀어요</span>' : '<span class="inv-tag inv-up">⛔ 다른 곳 명세서 · 입고하지 마세요</span>';
           else {   // 1020 MJ '더 들어온 건 괜찮은데 덜 들어왔을 때가 문제' → 주문 수량과 비교해서 모자라면 빨간 경고
@@ -10121,7 +10121,7 @@ html body #ryLaunchGrid .tl-search{top:56px}
         return '<div class="inv-sec">' + wrong + '<h4>📄 ' + escapeHtml(r.supplier || '거래명세서') + ' <span>' + escapeHtml(r.date || '') + ' · ' + r.lines.length + '줄' + ((r._big || r._thumb) ? ' · <a href="#" onclick="event.preventDefault(); invZoom(' + j + ')">사진 크게</a>' : r.link ? ' · <a href="' + escapeHtml(r.link) + '" target="_blank" rel="noopener">사진</a>' : '') + '</span></h4>' + rows + '</div>';
       }).join('');
       var nFail = INVS.filter(function (r) { return !r.success && r._file; }).length;
-      var head = INB1.on && !INVS.length ? '<h3>📦 입고하기' + (busyMsg ? ' · ' + escapeHtml(busyMsg) : '') + '</h3><div class="inv-sub">① 명세서 찍기 · ② 명세서 없이 온 주문 체크 · ③ 주문 안 한 것 추가 → 맨 아래 버튼 하나로 입고</div>'
+      var head = INB1.on && !INVS.length ? '<h3>📦 입고하기' + (busyMsg ? ' · ' + escapeHtml(busyMsg) : '') + '</h3><div class="inv-sub">① 명세서 찍기 · ② 명세서 없이 온 주문 체크 · ③ 주문내역 없는 상품 추가 → 맨 아래 버튼 하나로 입고</div>'
         : '<h3>' + (INB1.on ? '📦 입고하기 · ' : '📄 ') + '명세서 ' + INVS.length + '장' + (busyMsg ? ' · ' + escapeHtml(busyMsg) : '') + '</h3><div class="inv-sub">' + nLine + '줄 · 수량이 맞는 ' + nOk + '개' + (nEx ? ' · 주문 안 한 ' + nEx + '개' : '') + '는 미리 골라 뒀어요 · 실제로 없는 건 체크 해제</div>'
         + (nFail > 1 && !busyMsg ? '<button type="button" class="inv-retry" style="width:100%;margin:0 0 8px" onclick="invRetryAll()">↻ 못 읽은 ' + nFail + '장 한 번에 다시 읽기</button>' : '');   // 1020 MJ '여러 장 실패하면 한 번에 다시'
       var warnBox = INVS.some(function (r) { return r.success; }) ? '<div class="inv-must">⚠️ <b>입고완료 전에 꼭!</b> 명세서 이름과 <b>앱: ○○</b> 이름이 같은 상품인지 하나씩 확인해 주세요. 다르면 [🔁 다른 상품으로 바꾸기]</div>' : '';   // 1020 MJ '이름 꼭 확인 후 입고완료 — 강조'
