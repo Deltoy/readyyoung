@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvm4qfff">
+  <meta name="ry-build" content="mvm7en4v">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -18999,7 +18999,9 @@ var RL_TR = {
   zh: { '물류앱 사용법': '物流APP使用方法', '진열': '陈列', '세트': '套装', '스티커·POP': '贴纸・POP', '발주·입고': '订货・入库', '계산대·응대': '收银・接待', '근무·근태': '工作・考勤', '기타': '其他', '전체': '全部', '안 읽은 것': '未读', '보관함': '存档', '숙지했어요': '我已了解', '숙지함': '已了解', '목록으로': '返回列表', '새 규칙': '新规则', '새': '新', '모두 숙지했어요': '全部已了解', '안 읽은 규칙': '未读规则', '개가 있어요': '条', '새 숙지사항': '新规则', '보기': '查看', '다음 안 읽은 규칙': '下一条未读', '공지': '通知', '증정': '赠品', '품절': '缺货', '업무': '业务', '일정': '日程', '이벤트': '活动', '번역 중…': '翻译中…' }
 };
 function rlW(k) { var d = RL.lang && RL_TR[RL.lang]; return (d && d[k]) || k; }
-function rlTx(r) { var t = RL.lang && r.tr && r.tr[RL.lang]; return t && t.title ? t : { title: r.title, body: r.body }; }
+function rlTx(r) { var t = RL.lang && r.tr && r.tr[RL.lang], n = rlOrd(r); return t && t.title ? (n && !/^\d+\./.test(t.title) ? { title: n + '. ' + t.title, body: t.body } : t) : { title: r.title, body: r.body }; }
+/* 1024 MJ '먼저 봐야 할 사용법부터 순서대로' — 제목 앞 'N. ' 번호가 있으면 번호 순으로 맨 앞 (번역 제목에도 같은 번호) */
+function rlOrd(r) { return +((String(r.title || '').match(/^(\d+)\.\s/) || [])[1] || 0); }
 function rlPhs(r) { var ph = r.photos || [], want = RL.lang || 'ko', has = ph.some(function (p) { return p.l === want; }); return ph.filter(function (p) { return !p.l || p.l === (has ? want : 'ko'); }); }
 function rlSetLang(l) { RL.lang = l; try { localStorage.setItem('ry_rl_lang', l); } catch (e) {} rlRender(); try { ntRender(); } catch (e2) {} }   /* 숙지사항 · 공지가 같은 언어 */
 function rlLangHtml() { return [['', '한국어'], ['ja', '日本語'], ['zh', '中文']].map(function (x) { var on = RL.lang === x[0]; return '<button type="button" class="rl-lg' + (on ? ' on' : '') + '" aria-pressed="' + on + '" lang="' + (x[0] || 'ko') + '" onclick="rlSetLang(\'' + x[0] + '\')">' + x[1] + '</button>'; }).join(''); }
@@ -19057,7 +19059,7 @@ function rlRender() {
     if (RL.topic && RL.topic.indexOf('__') !== 0 && r.topic !== RL.topic) return false;
     var tx = rlTx(r);
     return !q || rlNorm(r.title + ' ' + r.body + ' ' + r.topic + ' ' + tx.title + ' ' + tx.body).indexOf(q) !== -1;
-  }).sort(function (a, b) { var ua = (a.reads || []).indexOf(me) === -1 ? 0 : 1, ub = (b.reads || []).indexOf(me) === -1 ? 0 : 1; return ua - ub || String(b.updatedAt).localeCompare(String(a.updatedAt)); });
+  }).sort(function (a, b) { var na = rlOrd(a), nb = rlOrd(b); if (na || nb) return (na || 1e9) - (nb || 1e9); var ua = (a.reads || []).indexOf(me) === -1 ? 0 : 1, ub = (b.reads || []).indexOf(me) === -1 ? 0 : 1; return ua - ub || String(b.updatedAt).localeCompare(String(a.updatedAt)); });
   var box = document.getElementById('rlList');
   if (!RL.data) { box.innerHTML = '<div class="rl-empty">불러오는 중…</div>'; return; }
   if (!list.length) { box.innerHTML = '<div class="rl-empty">' + (all.length ? '<b>맞는 규칙이 없어요</b>다른 주제나 검색어로 찾아보세요.' : '<b>아직 규칙이 없어요</b>[＋ 규칙 추가]로 사진 한 장과 한 줄만 적으면 돼요.') + '</div>'; return; }
