@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvm7en4v">
+  <meta name="ry-build" content="mvmdj5mg">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -11666,16 +11666,19 @@ video {
       var nums = (String(l.name || '').match(/\d+/g) || []).filter(function (n) { return n.length <= 4; });
       var szM = String(l.clean || l.name || '').toLowerCase().match(/(^|[\s(\[_-])(xs|s|m|l|xl|xxl|sm|ss|sss)(?=$|[\s)\]_-])/g), szIn = szM ? szM[szM.length - 1].replace(/[^a-z]/g, '') : '';
       var need = Math.min(5, Math.max(3, Math.round(toks.join('').length * 0.4)));   // 낱말 길이 40% 이상 맞아야 (짧은 '크림'·'폼' 만으로는 안 됨)
-      var best = null, bs = 0;
+      var best = null, bs = 0; l._guess = false;
       /* 1020 '페스룸 릴렉스 샤워 → 코빵에어 릴렉스' — 명세서 첫 낱말이 앱에 있는 브랜드면 그 브랜드 상품 중에서만 */
       var b0 = toks[0], brandItems = b0 && b0.length >= 2 ? RY_CAT.items.filter(function (c) { var w0 = key(String(c.name || '').trim().split(/\s+/)[0]); return w0 === b0 || (b0.length >= 3 && ryNear(w0, b0)) || (w0.length >= 3 && b0.indexOf(w0) === 0) || (b0.length >= 3 && w0.indexOf(b0) === 0); }) : [];
-      (brandItems.length ? brandItems : RY_CAT.items).forEach(function (c) {
+      var scan = function (pool) { pool.forEach(function (c) {
         var nm = String(c.name || '').split('\n')[0], k = key(nm), w = key(nm.trim().split(/\s+/)[0]), sc = 0;
         toks.forEach(function (t) { if (k.indexOf(t) !== -1) sc += t.length; else if (t.length >= 3 && w.length >= 3 && ryNear(t, w.slice(0, t.length + 1).length === t.length ? w : w.slice(0, t.length))) sc += t.length; });
         if (szIn) { var szC = (nm.toLowerCase().match(/(^|[\s(\[_-])(xs|s|m|l|xl|xxl|sm|ss|sss)(?=$|[\s)\]_-])/g) || []).map(function (x) { return x.replace(/[^a-z]/g, ''); }); if (szC.length) sc += szC.indexOf(szIn) !== -1 ? 2 : -3; }   // 1020 '미끄럼방지셔츠 M' → M 사이즈 쪽으로
         var tsc = sc; nums.forEach(function (n) { if (tsc > 0 && new RegExp('(^|\\D)' + n + '(\\D|$)').test(k)) sc += 1.5; });   // 1020 '신신파스-Rx(덕용30매)' → 30매(대) 쪽으로 · 숫자만 같은 건 안 셈 ('새 크림 50ml' ≠ '50앰플')
         if (tsc >= need && sc > bs) { bs = sc; best = nm; }
-      });
+      }); };
+      scan(brandItems.length ? brandItems : RY_CAT.items);
+      /* 1024 MJ '명세서 상쾌환이 큐원 상쾌환 주문으로 안 가고 다른 걸로 입고' — 첫 낱말이 '상쾌환'이라 '상쾌환 …' 상품만 보고 '큐원 상쾌환 …'을 놓침 → 못 찾으면 전체에서 한 번 더 (이렇게 찾은 건 직원이 [맞아요]로 확인) */
+      if (!best && brandItems.length) { scan(RY_CAT.items); l._guess = !!best; }
       return (l._cat = best || '');
     }
     function invRender(busyMsg) {
@@ -11708,7 +11711,7 @@ video {
             var lv = (cachedInboundItems || []).filter(function (x) { return String(x.name).split('\n')[0].replace(/\s+/g, '') === String(l.catName).replace(/\s+/g, ''); })[0];
             if (lv && live[lv.rowNumber] && !seenRow[lv.rowNumber]) {
               var oq5 = parseFloat(String(lv.targetQty).replace(/[^0-9.]/g, '')) || 0, bu5 = parseFloat(lv.boxUnit) || 0, q5 = Number(l.appQty != null ? l.appQty : l.qty) || 0;
-              l.row = lv.rowNumber; l.appName = l.catName; l.orderQty = lv.targetQty; l.unit = lv.unit || '개'; l.catName = ''; l.newItem = false;
+              l.row = lv.rowNumber; l.appName = l.catName; l.orderQty = lv.targetQty; l.unit = lv.unit || '개'; l.catName = ''; l.newItem = false; if (l._guess) { l.guess = true; l.guessOd = lv.orderDate || ''; }
               if (l.unit === '박스' && bu5 > 1 && q5 === oq5 * bu5) l.appQty = oq5;   // 300개 = 1박스
               l.qtyOk = oq5 > 0 && Number(l.appQty != null ? l.appQty : l.qty) === oq5; has = live[l.row]; dup = false; seenRow[l.row] = 1;
             }
@@ -11728,10 +11731,12 @@ video {
             if (dsc && chk) { chk = ''; nOk--; tag += '<span class="inv-tag inv-warn">⚠ 명세서 날짜(' + escapeHtml(r.date) + ')가 발주일(' + escapeHtml(l.orderDate) + ')보다 빨라요 · 이전 주문분일 수 있어요</span>'; }
           }
           var vAn = has && !dup ? l.appName : (!has && !l.doneName && !l.newItem ? l.catName : ''), vw = vAn && !l.userPick && !l.nameOk && !r.wrongStore ? invVariantDiff(l.name + ' ' + (l.spec || ''), vAn) : '';   // 1023
-          if (vw && has && chk) { chk = ''; nOk--; }
+          var gs = (l.guess || (l._guess && !has && !l.doneName)) && !l.userPick && !l.nameOk && !r.wrongStore && !dup;   // 1024 짐작으로 찾은 짝
+          if ((vw || gs) && has && chk) { chk = ''; nOk--; }
           var isDone = !has && !!l.doneName && !r.wrongStore;   // 1023 MJ '주문 안 한 상품 체크가 안 돼' — '이미 입고완료'로 짝지어진 줄은 체크칸이 잠겨 있었음 → 눌러서 또 들어온 걸로 넣을 수 있게
-          var isEx = !has && !l.doneName && !r.wrongStore; if (vw && isEx && l.exOff == null) l.exOff = true; if (isEx && !l.exOff) { chk = ' checked'; nEx++; }
-          if (vw) tag = '<div class="inv-vw">⚠️ <b>이름이 달라요</b> · ' + escapeHtml(vw) + '<br>박스에 적힌 이름을 한 번 더 보고, 같은 상품이면 <button type="button" class="inv-alt" style="margin:4px 0 0" onclick="event.preventDefault(); invSame(' + j + ',' + i + ')">✓ 같은 상품 맞아요</button> · 다르면 아래 [🔁 다른 상품으로 바꾸기]나 [🆕 새 상품으로 등록]</div>' + tag;   // 1022 MJ '주문 안 한 물건은 체크가 안 된다고' → 미리 체크, 해제하면 알림·재고에서 빠짐
+          var isEx = !has && !l.doneName && !r.wrongStore; if ((vw || gs) && isEx && l.exOff == null) l.exOff = true; if (isEx && !l.exOff) { chk = ' checked'; nEx++; }
+          if (gs) tag = '<div class="inv-vw">🤔 <b>혹시 이 ' + (has ? '주문' : '상품') + ' 아닌가요?</b> · ' + escapeHtml(has ? l.appName + (l.guessOd ? ' (' + String(l.guessOd).slice(5) + ' 주문 · 입고 대기)' : ' (입고 대기)') : l.catName) + '<br>명세서 이름이 달라서 AI가 바로 짝을 못 지었어요. 같은 상품이면 <button type="button" class="inv-alt" style="margin:4px 0 0" onclick="event.preventDefault(); invSame(' + j + ',' + i + ')">✓ 맞아요, 이 상품이에요</button> · 아니면 아래 [🔁 다른 상품으로 바꾸기]나 [🆕 새 상품으로 등록]</div>' + tag;
+          else if (vw) tag = '<div class="inv-vw">⚠️ <b>이름이 달라요</b> · ' + escapeHtml(vw) + '<br>박스에 적힌 이름을 한 번 더 보고, 같은 상품이면 <button type="button" class="inv-alt" style="margin:4px 0 0" onclick="event.preventDefault(); invSame(' + j + ',' + i + ')">✓ 같은 상품 맞아요</button> · 다르면 아래 [🔁 다른 상품으로 바꾸기]나 [🆕 새 상품으로 등록]</div>' + tag;   // 1022 MJ '주문 안 한 물건은 체크가 안 된다고' → 미리 체크, 해제하면 알림·재고에서 빠짐
           var price = l.unitPrice != null ? '<div class="inv-n">사입가 ' + (l.packK ? '1개 ' : '') + won(l.unitPrice) + (l.packK && l.packUp ? ' (명세서 1단위 ' + won(l.packUp) + ' ÷ ' + l.packK + ')' : '') + ' (부가세 별도 · 포함하면 ' + won(l.unitPrice * 1.1) + ') · 금액 ' + won(l.amount) + '</div>' : '';   // 1023 낱개로 바꾼 줄은 1개 값
           if (l.priceSus) price += '<div class="inv-n" style="color:#B42318;font-weight:700">⚠️ 사입가 ' + (l.pricePct > 0 ? '+' : '') + l.pricePct + '% · ' + escapeHtml(l.priceSus) + ' — 맞는 상품인지 확인해 주세요</div>';
           else if (l.pricePct != null) price += l.priceOdd ? '<div class="inv-n">' + escapeHtml(l.priceHow) + '와 단위가 달라 보여요 (낱개·박스 확인)</div>'
