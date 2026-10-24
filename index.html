@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvm05nm8">
+  <meta name="ry-build" content="mvm1alcj">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4972,17 +4972,10 @@ html body #ryLaunchGrid .tl-search{top:56px}
       var L = (RY_IVL[ryPrKey(item.name)] || []).filter(function (x) { return x.f !== 'none'; }); if (!L.length) return '';   // 1021 사진 없는 바로 입고는 📄 없음
       return ' <button type="button" class="ry-pr ry-ivd" data-k="' + escapeHtml(ryPrKey(item.name)) + '" onclick="event.stopPropagation(); invDocShow(this)" aria-label="명세서 사진 보기" title="명세서 사진">📄</button>';
     }
-    function invDocShow(btn) {
+    function invDocShow(btn) {   /* 1024 MJ '명세서 볼 때 계정 선택 안 나오게' — 드라이브 앱으로 넘기지 않고 앱 안 사진 보기(두 손가락 확대) · 여러 장이면 좌우로 (최근 순) */
       var L = RY_IVL && (RY_IVL[btn.dataset.k] || []).filter(function (x) { return x.f !== 'none'; }); if (!L || !L.length) return;
-      if (L.length === 1) { window.open('https://drive.google.com/file/d/' + encodeURIComponent(L[0].f) + '/view', '_blank', 'noopener'); return; }
-      var old = document.getElementById('prPop'); if (old) old.remove();
-      var d = document.createElement('div'); d.id = 'prPop';
-      d.innerHTML = L.map(function (x) { return '<div><a href="https://drive.google.com/file/d/' + encodeURIComponent(x.f) + '/view" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline">📄 ' + escapeHtml(x.d + ' 입고 · ' + x.s) + '</a></div>'; }).join('') + '<small>명세서로 입고한 기록 · 최근 순</small>';
-      document.body.appendChild(d);
-      var r = btn.getBoundingClientRect(), w = d.offsetWidth, x = Math.max(8, Math.min(window.innerWidth - w - 8, r.left + r.width / 2 - w / 2)), y = r.bottom + 8;
-      if (y + d.offsetHeight > window.innerHeight - 8) y = r.top - d.offsetHeight - 8;
-      d.style.left = x + 'px'; d.style.top = y + 'px';
-      setTimeout(function () { document.addEventListener('click', function off(e) { if (!d.contains(e.target)) { d.remove(); document.removeEventListener('click', off, true); } }, true); }, 0);
+      var urls = L.map(function (x) { return 'https://lh3.googleusercontent.com/d/' + encodeURIComponent(x.f); });
+      openImagePreview(urls[0], 0, urls, 0);
     }
     /* ═══ 1020 MJ '명세서 입고 수량 + 15일 판매량으로 지금 몇 개 남았는지 — 직원들도 다 보게'
        추정 재고 = (센 개수 또는 지난 남은 수) + 입고 수량 − 하루 판매(15일 판매 ÷ 15) × 지난 날 · 입고 수량은 명세서 수량, 없으면 주문 수량 ═══ */
