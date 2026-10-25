@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvn5bsnr">
+  <meta name="ry-build" content="mvnvg5is">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4002,6 +4002,19 @@ html:not(#q):not(#w):not(#e) body:not(#r) #ryLaunch .ry-ln-h{position:sticky;top
 html body #ryLaunchGrid .tl-search{top:56px}
 }
 @media(max-width:380px){html body #ryLaunchGrid .tl-rc button{padding:0 12px}}
+</style>
+<style id="ryFx1025">
+/* 1025 MJ 모션 ①② 누른 버튼은 초록 체크 · 파이프라인 숫자 톡 · ③ 명세서 줄이 하나씩 */
+html:not(#q):not(#w):not(#e) body:not(#r) button.ry-done[onclick],html:not(#q):not(#w):not(#e) body:not(#r) .ry-done{background:#16A34A!important;border-color:#16A34A!important;color:#fff!important;opacity:1!important;box-shadow:0 0 0 4px rgba(22,163,74,.18)!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-done svg{display:inline-block;vertical-align:-3px;margin-right:4px;animation:ryDoneChk .32s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes ryDoneChk{from{transform:scale(.2);opacity:0}}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animation:ryBumpN .5s cubic-bezier(.2,1.5,.4,1)}
+@keyframes ryBumpN{0%{transform:scale(1)}30%{transform:scale(1.28)}100%{transform:scale(1)}}
+#invBox .inv-line.inv-fx{animation:ryInvIn .34s cubic-bezier(.2,.8,.2,1) var(--ryd,0ms) both}
+#invBox .inv-line.inv-fx input:checked{animation:ryInvChk .38s cubic-bezier(.2,1.6,.4,1) calc(var(--ryd,0ms) + 160ms) both}
+@keyframes ryInvIn{from{opacity:0;transform:translateY(10px)}}
+@keyframes ryInvChk{from{transform:scale(.3);opacity:.3}}
+@media (prefers-reduced-motion:reduce){html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump,html:not(#q):not(#w):not(#e) body:not(#r) .ry-done svg,#invBox .inv-line.inv-fx,#invBox .inv-line.inv-fx input:checked{animation:none!important}}
 </style>
 <style id="twPre">/* Tailwind 3.4.17 미리 만든 것 — ~/bin/tw-build.js 가 배포 때마다 다시 만듦, 손으로 고치지 말 것 */
 *, ::before, ::after {
@@ -10595,19 +10608,51 @@ video {
       return card;
     }
 
+    /* 1025 MJ 모션 ①② '처리하면 어디로 갔는지 보이게' — 누른 버튼은 초록 체크로 바뀌고, 카드는 접힌 뒤 다음 칸으로 (0.5초). 움직임 줄이기를 켠 폰이나 버튼이 화면에 없으면 바로 */
+    function ryDoneFx(row, kind, then) {
+      var sel = kind === 'approve' ? '[data-approve-row="' + row + '"]' : '[onclick^="completeInbound(' + row + ')"]';
+      var bs = [].slice.call(document.querySelectorAll(sel)).filter(function (b) { return b.offsetParent; });
+      if (!bs.length || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return then();
+      bs.forEach(function (b) {
+        b.classList.add('ry-done'); b.disabled = true;
+        b.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>' + (kind === 'approve' ? '승인' : '입고완료');
+        var c = b.closest('.ry-ocard, .ry-inrow, .ry25-pc, tr');
+        if (!c || !c.animate) return;
+        var fr = c.tagName === 'TR' ? [{ opacity: 1 }, { opacity: 0 }]
+          : [{ height: c.offsetHeight + 'px', opacity: 1 }, { height: '0px', opacity: 0, marginTop: '0px', marginBottom: '0px', paddingTop: '0px', paddingBottom: '0px', borderTopWidth: '0px', borderBottomWidth: '0px' }];
+        if (c.tagName !== 'TR') c.style.overflow = 'hidden';
+        c.animate(fr, { duration: 260, delay: 220, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' });
+      });
+      setTimeout(then, 500);
+    }
+    /* 1025 MJ 모션 ① — 파이프라인 · 입고내역 숫자가 바뀌면 톡 (처음 채워질 때는 가만히) */
+    (function () {
+      if (!window.MutationObserver) return;
+      ['tabReviewBadge', 'tabOrderBadge', 'tabInboundBadge', 'tabHistoryBadge'].forEach(function (id) {
+        var el = document.getElementById(id); if (!el) return;
+        var prev = el.textContent, first = true;
+        new MutationObserver(function () {
+          var t = el.textContent; if (t === prev) return; prev = t;
+          if (first) { first = false; return; }
+          el.classList.remove('ry-bump'); void el.offsetWidth; el.classList.add('ry-bump');
+        }).observe(el, { childList: true, characterData: true, subtree: true });
+      });
+    })();
     function approveOrder(rowNumber) {
       const key = 'approve-' + rowNumber;
       if (inFlight.has(key)) return;
       inFlight.add(key);
       showToast('발주 승인 · 최종 발주로 넘겼어요');
       const _nm = ryNameOf(rowNumber);
-      const itemIdx = cachedReviewItems.findIndex(it => it.rowNumber === rowNumber);
-      if (itemIdx !== -1) {
-        const item = cachedReviewItems.splice(itemIdx, 1)[0];
-        cachedOrderItems.unshift(item);
-        renderAllViews();
-        persistSnapshot();
-      }
+      ryDoneFx(rowNumber, 'approve', function () {   /* 1025 모션: 버튼 체크 → 카드 접힘 → 최종 발주로 */
+        const itemIdx = cachedReviewItems.findIndex(it => it.rowNumber === rowNumber);
+        if (itemIdx !== -1) {
+          const item = cachedReviewItems.splice(itemIdx, 1)[0];
+          cachedOrderItems.unshift(item);
+          renderAllViews();
+          persistSnapshot();
+        }
+      });
 
       google.script.run
         .withSuccessHandler(function(res) {
@@ -11493,15 +11538,18 @@ video {
 
       const itemIdx = cachedInboundItems.findIndex(it => it.rowNumber === rowNumber);
       const _nm = itemIdx !== -1 ? String(cachedInboundItems[itemIdx].name || '').split('\n')[0] : '';
-      if (itemIdx !== -1) {
-        const item = cachedInboundItems.splice(itemIdx, 1)[0];
+      const _move = function () {   /* 1025 모션: 명세서 한꺼번에(quiet)는 바로, 손으로 누른 건 버튼 체크 → 카드 접힘 → 입고내역으로 */
+        const ix = cachedInboundItems.findIndex(it => it.rowNumber === rowNumber);
+        if (ix === -1) return;
+        const item = cachedInboundItems.splice(ix, 1)[0];
         try { delete DELAY_REASONS[delayKey(item)]; } catch (eD) {}
         item.inboundDate = satD || cachedTodayStr || '오늘';
         item.inboundManager = currentSelectedMember;
         cachedHistoryItems.unshift(item);
         renderAllViews();
         persistSnapshot();
-      }
+      };
+      if (quiet) _move(); else ryDoneFx(rowNumber, 'inbound', _move);
 
       delete RY_SAT[rowNumber];
       var tries = 0, send = function () {   // 1020 명세서로 여러 개를 한 번에 → 하나씩 차례로 (한꺼번에 보내다 'Failed to fetch' 났음)
@@ -11778,7 +11826,19 @@ video {
       invShow(head + (INB1.on ? '<div class="inb1-grid"><div class="inb1-c">' + cam + warnBox + secs + '</div>' + inb1Html() + '</div>' : cam + warnBox + secs) + (INB1.on ? '' : '<button type="button" class="inv-alt" style="width:100%;margin:4px 0 8px" onclick="INB1.on = true; inb1Load(); invRender()">＋ 명세서 없이 온 것도 같이 입고</button>') + '<div class="inv-foot"><button class="inv-x" onclick="invClose()">닫기</button>' + (INB1.on ? '' : '<button class="inv-x" onclick="invPick(true)"' + (busyMsg ? ' disabled' : '') + '>📷 한 장 더</button>') + '<button class="inv-go" id="invGo" onclick="invDo()">입고확인</button></div>');
       var ib = document.getElementById('invBox'); if (ib) ib.classList.toggle('inb1-wide', !!INB1.on);
       if (INB1.on && INB1.s) { inb1Search(INB1.s); if (sAf) { var se = document.getElementById('inb1S'); if (se) se.focus({ preventScroll: true }); } }   // 명세서 읽기가 끝나 창이 다시 그려져도 ③ 검색 중이던 건 그대로 (키보드 안 닫힘)
-      invCount(!!busyMsg); invSave();
+      invCount(!!busyMsg); invFx(); invSave();
+    }
+    /* 1025 MJ 모션 ③ — 새로 읽은 명세서는 AI가 짝지은 줄이 위에서부터 하나씩 나타나고 체크가 톡 (한 장에 한 번만 · r._fx 로 기억) */
+    function invFx() {
+      var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      INVS.forEach(function (r, j) {
+        if (!r.success || r._fx) return; r._fx = 1; if (still) return;
+        var n = 0;
+        [].slice.call(document.querySelectorAll('#invBox input[data-j="' + j + '"]')).forEach(function (cb) {
+          var ln = cb.closest('.inv-line'); if (!ln) return;
+          ln.style.setProperty('--ryd', Math.min(n++ * 110, 1650) + 'ms'); ln.classList.add('inv-fx');
+        });
+      });
     }
     /* 1020 MJ 'AI 짝이 잘못돼 있어 — 다시 매칭' → 줄마다 입고대기 · 앱 상품에서 골라 바꾸기 */
     function invAlt(j, i) {
