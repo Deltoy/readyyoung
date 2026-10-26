@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvp1oki2">
+  <meta name="ry-build" content="mvp1sizd">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -11856,6 +11856,7 @@ video {
         renderAllViews();
         persistSnapshot();
       };
+      if (!quiet) try { ryMoveFx('[onclick^="completeInbound(' + rowNumber + ')"]', cachedInboundItems[itemIdx], 'tabHistoryBadge'); } catch (eFx) {}   // 1026 MJ '입고 완료하면 입고내역으로 쏙'
       if (quiet) _move(); else ryDoneFx(rowNumber, 'inbound', _move);
 
       delete RY_SAT[rowNumber];
@@ -13756,7 +13757,7 @@ video {
     /* 1026 MJ '검색해서 주문 요청할 때도 모션' — 누른 자리에서 '+N개'가 위 [1차 검토] 숫자로 날아가 톡 (화면 밖이면 위로 날아가 사라짐), 그 줄은 파랗게 한 번 빛남 */
     /* 1026 MJ '폰에서는 안 보여' — 목록을 내려 보면 위 탭 숫자가 화면 밖 → 맨 위에 그 탭 작은 칸을 잠깐 띄워 그리로 들어가게 */
     function ryFlyDock(tgt, c0) {
-      var pb = tgt.closest('.ry25-pipe'), l = pb && pb.querySelector('.ry25-pipe-l'), ic = pb && pb.querySelector('svg.ry-i'), d = document.createElement('div');
+      var pb = tgt.closest('.ry25-pipe, button'), l = pb && pb.querySelector('.ry25-pipe-l, .ry25-st-l'), ic = pb && pb.querySelector('svg.ry-i'), d = document.createElement('div');
       d.className = 'ry-fly-dock'; d.innerHTML = (ic ? ic.outerHTML : '') + '<span>' + escapeHtml(l ? l.textContent : '') + '</span><b>' + escapeHtml(c0) + '</b>';
       document.body.appendChild(d); if (d.animate) d.animate([{ opacity: 0, transform: 'translate(-50%,-14px)' }, { opacity: 1, transform: 'translate(-50%,0)' }], { duration: 200, easing: 'ease-out' });
       return d;
