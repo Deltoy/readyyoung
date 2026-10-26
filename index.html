@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvpd0vxa">
+  <meta name="ry-build" content="mvpdjhra">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -214,7 +214,7 @@
     [id$="Empty"], #searchEmptyMessage { color: #64748b; }
 
     /* 보조 탭 칩 — 통일 스타일 (선택된 탭만 진하게) */
-    .subtab { flex:1 1 0; min-width:60px; padding:6px 6px; border-radius:9px; font-size:11px; font-weight:600; color:#64748b; background:transparent; border:1px solid transparent; display:flex; align-items:center; justify-content:center; gap:4px; white-space:nowrap; transition:all .15s ease; cursor:pointer; }
+    .subtab { flex:1 1 0; min-width:60px; padding:6px 6px; border-radius:9px; font-size:11px; font-weight:600; color:#64748b; background:transparent; border:1px solid transparent; display:flex; align-items:center; justify-content:center; gap:4px; white-space:nowrap; transition:background-color .15s ease, color .15s ease, border-color .15s ease, box-shadow .15s ease; cursor:pointer; }
     .subtab:hover { background:#fff; color:#334155; }
     .subtab.active { background:#1e293b; color:#fff; font-weight:800; box-shadow:0 1px 2px rgba(15,23,42,.15); }
     .subtab-badge { font-size:10px; font-weight:800; min-width:16px; padding:0 5px; border-radius:9999px; background:rgba(100,116,139,.12); color:#64748b; line-height:16px; }
@@ -13820,7 +13820,7 @@ video {
     function ryFlyDock(tgt, c0) {
       var pb = tgt.closest('.ry25-pipe, button'), l = pb && pb.querySelector('.ry25-pipe-l, .ry25-st-l'), ic = pb && pb.querySelector('svg.ry-i'), d = document.createElement('div');
       d.className = 'ry-fly-dock'; d.innerHTML = (ic ? ic.outerHTML : '') + '<span>' + escapeHtml(l ? l.textContent : '') + '</span><b>' + escapeHtml(c0) + '</b>';
-      document.body.appendChild(d); if (d.animate) d.animate([{ opacity: 0, transform: 'translate(-50%,-14px)' }, { opacity: 1, transform: 'translate(-50%,0)' }], { duration: 200, easing: 'ease-out' });
+      document.body.appendChild(d); if (d.animate) d.animate([{ opacity: 0, transform: 'translate(-50%,-14px)' }, { opacity: 1, transform: 'translate(-50%,0)' }], { duration: 200, easing: 'cubic-bezier(.23,1,.32,1)' });
       return d;
     }
     function ryReqFx(btnEl, row, label, tgtId) {
@@ -13832,7 +13832,7 @@ video {
         var land = function () {
           if (dock) n.textContent = tgt.textContent;
           n.classList.remove('ry-bump'); void n.offsetWidth; n.classList.add('ry-bump');
-          if (dock) setTimeout(function () { if (!dock.animate) return dock.remove(); dock.animate([{ opacity: 1 }, { opacity: 0, transform: 'translate(-50%,-10px)' }], { duration: 220, fill: 'forwards' }).onfinish = function () { dock.remove(); }; }, 1100);
+          if (dock) setTimeout(function () { if (!dock.animate) return dock.remove(); dock.animate([{ opacity: 1 }, { opacity: 0, transform: 'translate(-50%,-10px)' }], { duration: 180, easing: 'cubic-bezier(.23,1,.32,1)', fill: 'forwards' }).onfinish = function () { dock.remove(); }; }, 1100);
         };
         var f = document.createElement('div'); if (rm || !r0 || !r0.width || !f.animate) return setTimeout(land, 520);   // 움직임 줄이기: 날지 않고 칸 숫자만
         if (dock) r1 = n.getBoundingClientRect();
@@ -17797,7 +17797,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .edu-gp-t small{font-size:12px;color:#
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-is{position:fixed;inset:0;z-index:9080}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-is[hidden]{display:none}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-is-dim{position:absolute;inset:0;background:rgba(16,24,40,.45)}
-html:not(#q):not(#w):not(#e) body:not(#r) .edu-is-sh{position:absolute;left:0;right:0;bottom:0;max-height:88vh;max-width:720px;margin:0 auto;display:flex;flex-direction:column;background:#fff;border-radius:20px 20px 0 0;box-shadow:0 -8px 32px rgba(16,24,40,.18);transform:translateY(12px);opacity:.6;transition:transform .2s ease,opacity .2s ease;font-family:"Pretendard","Pretendard Variable",-apple-system,BlinkMacSystemFont,sans-serif;color:#111827}
+html:not(#q):not(#w):not(#e) body:not(#r) .edu-is-sh{position:absolute;left:0;right:0;bottom:0;max-height:88vh;max-width:720px;margin:0 auto;display:flex;flex-direction:column;background:#fff;border-radius:20px 20px 0 0;box-shadow:0 -8px 32px rgba(16,24,40,.18);transform:translateY(100%);transition:transform 320ms cubic-bezier(.32,.72,0,1);font-family:"Pretendard","Pretendard Variable",-apple-system,BlinkMacSystemFont,sans-serif;color:#111827}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-is.on .edu-is-sh{transform:none;opacity:1}
 @media (prefers-reduced-motion:reduce){html:not(#q):not(#w):not(#e) body:not(#r) .edu-is-sh{transition:none}}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-is-h{display:flex;align-items:flex-start;gap:10px;padding:16px 16px 10px;border-bottom:1px solid #EDEEF0}
@@ -19845,6 +19845,17 @@ setInterval(function () { if (document.visibilityState === 'visible') rlLoad(); 
 #evSheet .ev-cancel{background:#F2F4F7;color:#344054}
 #evSheet .ev-save{background:#155EEF;color:#fff}
 #evSheet .ev-save:disabled{opacity:.5}
+/* 1026 MJ 'Emil Kowalski 기준으로 물류앱 움직임 점검' — 아래 창(36개 + 박스·반품·행사·빠른 입고)이 툭 나타나던 것 → 아래에서 올라옴
+   iOS 서랍 곡선 · 열 때만(닫기는 바로 · 다른 코드가 '열린 창' 셀 때 헷갈리지 않게) · @starting-style 못 쓰는 옛 폰은 지금처럼 바로 뜸 */
+@media (prefers-reduced-motion:no-preference){
+.ava-sheet.on:not(.st-inline),#bxSheet,#rlSheet,#evSheet{transition:transform 320ms cubic-bezier(.32,.72,0,1)}
+@starting-style{.ava-sheet.on:not(.st-inline),#bxSheet,#rlSheet,#evSheet{transform:translate(-50%,100%)}}
+#qinBox .qi-card{transition:transform 320ms cubic-bezier(.32,.72,0,1)}
+@starting-style{#qinBox .qi-card{transform:translateY(100%)}}
+@starting-style{html:not(#q):not(#w):not(#e) body:not(#r) .edu-is.on .edu-is-sh{transform:translateY(100%)}}   /* 숨김 풀고 바로 .on 이라 전환이 안 일어나던 것 */
+}
+.ava-dim.on,#bxDim,#rlDim,#evDim,#qinBox{transition:opacity 200ms ease}
+@starting-style{.ava-dim.on,#bxDim,#rlDim,#evDim,#qinBox{opacity:0}}
 </style>
 <div id="evDim" hidden onclick="evClose()"></div>
 <div id="evSheet" hidden role="dialog" aria-modal="true" aria-labelledby="evSheetT">
