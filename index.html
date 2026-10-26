@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvp51w1i">
+  <meta name="ry-build" content="mvp66ekb">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -14930,6 +14930,9 @@ video {
       }).withFailureHandler(function (e) { S15.busy = false; s15Render(); showToast('저장하지 못했어요: ' + (e && e.message || e), 3000); })
         .saveSalesDays(fromV, toV, S15.raw, list, currentSelectedMember, links);
     }
+    function s15MemSave() {   // 1026 AI 판단은 바로 기억 (저장 안 하고 닫거나 중간에 끊겨도)
+      try { var mk = Object.keys(S15.aiMem || {}); if (!mk.length) return; S15.info = S15.info || { links: {} }; S15.info.links = S15.info.links || {}; mk.forEach(function (k) { S15.info.links[k] = S15.aiMem[k]; }); google.script.run.withSuccessHandler(function () {}).withFailureHandler(function () {}).saveS15Links(S15.aiMem, currentSelectedMember); } catch (eM) {}
+    }
     function s15AutoGo() {   // 하루치로 모은 최근 15일 — AI·새 상품 등록이 끝나고 확인할 게 없으면 바로 저장
       if (!S15.virt || !S15.autoGo || S15.busy) return; S15.autoGo = false;
       var chk = (S15.groups || []).filter(function (g) { return g.st === 'check'; }).length;
@@ -15177,10 +15180,10 @@ video {
       var step = function () {
         if (i0 >= tasks.length) {
           S15.busy = false; S15.aiMsg = '🤖 AI 맞추기 끝 · 확실한 ' + applied + '개 자동 연결' + (wrong ? ' · 엑셀에 없는 ' + wrong + '개' : '') + (S15.unsure.length ? ' · 애매한 ' + S15.unsure.length + '개는 AI 추천을 걸어 확인해 주세요에 (맞으면 \'맞아요\' 한 번)' : '') + (vari ? ' · 이미 있는 상품의 다른 줄(낱개 등) ' + vari + '개는 등록 안 함' : '') + (S15.newList.length ? ' · 앱에 없는 상품 ' + S15.newList.length + '개' : '');
-          try { var mk = Object.keys(S15.aiMem || {}); if (mk.length) { S15.info = S15.info || { links: {} }; S15.info.links = S15.info.links || {}; mk.forEach(function (k) { S15.info.links[k] = S15.aiMem[k]; }); google.script.run.withSuccessHandler(function () {}).withFailureHandler(function () {}).saveS15Links(S15.aiMem, currentSelectedMember); } } catch (eM) {}   // 1026 AI 판단은 바로 기억 (저장 안 하고 닫아도)
+          s15MemSave();
           s15Render(); s15RegisterNew(true, s15AutoGo); return;
         }
-        var part = tasks.slice(i0, i0 + 40); i0 += part.length;
+        var part = tasks.slice(i0, i0 + 40); i0 += part.length;   // 1026 끊기면(Failed to fetch) 두 번까지 다시
         var send = part.map(function (t) { return t.kind === 'app' ? { q: t.g.name, c: t.cands.map(function (x) { return x.n; }) } : { q: t.x.n, c: t.cands.map(function (g) { return g.name; }) }; });
         google.script.run.withSuccessHandler(function (r) {
           if (r && r.success) part.forEach(function (t, k) {
@@ -15201,7 +15204,11 @@ video {
             }
           });
           S15.aiMsg = 'AI가 맞추는 중… ' + Math.min(i0, tasks.length) + '/' + tasks.length; s15Render(); step();
-        }).withFailureHandler(function (e) { S15.busy = false; S15.aiMsg = 'AI 맞추기를 못 했어요: ' + (e && e.message || e); s15Render(); }).s15AiMatch(send, currentSelectedMember);
+          S15.aiTry = 0;
+        }).withFailureHandler(function (e) {
+          if ((S15.aiTry = (S15.aiTry || 0) + 1) <= 2) { i0 -= part.length; S15.aiMsg = 'AI 연결이 끊겨 다시 하는 중… ' + i0 + '/' + tasks.length; s15Render(); setTimeout(step, 4000); return; }
+          S15.aiTry = 0; S15.busy = false; s15MemSave(); S15.aiMsg = 'AI 연결이 끊겨 ' + (i0 - part.length) + '/' + tasks.length + '에서 멈췄어요 · [AI로 한 번에 맞추기]를 다시 누르면 남은 것만 해요 (' + (e && e.message || e) + ')'; s15Render();
+        }).s15AiMatch(send, currentSelectedMember);
       };
       step();
     }
@@ -15224,9 +15231,10 @@ video {
     function s15PriceList() { var out = []; (S15.groups || []).forEach(function (g) { if (g.st === 'auto' && g.x && g.x.price != null) g.rows.forEach(function (r) { out.push({ row: r, cost: g.x.cost, price: g.x.price }); }); }); return out; }
     function s15Save() {
       if (S15.busy) return;
-      var list = [], links = {}, cnt = 0;
+      var list = [], links = {}, cnt = 0, keep0 = [];
       S15.groups.forEach(function (g) {
         if (g.st === 'auto') { cnt++; g.rows.forEach(function (r) { list.push({ row: r, value: g.x.q }); }); if (g.pick) links[g.key] = g.x.n; }
+        else if (g.st === 'check' && String(g.cur == null ? '' : g.cur).trim() !== '' && isFinite(+g.cur)) g.rows.forEach(function (r) { keep0.push({ row: r, value: +g.cur }); });   // 1026 MJ '판단 어려워 · 제외하고 진행' → 확인 안 한 건 지금 숫자 그대로 (0으로 안 지움)
         else if (g.st === 'skip' && g.pick) links[g.key] = '-';
         else if (g.unlink) links[g.key] = null;
       });
@@ -15265,7 +15273,7 @@ video {
           try { google.script.run.withSuccessHandler(function () { try { if (typeof SP !== 'undefined') { SP.data = null; } } catch (e2) {} try { SP.boxAt = 0; bxLoad(); } catch (e3) {} }).setSetSales15(xs0.map(function (x) { return { n: x.n, q: x.q, p: x.price }; }), per0); } catch (eSet) {}
         })
         .withFailureHandler(function (e) { S15.busy = false; s15Render(); showToast('저장하지 못했어요: ' + (e && e.message || e), 2600); })
-        .updateSales15Batch(list, links, { from: (document.getElementById('s15From') || {}).value || '', to: (document.getElementById('s15To') || {}).value || '' });
+        .updateSales15Batch(list.concat(keep0), links, { from: (document.getElementById('s15From') || {}).value || '', to: (document.getElementById('s15To') || {}).value || '' });
     }
 
     /* ===== 0925 세트 · 인플루언서 담당 — 서버 getSetDuty (근무표 앱을 읽어 자동 배정) · 문준만 칸 변경 ===== */
