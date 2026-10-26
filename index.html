@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvp1sizd">
+  <meta name="ry-build" content="mvp2tu97">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -6655,29 +6655,42 @@ video {
     }
     /* ═══ 1020 MJ '명세서 입고 수량 + 15일 판매량으로 지금 몇 개 남았는지 — 직원들도 다 보게'
        추정 재고 = (센 개수 또는 지난 남은 수) + 입고 수량 − 하루 판매(15일 판매 ÷ 15) × 지난 날 · 입고 수량은 명세서 수량, 없으면 주문 수량 ═══ */
-    var RY_SC = null, _scLoading = false;
+    var RY_SC = null, _scLoading = false, RY_DS = null;
+    /* 1026 MJ '하루치 엑셀을 올리면 추정 재고를 자동으로' — 하루 판매가 있는 날은 그날 실제 수, 없는 날은 15일 평균 (그 상품이 한 번도 안 나온 상품이면 평균) */
+    function stkDsPrep(ds) {
+      if (!ds || !ds.days || !ds.days.length) return null;
+      var list = ds.days.map(stkDay), q = {};
+      Object.keys(ds.q || {}).forEach(function (k) { var a = ds.q[k], o = q[k] = {}; for (var i = 0; i + 1 < a.length; i += 2) o[list[a[i]]] = a[i + 1]; });
+      return { list: list, q: q };
+    }
+    function stkSold(k, daily, a, b, use) {   // a ≤ 날 < b 동안 판 수
+      if (!(b > a)) return 0;
+      var s = daily * (b - a), D = RY_DS, qk = D && D.q[k];
+      if (qk) D.list.forEach(function (x) { var w = Math.min(x + 1, b) - Math.max(x, a); if (w > 0) { s += w * ((qk[x] || 0) - daily); if (use) use.n++; } });
+      return s;
+    }
     function stkDay(s) { var m = String(s || '').match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/); return m ? Date.UTC(+m[1], +m[2] - 1, +m[3]) / 864e5 : null; }
     function stkToday() { var d = new Date(); return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 864e5; }
     function stkOf(it) {
       if (!it || !it.name) return null;
-      if (!RY_SC) { if (!_scLoading && typeof google !== 'undefined' && google.script) { _scLoading = true; google.script.run.withSuccessHandler(function (r) { _scLoading = false; RY_SC = (r && r.map) || {}; try { renderAllViews(); } catch (e) {} }).withFailureHandler(function () { _scLoading = false; RY_SC = {}; }).getStockCounts(); } return null; }
+      if (!RY_SC) { if (!_scLoading && typeof google !== 'undefined' && google.script) { _scLoading = true; google.script.run.withSuccessHandler(function (r) { _scLoading = false; RY_SC = (r && r.map) || {}; try { RY_DS = stkDsPrep(r && r.ds); } catch (eDs) { RY_DS = null; } try { renderAllViews(); } catch (e) {} }).withFailureHandler(function () { _scLoading = false; RY_SC = {}; }).getStockCounts(); } return null; }
       var k = ryPrKey(it.name), s15 = parseFloat(String(it.sales15 == null ? '' : it.sales15).replace(/[^0-9.]/g, '')) || 0, daily = s15 / 15;
       var inbD = stkDay(it.inboundDate), cnt = RY_SC[k], cntD = cnt ? stkDay(cnt.d) : null, now = stkToday();
       var iv = RY_IVL && RY_IVL[k] && RY_IVL[k].filter(function (x) { return stkDay(x.d) === inbD && x.q > 0; })[0];
       var bu = parseFloat(it.boxUnit) || 0, oq = parseFloat(String(it.targetQty || '').replace(/[^0-9.]/g, '')) || 0;
       var boxQ = function (q) { return it.unit === '박스' && bu > 1 && q > 0 && q < bu && q <= 20 ? q * bu : q; };   // 1023 MJ '아렉스 소 입고됐는데 추정 재고가 안 늘어' — 박스 단위 상품은 명세서 연결 수량이 박스 수(1)일 때가 있음 → × 1박스 개수(60)
       var inQty = iv ? boxQ(iv.q) : (it.unit === '박스' && bu ? oq * bu : oq), src = iv ? '명세서' : '주문 수량';
-      var est, how, baseD;
+      var est, how, baseD, use = { n: 0 };
       if (cnt && (inbD == null || cntD >= inbD)) { est = cnt.n; how = cnt.d.slice(5) + '에 ' + cnt.by + '님이 센 ' + cnt.n + '개'; baseD = cntD; }
-      else if (inbD != null && inQty > 0) { var carry = cnt ? Math.max(0, cnt.n - daily * (inbD - cntD)) : 0; est = carry + inQty; how = String(it.inboundDate).slice(5, 10) + ' 입고 ' + inQty + '개(' + src + ')' + (carry ? ' + 그때 남은 약 ' + Math.round(carry) + '개' : ''); baseD = inbD; }
+      else if (inbD != null && inQty > 0) { var carry = cnt ? Math.max(0, cnt.n - stkSold(k, daily, cntD, inbD, use)) : 0; est = carry + inQty; how = String(it.inboundDate).slice(5, 10) + ' 입고 ' + inQty + '개(' + src + ')' + (carry ? ' + 그때 남은 약 ' + Math.round(carry) + '개' : ''); baseD = inbD; }
       else { var first = RY_IVL && RY_IVL[k] && RY_IVL[k].filter(function (x) { return x.q > 0; }).slice(-1)[0]; if (!first) return null; baseD = stkDay(first.d) - 0.5; est = 0; how = '주문 없이 명세서로 들어온 것만'; }   // 주문 없이 명세서로만 들어온 상품
       /* 1020 주문 안 했는데 명세서로 들어온 것 (입고일 뒤에 추가로 들어온 수량) · 1023 날짜 순으로 — 재고는 0 밑으로 안 내려감 (전엔 −90 + 300 = 210 처럼 모자란 만큼 새 입고에서 빠졌음) */
       var t = baseD;
       (RY_IVL && RY_IVL[k] || []).filter(function (x) { var d = stkDay(x.d); return x.q > 0 && d != null && d > baseD && !(iv && x === iv); }).sort(function (a, b) { return stkDay(a.d) - stkDay(b.d); })
-        .forEach(function (x) { var d = stkDay(x.d), q = boxQ(x.q); est = Math.max(0, est - daily * (d - t)) + q; t = d; if (how.indexOf('명세서로 들어온 것만') < 0 || x !== first) how += ' + ' + x.d.slice(5) + ' 명세서로 ' + q + '개'; });
-      est = est - daily * (now - t);
+        .forEach(function (x) { var d = stkDay(x.d), q = boxQ(x.q); est = Math.max(0, est - stkSold(k, daily, t, d, use)) + q; t = d; if (how.indexOf('명세서로 들어온 것만') < 0 || x !== first) how += ' + ' + x.d.slice(5) + ' 명세서로 ' + q + '개'; });
+      est = est - stkSold(k, daily, t, now, use);
       est = Math.max(0, Math.round(est));
-      return { est: est, left: daily > 0 ? Math.floor(est / daily) : null, daily: daily, how: how, k: k, sure: !!(cnt && (inbD == null || cntD >= inbD)) || !!iv };   // sure = 센 개수·명세서 수량 기준 (주문 수량만이면 그 전에 남아 있던 재고를 몰라 적게 나올 수 있음)
+      return { est: est, left: daily > 0 ? Math.floor(est / daily) : null, daily: daily, how: how, k: k, act: use.n, sure: !!(cnt && (inbD == null || cntD >= inbD)) || !!iv };   // sure = 센 개수·명세서 수량 기준 (주문 수량만이면 그 전에 남아 있던 재고를 몰라 적게 나올 수 있음)
     }
     /* 1023 MJ '84개 입고됐다는데 추정 재고가 왜 달라' — 입고내역 줄(그날 입고만 보고 계산)과 상품 목록(전체 기록)이 다른 숫자를 냈음 → 어디서든 같은 상품 = 같은 숫자 (상품 목록 기준) */
     var _stkCM = null, _stkCMs = null;
@@ -6696,7 +6709,7 @@ video {
       var old = document.getElementById('prPop'); if (old) old.remove();
       var d = document.createElement('div'); d.id = 'prPop';
       d.innerHTML = '<div><span>추정 재고 (창고 여분)</span><b>약 ' + s.est + '개</b></div><div><span>하루 판매</span><b>' + (Math.round(s.daily * 10) / 10) + '개</b></div>' + ''
-        + '<small>' + escapeHtml(s.how) + ' − 그 뒤 판매 (15일 판매 ÷ 15 × 지난 날) · 반품·파손은 안 빠져요' + (s.sure ? '' : '<br><b style="color:#FEC84B">입고 전에 남아 있던 재고는 몰라서 실제보다 적게 나올 수 있어요. 한 번 세어서 고치면 정확해져요.</b>') + '</small>'
+        + '<small>' + escapeHtml(s.how) + (s.act ? ' − 그 뒤 판매 (하루 판매 엑셀 ' + s.act + '일은 실제 수 · 나머지 날은 15일 판매 ÷ 15)' : ' − 그 뒤 판매 (15일 판매 ÷ 15 × 지난 날)') + ' · 반품·파손은 안 빠져요' + (s.sure ? '' : '<br><b style="color:#FEC84B">입고 전에 남아 있던 재고는 몰라서 실제보다 적게 나올 수 있어요. 한 번 세어서 고치면 정확해져요.</b>') + '</small>'
         + '<button type="button" class="stk-cnt" onclick="stkCount(this)" data-n="' + escapeHtml(nm) + '">✍️ 창고 여분 세서 고치기</button>';
       document.body.appendChild(d);
       var r = btn.getBoundingClientRect(), w = d.offsetWidth, x = Math.max(8, Math.min(window.innerWidth - w - 8, r.left + r.width / 2 - w / 2)), y = r.bottom + 8;
@@ -14879,6 +14892,50 @@ video {
       }
       return null;
     }
+    /* 1026 MJ '하루치 엑셀을 올리면 자동으로 계산' — 엑셀 줄을 그대로 날짜별로 쌓음 [상품명, 제조사, 수량, 매출, 할인, 사입가, 순이익] (0원 줄도 · 이름은 s15ParseRows 와 똑같이 trim 만 → 연결 이름이 그대로 맞음) */
+    function s15RawRows(a) {
+      var nb = function (v) { if (typeof v === 'number') return isFinite(v) ? v : 0; var n = Number(String(v == null ? '' : v).replace(/[^\d.\-]/g, '')); return isFinite(n) ? n : 0; };
+      for (var i = 0; i < Math.min(a.length, 30); i++) {
+        var h = (a[i] || []).map(function (x) { return String(x == null ? '' : x).replace(/\s+/g, ''); }), f = function (re) { for (var j = 0; j < h.length; j++) if (re.test(h[j])) return j; return -1; };
+        var c = { name: f(/^(판매)?상품명$|^품명$|^제품명$/), maker: f(/^제조사$/), qty: f(/^판매수량$|^수량$/), sales: f(/^매출(금액|액)?$|^판매금액$/), disc: f(/^할인(금액)?$/), cost: f(/^사입가$|^매입가$|^원가$/), profit: f(/^순이익$/) };
+        if (c.name < 0 || c.qty < 0) continue;
+        var g = function (r, k) { return c[k] < 0 ? '' : r[c[k]]; };
+        return a.slice(i + 1).map(function (r) { var nm = String(g(r, 'name') == null ? '' : g(r, 'name')).trim(), q = nb(g(r, 'qty')); return nm && q && !/^(합계|총계|소계)/.test(nm) ? [nm.slice(0, 120), String(g(r, 'maker') || '').slice(0, 40), q, nb(g(r, 'sales')), nb(g(r, 'disc')), nb(g(r, 'cost')), nb(g(r, 'profit'))] : null; }).filter(Boolean).slice(0, 6000);
+      }
+      return null;
+    }
+    function s15Span(a, b) { return /^\d{4}-\d{2}-\d{2}$/.test(a || '') && /^\d{4}-\d{2}-\d{2}$/.test(b || '') && a <= b ? Math.round((Date.parse(b) - Date.parse(a)) / 864e5) + 1 : 0; }
+    function s15Yday() { var d = new Date(); d.setDate(d.getDate() - 1); return sdLocalDate(d); }
+    function s15DayMode() { try { return localStorage.getItem('ry_s15_day') === '1'; } catch (e) { return false; } }
+    function s15SetYesterday() { var f = document.getElementById('s15From'), t = document.getElementById('s15To'); if (f && t) { f.value = t.value = s15Yday(); } }
+    /* 올린 엑셀(하루치 · 며칠치 · 15일치)을 날짜별로 쌓고 → 최근 15일이 다 차면 그 15일로 원래 15일 계산을 전부 (맞추기·AI·새 상품 등록 → 확인할 게 없으면 자동 저장) */
+    function s15SaveDays(list, links, fromV, toV, nDays) {
+      S15.busy = 'save'; s15Render();
+      google.script.run.withSuccessHandler(function (r) {
+        S15.busy = false;
+        if (!r || !r.success) { s15Render(); showToast((r && r.message) || '저장하지 못했어요', 3000); return; }
+        S15.info = S15.info || { links: {} }; S15.info.links = S15.info.links || {};
+        Object.keys(links).forEach(function (k) { if (links[k] === null) delete S15.info.links[k]; else S15.info.links[k] = links[k]; });
+        RY_SC = null; try { renderAllViews(); } catch (eR) {}   // 추정 재고 다시 (하루 판매 반영)
+        try { localStorage.setItem('ry_s15_day', nDays === 1 ? '1' : ''); } catch (eL) {}
+        var per = nDays === 1 ? s15Md(fromV) : s15Md(fromV) + '~' + s15Md(toV), scTxt = r.sc ? ' · 2주 집중 Total ' + r.sc.total + ' · 스마트 ' + r.sc.smart + '개 넣음' : '';
+        S15.dayMsg = '📅 ' + per + ' 판매를 날짜별로 쌓았어요' + (r.seeded ? ' (10월 앞 기간은 지난번 15일 엑셀로 채움)' : '') + scTxt;
+        if (r.from === fromV && r.to === toV) { S15.stored = true; s15Save(); return; }   // 올린 엑셀이 곧 최근 15일 → 원래 저장 그대로
+        if (!r.aoa) { S15.groups = []; S15.xs = []; S15.raw = null; s15Render(); showToast(S15.dayMsg + ' · 최근 15일 중 ' + r.cover + '일 모였어요 (다 차면 15일 판매도 자동)', 4500); return; }
+        var fI = document.getElementById('s15From'), tI = document.getElementById('s15To'); if (fI) fI.value = r.from; if (tI) tI.value = r.to;
+        S15.virt = true; S15.autoGo = true; S15.raw = null; S15.open = {}; S15.file = '최근 15일 ' + s15Md(r.from) + '~' + s15Md(r.to) + ' (올린 엑셀을 날짜별로 모아 계산)';
+        S15.xs = s15ParseRows(r.aoa) || []; try { S15.pos = s15PosRows(r.aoa); } catch (eP) { S15.pos = null; }
+        S15.groups = s15Match(S15.xs, S15.info.links || {}); S15.newList = []; S15.aiMsg = '';
+        s15Render(); s15Ai(true);
+      }).withFailureHandler(function (e) { S15.busy = false; s15Render(); showToast('저장하지 못했어요: ' + (e && e.message || e), 3000); })
+        .saveSalesDays(fromV, toV, S15.raw, list, currentSelectedMember, links);
+    }
+    function s15AutoGo() {   // 하루치로 모은 최근 15일 — AI·새 상품 등록이 끝나고 확인할 게 없으면 바로 저장
+      if (!S15.virt || !S15.autoGo || S15.busy) return; S15.autoGo = false;
+      var chk = (S15.groups || []).filter(function (g) { return g.st === 'check'; }).length;
+      if (chk) { S15.aiMsg = (S15.aiMsg ? S15.aiMsg + ' · ' : '') + '확인 ' + chk + '개만 보고 아래 [저장]을 눌러 주세요'; s15Render(); return; }
+      s15Save();
+    }
     var S15_ALIAS = {};   /* POS 판매 상품명 → 앱 주문 상품명 (새로 생기면 여기에 한 줄) */
     [['닥터 리쥬올 더 PDRN 시그니처 SET', '닥터리쥬올 더 PDRN 시그니처 세트'], ['리쥬올 3-step 어드밴스드 스킨케어 시스템 세트', '닥터 리쥬올 3-step 어드밴스드 스킨케어 시스템'], ['12ml리쥬비에스', '리쥬비에스 12ml']].forEach(function (x) { S15_ALIAS[s15Key(x[0])] = x[1]; });
     var S15_PACKS = [{ to: '레디비타 프리미엄 멀티샷', from: [['레디비타 프리미엄 멀티샷 1ea', 1 / 28], ['레디비타 7병', 7 / 28], ['레디비타 28병', 1]] },
@@ -14981,13 +15038,15 @@ video {
     function s15PeriodDefaults() {
       var f = document.getElementById('s15From'), t = document.getElementById('s15To'); if (!f || !t) return;
       var nx = S15.info && s15Next(S15.info.to), today = new Date(); today.setHours(0, 0, 0, 0);
+      if (s15DayMode() && !f.value && !t.value) { f.value = t.value = s15Yday(); return; }   // 1026 매일 아침 어제 하루치
       if (!f.value) { if (nx) f.value = nx.from; else { var d = new Date(today); d.setDate(d.getDate() - 14); f.value = s15Ymd(d); } }
       if (!t.value) t.value = nx && nx.to < s15Ymd(today) ? nx.to : s15Ymd(today);
     }
     function s15Dot() {
       var b = document.getElementById('s15Entry'), due = currentSelectedMember === PF_ADMIN && S15.info && (s15Days() == null || s15Days() >= 7);
       var nx = S15.info && s15Next(S15.info.to); if (nx) due = currentSelectedMember === PF_ADMIN && nx.due;
-      if (b) { b.hidden = currentSelectedMember !== PF_ADMIN; var sm = b.querySelector('small'); if (sm && S15.info) sm.textContent = nx ? '마지막 ' + s15Md(S15.info.from) + '~' + s15Md(S15.info.to) + ' · 다음 ' + nx.label + ' 자료를 ' + nx.when : S15.info.last ? '마지막 ' + S15.info.last.slice(5).replace('-', '/') + (due ? ' · ' + s15Days() + '일 지났어요' : '') : '판매량 통계 엑셀로 한 번에'; b.classList.toggle('due', !!due); }
+      var dm = s15DayMode() && S15.info && S15.info.to; if (dm) { due = currentSelectedMember === PF_ADMIN && S15.info.to < s15Yday(); nx = null; }   // 1026 하루치 모드: 어제 것이 안 올라왔으면 점
+      if (b) { b.hidden = currentSelectedMember !== PF_ADMIN; var sm = b.querySelector('small'); if (sm && S15.info) sm.textContent = dm ? '마지막 ~' + s15Md(S15.info.to) + ' · 매일 아침 어제 하루치' + (due ? ' 올릴 차례' : ' 올렸어요') : nx ? '마지막 ' + s15Md(S15.info.from) + '~' + s15Md(S15.info.to) + ' · 다음 ' + nx.label + ' 자료를 ' + nx.when : S15.info.last ? '마지막 ' + S15.info.last.slice(5).replace('-', '/') + (due ? ' · ' + s15Days() + '일 지났어요' : '') : '판매량 통계 엑셀로 한 번에'; b.classList.toggle('due', !!due); }
       s15PeriodDefaults();
       var m = document.getElementById('toolMoreBtn'); if (m) m.classList.toggle('s15-due', !!due);
       /* 1002 사용자: 15일 판매량 엑셀은 도구 모음에서만 (퀵버튼 뺌) */
@@ -15005,11 +15064,14 @@ video {
             var wb = XLSX.read(new Uint8Array(rd.result), { type: 'array' });
             var aoa = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: '' }), xs = s15ParseRows(aoa);
             try { S15.pos = s15PosRows(aoa); } catch (ePos) { S15.pos = null; }
+            try { S15.raw = s15RawRows(aoa); } catch (eRaw) { S15.raw = null; }   // 1026 날짜별로 쌓을 POS 줄
+            S15.virt = S15.stored = S15.autoGo = false; S15.dayMsg = '';
             S15.busy = false;
             if (!xs || !xs.length) { s15Render('이 파일에서 "판매 상품명" · "판매수량" 열을 못 찾았어요. 판매량 통계 › 상품별 통계 엑셀을 올려 주세요.'); return; }
             S15.xs = xs; S15.open = {};
             S15.groups = s15Match(xs, (S15.info && S15.info.links) || {});
-            s15Render(); s15Ai(true);   /* 1022 MJ: 엑셀 올리면 AI 맞추기 → 팔렸는데 앱에 없는 상품은 바로 새 상품 등록 */
+            var spn = s15Span((document.getElementById('s15From') || {}).value, (document.getElementById('s15To') || {}).value);
+            s15Render(); if (!(S15.raw && spn && spn < 15)) s15Ai(true);   /* 1022 MJ: 엑셀 올리면 AI 맞추기 → 팔렸는데 앱에 없는 상품은 바로 새 상품 등록 · 1026 하루·며칠치는 저장 뒤 최근 15일로 다시 맞출 때 한 번만 (AI 두 번 돌면 느림) */
           } catch (e) { S15.busy = false; s15Render('엑셀을 읽지 못했어요 (' + (e && e.message || e) + ')'); }
         };
         rd.readAsArrayBuffer(f);
@@ -15056,11 +15118,12 @@ video {
       if (msg) { body.innerHTML = '<div class="s15-msg">' + escapeHtml(msg) + '</div>'; return; }
       if (!gs.length) {
         var l = S15.info && S15.info.last;
-        body.innerHTML = '<ol class="s15-how"><li><b>판매량 통계 › 상품별 통계</b>에서 최근 15일로 엑셀 받기</li><li>여기서 파일 고르기 → 앱 상품과 이름으로 맞춰요</li><li>확인할 것만 보고 <b>저장</b> · 한 번 연결하면 다음 주부터 자동</li></ol>'
+        body.innerHTML = '<ol class="s15-how"><li><b>판매량 통계 › 상품별 통계</b>에서 기간을 <b>어제 하루</b>로 엑셀 받기 (빠진 날이 있으면 그 기간으로)</li><li>위 기간을 같게 맞추고 파일 고르기 → 앱 상품과 이름으로 맞춰요</li><li>확인할 것만 보고 <b>저장</b> → 최근 15일로 다시 맞춰 자동 저장 · 한 번 연결하면 다음부터 자동</li></ol>'
           + '<p class="s15-last">' + (l ? '마지막으로 넣은 날 ' + escapeHtml(l) + (s15Days() >= 7 ? ' · <b>' + s15Days() + '일 지났어요</b>' : '') : '아직 넣은 적 없어요') + '</p>';
         return;
       }
-      var sum = '<div class="s15-sum"><div><b>' + auto.length + '</b><small>맞췄어요</small></div><div class="' + (chk.length ? 'warn' : '') + '"><b>' + chk.length + '</b><small>확인해 주세요</small></div><div><b>' + none.length + '</b><small>못 찾았어요</small></div></div>'
+      var spn0 = s15Span((document.getElementById('s15From') || {}).value, (document.getElementById('s15To') || {}).value);
+      var sum = (S15.dayMsg ? '<p class="s15-file" style="color:#067647;font-weight:700">' + escapeHtml(S15.dayMsg) + (S15.virt ? ' → 최근 15일로 다시 맞추는 중' : '') + '</p>' : !S15.virt && S15.raw && spn0 && spn0 < 15 ? '<p class="s15-file" style="color:#155EEF;font-weight:700">📅 ' + spn0 + '일치 엑셀 · 바로 [저장]을 누르면 날짜별로 쌓고, 최근 15일로 다시 맞출 때 AI·새 상품 등록을 해요</p>' : '') + '<div class="s15-sum"><div><b>' + auto.length + '</b><small>맞췄어요</small></div><div class="' + (chk.length ? 'warn' : '') + '"><b>' + chk.length + '</b><small>확인해 주세요</small></div><div><b>' + none.length + '</b><small>못 찾았어요</small></div></div>'
         + '<p class="s15-file">' + escapeHtml(S15.file) + ' · 엑셀 상품 ' + S15.xs.length.toLocaleString() + '개 · 바뀌는 숫자 ' + chg.length + '개</p>';
       var nUn = s15Unclaimed().length, nNew = (S15.newList || []).filter(function (x) { return !x.done; }).length;
       sum += '<div class="s15-ai">' + (S15.aiMsg ? '<p>' + escapeHtml(S15.aiMsg) + '</p>' : '')
@@ -15104,7 +15167,7 @@ video {
       var step = function () {
         if (i0 >= tasks.length) {
           S15.busy = false; S15.aiMsg = '🤖 AI 맞추기 끝 · 확실한 ' + applied + '개 자동 연결' + (wrong ? ' · 엑셀에 없는 ' + wrong + '개' : '') + (S15.unsure.length ? ' · 애매한 ' + S15.unsure.length + '개는 AI 추천을 걸어 확인해 주세요에 (맞으면 \'맞아요\' 한 번)' : '') + (vari ? ' · 이미 있는 상품의 다른 줄(낱개 등) ' + vari + '개는 등록 안 함' : '') + (S15.newList.length ? ' · 앱에 없는 상품 ' + S15.newList.length + '개' : '');
-          s15Render(); s15RegisterNew(true); return;
+          s15Render(); s15RegisterNew(true, s15AutoGo); return;
         }
         var part = tasks.slice(i0, i0 + 40); i0 += part.length;
         var send = part.map(function (t) { return t.kind === 'app' ? { q: t.g.name, c: t.cands.map(function (x) { return x.n; }) } : { q: t.x.n, c: t.cands.map(function (g) { return g.name; }) }; });
@@ -15130,8 +15193,8 @@ video {
       };
       step();
     }
-    function s15RegisterNew(auto) {
-      var L = (S15.newList || []).filter(function (x) { return !x.done && x.q > 0; }); if (!L.length || S15.busy) return;   // 팔린 기록 있는 것만
+    function s15RegisterNew(auto, done) {
+      var L = (S15.newList || []).filter(function (x) { return !x.done && x.q > 0; }); if (!L.length || S15.busy) { if (done) done(); return; }   // 팔린 기록 있는 것만
       if (!auto && !confirm('엑셀에서 팔리는데 앱에 없는 ' + L.length + '개를 새 상품으로 등록할까요?\n15일 판매량도 같이 넣어요. (분류는 AI가 정해요)')) return;
       S15.busy = 'reg'; S15.aiMsg = '새 상품 등록 중… (1분쯤)'; s15Render();
       google.script.run.withSuccessHandler(function (r) {
@@ -15141,6 +15204,7 @@ video {
         (r.added || []).forEach(function (a) { var x = L.filter(function (y) { return y.n === a.name; })[0]; if (x) S15.groups.push({ key: s15Key(a.name), name: a.name, rows: [a.row], cur: a.s15, active: true, x: x, st: 'auto', pick: true, ai: true }); });   // 저장할 때 0으로 지워지지 않게 이번 묶음에 넣음
         S15.aiMsg = '🆕 새 상품 ' + (r.added || []).length + '개 등록했어요' + ((r.skipped || []).length ? ' · 이미 있던 ' + r.skipped.length + '개는 그대로' : '');
         s15Render(); try { ryCatLoad(true); } catch (e) {}
+        if (done) done();
       }).withFailureHandler(function (e) { S15.busy = false; S15.aiMsg = '등록하지 못했어요: ' + (e && e.message || e); s15Render(); })
         .addProductsFromSales(L.map(function (x) { return { name: x.n, s15: x.q, note: '15일 판매 엑셀에서 새로 등록 ' + sdLocalDate(new Date()) }; }), currentSelectedMember);
     }
@@ -15153,8 +15217,10 @@ video {
         else if (g.st === 'skip' && g.pick) links[g.key] = '-';
         else if (g.unlink) links[g.key] = null;
       });
-      var fromV = (document.getElementById('s15From') || {}).value || '', toV = (document.getElementById('s15To') || {}).value || '', curTo = S15.info && S15.info.to;
-      if (curTo && toV && toV < curTo) {   /* 1020 지난 기간 엑셀 → 숫자는 그대로, 판매 추이 기록에만 */
+      var fromV = (document.getElementById('s15From') || {}).value || '', toV = (document.getElementById('s15To') || {}).value || '', curTo = S15.info && S15.info.to, nD = s15Span(fromV, toV);
+      if (!nD) { showToast('엑셀 기간(시작~끝 날짜)을 적어 주세요', 2600); return; }
+      if (!S15.virt && !S15.stored && S15.raw && S15.raw.length && nD <= 31 && !(curTo && toV < curTo && nD > 1)) { s15SaveDays(list, links, fromV, toV, nD); return; }   // 1026 날짜별로 쌓기 → 최근 15일
+      if (curTo && toV && toV < curTo && !S15.virt && !S15.stored) {   /* 1020 지난 기간 엑셀 → 숫자는 그대로, 판매 추이 기록에만 */
         if (!confirm('이 엑셀(' + fromV + ' ~ ' + toV + ')은 지금 넣어 둔 기간(~' + curTo + ')보다 지난 기간이에요.\n15일 판매 숫자는 그대로 두고 [판매 추이] 기록에만 넣을까요?')) return;
         S15.busy = 'save'; s15Render();
         google.script.run.withSuccessHandler(function (r) { S15.busy = false; S15.groups = []; S15.xs = []; s15Render(); showToast(r && r.success ? fromV + '~' + toV + ' 판매 추이 기록에 ' + r.saved + '개 상품을 넣었어요' : ((r && r.message) || '넣지 못했어요'), 3200); try { TR.at = 0; } catch (e) {} })
@@ -15164,6 +15230,7 @@ video {
       }
       S15.busy = 'save'; s15Render();
       var pl0 = s15PriceList();   /* 저장되면 S15.groups 를 비우니 미리 */
+      var virt0 = S15.virt || S15.stored, dm0 = S15.dayMsg || '';
       var pos0 = S15.pos, pf0 = S15.file || '', xs0 = (S15.xs || []).slice(), per0 = ((document.getElementById('s15From') || {}).value || '') + '~' + ((document.getElementById('s15To') || {}).value || '');
       google.script.run
         .withSuccessHandler(function (r) {
@@ -15172,11 +15239,11 @@ video {
           S15.info = S15.info || { links: {} };
           Object.keys(links).forEach(function (k) { if (links[k] === null) delete S15.info.links[k]; else S15.info.links[k] = links[k]; });
           S15.info.last = sdLocalDate(new Date());
-          S15.groups = []; S15.xs = [];
+          S15.groups = []; S15.xs = []; S15.virt = S15.stored = S15.autoGo = false; S15.raw = null; S15.dayMsg = '';
           s15Render(); s15Dot();
-          showToast(cnt + '개 상품 15일 판매량을 바꿨어요' + (r.reset ? ' · 엑셀에 없던 ' + r.reset + '개는 0으로' : '') + (r.skipped ? ' · 시트 수식 칸 ' + r.skipped + '개는 그대로' : ''), 3200);
-          try { var pk = xs0.filter(function (x) { return x.pack; }); if (pk.length) setTimeout(function () { alert('📦 묶음 상품은 패키지 수로 합쳤어요\n' + pk.map(function (x) { return '· ' + x.n + ' : 15일 판매 ' + x.q + '개 (' + x.packTxt + ')'; }).join('\n')); }, 200); } catch (ePk) {}   /* 1019 MJ: 엑셀 올리면 레디비타·뉴베인 계산 결과 알려 주기 */
-          try { var nx = s15Next((document.getElementById('s15To') || {}).value); if (nx) setTimeout(function () { alert('다음 15일 판매량은 ' + nx.label + ' 기간으로 ' + nx.when + ' 올려주세요'); }, 400); } catch (eN) {}
+          if (virt0 && dm0) showToast(dm0 + ' · 최근 15일(' + per0.replace(/\d{4}-(\d\d)-(\d\d)/g, function (m, a, b) { return +a + '/' + +b; }) + ')로 15일 판매 ' + cnt + '개 · 세트 · 추정 재고까지 바꿨어요', 5000); else showToast(cnt + '개 상품 15일 판매량을 바꿨어요' + (r.reset ? ' · 엑셀에 없던 ' + r.reset + '개는 0으로' : '') + (r.skipped ? ' · 시트 수식 칸 ' + r.skipped + '개는 그대로' : ''), 3200);
+          if (!virt0) try { var pk = xs0.filter(function (x) { return x.pack; }); if (pk.length) setTimeout(function () { alert('📦 묶음 상품은 패키지 수로 합쳤어요\n' + pk.map(function (x) { return '· ' + x.n + ' : 15일 판매 ' + x.q + '개 (' + x.packTxt + ')'; }).join('\n')); }, 200); } catch (ePk) {}   /* 1019 MJ: 엑셀 올리면 레디비타·뉴베인 계산 결과 알려 주기 */
+          if (!virt0) try { var nx = s15Next((document.getElementById('s15To') || {}).value); if (nx) setTimeout(function () { alert('다음 15일 판매량은 ' + nx.label + ' 기간으로 ' + nx.when + ' 올려주세요'); }, 400); } catch (eN) {}
           loadAllData(true, true, true);
           try { if (pos0 && pos0.length) google.script.run.withSuccessHandler(function (x) { if (x && x.ok) setTimeout(function () { showToast('트렌드랩 약국 베스트에도 같은 엑셀을 넣었어요 (' + x.n + '개)', 2600); }, 3400); }).savePosSales(pos0, { from: (document.getElementById('s15From') || {}).value || '', to: (document.getElementById('s15To') || {}).value || '', fileName: pf0 }, currentSelectedMember); S15.pos = null; } catch (ePs) {}   /* 1023 트렌드랩이 읽어 감 */
           try { var pl = pl0; if (pl.length) google.script.run.withSuccessHandler(function () { try { if (typeof SP !== 'undefined') SP.data = null; } catch (e3) {} }).saveUnitPrices(pl, per0); } catch (ePr) {}   /* 1017 세트 상세 사입가·판매가 */
@@ -16412,8 +16479,8 @@ video {
 <div class="ava-dim" id="s15Dim" onclick="s15Close()"></div>
 <div class="ava-sheet" id="s15Sheet" role="dialog" aria-label="15일 판매량 엑셀">
   <div class="ava-head"><b class="ry-info-title">15일 판매량 엑셀</b><button type="button" onclick="s15Close()">닫기</button></div>
-  <div class="ava-sub">판매량 통계 엑셀을 올리면 앱 상품의 15일 판매 숫자를 한꺼번에 바꿔요. 15일마다 한 번이면 돼요.</div>
-  <div class="s15-period"><label>엑셀 기간 <input type="date" id="s15From" aria-label="기간 시작"></label><span>~</span><label><input type="date" id="s15To" aria-label="기간 끝"></label></div>
+  <div class="ava-sub">매일 아침 <b>어제 하루치</b> 판매량 통계 엑셀을 올리면 날짜별로 쌓아서 최근 15일 판매 · 세트 · 추정 재고 · 2주 집중까지 자동으로 계산해요. 빠진 날은 그 기간 엑셀 하나로 채우면 돼요.</div>
+  <div class="s15-period"><label>엑셀 기간 <input type="date" id="s15From" aria-label="기간 시작"></label><span>~</span><label><input type="date" id="s15To" aria-label="기간 끝"></label><button type="button" class="s15-b" onclick="s15SetYesterday()">어제 하루</button></div>
   <label class="np-save s15-pick" id="s15PickL"><input type="file" accept=".xlsx,.xls,.csv" onchange="s15Pick(this)"><span>엑셀 파일 고르기</span></label>
   <div id="s15Body" class="s15-body"></div>
   <button type="button" class="np-save s15-save" id="s15Save" hidden onclick="s15Save()">저장하기</button>
