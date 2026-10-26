@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvp2zhqe">
+  <meta name="ry-build" content="mvp4g2hf">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -15065,7 +15065,7 @@ video {
             var aoa = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: '' }), xs = s15ParseRows(aoa);
             try { S15.pos = s15PosRows(aoa); } catch (ePos) { S15.pos = null; }
             try { S15.raw = s15RawRows(aoa); } catch (eRaw) { S15.raw = null; }   // 1026 날짜별로 쌓을 POS 줄
-            S15.virt = S15.stored = S15.autoGo = false; S15.dayMsg = '';
+            S15.virt = S15.stored = S15.autoGo = false; S15.dayMsg = ''; S15.aiMem = {};
             S15.busy = false;
             if (!xs || !xs.length) { s15Render('이 파일에서 "판매 상품명" · "판매수량" 열을 못 찾았어요. 판매량 통계 › 상품별 통계 엑셀을 올려 주세요.'); return; }
             S15.xs = xs; S15.open = {};
@@ -15138,7 +15138,8 @@ video {
     /* 1020 MJ '확인해 주세요는 최대한 AI로 맞추고, 엑셀에서 팔리는데 앱에 없던 상품은 새 상품 등록까지' */
     function s15Unclaimed() {   // 엑셀엔 있는데 앱 어느 상품과도 안 이어진 이름 (팔린 것만, 세트·묶음 줄 빼고)
       var used = {}; (S15.groups || []).forEach(function (g) { if (g.x && (g.st === 'auto' || g.st === 'check')) used[g.x.n] = 1; });
-      return (S15.xs || []).filter(function (x) { return !used[x.n] && x.q >= 1 && !x.pack && !/세트|set\b|기획|증정|사은품|쇼핑백|봉투/i.test(x.n); });
+      var mem = (S15.info && S15.info.links) || {};
+      return (S15.xs || []).filter(function (x) { return !used[x.n] && x.q >= 1 && !x.pack && !/세트|set\b|기획|증정|사은품|쇼핑백|봉투/i.test(x.n) && !mem['x:' + s15Key(x.n)] && !(S15.aiMem && S15.aiMem['x:' + s15Key(x.n)]); });
     }
     function s15Unit(n) { return /(^|[\s(])1\s*(포|병|ea|매|개|정|캡슐|앰플|바이알)(\)|\s|$)|낱개|\(1ea\)/i.test(String(n)); }   // '상쾌환스틱 … 1포' · '아임비타1병' 같은 낱개 줄 = 묶음 상품의 일부일 수 있음
     var S15_VAR = ['살색', '백색', '흰색', '화이트', '블랙', '검정', '핑크', '연황색', '베이지', '그레이', '쿨', '아이스', '남성', '여성', '소형', '중형', '대형', '어린이', '키즈'];
@@ -15150,7 +15151,16 @@ video {
     }
     function s15Ai(auto) {
       if (S15.busy) return;
-      var gs = S15.groups || [], chk = gs.filter(function (g) { return g.st === 'check' || g.st === 'none'; });
+      /* 1026 MJ 매일 하루치 — AI 가 한 번 판단한 것은 기억 (S15.aiMem → 연결 시트에 'a:앱키' / 'x:엑셀키') → 다음부터 새 이름만 물음 (전엔 15분+ 걸림)
+         a: = 'x|엑셀이름'(애매 · AI 추천 걸어 둠) · '0|날짜'(엑셀에 없음 · 7일 지나면 다시) / x: = '-'(새 상품 아님 · 다른 줄·비슷한 상품·묶음) */
+      var mem = (S15.info && S15.info.links) || {}, td = sdLocalDate(new Date()); S15.aiMem = S15.aiMem || {};
+      var gs = S15.groups || [], chk = gs.filter(function (g) {
+        if (g.st !== 'check' && g.st !== 'none') return false;
+        var m = String(mem['a:' + g.key] || '');
+        if (/^x\|/.test(m)) { var mx = S15.xs.filter(function (y) { return y.n === m.slice(2); })[0]; if (mx) { g.x = mx; g.st = 'check'; g.aiSug = true; return false; } }
+        if (/^0\|/.test(m) && (Date.parse(td) - Date.parse(m.slice(2))) / 864e5 <= 7) { if (g.st === 'check') { g.st = 'none'; g.ai = true; } return false; }
+        return true;
+      });
       var allG = (S15.groups || []).filter(function (g) { return g.st !== 'skip'; });   // 엑셀에만 있는 이름은 앱 상품 전체에서 후보 (이미 이어진 상품이면 = 같은 상품의 다른 줄 → 새로 등록 안 함)
       var tasks = chk.map(function (g) {   // 앱 상품 → 엑셀 후보 5개
         var a = s15Prep(g.name), top = S15.xs.map(function (x) { return [s15Score(a, x), x]; }).sort(function (p, r) { return r[0] - p[0]; }).slice(0, 5).map(function (p) { return p[1]; });
@@ -15161,7 +15171,7 @@ video {
         var top = allG.map(function (g) { return [s15Score(s15Prep(g.name), x), g]; }).filter(function (p) { return p[0] >= .35; }).sort(function (p, r) { return r[0] - p[0]; }).slice(0, 5).map(function (p) { return p[1]; });
         tasks.push({ kind: 'xls', x: x, cands: top });
       });
-      if (!tasks.length) { if (!auto) showToast('AI로 맞출 게 없어요', 2000); return; }
+      if (!tasks.length) { if (!auto) showToast('AI로 맞출 게 없어요', 2000); else s15RegisterNew(true, s15AutoGo); return; }   // 1026 다 기억한 것뿐이면 바로 (하루치 15일 자동 저장)
       S15.busy = 'ai'; S15.aiMsg = 'AI가 맞추는 중… 0/' + tasks.length; S15.newList = []; S15.unsure = []; S15.similar = []; s15Render();
       var i0 = 0, takenX = {}, takenG = {}, applied = 0, wrong = 0, vari = 0;
       var step = function () {
@@ -15177,15 +15187,16 @@ video {
             if (t.kind === 'app') {
               var x = p.pick > 0 ? t.cands[p.pick - 1] : null;
               if (x && p.sure && !takenX[x.n] && s15SafeAi(t.g.name, x)) { t.g.x = x; t.g.st = 'auto'; t.g.pick = true; t.g.ai = true; takenX[x.n] = 1; takenG[t.g.key] = 1; applied++; }
-              else if (x) { t.g.x = x; t.g.st = 'check'; t.g.aiSug = true; S15.unsure.push(t.g.name); }   // 애매 → AI 추천만 걸어 두고 사람이 '맞아요'
-              else if (t.g.st === 'check') { t.g.st = 'none'; t.g.ai = true; wrong++; }
-            } else if (!p.skip) {
-              var g = p.pick > 0 ? t.cands[p.pick - 1] : null;
-              if (g && (g.st === 'auto' || takenG[g.key])) vari++;   // 이미 이어진 앱 상품의 다른 줄 (낱개·묶음·색상) → 새로 등록하지 않음
+              else if (x) { t.g.x = x; t.g.st = 'check'; t.g.aiSug = true; S15.unsure.push(t.g.name); S15.aiMem['a:' + t.g.key] = 'x|' + x.n; }   // 애매 → AI 추천만 걸어 두고 사람이 '맞아요'
+              else { if (t.g.st === 'check') { t.g.st = 'none'; t.g.ai = true; wrong++; } S15.aiMem['a:' + t.g.key] = '0|' + td; }
+            } else if (p.skip) S15.aiMem['x:' + s15Key(t.x.n)] = '-';
+            else {
+              var g = p.pick > 0 ? t.cands[p.pick - 1] : null, xk = 'x:' + s15Key(t.x.n);
+              if (g && (g.st === 'auto' || takenG[g.key])) { vari++; S15.aiMem[xk] = '-'; }   // 이미 이어진 앱 상품의 다른 줄 (낱개·묶음·색상) → 새로 등록하지 않음
               else if (g && p.sure && !takenX[t.x.n] && s15SafeAi(g.name, t.x)) { g.x = t.x; g.st = 'auto'; g.pick = true; g.ai = true; takenG[g.key] = 1; takenX[t.x.n] = 1; applied++; }
-              else if (g) { if (g.st === 'none' || g.st === 'check') { g.x = t.x; g.st = 'check'; g.aiSug = true; } S15.unsure.push(g.name); }
-              else if (s15Unit(t.x.n) || takenX[t.x.n]) vari++;   // 낱개 줄인데 짝이 없으면 묶음 상품 확인이 필요 → 등록 안 함
-              else { var cn = typeof invCatOf === 'function' ? invCatOf({ name: t.x.n, spec: '' }) : ''; if (cn || cn === null) { vari++; (S15.similar = S15.similar || []).push(t.x.n + ' ≈ ' + (cn || '(상품 목록을 못 불러와 확인 못 함)')); } else S15.newList.push(t.x); }   // 1022 목록을 못 불러왔으면(null) 자동 등록하지 않음   // 앱에 비슷한 이름이 있으면 새로 등록하지 않고 확인 목록으로 (중복 등록 막기)
+              else if (g) { if (g.st === 'none' || g.st === 'check') { g.x = t.x; g.st = 'check'; g.aiSug = true; S15.aiMem['a:' + g.key] = 'x|' + t.x.n; } S15.unsure.push(g.name); }
+              else if (s15Unit(t.x.n) || takenX[t.x.n]) { vari++; S15.aiMem[xk] = '-'; }   // 낱개 줄인데 짝이 없으면 묶음 상품 확인이 필요 → 등록 안 함
+              else { var cn = typeof invCatOf === 'function' ? invCatOf({ name: t.x.n, spec: '' }) : ''; if (cn || cn === null) { vari++; if (cn) S15.aiMem[xk] = '-'; (S15.similar = S15.similar || []).push(t.x.n + ' ≈ ' + (cn || '(상품 목록을 못 불러와 확인 못 함)')); } else S15.newList.push(t.x); }   // 1022 목록을 못 불러왔으면(null) 자동 등록하지 않음   // 앱에 비슷한 이름이 있으면 새로 등록하지 않고 확인 목록으로 (중복 등록 막기)
             }
           });
           S15.aiMsg = 'AI가 맞추는 중… ' + Math.min(i0, tasks.length) + '/' + tasks.length; s15Render(); step();
@@ -15202,6 +15213,7 @@ video {
         if (!r || !r.success) { S15.aiMsg = '등록하지 못했어요: ' + ((r && r.message) || ''); s15Render(); return; }
         L.forEach(function (x) { x.done = true; });
         (r.added || []).forEach(function (a) { var x = L.filter(function (y) { return y.n === a.name; })[0]; if (x) S15.groups.push({ key: s15Key(a.name), name: a.name, rows: [a.row], cur: a.s15, active: true, x: x, st: 'auto', pick: true, ai: true }); });   // 저장할 때 0으로 지워지지 않게 이번 묶음에 넣음
+        (r.skipped || []).forEach(function (a) { var nm = typeof a === 'string' ? a : a && a.name, x = L.filter(function (y) { return y.n === nm; })[0]; if (!nm) return; S15.aiMem = S15.aiMem || {}; S15.aiMem['x:' + s15Key(nm)] = '-'; if (x && a.row) S15.groups.push({ key: s15Key(nm), name: nm, rows: [a.row], cur: '', active: true, x: x, st: 'auto', pick: true, ai: true }); });   // 1026 이미 같은 이름으로 있던 상품 → 그 줄에 연결 · 다음부터 안 물음
         S15.aiMsg = '🆕 새 상품 ' + (r.added || []).length + '개 등록했어요' + ((r.skipped || []).length ? ' · 이미 있던 ' + r.skipped.length + '개는 그대로' : '');
         s15Render(); try { ryCatLoad(true); } catch (e) {}
         if (done) done();
@@ -15217,6 +15229,7 @@ video {
         else if (g.st === 'skip' && g.pick) links[g.key] = '-';
         else if (g.unlink) links[g.key] = null;
       });
+      Object.keys(S15.aiMem || {}).forEach(function (k) { if (!(k in links)) links[k] = S15.aiMem[k]; });   // 1026 AI 판단 기억
       var fromV = (document.getElementById('s15From') || {}).value || '', toV = (document.getElementById('s15To') || {}).value || '', curTo = S15.info && S15.info.to, nD = s15Span(fromV, toV);
       if (!nD) { showToast('엑셀 기간(시작~끝 날짜)을 적어 주세요', 2600); return; }
       if (!S15.virt && !S15.stored && S15.raw && S15.raw.length && nD <= 31 && !(curTo && toV < curTo && nD > 1)) { s15SaveDays(list, links, fromV, toV, nD); return; }   // 1026 날짜별로 쌓기 → 최근 15일
