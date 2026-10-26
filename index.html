@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvp4g2hf">
+  <meta name="ry-build" content="mvp51w1i">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -15177,6 +15177,7 @@ video {
       var step = function () {
         if (i0 >= tasks.length) {
           S15.busy = false; S15.aiMsg = '🤖 AI 맞추기 끝 · 확실한 ' + applied + '개 자동 연결' + (wrong ? ' · 엑셀에 없는 ' + wrong + '개' : '') + (S15.unsure.length ? ' · 애매한 ' + S15.unsure.length + '개는 AI 추천을 걸어 확인해 주세요에 (맞으면 \'맞아요\' 한 번)' : '') + (vari ? ' · 이미 있는 상품의 다른 줄(낱개 등) ' + vari + '개는 등록 안 함' : '') + (S15.newList.length ? ' · 앱에 없는 상품 ' + S15.newList.length + '개' : '');
+          try { var mk = Object.keys(S15.aiMem || {}); if (mk.length) { S15.info = S15.info || { links: {} }; S15.info.links = S15.info.links || {}; mk.forEach(function (k) { S15.info.links[k] = S15.aiMem[k]; }); google.script.run.withSuccessHandler(function () {}).withFailureHandler(function () {}).saveS15Links(S15.aiMem, currentSelectedMember); } } catch (eM) {}   // 1026 AI 판단은 바로 기억 (저장 안 하고 닫아도)
           s15Render(); s15RegisterNew(true, s15AutoGo); return;
         }
         var part = tasks.slice(i0, i0 + 40); i0 += part.length;
