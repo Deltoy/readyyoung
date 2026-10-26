@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvp2tu97">
+  <meta name="ry-build" content="mvp2zhqe">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -14919,7 +14919,7 @@ video {
         RY_SC = null; try { renderAllViews(); } catch (eR) {}   // 추정 재고 다시 (하루 판매 반영)
         try { localStorage.setItem('ry_s15_day', nDays === 1 ? '1' : ''); } catch (eL) {}
         var per = nDays === 1 ? s15Md(fromV) : s15Md(fromV) + '~' + s15Md(toV), scTxt = r.sc ? ' · 2주 집중 Total ' + r.sc.total + ' · 스마트 ' + r.sc.smart + '개 넣음' : '';
-        S15.dayMsg = '📅 ' + per + ' 판매를 날짜별로 쌓았어요' + (r.seeded ? ' (10월 앞 기간은 지난번 15일 엑셀로 채움)' : '') + scTxt;
+        S15.dayMsg = '📅 ' + per + ' 판매를 날짜별로 쌓았어요' + scTxt;
         if (r.from === fromV && r.to === toV) { S15.stored = true; s15Save(); return; }   // 올린 엑셀이 곧 최근 15일 → 원래 저장 그대로
         if (!r.aoa) { S15.groups = []; S15.xs = []; S15.raw = null; s15Render(); showToast(S15.dayMsg + ' · 최근 15일 중 ' + r.cover + '일 모였어요 (다 차면 15일 판매도 자동)', 4500); return; }
         var fI = document.getElementById('s15From'), tI = document.getElementById('s15To'); if (fI) fI.value = r.from; if (tI) tI.value = r.to;
