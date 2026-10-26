@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvp66ekb">
+  <meta name="ry-build" content="mvp8auwq">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -13766,6 +13766,52 @@ video {
         w.className = 'ry-rip-w'; c.className = 'ry-ripple'; c.style.cssText = 'width:' + d + 'px;height:' + d + 'px;left:' + Math.round(e.clientX - r.left - d / 2) + 'px;top:' + Math.round(e.clientY - r.top - d / 2) + 'px';
         w.appendChild(c); b.appendChild(w); setTimeout(function () { w.remove(); }, 600);
       }, { passive: true });
+    })();
+    /* 1026 MJ '사람들의 사용 패턴 분석으로 물류앱을 더 효율화' — 화면 · 누른 것 · 앞 동작부터 걸린 시간 · 안내·오류를 모아 1분마다 서버(_사용기록_)로. 직원 화면엔 아무것도 안 보임.
+       입력한 글자·숫자는 안 남김 (검색어는 원래 검색 기록에) · 자동 시험 브라우저(webdriver)는 안 남김 · 못 보낸 건 기기에 두었다가 다음에 */
+    (function () {
+      if (navigator.webdriver) return;
+      var Q = [], SID = Math.random().toString(36).slice(2, 8), last = Date.now(), n = 0, lastKey = '', LS = 'ry_ul_q';
+      try { Q = JSON.parse(localStorage.getItem(LS) || '[]').slice(-300); } catch (e) { Q = []; }
+      var dev = function () { var w = innerWidth; return w < 600 ? 'phone' : w < 1024 ? 'tablet' : 'pc'; };
+      var scr = function () {
+        try {
+          var o = [].slice.call(document.querySelectorAll('.ava-sheet.on, [role="dialog"].on, [role="dialog"].open')).filter(function (e) { return e.offsetParent || getComputedStyle(e).position === 'fixed'; }).pop();
+          if (o) return (o.getAttribute('aria-label') || o.id || 'sheet').slice(0, 30);
+          if (document.body.classList.contains('sp-open')) return '세트화면' + (typeof SP !== 'undefined' && SP.view ? ':' + SP.view : '');
+          var sv = document.getElementById('searchResultView'); if (sv && !sv.classList.contains('hidden') && sv.offsetParent) return '검색결과';
+          return 'tab:' + (typeof currentTab !== 'undefined' ? currentTab : '');
+        } catch (e) { return ''; }
+      };
+      var add = function (a, o, extra) {
+        if (n++ > 800) return;   // ponytail: 한 번 켠 앱당 800개 상한 — 모자라면 올림
+        var t = Date.now(), s = scr(), k = a + '|' + o + '|' + s;
+        if (k === lastKey && t - last < 400) return;   // 같은 걸 연달아 두 번 누른 건 하나로
+        Q.push({ t: t, s: s, a: a, o: String(o || '').slice(0, 60), ms: extra != null ? extra : t - last, id: SID }); last = t; lastKey = k;
+        if (Q.length > 400) Q = Q.slice(-400);
+        try { localStorage.setItem(LS, JSON.stringify(Q)); } catch (e) {}
+      };
+      var lab = function (el) {
+        var oc = el.getAttribute('onclick') || '', m = /([A-Za-z_$][\w$]*)\s*\(/.exec(oc.replace(/^\s*(event\.\w+\(\);?\s*|if\s*\([^)]*\)\s*)+/, ''));
+        return el.id || (m && m[1]) || el.getAttribute('aria-label') || el.getAttribute('data-ul') || String(el.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 24);
+      };
+      document.addEventListener('click', function (e) {
+        var el = e.target && e.target.closest && e.target.closest('button, a, [onclick], [role="button"], label.np-save, input[type="checkbox"], input[type="radio"], select, summary');
+        if (el) add('tap', lab(el));
+      }, true);
+      document.addEventListener('change', function (e) { var el = e.target; if (el && el.matches && el.matches('input[type="file"]')) add('file', el.closest('[id]') ? el.closest('[id]').id : 'file'); }, true);
+      window.addEventListener('error', function (e) { add('err', String(e.message || '').slice(0, 60)); });
+      window.addEventListener('unhandledrejection', function (e) { add('err', String(e.reason && e.reason.message || e.reason || '').slice(0, 60)); });
+      try { var t0 = window.showToast; if (typeof t0 === 'function') window.showToast = function (m) { try { add('toast', String(m || '').slice(0, 40)); } catch (e) {} return t0.apply(this, arguments); }; } catch (e) {}
+      try { var a0 = window.alert; window.alert = function (m) { try { add('alert', String(m || '').slice(0, 50)); } catch (e) {} return a0.apply(window, arguments); }; } catch (e) {}
+      add('open', location.pathname.slice(-20), Math.round(performance.now()));
+      var flush = function () {
+        if (!Q.length || typeof google === 'undefined' || !google.script || !currentSelectedMember) return;
+        var b = Q.slice(0, 300);
+        google.script.run.withSuccessHandler(function (r) { if (r && r.success) { Q = Q.slice(b.length); try { localStorage.setItem(LS, JSON.stringify(Q)); } catch (e) {} } }).withFailureHandler(function () {}).logUsage(b, currentSelectedMember, dev());
+      };
+      setInterval(flush, 60000);
+      document.addEventListener('visibilitychange', function () { add(document.hidden ? 'hide' : 'show', ''); if (document.hidden) flush(); });
     })();
     /* 1026 MJ '검색해서 주문 요청할 때도 모션' — 누른 자리에서 '+N개'가 위 [1차 검토] 숫자로 날아가 톡 (화면 밖이면 위로 날아가 사라짐), 그 줄은 파랗게 한 번 빛남 */
     /* 1026 MJ '폰에서는 안 보여' — 목록을 내려 보면 위 탭 숫자가 화면 밖 → 맨 위에 그 탭 작은 칸을 잠깐 띄워 그리로 들어가게 */
