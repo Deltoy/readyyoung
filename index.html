@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvp17e4x">
+  <meta name="ry-build" content="mvp1oki2">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4032,6 +4032,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 .ry-req-fly{position:fixed;z-index:9999;pointer-events:none;padding:6px 12px;border-radius:999px;background:#155EEF;color:#fff;font-size:14px;font-weight:800;box-shadow:0 6px 18px rgba(21,94,239,.35);white-space:nowrap;will-change:transform}
 @keyframes ryReqNow{0%{box-shadow:0 0 0 0 rgba(21,94,239,.5);background-color:#EEF4FF}100%{box-shadow:0 0 0 14px rgba(21,94,239,0)}}
 .ry-req-now{animation:ryReqNow .9s ease-out}
+.ry-fly-dock{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 10px);transform:translateX(-50%);z-index:9998;display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:#fff;border:1px solid #D1E0FF;box-shadow:0 8px 24px rgba(16,24,40,.16);font-size:14px;font-weight:700;color:#101828;pointer-events:none;white-space:nowrap}
+.ry-fly-dock svg{width:16px;height:16px;color:#155EEF;flex:none}.ry-fly-dock b{color:#155EEF;font-weight:800;display:inline-block}
 @media(prefers-reduced-motion:reduce){.ry-req-now{animation:none}}
 </style>
 <style id="rySc1026">/* 1026 세트 2주 집중 대시보드 (MJ 가 매일 아침 전날 판매 입력) */
@@ -13752,17 +13754,30 @@ video {
       }, { passive: true });
     })();
     /* 1026 MJ '검색해서 주문 요청할 때도 모션' — 누른 자리에서 '+N개'가 위 [1차 검토] 숫자로 날아가 톡 (화면 밖이면 위로 날아가 사라짐), 그 줄은 파랗게 한 번 빛남 */
+    /* 1026 MJ '폰에서는 안 보여' — 목록을 내려 보면 위 탭 숫자가 화면 밖 → 맨 위에 그 탭 작은 칸을 잠깐 띄워 그리로 들어가게 */
+    function ryFlyDock(tgt, c0) {
+      var pb = tgt.closest('.ry25-pipe'), l = pb && pb.querySelector('.ry25-pipe-l'), ic = pb && pb.querySelector('svg.ry-i'), d = document.createElement('div');
+      d.className = 'ry-fly-dock'; d.innerHTML = (ic ? ic.outerHTML : '') + '<span>' + escapeHtml(l ? l.textContent : '') + '</span><b>' + escapeHtml(c0) + '</b>';
+      document.body.appendChild(d); if (d.animate) d.animate([{ opacity: 0, transform: 'translate(-50%,-14px)' }, { opacity: 1, transform: 'translate(-50%,0)' }], { duration: 200, easing: 'ease-out' });
+      return d;
+    }
     function ryReqFx(btnEl, row, label, tgtId) {
-      if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      var r0 = btnEl && btnEl.getBoundingClientRect ? btnEl.getBoundingClientRect() : null;
-      if (row != null) setTimeout(function () { document.querySelectorAll('[data-r="' + row + '"]').forEach(function (c) { if (c.offsetParent) { c.classList.remove('ry-req-now'); void c.offsetWidth; c.classList.add('ry-req-now'); } }); }, 30);
+      var rm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches, tgt = document.getElementById(tgtId || 'tabReviewBadge'); if (!tgt) return;
+      var r0 = btnEl && btnEl.getBoundingClientRect ? btnEl.getBoundingClientRect() : null, c0 = tgt.textContent;
+      if (row != null && !rm) setTimeout(function () { document.querySelectorAll('[data-r="' + row + '"]').forEach(function (c) { if (c.offsetParent) { c.classList.remove('ry-req-now'); void c.offsetWidth; c.classList.add('ry-req-now'); } }); }, 30);
       setTimeout(function () {
-        var tgt = document.getElementById(tgtId || 'tabReviewBadge'), f = document.createElement('div'); if (!r0 || !r0.width || !f.animate) return;
-        var r1 = tgt && tgt.offsetParent ? tgt.getBoundingClientRect() : null, vis = r1 && r1.bottom > 0 && r1.top < innerHeight, x0 = r0.left + r0.width / 2, y0 = r0.top + r0.height / 2;
-        var dx = r1 ? r1.left + r1.width / 2 - x0 : 0, dy = vis ? r1.top + r1.height / 2 - y0 : -Math.max(60, y0 - 12);   // 숫자가 화면 밖이면 그 탭 쪽 위 끝으로
+        var r1 = tgt.offsetParent ? tgt.getBoundingClientRect() : null, vis = r1 && r1.top > 0 && r1.bottom < innerHeight, dock = vis ? null : ryFlyDock(tgt, c0), n = dock ? dock.querySelector('b') : tgt;
+        var land = function () {
+          if (dock) n.textContent = tgt.textContent;
+          n.classList.remove('ry-bump'); void n.offsetWidth; n.classList.add('ry-bump');
+          if (dock) setTimeout(function () { if (!dock.animate) return dock.remove(); dock.animate([{ opacity: 1 }, { opacity: 0, transform: 'translate(-50%,-10px)' }], { duration: 220, fill: 'forwards' }).onfinish = function () { dock.remove(); }; }, 1100);
+        };
+        var f = document.createElement('div'); if (rm || !r0 || !r0.width || !f.animate) return setTimeout(land, 520);   // 움직임 줄이기: 날지 않고 칸 숫자만
+        if (dock) r1 = n.getBoundingClientRect();
+        var x0 = r0.left + r0.width / 2, y0 = r0.top + r0.height / 2, dx = r1 ? r1.left + r1.width / 2 - x0 : 0, dy = r1 ? r1.top + r1.height / 2 - y0 : -Math.max(60, y0 - 12);
         f.className = 'ry-req-fly'; f.textContent = label; f.style.left = x0 + 'px'; f.style.top = y0 + 'px'; document.body.appendChild(f);
         var a = f.animate([{ transform: 'translate(-50%,-50%) scale(1)', opacity: 1 }, { transform: 'translate(calc(-50% + ' + Math.round(dx * .5) + 'px),calc(-50% + ' + Math.round(dy * .5 - 70) + 'px)) scale(1.08)', opacity: 1, offset: .45 }, { transform: 'translate(calc(-50% + ' + Math.round(dx) + 'px),calc(-50% + ' + Math.round(dy) + 'px)) scale(.45)', opacity: .25 }], { duration: 640, easing: 'cubic-bezier(.3,.7,.4,1)' });
-        a.onfinish = function () { f.remove(); if (vis) { tgt.classList.remove('ry-bump'); void tgt.offsetWidth; tgt.classList.add('ry-bump'); } };
+        a.onfinish = function () { f.remove(); land(); };
       }, 40);
     }
     function handleSearchOrderRequest(rowNumber, isMobile, btnEl) {
