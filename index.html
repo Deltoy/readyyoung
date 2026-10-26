@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvolw77d">
+  <meta name="ry-build" content="mvonuyig">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4016,6 +4016,86 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 @keyframes ryInvChk{from{transform:scale(.3);opacity:.3}}
 @media (prefers-reduced-motion:reduce){html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump,html:not(#q):not(#w):not(#e) body:not(#r) .ry-done svg,#invBox .inv-line.inv-fx,#invBox .inv-line.inv-fx input:checked{animation:none!important}}
 </style>
+<style id="rySc1026">/* 1026 세트 2주 집중 대시보드 (MJ 가 매일 아침 전날 판매 입력) */
+.sc{display:grid;gap:12px;max-width:760px;margin:0 auto}
+.sc-today,.sc-card{background:#fff;border:1px solid var(--ry-line);border-radius:20px;padding:16px}
+.sc-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:12px}
+.sc-hd b{display:block;font-size:19px;font-weight:800;letter-spacing:-.01em}
+.sc-hd span{display:block;margin-top:2px;font-size:13px;color:var(--ry-ink-3);font-weight:600;line-height:1.45}
+.sc-verdict{flex:none;font-style:normal;font-size:13px;font-weight:800;border-radius:999px;padding:6px 11px;color:#B54708;background:#FFFAEB;border:1px solid #FEDF89}
+.sc-verdict.all{color:#93370D;background:#FEF0C7;border-color:#FEC84B}.sc-verdict.none{color:var(--ry-ink-2);background:var(--ry-sunken);border-color:var(--ry-line)}
+.sc-rings{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sc-tile{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--sc-soft);border-radius:16px;padding:12px 8px;text-align:center;overflow:hidden}
+.sc-tile.done{background:#FFFAEB;box-shadow:inset 0 0 0 1.5px #FEC84B}
+.sc-rw{position:relative;width:min(132px,100%);aspect-ratio:1}
+.sc-ring{width:100%;height:100%;transform:rotate(-90deg)}
+.sc-ring circle{fill:none;stroke-width:11}
+.sc-ring-bg{stroke:rgba(16,24,40,.08)}
+.sc-ring-fg{stroke-linecap:round;transition:stroke-dashoffset .9s cubic-bezier(.2,.7,.3,1)}
+.sc-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.sc-num b{font-size:36px;font-weight:800;letter-spacing:-.02em;color:var(--ry-ink)}
+.sc-num span{margin-top:4px;font-size:13px;font-weight:700;color:var(--ry-ink-3)}
+.sc-nm{font-size:14.5px;font-weight:800;color:var(--sc);line-height:1.25}
+.sc-nm small{display:block;font-size:11.5px;font-weight:600;color:var(--ry-ink-3)}
+.sc-st{font-size:13px;color:var(--ry-ink-2);font-weight:600}
+.sc-tile.done .sc-st{color:#B54708;font-weight:800}
+.sc-conf{position:absolute;left:50%;top:36%;width:0;height:0;pointer-events:none}
+.sc-conf i{position:absolute;width:8px;height:12px;border-radius:2px;opacity:0;animation:scConf 1.1s cubic-bezier(.15,.7,.3,1) forwards}
+@keyframes scConf{0%{opacity:1;transform:translate(0,0) rotate(0) scale(.6)}70%{opacity:1}100%{opacity:0;transform:translate(var(--x),calc(var(--y) + 40px)) rotate(var(--r)) scale(1)}}
+.sc-first{text-align:center;padding:22px 16px}
+.sc-first>b{display:block;font-size:19px;font-weight:800}
+.sc-first>p{margin:4px 0 14px;font-size:13.5px;color:var(--ry-ink-3);font-weight:600}
+.sc-goalchips{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sc-goalchips span{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 8px;border-radius:16px;background:var(--sc-soft);color:var(--sc);font-size:13.5px;font-weight:800}
+.sc-goalchips b{font-size:30px;color:var(--ry-ink);letter-spacing:-.02em}.sc-goalchips small{font-size:12px;color:var(--ry-ink-3);font-weight:600}
+.sc-in{border-color:#B2CCFF;background:#F5F8FF}
+.sc-in .sc-f{margin-top:0}
+.sc-in-done{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 8px 8px 16px}
+.sc-in-done span{font-size:14px;font-weight:700;color:var(--ry-ink-2)}.sc-in-done span b{color:var(--ry-ink)}.sc-in-done i{font-style:normal;font-weight:800}
+.sc-in-done button{min-height:44px;padding:0 16px;border:1px solid #B2CCFF;border-radius:12px!important;background:#fff;color:#175CD3;font-size:14px;font-weight:800}
+.sc-date{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--ry-ink-3)}
+.sc-date input{min-height:40px;border:1px solid var(--ry-line);border-radius:10px;padding:0 8px;font-size:14px;background:#fff;color:var(--ry-ink)}
+.sc-card h3{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:16px;font-weight:800;margin:0 0 12px}
+.sc-card h3 span{font-size:12px;font-weight:600;color:var(--ry-ink-3)}
+.sc-note{font-size:13px;color:var(--ry-ink-2);background:var(--ry-sunken);border-radius:12px;padding:10px 12px;margin:0 0 10px;line-height:1.5}
+.sc-wk+.sc-wk{margin-top:16px}
+.sc-wk-t{display:flex;justify-content:space-between;font-size:14px}.sc-wk-t b{color:var(--sc)}.sc-wk-t span{color:var(--ry-ink-2);font-weight:600}.sc-wk-t span b{color:var(--ry-ink);font-size:16px}
+.sc-bar{position:relative;height:14px;border-radius:999px;background:var(--ry-sunken);margin:6px 0 5px;overflow:hidden}
+.sc-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:var(--sc);transition:width .8s var(--ry-ease)}
+.sc-wk-s{font-size:13px;color:var(--ry-ink-2);font-weight:600}.sc-wk-s b{color:var(--ry-ink)}
+.sc-charts{display:grid;gap:16px}
+.sc-cht{display:flex;justify-content:space-between;font-size:13.5px;font-weight:800;margin-bottom:2px}.sc-cht span{color:#B54708;font-size:12.5px}
+.sc-ch{width:100%;height:auto;display:block;overflow:visible}
+.sc-ch .sc-b{transform-box:fill-box;transform-origin:50% 100%}
+.sc-ch.grow .sc-b{animation:scGrow .55s cubic-bezier(.2,.7,.3,1) both;animation-delay:calc(var(--i) * 35ms)}
+@keyframes scGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.sc-ch .sc-ghost{fill:var(--ry-sunken);stroke:none}
+.sc-ch .sc-ghost.now{fill:none;stroke:var(--ry-ink-3);stroke-width:1.2;stroke-dasharray:3 2}
+.sc-ch .sc-gl{stroke-width:1.5;stroke-dasharray:3 2;opacity:.8}
+.sc-ch .sc-sep{stroke:#D0D5DD}
+.sc-ch text{font-size:12px;text-anchor:middle;fill:var(--ry-ink-3);font-weight:700}
+.sc-ch .sc-v{fill:var(--ry-ink)}.sc-ch .sc-star{fill:#DC6803;font-size:12px}.sc-ch .sc-x.now{fill:var(--ry-ink);font-weight:900}
+.sc-ch .sc-q{fill:#B42318;font-weight:900}.sc-ch .sc-wk2{text-anchor:start;font-size:10.5px}
+.sc-tip summary,.sc-adm summary{cursor:pointer;font-size:15px;font-weight:800;min-height:44px;display:flex;align-items:center;gap:8px;list-style:none;margin:-6px 0}
+.sc-tip summary::-webkit-details-marker,.sc-adm summary::-webkit-details-marker{display:none}
+.sc-tip summary::after,.sc-adm summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid var(--ry-ink-3);border-bottom:2px solid var(--ry-ink-3);transform:rotate(45deg) translateY(-2px);transition:transform .2s}
+.sc-tip[open] summary::after,.sc-adm[open] summary::after{transform:rotate(-135deg) translateY(-2px)}
+.sc-tip ul{margin:12px 0 0;padding-left:18px;display:grid;gap:6px;font-size:13.5px;line-height:1.55;color:var(--ry-ink-2)}
+.sc-tip li{list-style:disc}.sc-tip li::marker{color:var(--ry-ink-3)}
+.sc-f{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;margin-top:12px}
+.sc-f label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:700;color:var(--ry-ink-2);flex:1 1 140px}
+.sc-f input,.sc-f select{min-height:44px;border:1px solid var(--ry-line);border-radius:12px;padding:0 10px;font-size:16px;background:#fff;color:var(--ry-ink);width:100%}
+.sc-f label span{display:flex;gap:6px}
+.sc-btn{min-height:44px;border:0;border-radius:12px!important;background:var(--ry-ink);color:#fff;font-size:14px;font-weight:800;padding:0 16px;flex:1 1 140px}
+.sc-btn:disabled{opacity:.6}
+#scQuick i{font-style:normal;margin-left:4px;font-size:11.5px;font-weight:800;color:#107569}#scQuick i.done{color:#B54708}
+.sp-seg{scroll-padding-inline:16px}
+@media(min-width:768px){.sc-charts{grid-template-columns:1fr 1fr;gap:20px}.sc-rings,.sc-goalchips{gap:14px}.sc-num b{font-size:40px}}
+@media(min-width:1100px){.sc{max-width:1040px}.sc-tile{display:grid;grid-template-columns:148px auto;column-gap:24px;justify-content:center;align-content:center;text-align:left;padding:16px}.sc-rw{grid-row:1/3;width:148px}.sc-nm{align-self:end}.sc-st{align-self:start}.sc-conf{top:50%;left:calc(50% - 95px)}}
+@media(prefers-reduced-motion:reduce){.sc-ring-fg,.sc-bar i{transition:none}.sc-ch.grow .sc-b,.sc-conf i{animation:none}}
+@media(min-width:720px){html body:not(#_):not(#_) #spSeg::before{display:none}html body:not(#_):not(#_) #spSeg{width:fit-content;max-width:calc(100% - 32px);margin:10px auto 6px;padding:2px!important;background:#e8e8ed!important;border-radius:11px}html body:not(#_):not(#_) #spSeg button{flex:0 1 180px;min-width:120px;padding:0 14px}}/* 1026 PC 탭 바탕이 2칸(448px) 고정이라 탭 4~5개면 어긋났음 → 탭 묶음 크기에 맞춤 */
+@media(max-width:767px){.sp-seg{overflow-x:auto;scrollbar-width:none}.sp-seg::-webkit-scrollbar{display:none}.sp-seg button{flex:1 0 auto;white-space:nowrap;padding:0 10px}}/* 1026 폰: 탭이 5개(문준)여도 두 줄로 안 깨지게 */
+</style>
 <style id="twPre">/* Tailwind 3.4.17 미리 만든 것 — ~/bin/tw-build.js 가 배포 때마다 다시 만듦, 손으로 고치지 말 것 */
 *, ::before, ::after {
   --tw-border-spacing-x: 0;
@@ -4573,6 +4653,9 @@ video {
 }
 .shrink {
   flex-shrink: 1;
+}
+.grow {
+  flex-grow: 1;
 }
 .basis-full {
   flex-basis: 100%;
@@ -5642,6 +5725,7 @@ video {
         <button type="button" class="ry-ghost ry-quick" onclick="rlOpen()" title="일하면서 알아야 할 규칙 (주제별)">숙지사항<i id="rlDot" class="rl-btn-n" hidden></i></button>
         <button type="button" class="ry-ghost ry-quick" onclick="invOpen()" title="명세서 · 명세서 없이 온 주문 · 주문 안 한 상품을 한 화면에서 한 번에 입고">📦 입고하기</button>
         <button type="button" class="ry-ghost ry-quick" onclick="openSetPage(); spShow('sets')" title="세트 상품 · 박스 재고 · 오늘 만든 세트 기록">🎁 세트 상품<i id="bxDot" class="bx-today" hidden>박스 아직</i></button>
+        <button type="button" class="ry-ghost ry-quick" id="scQuick" onclick="scOpen()" title="세트 판매 2주 집중 (10/26~11/8) · 오늘 목표와 [+1]" hidden>🎯 세트 2주<i id="scQuickN"></i></button>
         <button type="button" class="ry-ghost ry-quick" onclick="window.open('https://pallang-0258.github.io/seongsu/viewer.html', '_blank', 'noopener')" title="근무표를 새 창으로 열기">근무표</button>
         <button type="button" class="ry-ghost ry-quick" onclick="mbOpenArchive()" title="날짜별 아침 뷰티 브리핑">뷰티 브리핑</button>
         <button type="button" class="ry-ghost ry-quick" onclick="eduOpen()" title="제품 교육 자료">교육 자료실<i id="eduDot" class="mb-dot edu-qdot" hidden aria-label="새 교육 자료"></i></button>
@@ -7353,6 +7437,185 @@ video {
       set.items.forEach(function (it) { var p = spProduct(it.name); (p ? p.tags : []).forEach(function (t) { cnt[t] = (cnt[t] || 0) + 1; }); });
       return Object.keys(cnt).sort(function (a, b) { return cnt[b] - cnt[a]; }).slice(0, 3);
     }
+    /* ══════ 1026 MJ '세트 판매 2주 집중 — 매일 판매량이 하루 목표를 달성했는지 보는 대시보드 · 그래프 · 재미 · 모션' (약국장님 공지 10/26~11/8)
+       MJ '매일 아침 전날 판매량을 내가 입력' → 서버 getSetChallenge · setChallengeDay · setChallengeGoal (문준·물류관리자)
+       공지 목표 1주차 119·105 (하루 17·15), 2주차는 월요일 공지 뒤 목표 칸에 · MJ '세트왕은 왜 들어가?' → 사람별 순위 없음 ══════ */
+    var SC = { data: null, busy: false, prev: {}, t: 0, day: '', edit: 0, rev: 0, party: '' };
+    var SC_SETS = [{ k: 'total', label: 'Total skin care', sub: 'Skin & Lip care 포함', c: '#107569', soft: '#E6F6F4' }, { k: 'smart', label: 'SMART CHOICE', sub: 'PDRN x EGF', c: '#6938EF', soft: '#F1EDFE' }];
+    var SC_FROM = '2026-10-26', SC_TO = '2026-11-08', SC_WD = ['일', '월', '화', '수', '목', '금', '토'];
+    function scYmd(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+    function scAdd(ymd, n) { var p = ymd.split('-'); return scYmd(new Date(+p[0], +p[1] - 1, +p[2] + n)); }
+    function scMd(ymd) { var p = ymd.split('-'), d = new Date(+p[0], +p[1] - 1, +p[2]); return (+p[1]) + '/' + (+p[2]) + '(' + SC_WD[d.getDay()] + ')'; }
+    function scAdm() { var m = String(currentSelectedMember || '').trim(); return m === '문준' || m === '물류관리자'; }
+    function scShown() { var c = SC.data && SC.data.cfg, d = scYmd(new Date()); return d >= scAdd(c ? c.from : SC_FROM, -3) && d <= scAdd(c ? c.to : SC_TO, 7); }   // 시작 3일 전 ~ 끝나고 일주일
+    function scDays(c) { var out = [], d = c.from; while (d <= c.to && out.length < 60) { out.push(d); d = scAdd(d, 1); } return out; }
+    function scWeek(c, d) { for (var i = 0; i < c.weeks.length; i++) if (d >= c.weeks[i].from && d <= c.weeks[i].to) return i; return -1; }
+    function scGoal(c, d, k) { var i = scWeek(c, d); if (i < 0) return 0; for (var j = i; j >= 0; j--) if (c.weeks[j].day && c.weeks[j].day[k]) return c.weeks[j].day[k]; return 0; }   // 2주차 목표가 아직 없으면 1주차 하루 목표로
+    function scHas(d) { var o = SC.data && SC.data.days[d]; return !!o && SC_SETS.some(function (s) { return o[s.k] != null; }); }
+    function scV(d, k) { var o = SC.data && SC.data.days[d]; return o && o[k] != null ? o[k] : null; }
+    function scOk(c, d, k) { var v = scV(d, k), g = scGoal(c, d, k); return v != null && g > 0 && v >= g; }
+    function scRm() { return window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches; }
+    function scLoad(quiet) {
+      if (SC.busy) return; SC.busy = true; var rev0 = SC.rev;
+      if (!quiet && !SC.data) { try { var c0 = JSON.parse(localStorage.getItem('ry_sc') || 'null'); if (c0 && c0.cfg) SC.data = c0; } catch (e) {} }
+      google.script.run.withSuccessHandler(function (r) {
+          SC.busy = false; if (!r || !r.success || rev0 !== SC.rev) return;   // 받는 사이에 저장했으면 옛 응답은 버림
+          var same = SC.data && SC.data.today === r.today && JSON.stringify(SC.data.days) === JSON.stringify(r.days) && JSON.stringify(SC.data.cfg) === JSON.stringify(r.cfg), typing = document.activeElement && document.activeElement.closest && document.activeElement.closest('#spBody .sc');
+          SC.data = r; SC.t = Date.now(); try { localStorage.setItem('ry_sc', JSON.stringify(r)); } catch (e) {} scQuick();
+          if ((!same || !quiet) && !typing && SP.view === 'goal' && document.body.classList.contains('sp-open')) scRender(); })
+        .withFailureHandler(function () { SC.busy = false; if (SP.view === 'goal' && !SC.data) document.getElementById('spBody').innerHTML = '<div class="sp-msg">못 불러왔어요 · 인터넷 확인<button type="button" class="ry-info-sub" onclick="scLoad()">다시 시도</button></div>'; })
+        .getSetChallenge();
+    }
+    function scLastDay() {   // 결과를 보여 줄 날 = 판매가 들어온 가장 최근 날 (오늘 전)
+      var D = SC.data, c = D.cfg, d = scAdd(D.today, -1); if (d > c.to) d = c.to;
+      while (d >= c.from) { if (scHas(d)) return d; d = scAdd(d, -1); }
+      return '';
+    }
+    function scQuick() {   // 퀵메뉴 [🎯 세트 2주] · 어제 두 세트 다 달성이면 ★
+      var b = document.getElementById('scQuick'); if (!b) return; b.hidden = !scShown();
+      var n = document.getElementById('scQuickN'); if (!SC.data || !n) return;
+      var d = scLastDay(), all = d && SC_SETS.every(function (s) { return scOk(SC.data.cfg, d, s.k); });
+      n.textContent = all ? '★' : ''; n.classList.toggle('done', !!all);
+    }
+    function scOpen() { if (!checkMemberSelectedOrAlert()) return; openSetPage(); spShow('goal'); }
+    setTimeout(function () { try { scQuick(); if (scShown()) scLoad(true); } catch (e) {} }, 4500);
+    setInterval(function () { try { if (scShown() && !document.hidden && Date.now() - SC.t > 5 * 60000) scLoad(true); } catch (e) {} }, 60000);
+    function scRing(s, v, g, pv) {
+      var C = 326.73, f = function (x) { return (C * (1 - Math.min(1, g ? (x || 0) / g : 0))).toFixed(1); };
+      return '<svg class="sc-ring" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" class="sc-ring-bg"/><circle cx="60" cy="60" r="52" class="sc-ring-fg" style="stroke:' + s.c + ';stroke-dasharray:' + C + ';stroke-dashoffset:' + f(pv) + '" data-to="' + f(v) + '"/></svg>';
+    }
+    function scMiss(c, t) { return scDays(c).filter(function (d) { return d < t && !scHas(d); }); }   // 지난날 중 아직 안 넣은 날 (오래된 순)
+    function scRender() {
+      var b = document.getElementById('spBody'), D = SC.data; if (!b) return;
+      document.getElementById('spTitle').textContent = '세트 2주 집중';
+      if (!D) { b.innerHTML = '<div class="sp-msg"><span class="ry-info-spin"></span>불러오는 중…</div>'; scLoad(); return; }
+      var c = D.cfg, t = D.today, days = scDays(c), adm = scAdm(), h = '', yd = scAdd(t, -1), last = scLastDay(), before = t < c.from, over = t > c.to, miss = scMiss(c, t);
+      var wi = scWeek(c, t), wShow = wi >= 0 ? wi : before ? 0 : c.weeks.length - 1, w = c.weeks[wShow], goalOpen = adm && w && !w.goal && !over;
+      var gtxt = function (d) { return SC_SETS.map(function (s) { return (s.k === 'total' ? 'Total ' : 'SMART ') + (scGoal(c, d, s.k) || '–') + '개'; }).join(' · '); };
+      /* ⓪ MJ: 전날 판매 넣기 — 넣은 날이면 한 줄로 접힘 */
+      if (adm && t > c.from && t <= scAdd(c.to, 7)) {
+        var dIn = SC.day && SC.day >= c.from && SC.day <= c.to && SC.day < t ? SC.day : miss[0] || (yd > c.to ? c.to : yd), has = scHas(dIn);
+        if (has && !SC.edit) h += '<section class="sc-card sc-in sc-in-done"><span>✓ <b>' + scMd(dIn) + '</b> 넣음 · ' + SC_SETS.map(function (s) { var v = scV(dIn, s.k); return '<i style="color:' + s.c + '">' + (v == null ? '–' : v) + '</i>'; }).join(' · ') + '</span><button type="button" onclick="SC.edit=1;scRender()">고치기</button></section>';
+        else h += '<section class="sc-card sc-in"><h3>' + scMd(dIn) + ' 판매 넣기 <span>' + (miss.length > 1 ? '안 넣은 날 ' + miss.length + '일' : '전날 POS 판매') + '</span></h3><div class="sc-f">'
+          + SC_SETS.map(function (s, i) { var v = scV(dIn, s.k); return '<label style="color:' + s.c + '">' + escapeHtml(s.label) + '<input type="number" inputmode="numeric" min="0" max="999" id="scIn-' + s.k + '" value="' + (v == null ? '' : v) + '" placeholder="목표 ' + (scGoal(c, dIn, s.k) || '') + '" enterkeyhint="' + (i ? 'done' : 'next') + '" onkeydown="if(event.key===\'Enter\'){event.preventDefault();' + (i ? 'scSave()' : 'document.getElementById(\'scIn-smart\').focus()') + '}"></label>'; }).join('')
+          + '<button type="button" class="sc-btn" onclick="scSave()">' + (has ? '고쳐서 저장' : '저장') + '</button></div>'
+          + '<label class="sc-date">다른 날 <input type="date" id="scDate" value="' + dIn + '" min="' + c.from + '" max="' + (yd < c.to ? yd : c.to) + '" onchange="SC.day=this.value;SC.edit=1;scRender()"></label></section>';
+      }
+      if (goalOpen) h += scGoalCard(c, wShow, true);
+      /* ① 결과 */
+      var streak = 0; if (last) for (var d = last; d >= c.from; d = scAdd(d, -1)) { if (SC_SETS.every(function (s) { return scOk(c, d, s.k); })) streak++; else break; }
+      var tiles = function (getV, getG, sub) { return '<div class="sc-rings">' + SC_SETS.map(function (s) {
+        var v = getV(s.k), g = getG(s.k), pv = SC.prev[s.k] != null ? SC.prev[s.k] : 0, done = v != null && g && v >= g;
+        return '<div class="sc-tile' + (done ? ' done' : '') + '" id="scT-' + s.k + '" style="--sc:' + s.c + ';--sc-soft:' + s.soft + '"><div class="sc-rw">' + scRing(s, v, g, pv)
+          + '<div class="sc-num"><b data-n="' + (v || 0) + '" data-p="' + pv + '">' + (v == null ? '–' : pv) + '</b><span>/ ' + (g || '–') + '</span></div></div>'
+          + '<div class="sc-nm">' + escapeHtml(s.label) + '<small>' + escapeHtml(s.sub) + '</small></div>'
+          + '<div class="sc-st">' + sub(s.k, v, g, done) + '</div></div>'; }).join('') + '</div>'; };
+      if (over) {   /* 11/8 뒤: 2주 결과 */
+        var tot = {}, gs = {}, star = {}; SC_SETS.forEach(function (s) { tot[s.k] = 0; gs[s.k] = 0; star[s.k] = 0; days.forEach(function (d) { tot[s.k] += scV(d, s.k) || 0; gs[s.k] += scGoal(c, d, s.k); if (scOk(c, d, s.k)) star[s.k]++; }); });
+        h += '<section class="sc-today"><div class="sc-hd"><div><b>2주 집중 결과</b><span>' + scMd(c.from) + ' ~ ' + scMd(c.to) + ' · 합계</span></div></div>'
+          + tiles(function (k) { return tot[k]; }, function (k) { return gs[k]; }, function (k, v, g, done) { return '★ ' + star[k] + '/' + days.length + '일 달성' + (done ? ' · 🏆' : ''); }) + '</section>';
+      } else if (!last) {   /* 첫날 · 아직 하나도 안 들어옴 */
+        h += '<section class="sc-today sc-first"><b>' + (before ? scMd(c.from) + '부터 시작해요' : t === c.from ? '오늘 첫날이에요' : '아직 들어온 판매가 없어요') + '</b><p>결과는 다음 날 아침에 올라와요</p><div class="sc-goalchips">' + SC_SETS.map(function (s) { return '<span style="--sc:' + s.c + ';--sc-soft:' + s.soft + '">' + escapeHtml(s.label) + '<b>' + (scGoal(c, before ? c.from : t, s.k) || '–') + '개</b><small>하루 목표</small></span>'; }).join('') + '</div></section>';
+      } else {
+        var nOk = SC_SETS.filter(function (s) { return scOk(c, last, s.k); }).length;
+        h += '<section class="sc-today"><div class="sc-hd"><div><b>' + (last === yd ? '어제 ' : '') + scMd(last) + ' 결과</b><span>오늘 목표 · ' + gtxt(t) + (streak >= 2 ? ' · 🔥 ' + streak + '일 연속' : '') + '</span></div>'
+          + '<em class="sc-verdict' + (nOk === SC_SETS.length ? ' all' : nOk ? '' : ' none') + '">' + (nOk === SC_SETS.length ? '🎉 둘 다 달성' : nOk ? '2개 중 1개 달성' : '둘 다 못 미침') + '</em></div>'
+          + (last !== yd && yd <= c.to && !scHas(yd) ? '<p class="sc-note">어제 ' + scMd(yd) + ' 판매는 아침에 올라와요</p>' : '')
+          + tiles(function (k) { return scV(last, k); }, function (k) { return scGoal(c, last, k); }, function (k, v, g, done) { return v == null ? '기록 전' : done ? '🎉 하루 목표 달성' + (v > g ? ' · +' + (v - g) : '') : '목표까지 ' + (g - v) + '개 모자랐어요'; }) + '</section>';
+      }
+      /* ② 주차 목표 · 이번 주 목표가 아직 없으면 지난주 결과도 */
+      var wks = w && !over ? (!w.goal && wShow > 0 && c.weeks[wShow - 1].goal ? [wShow - 1, wShow] : [wShow]) : [];
+      wks.forEach(function (wx) { var w = c.weeks[wx], wShow = wx;
+        var wd = scDays({ from: w.from, to: w.to }), left = w.to < t ? 0 : wd.filter(function (d) { return d >= t || !scHas(d); }).length;   // 아직 안 넣은 지난날도 '남은 날' · 끝난 주는 결과만
+        h += '<section class="sc-card"><h3>' + (wShow + 1) + '주차 목표 <span>' + scMd(w.from) + ' ~ ' + scMd(w.to) + '</span></h3>';
+        if (!w.goal) h += '<p class="sc-note">' + (wShow + 1) + '주차 목표는 ' + scMd(w.from) + ' 공지 후 올라와요 · 그 전엔 하루 ' + gtxt(w.from) + ' 그대로</p>';
+        SC_SETS.forEach(function (s) {
+          var G = w.goal && w.goal[s.k]; if (!G) return;
+          var sum = 0; wd.forEach(function (d) { if (d < t) sum += scV(d, s.k) || 0; });
+          var pct = Math.min(100, sum / G * 100), per = left ? Math.ceil(Math.max(0, G - sum) / left) : 0, dg = scGoal(c, wd[0] > t ? wd[0] : t, s.k);
+          h += '<div class="sc-wk" style="--sc:' + s.c + '"><div class="sc-wk-t"><b>' + escapeHtml(s.label) + '</b><span><b>' + sum + '</b> / ' + G + '개</span></div>'
+            + '<div class="sc-bar"><i style="width:' + pct.toFixed(1) + '%"></i></div>'
+            + '<div class="sc-wk-s">' + (sum >= G ? '🏆 주 목표 달성!' : !left ? (G - sum) + '개 모자랐어요' : per <= dg ? '하루 목표(' + dg + '개)만 지키면 주 목표 달성' : '주 목표 맞추려면 남은 ' + left + '일 하루 <b>' + per + '개</b>') + '</div></div>';
+        });
+        h += '</section>';
+      });
+      /* ③ 날마다 그래프 */
+      h += '<section class="sc-card"><h3>날마다 판매 <span>점선 = 하루 목표 · ★ 달성</span></h3><div class="sc-charts">' + SC_SETS.map(function (s) { return scChart(s, c, days, t); }).join('') + '</div></section>';
+      /* ④ 공지 요약 */
+      h += '<details class="sc-card sc-tip"><summary>📣 약국장님 공지 · 매장에서 이렇게</summary><ul>'
+        + '<li>단품 하나만 고른 손님께 세트를 같이 안내 · 낱개보다 세트가 더 이득이라고 짧게</li>'
+        + '<li>국적 상관없이 두 세트 모두 권하기 · 일본 손님은 SMART CHOICE, 중국·대만 손님은 Total skin care 를 조금 더 골라요</li>'
+        + '<li>세트는 손님 눈에 잘 띄는 곳에 진열</li>'
+        + '<li>세트 산 외국인 손님은 평균보다 2배 넘게 결제해요 · 개수보다 손님께 더 좋은 구성을 제안하는 게 핵심</li>'
+        + '<li>월요일 아침 이번 주 목표, 수·금 아침 현황과 남은 하루 목표 공유</li></ul></details>';
+      /* ⑤ 목표 바꾸기 */
+      if (adm && !goalOpen) h += scGoalCard(c, wi < 0 ? 0 : wi, false);
+      b.innerHTML = '<div class="sc">' + h + '</div>';
+      if (adm) scGoalFill();
+      scAnim(over ? '' : last);
+    }
+    function scGoalCard(c, wi, open) {
+      return '<details class="sc-card sc-adm"' + (open || SC.admOpen ? ' open' : '') + ' ontoggle="SC.admOpen=this.open"><summary>⚙️ ' + (open ? (wi + 1) + '주차 목표 넣기' : '주차 목표 바꾸기') + '</summary><div class="sc-f"><label>주차<select id="scWi" onchange="scGoalFill()">' + c.weeks.map(function (x, i) { return '<option value="' + i + '"' + (i === wi ? ' selected' : '') + '>' + (i + 1) + '주차 ' + scMd(x.from) + '~</option>'; }).join('') + '</select></label>'
+        + SC_SETS.map(function (s) { return '<label>' + escapeHtml(s.label) + ' 주 / 하루<span><input type="number" inputmode="numeric" id="scG-' + s.k + '" min="0" placeholder="주 목표"><input type="number" inputmode="numeric" id="scD-' + s.k + '" min="0" placeholder="비우면 주÷7"></span></label>'; }).join('')
+        + '<button type="button" class="sc-btn" onclick="scGoalSave()">목표 저장</button></div></details>';
+    }
+    function scChart(s, c, days, t) {
+      var W = 24, H = 104, top = 18, vals = days.map(function (d) { return d < t ? scV(d, s.k) : null; }), goals = days.map(function (d) { return scGoal(c, d, s.k); });
+      var mx = Math.max.apply(null, goals.concat(vals.map(function (v) { return v || 0; })).concat([1])) * 1.15, y = function (v) { return top + (H - top) * (1 - v / mx); };
+      var g = '<svg class="sc-ch" viewBox="0 0 ' + (days.length * W) + ' ' + (H + 18) + '" role="img" aria-label="' + escapeHtml(s.label) + ' 날마다 판매">';
+      days.forEach(function (d, i) {
+        var x = i * W, v = vals[i], gl = goals[i], ok = v != null && gl && v >= gl;
+        if (i === 7) g += '<line x1="' + x + '" x2="' + x + '" y1="2" y2="' + H + '" class="sc-sep"/><text x="' + (x + 3) + '" y="9" class="sc-wk2">2주차</text>';
+        if (gl) g += '<line x1="' + (x + 2) + '" x2="' + (x + W - 2) + '" y1="' + y(gl).toFixed(1) + '" y2="' + y(gl).toFixed(1) + '" class="sc-gl" style="stroke:' + s.c + '"/>';
+        if (v == null) { g += '<rect x="' + (x + 5) + '" y="' + y(gl || 0).toFixed(1) + '" width="14" height="' + Math.max(0, H - y(gl || 0)).toFixed(1) + '" rx="3" class="sc-ghost' + (d === t ? ' now' : '') + '"/>'; if (d < t) g += '<text x="' + (x + 12) + '" y="' + (H - 4) + '" class="sc-q">?</text>'; }
+        else { var hh = Math.max(v ? 3 : 0, H - y(v)); g += '<rect x="' + (x + 5) + '" y="' + (H - hh).toFixed(1) + '" width="14" height="' + hh.toFixed(1) + '" rx="3" class="sc-b" style="fill:' + s.c + ';--i:' + i + '"/>'
+          + '<text x="' + (x + 12) + '" y="' + (H - hh - (ok ? 15 : 3)).toFixed(1) + '" class="sc-v">' + v + '</text>' + (ok ? '<text x="' + (x + 12) + '" y="' + (H - hh - 2).toFixed(1) + '" class="sc-star">★</text>' : ''); }
+        g += '<text x="' + (x + 12) + '" y="' + (H + 14) + '" class="sc-x' + (d === t ? ' now' : '') + '">' + (+d.slice(8)) + '</text>';
+      });
+      var hit = days.filter(function (d, i) { return vals[i] != null && goals[i] && vals[i] >= goals[i]; }).length;
+      return '<div class="sc-chw"><div class="sc-cht"><b style="color:' + s.c + '">' + escapeHtml(s.label) + '</b><span>★ ' + hit + '일 달성</span></div>' + g + '</svg></div>';
+    }
+    function scAnim(last) {   /* 여는 순간: 링이 채워지고 숫자가 올라감 · 막대가 자람 · 달성한 날은 이 기기에서 처음 볼 때 한 번 축하 */
+      var rm = scRm();
+      document.querySelectorAll('#spBody .sc-ring-fg').forEach(function (c) { if (rm) { c.style.transition = 'none'; c.style.strokeDashoffset = c.dataset.to; return; } requestAnimationFrame(function () { requestAnimationFrame(function () { c.style.strokeDashoffset = c.dataset.to; }); }); });
+      document.querySelectorAll('#spBody .sc-num b').forEach(function (el) {
+        if (el.textContent === '–') return; var to = +el.dataset.n, from = +el.dataset.p; if (rm || from === to) { el.textContent = to; return; }
+        var t0 = performance.now(), dur = Math.min(1000, 300 + Math.abs(to - from) * 40), step = function (now) { var k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(from + (to - from) * e); if (k < 1) requestAnimationFrame(step); };
+        requestAnimationFrame(step);
+      });
+      if (!rm) document.querySelectorAll('#spBody .sc-ch').forEach(function (sv) { sv.classList.add('grow'); });
+      var seen = SC.party; try { seen = localStorage.getItem('ry_sc_party') || seen; } catch (e) {}
+      if (last && seen !== last && SC_SETS.some(function (s) { return scOk(SC.data.cfg, last, s.k); })) {
+        SC.party = last; try { localStorage.setItem('ry_sc_party', last); } catch (e) {}
+        setTimeout(function () { SC_SETS.forEach(function (s) { if (scOk(SC.data.cfg, last, s.k)) scParty(s.k); }); }, rm ? 0 : 900);
+      }
+      SC_SETS.forEach(function (s) { SC.prev[s.k] = last ? scV(last, s.k) || 0 : 0; });
+    }
+    function scParty(k) {   /* 🎉 링 위로 종이 꽃가루 한 번 */
+      var tile = document.getElementById('scT-' + k); if (!tile || scRm()) return;
+      var box = document.createElement('div'), cs = ['#F79009', '#0E9384', '#6938EF', '#0054B7', '#F04438', '#FDB022'];
+      box.className = 'sc-conf';
+      for (var i = 0; i < 22; i++) { var p = document.createElement('i'), a = Math.PI * 2 * i / 22 + Math.random() * .4, r = 70 + Math.random() * 60; p.style.cssText = '--x:' + Math.round(Math.cos(a) * r) + 'px;--y:' + Math.round(Math.sin(a) * r - 30) + 'px;--r:' + Math.round(Math.random() * 540 - 270) + 'deg;background:' + cs[i % cs.length] + ';animation-delay:' + Math.round(Math.random() * 80) + 'ms'; box.appendChild(p); }
+      tile.appendChild(box); setTimeout(function () { box.remove(); }, 1400);
+    }
+    function scSave() {
+      var d = (document.getElementById('scDate') || {}).value, vals = {}, any = false;
+      SC_SETS.forEach(function (s) { var v = (document.getElementById('scIn-' + s.k) || {}).value; if (v !== '' && v != null) { vals[s.k] = +v; any = true; } });
+      if (!d || !any) { showToast('날짜와 개수를 적어 주세요', 2400); return; }
+      var btn = document.querySelector('.sc-in .sc-btn'), bt0 = btn ? btn.textContent : ''; if (btn) { btn.disabled = true; btn.textContent = '저장 중…'; } SC.rev++;
+      var undo = function (m) { showToast(m, 3000); if (btn) { btn.disabled = false; btn.textContent = bt0; } };   // 실패면 적은 숫자 그대로
+      google.script.run.withSuccessHandler(function (r) {
+        if (!r || !r.success) { undo((r && r.message) || '저장 안 됨'); return; }
+        SC.data = r; SC.day = ''; SC.edit = 0; try { localStorage.setItem('ry_sc', JSON.stringify(r)); localStorage.removeItem('ry_sc_party'); } catch (e) {} SC.party = '';
+        scRender(); scQuick(); showToast(scMd(d) + ' 판매 저장했어요', 2400);
+      }).withFailureHandler(function () { undo('저장 안 됨 · 인터넷 확인 후 다시 눌러 주세요'); }).setChallengeDay(currentSelectedMember, d, vals);
+    }
+    function scGoalFill() { var sel = document.getElementById('scWi'); if (!sel || !SC.data) return; var w = SC.data.cfg.weeks[+sel.value] || {}; SC_SETS.forEach(function (s) { var a = document.getElementById('scG-' + s.k), b = document.getElementById('scD-' + s.k); if (a) a.value = w.goal && w.goal[s.k] || ''; if (b) b.value = w.day && w.day[s.k] || ''; }); }
+    function scGoalSave() {
+      var wi = +(document.getElementById('scWi') || {}).value || 0, goal = {}, day = {};
+      SC.rev++; SC_SETS.forEach(function (s) { goal[s.k] = +(document.getElementById('scG-' + s.k) || {}).value || 0; day[s.k] = +(document.getElementById('scD-' + s.k) || {}).value || (goal[s.k] ? Math.ceil(goal[s.k] / 7) : 0); });   // 하루 칸을 비우면 주 ÷ 7 (119→17 · 105→15 공지와 같음)
+      google.script.run.withSuccessHandler(function (r) { if (!r || !r.success) { showToast((r && r.message) || '저장 안 됨', 3000); return; } SC.data = r; try { localStorage.setItem('ry_sc', JSON.stringify(r)); } catch (e) {} scRender(); showToast((wi + 1) + '주차 목표 저장했어요', 2400); }).withFailureHandler(function () { showToast('저장 안 됨', 3000); }).setChallengeGoal(currentSelectedMember, wi, goal, day);
+    }
     function openSetPage(want) {
       SP.want = want || null;
       var pg = document.getElementById('setPage');
@@ -7397,7 +7660,7 @@ video {
         .withSuccessHandler(function (res) {
           SP.busy = false; clearTimeout(slow);
           if (!res || res.success === false || !res.sets) {
-            if (!quiet) document.getElementById('spBody').innerHTML = '<div class="sp-msg">' + escapeHtml((res && res.message) || '불러오지 못했어요.') + '<button type="button" class="ry-info-sub" onclick="spLoad(false)">다시 시도</button></div>';
+            if (!quiet && SP.view !== 'goal') document.getElementById('spBody').innerHTML = '<div class="sp-msg">' + escapeHtml((res && res.message) || '불러오지 못했어요.') + '<button type="button" class="ry-info-sub" onclick="spLoad(false)">다시 시도</button></div>';
             return;
           }
           if (rev0 !== SP.rev) { spLoad(true); return; }          // 받아오는 사이에 여기서 저장·삭제가 있었다 → 옛 응답은 버리고 다시 받는다
@@ -7405,13 +7668,14 @@ video {
           SP.data = res;
           try { localStorage.setItem(spCacheKey(), JSON.stringify({ sets: res.sets, products: (res.products || []).map(function (p) { var q = Object.assign({}, p); delete q.cost; delete q.price; return q; }), tagList: res.tagList, customTags: res.customTags })); } catch (eS) {}   /* 사입가·판매가는 저장 안 함 */
           if (SP.want) { spApplyWant(); return; }
+          if (SP.view === 'goal') return;   // 1026 세트 자료(8초)가 늦게 와도 2주 집중 화면(MJ 입력 중)은 다시 그리지 않음
           var f = document.getElementById('spFilter');
           if (quiet && (same || SP_AI_RUN || (f && (f.value || document.activeElement === f)))) return;   // 바뀐 게 없거나 입력 중이면 화면을 다시 그리지 않는다
           spRender();
         })
         .withFailureHandler(function (err) {
           SP.busy = false; clearTimeout(slow);
-          if (!quiet) document.getElementById('spBody').innerHTML = '<div class="sp-msg">불러오지 못했어요.<span style="font-size:12px;color:var(--ry-ink-3);text-align:center">' + escapeHtml(String(err && err.message ? err.message : '').slice(0, 140)) + '</span><button type="button" class="ry-info-sub" onclick="spLoad(false)">다시 시도</button></div>';
+          if (!quiet && SP.view !== 'goal') document.getElementById('spBody').innerHTML = '<div class="sp-msg">불러오지 못했어요.<span style="font-size:12px;color:var(--ry-ink-3);text-align:center">' + escapeHtml(String(err && err.message ? err.message : '').slice(0, 140)) + '</span><button type="button" class="ry-info-sub" onclick="spLoad(false)">다시 시도</button></div>';
         })
         .getSetsData(currentSelectedMember);
     }
@@ -7460,14 +7724,21 @@ video {
                  : '<div class="' + cls + ' none">📷 샘플 사진 없음</div>';
     }
     function spSegSync() {
-      [['spSegSets', 'sets'], ['spSegTags', 'tags'], ['spSegBox', 'boxes'], ['spSegMade', 'made'], ['spSegLedger', 'ledger']].forEach(function (x) { var b = document.getElementById(x[0]); if (b) { b.classList.toggle('on', SP.view === x[1]); b.setAttribute('aria-selected', SP.view === x[1]); } });
+      [['spSegSets', 'sets'], ['spSegTags', 'tags'], ['spSegBox', 'boxes'], ['spSegMade', 'made'], ['spSegGoal', 'goal'], ['spSegLedger', 'ledger']].forEach(function (x) { var b = document.getElementById(x[0]); if (b) { b.classList.toggle('on', SP.view === x[1]); b.setAttribute('aria-selected', SP.view === x[1]); } });
       var lb = document.getElementById('spSegLedger'); if (lb) lb.hidden = String(currentSelectedMember || '').trim() !== '문준';   // 1023 박스 장부는 문준만
+      var gb = document.getElementById('spSegGoal'); if (gb) gb.hidden = !scShown();   // 1026 세트 2주 집중 기간에만
     }
     function spRender() {
       if (SP.view === 'ledger' && String(currentSelectedMember || '').trim() === '문준') {   /* 1023 MJ 박스 장부 (문준만) */
         document.getElementById('spSeg').hidden = false; document.getElementById('spNewBtn').hidden = true;
         document.getElementById('spBackBtn').textContent = '✕ 닫기'; document.getElementById('spTitle').textContent = '박스 장부';
         spSegSync(); return lgRender();
+      }
+      if (SP.view === 'goal') {   /* 1026 MJ 세트 2주 집중 대시보드 */
+        document.getElementById('spSeg').hidden = false; document.getElementById('spNewBtn').hidden = true;
+        document.getElementById('spBackBtn').textContent = '✕ 닫기'; spSegSync(); SC.prev = {}; SC.edit = 0; SC.day = ''; scRender(); if (Date.now() - SC.t > 15000) scLoad(true);
+        try { var sg = document.getElementById('spSeg'), gb = document.getElementById('spSegGoal'); if (sg && gb && sg.scrollWidth > sg.clientWidth) sg.scrollLeft = gb.offsetLeft - (sg.clientWidth - gb.offsetWidth) / 2; } catch (eSg) {}   // 폰 360: 고른 탭이 오른쪽에서 잘리지 않게
+        return;
       }
       if (SP.view === 'made') {   /* 1022 MJ: 오전·오후 세트 담당이 만든 세트 개수 → 아크릴박스 자동 소진 */
         document.getElementById('spSeg').hidden = false; document.getElementById('spNewBtn').hidden = true;
@@ -15908,6 +16179,7 @@ video {
     <button type="button" id="spSegTags" role="tab" onclick="spShow('tags')" hidden>🏷 용도별 상품</button>
     <button type="button" id="spSegBox" role="tab" onclick="spShow('boxes')">📦 박스 재고<i id="spBoxN"></i></button>
     <button type="button" id="spSegMade" role="tab" onclick="spShow('made')">📝 만든 세트</button>
+    <button type="button" id="spSegGoal" role="tab" onclick="spShow('goal')" hidden>🎯 2주 집중</button>
     <button type="button" id="spSegLedger" role="tab" onclick="LG = null; spShow('ledger')" hidden>📒 박스 장부</button>
   </div>
   <main id="spBody" class="sp-body"></main>
