@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvoojiuc">
+  <meta name="ry-build" content="mvopskux">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -15659,6 +15659,7 @@ video {
         + (ntTx(n).body ? '<p class="nt-body"' + (ntTx(n).tr ? ' lang="' + RL.lang + '"' : '') + '>' + escapeHtml(ntTx(n).body) + '</p>' : '')
         + (typeof evBoxHtml === 'function' ? evBoxHtml(n) : '')
         + ntPhotosHtml(n.photos)
+        + (n.vids && n.vids.length ? n.vids.map(function (p) { return '<video class="rl-vid nt-vid" controls playsinline preload="none" poster="' + escapeHtml(p.u) + '" src="' + escapeHtml(p.v) + '"></video>'; }).join('') : '')   // 1026 공지 영상
         + ntSetsHtml(n.before, n.effectiveAfter)
         + (n.corrections && n.corrections.length ? '<ol class="nt-tl">' + n.corrections.map(function (c) {
           return '<li><span class="nt-tl-d">정정 ' + ntStamp(c.createdAt) + '</span>' + (c.swaps && c.swaps.length ? ntSwapsHtml(c.swaps) : '<span class="nt-tl-t">' + escapeHtml(c.title) + '</span>')
