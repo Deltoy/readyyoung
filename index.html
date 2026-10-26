@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvopskux">
+  <meta name="ry-build" content="mvos5fwi">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1772,7 +1772,7 @@ body.sp-open{overflow:hidden}
 .sp-prow-sets{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
 .sp-prow-sets button{min-height:44px!important;padding:0 12px!important;border-radius:999px!important;border:1px solid #F3C9A8;background:#FFF1E6;color:#9A3412;font-size:12.5px;font-weight:800}
 button.sp-prow-e{flex:none;min-height:44px;padding:0 12px;border-radius:999px!important;border:1px solid var(--ry-line-2);background:#fff;color:var(--ry-ink-2);font-size:12.5px;font-weight:700;white-space:nowrap}
-body.sp-open #appToast{bottom:auto!important;top:calc(68px + env(safe-area-inset-top))!important}
+body.sp-open #appToast{bottom:auto!important;top:calc(68px + env(safe-area-inset-top))!important}html:not(#q):not(#w):not(#e) body:not(#r).sp-open #appToast{bottom:auto!important;top:calc(68px + env(safe-area-inset-top))!important}/* 1026 세트 화면에서 알림이 위·아래 둘 다 붙어 길게 늘어나던 것 */
 @media(min-width:720px){.sp-seg{justify-content:center;padding:8px 20px}.sp-seg button{flex:0 1 220px}#spAiBtn{width:auto;padding:0 28px;display:block}}
 
 /* ── 평일 · 주말 평균 판매 (만들 세트 수 대신) ── */
@@ -4066,6 +4066,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 .sc-in-done span{font-size:14px;font-weight:700;color:var(--ry-ink-2)}.sc-in-done span b{color:var(--ry-ink)}.sc-in-done i{font-style:normal;font-weight:800}
 .sc-in-done button{min-height:44px;padding:0 16px;border:1px solid #B2CCFF;border-radius:12px!important;background:#fff;color:#175CD3;font-size:14px;font-weight:800}
 .sc-date{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--ry-ink-3)}
+.sc-miss{min-height:40px;border:1px solid #FECDCA;border-radius:10px!important;background:#FEF3F2;color:#B42318;font-size:13px;font-weight:800;padding:0 12px}
 .sc-date input{min-height:40px;border:1px solid var(--ry-line);border-radius:10px;padding:0 8px;font-size:14px;background:#fff;color:var(--ry-ink)}
 .sc-card h3{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:16px;font-weight:800;margin:0 0 12px}
 .sc-card h3 span{font-size:12px;font-weight:600;color:var(--ry-ink-3)}
@@ -7461,7 +7462,7 @@ video {
     function scYmd(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
     function scAdd(ymd, n) { var p = ymd.split('-'); return scYmd(new Date(+p[0], +p[1] - 1, +p[2] + n)); }
     function scMd(ymd) { var p = ymd.split('-'), d = new Date(+p[0], +p[1] - 1, +p[2]); return (+p[1]) + '/' + (+p[2]) + '(' + SC_WD[d.getDay()] + ')'; }
-    function scAdm() { var m = String(currentSelectedMember || '').trim(); return m === '문준' || m === '물류관리자'; }
+    function scAdm() { return String(currentSelectedMember || '').trim() === '문준'; }   // 1026 MJ '숫자 적는 건 나만 보이게'
     function scShown() { var c = SC.data && SC.data.cfg, d = scYmd(new Date()); return d >= scAdd(c ? c.from : SC_FROM, -3) && d <= scAdd(c ? c.to : SC_TO, 7); }   // 시작 3일 전 ~ 끝나고 일주일
     function scDays(c) { var out = [], d = c.from; while (d <= c.to && out.length < 60) { out.push(d); d = scAdd(d, 1); } return out; }
     function scWeek(c, d) { for (var i = 0; i < c.weeks.length; i++) if (d >= c.weeks[i].from && d <= c.weeks[i].to) return i; return -1; }
@@ -7481,8 +7482,8 @@ video {
         .withFailureHandler(function () { SC.busy = false; if (SP.view === 'goal' && !SC.data) document.getElementById('spBody').innerHTML = '<div class="sp-msg">못 불러왔어요 · 인터넷 확인<button type="button" class="ry-info-sub" onclick="scLoad()">다시 시도</button></div>'; })
         .getSetChallenge();
     }
-    function scLastDay() {   // 결과를 보여 줄 날 = 판매가 들어온 가장 최근 날 (오늘 전)
-      var D = SC.data, c = D.cfg, d = scAdd(D.today, -1); if (d > c.to) d = c.to;
+    function scLastDay() {   // 보여 줄 날 = 판매가 들어온 가장 최근 날 (1026 MJ '수시로 적어 넣게' → 오늘 넣었으면 오늘)
+      var D = SC.data, c = D.cfg, d = D.today; if (d > c.to) d = c.to;
       while (d >= c.from) { if (scHas(d)) return d; d = scAdd(d, -1); }
       return '';
     }
@@ -7507,18 +7508,19 @@ video {
       var c = D.cfg, t = D.today, days = scDays(c), adm = scAdm(), h = '', yd = scAdd(t, -1), last = scLastDay(), before = t < c.from, over = t > c.to, miss = scMiss(c, t);
       var wi = scWeek(c, t), wShow = wi >= 0 ? wi : before ? 0 : c.weeks.length - 1, w = c.weeks[wShow], goalOpen = adm && w && !w.goal && !over;
       var gtxt = function (d) { return SC_SETS.map(function (s) { return (s.k === 'total' ? 'Total ' : 'SMART ') + (scGoal(c, d, s.k) || '–') + '개'; }).join(' · '); };
-      /* ⓪ MJ: 전날 판매 넣기 — 넣은 날이면 한 줄로 접힘 */
-      if (adm && t > c.from && t <= scAdd(c.to, 7)) {
-        var dIn = SC.day && SC.day >= c.from && SC.day <= c.to && SC.day < t ? SC.day : miss[0] || (yd > c.to ? c.to : yd), has = scHas(dIn);
-        if (has && !SC.edit) h += '<section class="sc-card sc-in sc-in-done"><span>✓ <b>' + scMd(dIn) + '</b> 넣음 · ' + SC_SETS.map(function (s) { var v = scV(dIn, s.k); return '<i style="color:' + s.c + '">' + (v == null ? '–' : v) + '</i>'; }).join(' · ') + '</span><button type="button" onclick="SC.edit=1;scRender()">고치기</button></section>';
-        else h += '<section class="sc-card sc-in"><h3>' + scMd(dIn) + ' 판매 넣기 <span>' + (miss.length > 1 ? '안 넣은 날 ' + miss.length + '일' : '전날 POS 판매') + '</span></h3><div class="sc-f">'
+      /* ⓪ MJ(문준만): 판매 넣기 — 1026 '수시로 숫자를 적어 넣게' · 기본은 오늘, 다른 날도 고침 */
+      if (adm && t >= c.from && t <= scAdd(c.to, 7)) {
+        var dMax = t < c.to ? t : c.to, dIn = SC.day && SC.day >= c.from && SC.day <= dMax ? SC.day : dMax, has = scHas(dIn), mOld = miss.filter(function (d) { return d !== dIn; });
+        h += '<section class="sc-card sc-in"><h3>' + (dIn === t ? '오늘 ' : '') + scMd(dIn) + ' 판매 넣기 <span>' + (has ? '넣은 숫자 · 고치면 바로 바뀌어요' : '수시로 넣으면 바로 바뀌어요') + '</span></h3><div class="sc-f">'
           + SC_SETS.map(function (s, i) { var v = scV(dIn, s.k); return '<label style="color:' + s.c + '">' + escapeHtml(s.label) + '<input type="number" inputmode="numeric" min="0" max="999" id="scIn-' + s.k + '" value="' + (v == null ? '' : v) + '" placeholder="목표 ' + (scGoal(c, dIn, s.k) || '') + '" enterkeyhint="' + (i ? 'done' : 'next') + '" onkeydown="if(event.key===\'Enter\'){event.preventDefault();' + (i ? 'scSave()' : 'document.getElementById(\'scIn-smart\').focus()') + '}"></label>'; }).join('')
           + '<button type="button" class="sc-btn" onclick="scSave()">' + (has ? '고쳐서 저장' : '저장') + '</button></div>'
-          + '<label class="sc-date">다른 날 <input type="date" id="scDate" value="' + dIn + '" min="' + c.from + '" max="' + (yd < c.to ? yd : c.to) + '" onchange="SC.day=this.value;SC.edit=1;scRender()"></label></section>';
+          + '<label class="sc-date">날짜 <input type="date" id="scDate" value="' + dIn + '" min="' + c.from + '" max="' + dMax + '" onchange="SC.day=this.value;scRender()">'
+          + (mOld.length ? '<button type="button" class="sc-miss" onclick="SC.day=\'' + mOld[0] + '\';scRender()">안 넣은 날 ' + mOld.length + '일 · ' + scMd(mOld[0]) + '</button>' : '') + '</label></section>';
       }
       if (goalOpen) h += scGoalCard(c, wShow, true);
       /* ① 결과 */
-      var streak = 0; if (last) for (var d = last; d >= c.from; d = scAdd(d, -1)) { if (SC_SETS.every(function (s) { return scOk(c, d, s.k); })) streak++; else break; }
+      var allOk = function (d) { return SC_SETS.every(function (s) { return scOk(c, d, s.k); }); }, streak = 0, sd = last && last === t && !allOk(t) ? yd : last;   // 오늘이 아직 진행 중이면 어제까지로 셈
+      if (sd) for (var d = sd; d >= c.from; d = scAdd(d, -1)) { if (allOk(d)) streak++; else break; }
       var tiles = function (getV, getG, sub) { return '<div class="sc-rings">' + SC_SETS.map(function (s) {
         var v = getV(s.k), g = getG(s.k), pv = SC.prev[s.k] != null ? SC.prev[s.k] : 0, done = v != null && g && v >= g;
         return '<div class="sc-tile' + (done ? ' done' : '') + '" id="scT-' + s.k + '" style="--sc:' + s.c + ';--sc-soft:' + s.soft + '"><div class="sc-rw">' + scRing(s, v, g, pv)
@@ -7530,13 +7532,13 @@ video {
         h += '<section class="sc-today"><div class="sc-hd"><div><b>2주 집중 결과</b><span>' + scMd(c.from) + ' ~ ' + scMd(c.to) + ' · 합계</span></div></div>'
           + tiles(function (k) { return tot[k]; }, function (k) { return gs[k]; }, function (k, v, g, done) { return '★ ' + star[k] + '/' + days.length + '일 달성' + (done ? ' · 🏆' : ''); }) + '</section>';
       } else if (!last) {   /* 첫날 · 아직 하나도 안 들어옴 */
-        h += '<section class="sc-today sc-first"><b>' + (before ? scMd(c.from) + '부터 시작해요' : t === c.from ? '오늘 첫날이에요' : '아직 들어온 판매가 없어요') + '</b><p>결과는 다음 날 아침에 올라와요</p><div class="sc-goalchips">' + SC_SETS.map(function (s) { return '<span style="--sc:' + s.c + ';--sc-soft:' + s.soft + '">' + escapeHtml(s.label) + '<b>' + (scGoal(c, before ? c.from : t, s.k) || '–') + '개</b><small>하루 목표</small></span>'; }).join('') + '</div></section>';
+        h += '<section class="sc-today sc-first"><b>' + (before ? scMd(c.from) + '부터 시작해요' : t === c.from ? '오늘 첫날이에요' : '아직 들어온 판매가 없어요') + '</b><p>판매가 들어오면 여기 링이 차올라요</p><div class="sc-goalchips">' + SC_SETS.map(function (s) { return '<span style="--sc:' + s.c + ';--sc-soft:' + s.soft + '">' + escapeHtml(s.label) + '<b>' + (scGoal(c, before ? c.from : t, s.k) || '–') + '개</b><small>하루 목표</small></span>'; }).join('') + '</div></section>';
       } else {
-        var nOk = SC_SETS.filter(function (s) { return scOk(c, last, s.k); }).length;
-        h += '<section class="sc-today"><div class="sc-hd"><div><b>' + (last === yd ? '어제 ' : '') + scMd(last) + ' 결과</b><span>오늘 목표 · ' + gtxt(t) + (streak >= 2 ? ' · 🔥 ' + streak + '일 연속' : '') + '</span></div>'
-          + '<em class="sc-verdict' + (nOk === SC_SETS.length ? ' all' : nOk ? '' : ' none') + '">' + (nOk === SC_SETS.length ? '🎉 둘 다 달성' : nOk ? '2개 중 1개 달성' : '둘 다 못 미침') + '</em></div>'
-          + (last !== yd && yd <= c.to && !scHas(yd) ? '<p class="sc-note">어제 ' + scMd(yd) + ' 판매는 아침에 올라와요</p>' : '')
-          + tiles(function (k) { return scV(last, k); }, function (k) { return scGoal(c, last, k); }, function (k, v, g, done) { return v == null ? '기록 전' : done ? '🎉 하루 목표 달성' + (v > g ? ' · +' + (v - g) : '') : '목표까지 ' + (g - v) + '개 모자랐어요'; }) + '</section>';
+        var nOk = SC_SETS.filter(function (s) { return scOk(c, last, s.k); }).length, live = last === t;   // live = 오늘 지금까지 (MJ 가 수시로 넣음)
+        h += '<section class="sc-today"><div class="sc-hd"><div><b>' + (live ? '오늘 ' + scMd(t) + ' 지금까지' : (last === yd ? '어제 ' : '') + scMd(last) + ' 결과') + '</b><span>' + (live ? '하루 목표 · ' + gtxt(t) : '오늘 목표 · ' + gtxt(t)) + (streak >= 2 ? ' · 🔥 ' + streak + '일 연속' : '') + '</span></div>'
+          + '<em class="sc-verdict' + (nOk === SC_SETS.length ? ' all' : nOk ? '' : ' none') + '">' + (nOk === SC_SETS.length ? '🎉 둘 다 달성' : live ? (nOk ? '1개 달성 · 하나 남음' : '진행 중') : nOk ? '2개 중 1개 달성' : '둘 다 못 미침') + '</em></div>'
+          + (!live && last !== yd && yd >= c.from && yd <= c.to && !scHas(yd) ? '<p class="sc-note">어제 ' + scMd(yd) + ' 판매는 아직 안 들어왔어요</p>' : '')
+          + tiles(function (k) { return scV(last, k); }, function (k) { return scGoal(c, last, k); }, function (k, v, g, done) { return v == null ? '기록 전' : done ? '🎉 하루 목표 달성' + (v > g ? ' · +' + (v - g) : '') : '목표까지 ' + (g - v) + '개' + (live ? ' 남았어요' : ' 모자랐어요'); }) + '</section>';
       }
       /* ② 주차 목표 · 이번 주 목표가 아직 없으면 지난주 결과도 */
       var wks = w && !over ? (!w.goal && wShow > 0 && c.weeks[wShow - 1].goal ? [wShow - 1, wShow] : [wShow]) : [];
@@ -7546,8 +7548,8 @@ video {
         if (!w.goal) h += '<p class="sc-note">' + (wShow + 1) + '주차 목표는 ' + scMd(w.from) + ' 공지 후 올라와요 · 그 전엔 하루 ' + gtxt(w.from) + ' 그대로</p>';
         SC_SETS.forEach(function (s) {
           var G = w.goal && w.goal[s.k]; if (!G) return;
-          var sum = 0; wd.forEach(function (d) { if (d < t) sum += scV(d, s.k) || 0; });
-          var pct = Math.min(100, sum / G * 100), per = left ? Math.ceil(Math.max(0, G - sum) / left) : 0, dg = scGoal(c, wd[0] > t ? wd[0] : t, s.k);
+          var sum = 0, sumB = 0; wd.forEach(function (d) { if (d <= t) { sum += scV(d, s.k) || 0; if (d < t) sumB += scV(d, s.k) || 0; } });   // 오늘 넣은 것도 합계에 · 남은 하루 개수는 어제까지 기준
+          var pct = Math.min(100, sum / G * 100), per = left ? Math.ceil(Math.max(0, G - sumB) / left) : 0, dg = scGoal(c, wd[0] > t ? wd[0] : t, s.k);
           h += '<div class="sc-wk" style="--sc:' + s.c + '"><div class="sc-wk-t"><b>' + escapeHtml(s.label) + '</b><span><b>' + sum + '</b> / ' + G + '개</span></div>'
             + '<div class="sc-bar"><i style="width:' + pct.toFixed(1) + '%"></i></div>'
             + '<div class="sc-wk-s">' + (sum >= G ? '🏆 주 목표 달성!' : !left ? (G - sum) + '개 모자랐어요' : per <= dg ? '하루 목표(' + dg + '개)만 지키면 주 목표 달성' : '주 목표 맞추려면 남은 ' + left + '일 하루 <b>' + per + '개</b>') + '</div></div>';
@@ -7575,7 +7577,7 @@ video {
         + '<button type="button" class="sc-btn" onclick="scGoalSave()">목표 저장</button></div></details>';
     }
     function scChart(s, c, days, t) {
-      var W = 24, H = 104, top = 18, vals = days.map(function (d) { return d < t ? scV(d, s.k) : null; }), goals = days.map(function (d) { return scGoal(c, d, s.k); });
+      var W = 24, H = 104, top = 18, vals = days.map(function (d) { return d <= t ? scV(d, s.k) : null; }), goals = days.map(function (d) { return scGoal(c, d, s.k); });
       var mx = Math.max.apply(null, goals.concat(vals.map(function (v) { return v || 0; })).concat([1])) * 1.15, y = function (v) { return top + (H - top) * (1 - v / mx); };
       var g = '<svg class="sc-ch" viewBox="0 0 ' + (days.length * W) + ' ' + (H + 18) + '" role="img" aria-label="' + escapeHtml(s.label) + ' 날마다 판매">';
       days.forEach(function (d, i) {
