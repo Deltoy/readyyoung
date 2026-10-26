@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvoo6yrp">
+  <meta name="ry-build" content="mvoojiuc">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4016,6 +4016,18 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 @keyframes ryInvChk{from{transform:scale(.3);opacity:.3}}
 @media (prefers-reduced-motion:reduce){html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump,html:not(#q):not(#w):not(#e) body:not(#r) .ry-done svg,#invBox .inv-line.inv-fx,#invBox .inv-line.inv-fx input:checked{animation:none!important}}
 </style>
+<style id="ryReq1026">/* 1026 검색 주문 요청 모션 · 퀵버튼 물결 */
+.ry-rip-w{position:absolute;inset:0;overflow:hidden;border-radius:inherit;pointer-events:none}
+.ry-ripple{position:absolute;border-radius:50%;background:currentColor;opacity:.2;transform:scale(0);animation:ryRip .55s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes ryRip{to{transform:scale(1);opacity:0}}
+.ry-tools>button,.ry-more-menu button,.subtab,.ry25-stage{transition:transform .12s cubic-bezier(.2,.7,.3,1)}
+.ry-tools>button:active,.ry-more-menu button:active,.subtab:active,.ry25-stage:active{transform:scale(.96)}
+@media(prefers-reduced-motion:reduce){.ry-ripple{display:none}.ry-tools>button:active,.ry-more-menu button:active,.subtab:active,.ry25-stage:active{transform:none}}
+.ry-req-fly{position:fixed;z-index:9999;pointer-events:none;padding:6px 12px;border-radius:999px;background:#155EEF;color:#fff;font-size:14px;font-weight:800;box-shadow:0 6px 18px rgba(21,94,239,.35);white-space:nowrap;will-change:transform}
+@keyframes ryReqNow{0%{box-shadow:0 0 0 0 rgba(21,94,239,.5);background-color:#EEF4FF}100%{box-shadow:0 0 0 14px rgba(21,94,239,0)}}
+.ry-req-now{animation:ryReqNow .9s ease-out}
+@media(prefers-reduced-motion:reduce){.ry-req-now{animation:none}}
+</style>
 <style id="rySc1026">/* 1026 세트 2주 집중 대시보드 (MJ 가 매일 아침 전날 판매 입력) */
 .sc{display:grid;gap:12px;max-width:760px;margin:0 auto}
 .sc-today,.sc-card{background:#fff;border:1px solid var(--ry-line);border-radius:20px;padding:16px}
@@ -4463,6 +4475,9 @@ video {
 }
 .visible {
   visibility: visible;
+}
+.static {
+  position: static;
 }
 .fixed {
   position: fixed;
@@ -13704,6 +13719,31 @@ video {
       reorderItem(rowNumber, parseInt(String(raw).trim(), 10), src, btnEl);
     }
 
+    /* 1026 MJ '모든 퀵버튼 누를 때도 모션' — 누른 자리에서 물결이 퍼지고 살짝 눌림 (퀵메뉴 · 더보기 안 메뉴 · 입고내역/품절/지연/도구 · 파이프라인 칸) */
+    (function () {
+      var SEL = '.ry-tools > button, .ry-more-menu button, .subtab, .ry25-stage';
+      document.addEventListener('pointerdown', function (e) {
+        var b = e.target && e.target.closest && e.target.closest(SEL); if (!b || b.disabled || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+        var r = b.getBoundingClientRect(), d = Math.ceil(Math.max(r.width, r.height) * 2.2), w = document.createElement('span'), c = document.createElement('span');
+        if (getComputedStyle(b).position === 'static') b.style.position = 'relative';
+        w.className = 'ry-rip-w'; c.className = 'ry-ripple'; c.style.cssText = 'width:' + d + 'px;height:' + d + 'px;left:' + Math.round(e.clientX - r.left - d / 2) + 'px;top:' + Math.round(e.clientY - r.top - d / 2) + 'px';
+        w.appendChild(c); b.appendChild(w); setTimeout(function () { w.remove(); }, 600);
+      }, { passive: true });
+    })();
+    /* 1026 MJ '검색해서 주문 요청할 때도 모션' — 누른 자리에서 '+N개'가 위 [1차 검토] 숫자로 날아가 톡 (화면 밖이면 위로 날아가 사라짐), 그 줄은 파랗게 한 번 빛남 */
+    function ryReqFx(btnEl, row, label) {
+      if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var r0 = btnEl && btnEl.getBoundingClientRect ? btnEl.getBoundingClientRect() : null;
+      setTimeout(function () { document.querySelectorAll('[data-r="' + row + '"]').forEach(function (c) { if (c.offsetParent) { c.classList.remove('ry-req-now'); void c.offsetWidth; c.classList.add('ry-req-now'); } }); }, 30);
+      setTimeout(function () {
+        var tgt = document.getElementById('tabReviewBadge'), f = document.createElement('div'); if (!r0 || !r0.width || !f.animate) return;
+        var r1 = tgt && tgt.offsetParent ? tgt.getBoundingClientRect() : null, vis = r1 && r1.bottom > 0 && r1.top < innerHeight, x0 = r0.left + r0.width / 2, y0 = r0.top + r0.height / 2;
+        var dx = vis ? r1.left + r1.width / 2 - x0 : 0, dy = vis ? r1.top + r1.height / 2 - y0 : -Math.min(220, y0 - 20);
+        f.className = 'ry-req-fly'; f.textContent = label; f.style.left = x0 + 'px'; f.style.top = y0 + 'px'; document.body.appendChild(f);
+        var a = f.animate([{ transform: 'translate(-50%,-50%) scale(1)', opacity: 1 }, { transform: 'translate(calc(-50% + ' + Math.round(dx * .5) + 'px),calc(-50% + ' + Math.round(dy * .5 - 70) + 'px)) scale(1.08)', opacity: 1, offset: .45 }, { transform: 'translate(calc(-50% + ' + Math.round(dx) + 'px),calc(-50% + ' + Math.round(dy) + 'px)) scale(.45)', opacity: .25 }], { duration: 640, easing: 'cubic-bezier(.3,.7,.4,1)' });
+        a.onfinish = function () { f.remove(); if (vis) { tgt.classList.remove('ry-bump'); void tgt.offsetWidth; tgt.classList.add('ry-bump'); } };
+      }, 40);
+    }
     function handleSearchOrderRequest(rowNumber, isMobile, btnEl) {
       if (!checkMemberSelectedOrAlert()) return;
       if (!ryEndedOk(rowNumber)) return;
@@ -13719,6 +13759,7 @@ video {
       inFlight.add(key);
       /* 1002 빠르게: 서버를 기다리지 않고 바로 '요청됨'으로 보여 주고 뒤에서 저장. 실패하면 되돌리고 알림 */
       const snap = ryReqSnap(rowNumber), nm0 = ryNameOf(rowNumber);
+      try { ryReqFx(btnEl, rowNumber, '+' + n + u); } catch (eFx) {}   // 1026 (다시 그리기 전에 버튼 자리 잡아 둠)
       optimisticAddToReview(rowNumber, lastSearchResults.find(it => it.rowNumber === rowNumber), n, u);
       markSearchResultRequested(rowNumber, n);   // 검색 결과·검색어 유지, 이 줄만 '요청됨'으로
       ry25TrackRequest(rowNumber, ry25NameOf(rowNumber), n);   /* 0925: 하단 요약 바 */
