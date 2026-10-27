@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvq5miru">
+  <meta name="ry-build" content="mvqckiox">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -10076,6 +10076,7 @@ video {
       if (tab !== currentTab && typeof ryFloorRelease === "function" && ![].some.call(document.querySelectorAll('[id^="tabBtn"]'), function (b) { var r = b.getBoundingClientRect(); return r.height && r.bottom > 0 && r.top < innerHeight; })) ryFloorRelease();
       currentTab = tab;
       dismissKeyboard();
+      if (tab === 'inbound') try { dutyGate(null); } catch (eDg) {}   // 1027 누르기 전에 근무 확인
       
       const btnReview = document.getElementById('tabBtnReview');
       const btnOrder = document.getElementById('tabBtnOrder');
@@ -11834,11 +11835,18 @@ video {
 
     /* 1023 MJ '근무 안 하는 사람 이름으로는 입고 안 되게' — 서버 inboundDutyCheck (괜찮으면 5분 기억) · 서버의 입고 함수들도 한 번 더 막음 */
     var DUTY_OK = {};
+    /* 1027 MJ '최종 입고완료를 한 번 누르면 대답이 없어서 두세 번 눌러야 묻는 창이 떠' — 근무 확인이 서버까지 2~6초(표시 없음)였음
+       → 확인 중엔 '확인 중' 표시 · 그 사이 더 누른 건 한 번으로 · 입고대기 탭을 열 때 미리 확인(go 없이) */
+    var DUTY_Q = {};
     function dutyGate(go) {
-      var me = currentSelectedMember || '', ok = function () { DUTY_OK[me] = Date.now(); go(); };
-      if (DUTY_OK[me] && Date.now() - DUTY_OK[me] < 300000) return go();
-      if (typeof google === 'undefined' || !google.script || typeof google.script.run.inboundDutyCheck !== 'function') return ok();
-      google.script.run.withSuccessHandler(function (r) { if (r && r.success === false && r.message) { if (confirm('⛔ ' + r.message + '\n\n일찍 와서 근무 중이거나 근무 시간이 바뀌었으면 관리자에게 요청할 수 있어요.\n[확인] = 관리자에게 요청 보내기 (승인되면 오늘 하루 입고 가능)')) dutyAsk(); return; } ok(); }).withFailureHandler(ok).inboundDutyCheck(me);
+      var me = currentSelectedMember || ''; if (!go && !me) return;
+      if (DUTY_OK[me] && Date.now() - DUTY_OK[me] < (go ? 300000 : 240000)) return go && go();
+      if (typeof google === 'undefined' || !google.script || typeof google.script.run.inboundDutyCheck !== 'function') { DUTY_OK[me] = Date.now(); return go && go(); }
+      if (go) showToast('근무 시간 확인 중이에요…', 2500);
+      var q = DUTY_Q[me]; if (q) { if (go) q.go = go; return; }
+      q = DUTY_Q[me] = { go: go };
+      var fin = function (r) { delete DUTY_Q[me]; if (r && r.success === false && r.message) { if (q.go && confirm('⛔ ' + r.message + '\n\n일찍 와서 근무 중이거나 근무 시간이 바뀌었으면 관리자에게 요청할 수 있어요.\n[확인] = 관리자에게 요청 보내기 (승인되면 오늘 하루 입고 가능)')) dutyAsk(); return; } DUTY_OK[me] = Date.now(); if (q.go) q.go(); };
+      google.script.run.withSuccessHandler(fin).withFailureHandler(function () { fin(null); }).inboundDutyCheck(me);
     }
     /* 1027 MJ '근무 시간이 아닌데 일찍 와서 근무할 때 관리자에게 요청하면 입고까지 모든 기능 · 근무 시간이 갑자기 바뀐 날도' — 서버 requestDutyOverride → 문준 카톡 + 관리자 앱 위 카드 [승인]
        보낸 뒤 30초마다 승인됐는지 보고(30분까지) 승인되면 알림 */
