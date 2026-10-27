@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvqoj40o">
+  <meta name="ry-build" content="mvqqlrlw">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4115,16 +4115,18 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 .sc-ch .sc-sep{stroke:#D0D5DD}
 .sc-ch text{font-size:12px;text-anchor:middle;fill:var(--ry-ink-3);font-weight:700}
 .sc-ch .sc-v{fill:var(--ry-ink)}.sc-ch .sc-star{fill:#DC6803;font-size:12px}.sc-ch .sc-x.now{fill:var(--ry-ink);font-weight:900}
-.sc-ch .sc-fo{fill:#F04438;opacity:.92}.sc-ch .sc-fm{fill:#F79009}.sc-ch .sc-fi{fill:#FEDF89}
-.sc-ch .sc-fl,.sc-ch .sc-fi{transform-box:fill-box;transform-origin:50% 100%;animation:scFlick 1.2s ease-in-out infinite alternate}
-.sc-ch .sc-fi{animation:scFlick2 .6s ease-in-out infinite alternate}
-.sc-ch .sc-heat{animation:scHeat 1.3s ease-in-out infinite alternate}
-.sc-ch .sc-em{fill:#FDB022;opacity:0;animation:scEmber 1.6s ease-out infinite}.sc-ch .sc-em.e2{animation-delay:.8s}
+.sc-ch .sc-glow{fill:#FDB022;opacity:.55;animation:scGlow .5s ease-in-out infinite alternate}
+.sc-ch .sc-au{transform-box:fill-box;transform-origin:50% 100%;animation:scAuP .45s ease-in-out infinite alternate}
+.sc-ch .sc-auv{opacity:0;animation:scAuF .36s step-end infinite}
+.sc-ch .sc-au1{opacity:.92}.sc-ch .sc-au2{fill:#FEF7C3}
+.sc-ch .sc-heat{animation:scHeat .9s ease-in-out infinite alternate}
+.sc-ch .sc-sp{fill:#FEF7C3;stroke:#F79009;stroke-width:.5;opacity:0;animation:scSp 1.4s ease-out infinite}
 .sc-ch.grow .sc-fire{animation:scFireIn .45s ease-out both;animation-delay:calc(var(--i) * 35ms + .45s)}
-@keyframes scFlick{0%{transform:scale(1,1) skewX(0)}35%{transform:scale(.9,1.1) skewX(-5deg)}70%{transform:scale(1.06,.93) skewX(4deg)}100%{transform:scale(.96,1.14) skewX(-2deg)}}
-@keyframes scFlick2{from{transform:scale(1,.85)}to{transform:scale(.88,1.2)}}
-@keyframes scHeat{from{opacity:.3}to{opacity:.9}}
-@keyframes scEmber{0%{transform:translateY(0);opacity:0}25%{opacity:1}100%{transform:translateY(-16px);opacity:0}}
+@keyframes scAuF{0%{opacity:1}33.3%{opacity:0}}
+@keyframes scAuP{from{transform:scale(1,1)}to{transform:scale(1.07,1.03)}}
+@keyframes scGlow{from{opacity:.35}to{opacity:.75}}
+@keyframes scHeat{from{opacity:.25}to{opacity:.8}}
+@keyframes scSp{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(-34px);opacity:0}}
 @keyframes scFireIn{from{opacity:0}to{opacity:1}}
 .sc-ch .sc-q{fill:#B42318;font-weight:900}.sc-ch .sc-wk2{text-anchor:start;font-size:10.5px}
 .sc-tip summary,.sc-adm summary{cursor:pointer;font-size:15px;font-weight:800;min-height:44px;display:flex;align-items:center;gap:8px;list-style:none;margin:-6px 0}
@@ -4143,7 +4145,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 .sp-seg{scroll-padding-inline:16px}
 @media(min-width:768px){.sc-charts{grid-template-columns:1fr 1fr;gap:20px}.sc-rings,.sc-goalchips{gap:14px}.sc-num b{font-size:40px}}
 @media(min-width:1100px){.sc{max-width:1040px}.sc-tile{display:grid;grid-template-columns:148px auto;column-gap:24px;justify-content:center;align-content:center;text-align:left;padding:16px}.sc-rw{grid-row:1/3;width:148px}.sc-nm{align-self:end}.sc-st{align-self:start}.sc-conf{top:50%;left:calc(50% - 95px)}}
-@media(prefers-reduced-motion:reduce){.sc-ring-fg,.sc-bar i{transition:none}.sc-ch.grow .sc-b,.sc-conf i,.sc-ch .sc-fl,.sc-ch .sc-fi,.sc-ch .sc-heat,.sc-ch.grow .sc-fire{animation:none}.sc-ch .sc-em{display:none}}
+@media(prefers-reduced-motion:reduce){.sc-ring-fg,.sc-bar i{transition:none}.sc-ch.grow .sc-b,.sc-conf i,.sc-ch .sc-au,.sc-ch .sc-auv,.sc-ch .sc-glow,.sc-ch .sc-heat,.sc-ch.grow .sc-fire{animation:none}.sc-ch .sc-auv:first-child{opacity:1}.sc-ch .sc-sp{display:none}}
 @media(min-width:720px){html body:not(#_):not(#_) #spSeg::before{display:none}html body:not(#_):not(#_) #spSeg{width:fit-content;max-width:calc(100% - 32px);margin:10px auto 6px;padding:2px!important;background:#e8e8ed!important;border-radius:11px}html body:not(#_):not(#_) #spSeg button{flex:0 1 180px;min-width:120px;padding:0 14px}}/* 1026 PC 탭 바탕이 2칸(448px) 고정이라 탭 4~5개면 어긋났음 → 탭 묶음 크기에 맞춤 */
 @media(max-width:767px){.sp-seg{overflow-x:auto;scrollbar-width:none}.sp-seg::-webkit-scrollbar{display:none}.sp-seg button{flex:1 0 auto;white-space:nowrap;padding:0 10px}}/* 1026 폰: 탭이 5개(문준)여도 두 줄로 안 깨지게 */
 </style>
@@ -7629,28 +7631,35 @@ video {
     }
     function scChart(s, c, days, t) {
       var W = 24, H = 104, vals = days.map(function (d) { return d <= t ? scV(d, s.k) : null; }), goals = days.map(function (d) { return scGoal(c, d, s.k); });
-      var top = vals.some(function (v, i) { return v != null && goals[i] && v >= goals[i]; }) ? 26 : 18;   // 불꽃 위 숫자 자리
+      var top = vals.some(function (v, i) { return v != null && goals[i] && v >= goals[i]; }) ? 32 : 18;   // 오라 위 숫자 자리
       var mx = Math.max.apply(null, goals.concat(vals.map(function (v) { return v || 0; })).concat([1])) * 1.15, y = function (v) { return top + (H - top) * (1 - v / mx); };
-      var g = '<svg class="sc-ch" viewBox="0 0 ' + (days.length * W) + ' ' + (H + 18) + '" role="img" aria-label="' + escapeHtml(s.label) + ' 날마다 판매"><defs><linearGradient id="scHeat-' + s.k + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FDB022" stop-opacity=".95"/><stop offset="1" stop-color="#F79009" stop-opacity="0"/></linearGradient></defs>';
+      var g = '<svg class="sc-ch" viewBox="0 0 ' + (days.length * W) + ' ' + (H + 18) + '" role="img" aria-label="' + escapeHtml(s.label) + ' 날마다 판매"><defs><linearGradient id="scHeat-' + s.k + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFAEB" stop-opacity=".8"/><stop offset=".55" stop-color="#FEF0C7" stop-opacity="0"/></linearGradient><linearGradient id="scAu-' + s.k + '" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#F79009"/><stop offset="1" stop-color="#FDE272"/></linearGradient><filter id="scBlur-' + s.k + '" x="-60%" y="-30%" width="220%" height="160%"><feGaussianBlur stdDeviation="3"/></filter></defs>';
       days.forEach(function (d, i) {
         var x = i * W, v = vals[i], gl = goals[i], ok = v != null && gl && v >= gl;
         if (i === 7) g += '<line x1="' + x + '" x2="' + x + '" y1="2" y2="' + H + '" class="sc-sep"/><text x="' + (x + 3) + '" y="9" class="sc-wk2">2주차</text>';
         if (gl) g += '<line x1="' + (x + 2) + '" x2="' + (x + W - 2) + '" y1="' + y(gl).toFixed(1) + '" y2="' + y(gl).toFixed(1) + '" class="sc-gl" style="stroke:' + s.c + '"/>';
         if (v == null) { g += '<rect x="' + (x + 5) + '" y="' + y(gl || 0).toFixed(1) + '" width="14" height="' + Math.max(0, H - y(gl || 0)).toFixed(1) + '" rx="3" class="sc-ghost' + (d === t ? ' now' : '') + '"/>'; if (d < t) g += '<text x="' + (x + 12) + '" y="' + (H - 4) + '" class="sc-q">?</text>'; }
-        else { var hh = Math.max(v ? 3 : 0, H - y(v)); g += '<rect x="' + (x + 5) + '" y="' + (H - hh).toFixed(1) + '" width="14" height="' + hh.toFixed(1) + '" rx="3" class="sc-b" style="fill:' + s.c + ';--i:' + i + '"/>'
-          + '<text x="' + (x + 12) + '" y="' + (H - hh - (ok ? 25 : 3)).toFixed(1) + '" class="sc-v">' + v + '</text>' + (ok ? scFire(x + 12, H - hh, hh, s.k, i) : ''); }
+        else { var hh = Math.max(v ? 3 : 0, H - y(v)), au = ok ? scAura(x + 12, H, hh, s.k, i) : ['', '']; g += au[0] + '<rect x="' + (x + 5) + '" y="' + (H - hh).toFixed(1) + '" width="14" height="' + hh.toFixed(1) + '" rx="3" class="sc-b" style="fill:' + s.c + ';--i:' + i + '"/>' + au[1]
+          + '<text x="' + (x + 12) + '" y="' + (H - hh - (ok ? 30 : 3)).toFixed(1) + '" class="sc-v">' + v + '</text>'; }
         g += '<text x="' + (x + 12) + '" y="' + (H + 14) + '" class="sc-x' + (d === t ? ' now' : '') + '">' + (+d.slice(8)) + '</text>';
       });
       var hit = days.filter(function (d, i) { return vals[i] != null && goals[i] && vals[i] >= goals[i]; }).length;
       return '<div class="sc-chw"><div class="sc-cht"><b style="color:' + s.c + '">' + escapeHtml(s.label) + '</b><span>🔥 ' + hit + '일 달성</span></div>' + g + '</svg></div>';
     }
-    function scFire(cx, y0, hh, k, i) {   /* 1027 하루 목표 넘은 날 막대 = 위가 달아오르고 불꽃이 일렁임 (줄인 동작 설정이면 멈춘 불꽃) */
-      return '<g class="sc-fire" style="--i:' + i + '" transform="translate(' + cx + ' ' + y0.toFixed(1) + ')">'
-        + '<rect x="-7" y="0" width="14" height="' + Math.min(hh, 34).toFixed(1) + '" rx="3" fill="url(#scHeat-' + k + ')" class="sc-heat"/>'
-        + '<g class="sc-fl"><path class="sc-fo" d="M0-18C3-13 9-9 7.5-3 6.5 1 3.5 2 0 2-3.5 2-6.5 1-7.5-3-8.5-8-3-10 0-18Z"/>'
-        + '<path class="sc-fm" d="M0-13C2.5-9 6-6.5 5-2.5 4.3.5 2.3 1.5 0 1.5-2.3 1.5-4.3.5-5-2.5-5.8-6-2-7.5 0-13Z"/>'
-        + '<path class="sc-fi" d="M0-8C1.5-5.5 3.3-4 2.8-1.6 2.4.3 1.3 1 0 1-1.3 1-2.4.3-2.8-1.6-3.2-4-1.2-4.8 0-8Z"/></g>'
-        + '<circle class="sc-em" r="1.2" cx="-3.5" cy="-9"/><circle class="sc-em e2" r="1" cx="3.5" cy="-12"/></g>';
+    function scAura(cx, yb, hh, k, i) {   /* 1027 MJ '그날 그래프가 전체적으로 불타는 느낌 · 드래곤볼 초사이언처럼' — 막대 전체를 감싼 금빛 오라(뾰족한 불꽃 모양 3장을 번갈아 = 애니처럼 번쩍임)·빛 번짐·달아오름·올라가는 불씨 · 줄인 동작이면 멈춘 오라 */
+      var yt = yb - hh, sd = i * 7 + 3, r = function () { sd = (sd * 9301 + 49297) % 233280; return sd / 233280; }, f = function (q) { return q[0].toFixed(1) + ' ' + q[1].toFixed(1); };
+      var path = function (out, tip) {   // 막대 가장자리(골) ↔ 바깥 위로 뻗은 끝(뿔), 위쪽은 가운데가 제일 높은 뿔 셋
+        var n = Math.max(1, Math.round(hh / 9)), p = [[cx - 8, yb]], j;
+        for (j = 1; j <= n; j++) p.push([cx - 8 - out * (.6 + r() * .6), yb - hh * (j - .5) / n - 2 - r() * 3], [cx - 8, yb - hh * j / n]);
+        p.push([cx - 6, yt - tip * (.55 + r() * .25)], [cx - 3, yt - 2], [cx, yt - tip * (.85 + r() * .15)], [cx + 3, yt - 2], [cx + 6, yt - tip * (.55 + r() * .25)], [cx + 8, yt]);
+        for (j = n - 1; j >= 0; j--) p.push([cx + 8 + out * (.6 + r() * .6), yb - hh * (j + .5) / n - 2 - r() * 3], [cx + 8, yb - hh * j / n]);
+        return 'M' + p.map(f).join('L') + 'Z';
+      };
+      var au = '', sp = '', m;
+      for (m = 0; m < 3; m++) au += '<g class="sc-auv" style="animation-delay:-' + (m * .12).toFixed(2) + 's"><path class="sc-au1" fill="url(#scAu-' + k + ')" d="' + path(6.5, 24) + '"/><path class="sc-au2" d="' + path(3, 13) + '"/></g>';
+      for (m = 0; m < 4; m++) sp += '<circle class="sc-sp" r="' + (.8 + r() * .7).toFixed(1) + '" cx="' + (cx - 6 + m * 4 + r() * 2).toFixed(1) + '" cy="' + (yb - hh * (.15 + r() * .6)).toFixed(1) + '" style="animation-delay:' + (m * .35 + r() * .2).toFixed(2) + 's"/>';
+      return ['<g class="sc-fire" style="--i:' + i + '"><rect class="sc-glow" x="' + (cx - 13) + '" y="' + (yt - 14).toFixed(1) + '" width="26" height="' + (hh + 14).toFixed(1) + '" rx="10" filter="url(#scBlur-' + k + ')"/><g class="sc-au">' + au + '</g></g>',
+        '<g class="sc-fire" style="--i:' + i + '"><rect class="sc-heat" x="' + (cx - 7) + '" y="' + yt.toFixed(1) + '" width="14" height="' + hh.toFixed(1) + '" rx="3" fill="url(#scHeat-' + k + ')"/>' + sp + '</g>'];
     }
     function scAnim(last) {   /* 여는 순간: 링이 채워지고 숫자가 올라감 · 막대가 자람 · 달성한 날은 이 기기에서 처음 볼 때 한 번 축하 */
       var rm = scRm();
