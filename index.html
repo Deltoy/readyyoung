@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvqfmcgo">
+  <meta name="ry-build" content="mvqgbst0">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1109,10 +1109,13 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-who .ry-ava{width:30px!importan
 .ry-in-unit{font-size:12px;font-weight:700;color:var(--ry-brand)}
 .ry-in-unit.box{color:#fff;background:#C2410C;border-radius:999px;padding:1px 8px;margin-top:2px}
 .ry-in-qty:has(.ry-in-unit.box) .ry-in-num{color:#C2410C}
-/* 1027 입고대기 [온 수량] — 주문과 다르게 왔을 때 */
-.ry-got-edit{margin-top:6px;display:inline-flex;align-items:center;justify-content:center;gap:3px;min-height:36px;padding:0 10px;border:1px solid #B2CCFF;border-radius:999px;background:#fff;color:#155EEF;font-size:12px;font-weight:800;line-height:1;cursor:pointer;white-space:nowrap;font-family:inherit}
-.ry-got-edit svg{width:13px;height:13px;flex:none}
-.ry-got-edit:focus-visible{outline:2px solid #155EEF;outline-offset:2px}
+/* 1027 입고대기 — 수량 숫자를 누르면 온 수량으로 바꾸기 (MJ '온 수량 말고 그냥 숫자 누르면') */
+.ry-qtybtn{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button.ry-in-qty.ry-qtybtn{border:0;border-left:1px solid #C3D6EF;margin:0}
+.ry-in-lbl svg{width:11px;height:11px;vertical-align:-1px;opacity:.7}
+.ry-qtybtn-t{display:inline-flex;flex-direction:column;align-items:center;gap:1px;min-height:44px;min-width:72px;padding:6px 12px;border:1px dashed #A4BCE8;border-radius:12px;background:#fff}
+.ry-qtybtn-t i{display:inline-flex;margin-top:2px;opacity:.55}.ry-qtybtn-t i svg{width:12px;height:12px}
+.ry-qtybtn:hover{filter:brightness(.97)}.ry-qtybtn:focus-visible{outline:2px solid #155EEF;outline-offset:2px}
 html body:not(#_):not(#_) .ry-got,html body:not(#_):not(#_) .ry-in-num.ry-got{color:#B54708!important}
 .ry-got-was{font-size:11px;font-weight:700;color:#667085;text-decoration:line-through}
 .ry-in-act{display:flex;flex-direction:column;justify-content:center;gap:6px;padding:8px 7px;border-left:1px solid var(--ry-line)}
@@ -11774,8 +11777,7 @@ video {
     }
     function inbQtyHtml(item) {
       var u = escapeHtml(item.unit || '개'), q = escapeHtml(String(item.targetQty == null ? '' : item.targetQty)), g = INB_GOT[item.rowNumber];
-      return (g != null ? '<div class="ry-got-was">주문 ' + q + u + '</div><div class="ry-got">' + escapeHtml(String(g)) + u + '</div>' : '<div>' + q + u + '</div>')
-        + '<button type="button" class="ry-got-edit" onclick="inbGotEdit(' + item.rowNumber + ')">' + RYI.pen + '온 수량</button>';
+      return '<button type="button" class="ry-qtybtn ry-qtybtn-t" onclick="inbGotEdit(' + item.rowNumber + ')" aria-label="입고 수량 바꾸기">' + (g != null ? '<span class="ry-got-was">주문 ' + q + u + '</span><span class="ry-got">' + escapeHtml(String(g)) + u + '</span>' : '<span>' + q + u + '</span>') + '<i aria-hidden="true">' + RYI.pen + '</i></button>';   // 1027 MJ '온 수량 말고 그냥 숫자 누르면'
     }
     function createInboundCard(item, type) {
       const card = document.createElement('div');
@@ -11799,13 +11801,12 @@ video {
             <div class="ry-in-meta ry-in-sub">${elapsedChip(item)}<button onclick="cancelSoldOut(${item.rowNumber})" class="ry-in-cancel" title="공급사 품절로 못 들어오는 상품을 취소합니다">${RYI.ban}품절 취소</button>${delayReasonHtml(item)}</div>
             ${mrSlot(item, type)}
           </div>
-          <div class="ry-in-qty">
-            <span class="ry-in-lbl">입고</span>
+          <button type="button" class="ry-in-qty ry-qtybtn" onclick="inbGotEdit(${item.rowNumber})" aria-label="입고 수량 바꾸기 (지금 ${escapeHtml(INB_GOT[item.rowNumber] != null ? String(INB_GOT[item.rowNumber]) : qtyNum)}${escapeHtml(item.unit || '개')})">
+            <span class="ry-in-lbl">입고 ${RYI.pen}</span>
             <b class="ry-in-num${INB_GOT[item.rowNumber] != null ? ' ry-got' : ''}">${escapeHtml(INB_GOT[item.rowNumber] != null ? String(INB_GOT[item.rowNumber]) : qtyNum)}</b>
             <span class="ry-in-unit${(item.unit || '개') === '박스' ? ' box' : ''}">${(item.unit || '개') === '박스' ? RYI.package : ''}${escapeHtml(item.unit || '개')}</span>
             ${INB_GOT[item.rowNumber] != null ? `<span class="ry-got-was">주문 ${escapeHtml(qtyNum)}</span>` : ''}
-            <button type="button" class="ry-got-edit" onclick="inbGotEdit(${item.rowNumber})">${RYI.pen}온 수량</button>
-          </div>
+          </button>
         </div>
         <div class="ry-in-photo">${imgHtml}</div>
         <div class="ry-in-act">
@@ -15103,7 +15104,8 @@ video {
       /* 1027 MJ '배도라지는 1개로도 10개로도 팔려 · 10개가 한 팩' */
       { to: '부채표 배도라지 쌍화', from: [['부채표 배도라지쌍화 10병 (1box)', 1], ['부채표 배도라지쌍화 120ml', 1 / 10]] },
       /* 1027 MJ '이 상품도 조정해줘 12병이 한 팩' */
-      { to: '비비랩 올리브 레몬 밸런스샷 12병 1팩', from: [['비비랩 올리브 레몬 밸런스샷 12병', 1], ['비비랩 올리브 레몬 밸런스 샷 1병', 1 / 12]] }];   /* 1019 MJ: 젤리 28포 1팩 = 1개 (택배 1상자 = 20팩) */   /* 1019 MJ: 뉴베인도 28포 1패키지 = 1개 */   /* 1019 MJ: 28병 1패키지 = 1개(택배 1상자 = 10패키지) → 낱병·7병도 패키지로 환산 · 새 묶음 상품이 생기면 여기에 한 줄 */
+      { to: '비비랩 올리브 레몬 밸런스샷 12병 1팩', from: [['비비랩 올리브 레몬 밸런스샷 12병', 1], ['비비랩 올리브 레몬 밸런스 샷 1병', 1 / 12]] },
+      { to: '셀리맥스 노니 에너지 앰플 마스크', from: [['셀리맥스 더 리얼 노니 에너지 앰플 마스크 10개', 1], ['셀리맥스 노니 앰플 마스크 1매', 1 / 10]] }];   // 1027 MJ '10매가 한 팩 · 꺼내서 1매씩도 팔아'   /* 1019 MJ: 젤리 28포 1팩 = 1개 (택배 1상자 = 20팩) */   /* 1019 MJ: 뉴베인도 28포 1패키지 = 1개 */   /* 1019 MJ: 28병 1패키지 = 1개(택배 1상자 = 10패키지) → 낱병·7병도 패키지로 환산 · 새 묶음 상품이 생기면 여기에 한 줄 */
     /* 앱 상품을 이름별로 묶고(같은 상품 여러 줄은 같은 숫자) 엑셀과 맞춘다 */
     /* 1001 용량·개수 꼬리(10T · 14ml · 10g · 6매 · 30c …)를 뗀 이름 — '지르텍정(세티리진염산염)' = '지르텍정(세티리진염산염) 10T' */
     var S15_SZ = /(\d+(?:\.\d+)?(?:t|정|ml|mg|g|매|포|c|개|캡슐|ea|p|병|개입|매입|정입|포입|입)x?)+$/;
