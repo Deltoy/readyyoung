@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvqrkk71">
+  <meta name="ry-build" content="mvqslc0q">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4107,6 +4107,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 .sc-cht{display:flex;justify-content:space-between;font-size:13.5px;font-weight:800;margin-bottom:2px}.sc-cht span{color:#B54708;font-size:12.5px}
 .sc-ch{width:100%;height:auto;display:block;overflow:visible}
 .sc-ch .sc-b{transform-box:fill-box;transform-origin:50% 100%}
+.sc-tier{display:flex;flex-wrap:wrap;align-items:center;gap:2px 7px;margin:-4px 0 10px;font-size:11.5px;font-weight:700;color:var(--ry-ink-3);font-variant-numeric:tabular-nums}.sc-tier i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:-4px}
 .sc-ch.grow .sc-b{animation:scGrow .55s cubic-bezier(.2,.7,.3,1) both;animation-delay:calc(var(--i) * 35ms)}
 @keyframes scGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 .sc-ch .sc-ghost{fill:var(--ry-sunken);stroke:none}
@@ -7619,7 +7620,7 @@ video {
         h += '</section>';
       });
       /* ③ 날마다 그래프 */
-      h += '<section class="sc-card"><h3>날마다 판매 <span>점선 = 하루 목표 · 🔥 달성 · 20개↑ 💥</span></h3><div class="sc-charts">' + SC_SETS.map(function (s) { return scChart(s, c, days, t); }).join('') + '</div></section>';
+      h += '<section class="sc-card"><h3>날마다 판매 <span>점선 = 하루 목표 · 🔥 달성 · 20개↑ 💥</span></h3><p class="sc-tier" aria-label="막대 색 = 그날 판 개수">' + SC_TIER.slice().reverse().map(function (t) { return '<i style="background:' + t[1] + '"></i>' + t[0]; }).join('') + '개↑</p><div class="sc-charts">' + SC_SETS.map(function (s) { return scChart(s, c, days, t); }).join('') + '</div></section>';
       /* ④ 공지 요약 */
       h += '<details class="sc-card sc-tip"><summary>📣 약국장님 공지 · 매장에서 이렇게</summary><ul>'
         + '<li>단품 하나만 고른 손님께 세트를 같이 안내 · 낱개보다 세트가 더 이득이라고 짧게</li>'
@@ -7642,19 +7643,21 @@ video {
       var W = 24, H = 104, vals = days.map(function (d) { return d <= t ? scV(d, s.k) : null; }), goals = days.map(function (d) { return scGoal(c, d, s.k); });
       var top = vals.some(function (v) { return v >= SC_MEGA; }) ? 40 : vals.some(function (v, i) { return v != null && goals[i] && v >= goals[i]; }) ? 32 : 18;   // 오라 위 숫자 자리
       var mx = Math.max.apply(null, goals.concat(vals.map(function (v) { return v || 0; })).concat([1])) * 1.15, y = function (v) { return top + (H - top) * (1 - v / mx); };
-      var g = '<svg class="sc-ch" viewBox="0 0 ' + (days.length * W) + ' ' + (H + 18) + '" role="img" aria-label="' + escapeHtml(s.label) + ' 날마다 판매"><defs><linearGradient id="scHeat-' + s.k + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFAEB" stop-opacity=".8"/><stop offset=".55" stop-color="#FEF0C7" stop-opacity="0"/></linearGradient><linearGradient id="scAu-' + s.k + '" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#F79009"/><stop offset="1" stop-color="#FDE272"/></linearGradient><linearGradient id="scAuR-' + s.k + '" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#B42318"/><stop offset=".6" stop-color="#F04438"/><stop offset="1" stop-color="#FDA29B"/></linearGradient><filter id="scBlur-' + s.k + '" x="-60%" y="-30%" width="220%" height="160%"><feGaussianBlur stdDeviation="3"/></filter></defs>';
+      var g = '<svg class="sc-ch" viewBox="0 0 ' + (days.length * W) + ' ' + (H + 31) + '" role="img" aria-label="' + escapeHtml(s.label) + ' 날마다 판매"><defs><linearGradient id="scHeat-' + s.k + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFAEB" stop-opacity=".8"/><stop offset=".55" stop-color="#FEF0C7" stop-opacity="0"/></linearGradient><linearGradient id="scAu-' + s.k + '" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#F79009"/><stop offset="1" stop-color="#FDE272"/></linearGradient><linearGradient id="scAuR-' + s.k + '" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#B42318"/><stop offset=".6" stop-color="#F04438"/><stop offset="1" stop-color="#FDA29B"/></linearGradient><filter id="scBlur-' + s.k + '" x="-60%" y="-30%" width="220%" height="160%"><feGaussianBlur stdDeviation="3"/></filter></defs>';
       days.forEach(function (d, i) {
         var x = i * W, v = vals[i], gl = goals[i], ok = v != null && gl && v >= gl, lv = v >= SC_MEGA ? 2 : ok ? 1 : 0;
-        if (i === 7) g += '<line x1="' + x + '" x2="' + x + '" y1="2" y2="' + H + '" class="sc-sep"/><text x="' + (x + 3) + '" y="9" class="sc-wk2">2주차</text>';
+        if (i === 7) g += '<line x1="' + x + '" x2="' + x + '" y1="2" y2="' + (H + 18) + '" class="sc-sep"/><text x="' + (x + 3) + '" y="' + (H + 28) + '" class="sc-wk2">2주차 →</text>';   // 1027 위에 두면 큰 숫자와 겹쳐서 날짜 밑으로
         if (gl) g += '<line x1="' + (x + 2) + '" x2="' + (x + W - 2) + '" y1="' + y(gl).toFixed(1) + '" y2="' + y(gl).toFixed(1) + '" class="sc-gl" style="stroke:' + s.c + '"/>';
         if (v == null) { g += '<rect x="' + (x + 5) + '" y="' + y(gl || 0).toFixed(1) + '" width="14" height="' + Math.max(0, H - y(gl || 0)).toFixed(1) + '" rx="3" class="sc-ghost' + (d === t ? ' now' : '') + '"/>'; if (d < t) g += '<text x="' + (x + 12) + '" y="' + (H - 4) + '" class="sc-q">?</text>'; }
-        else { var hh = Math.max(v ? 3 : 0, H - y(v)), au = lv ? scAura(x + 12, H, hh, s.k, i, lv) : ['', '']; g += au[0] + '<rect x="' + (x + 5) + '" y="' + (H - hh).toFixed(1) + '" width="14" height="' + hh.toFixed(1) + '" rx="3" class="sc-b" style="fill:' + s.c + ';--i:' + i + '"/>' + au[1]
+        else { var hh = Math.max(v ? 3 : 0, H - y(v)), au = lv ? scAura(x + 12, H, hh, s.k, i, lv) : ['', '']; g += au[0] + '<rect x="' + (x + 5) + '" y="' + (H - hh).toFixed(1) + '" width="14" height="' + hh.toFixed(1) + '" rx="3" class="sc-b" style="fill:' + scTier(v) + ';--i:' + i + '"/>' + au[1]
           + '<text x="' + (x + 12) + '" y="' + (H - hh - (lv > 1 ? 37 : lv ? 30 : 3)).toFixed(1) + '" class="sc-v' + (lv > 1 ? ' mega' : '') + '">' + v + '</text>'; }
         g += '<text x="' + (x + 12) + '" y="' + (H + 14) + '" class="sc-x' + (d === t ? ' now' : '') + '">' + (+d.slice(8)) + '</text>';
       });
       var hit = days.filter(function (d, i) { return vals[i] != null && goals[i] && vals[i] >= goals[i]; }).length;
       return '<div class="sc-chw"><div class="sc-cht"><b style="color:' + s.c + '">' + escapeHtml(s.label) + '</b><span>🔥 ' + hit + '일 달성</span></div>' + g + '</svg></div>';
     }
+    var SC_TIER = [[21, '#F04438'], [18, '#F79009'], [15, '#FDB022'], [12, '#66C61C'], [9, '#15B79E'], [6, '#2E90FA'], [3, '#7CD4FD'], [1, '#98A2B3']];   /* 1027 MJ '1·3·6·9·12·15·18·21개 갈수록 그래프 색이 달라지게' — 회색→하늘→파랑→청록→초록→금→주황→빨강 (목표 15 근처 = 금빛 오라, 20↑ = 빨강 오라와 같은 흐름) */
+    function scTier(v) { for (var j = 0; j < SC_TIER.length; j++) if (v >= SC_TIER[j][0]) return SC_TIER[j][1]; return SC_TIER[SC_TIER.length - 1][1]; }
     var SC_MEGA = 20;   /* 1027 MJ '세트 20개를 판매하면 금빛과 빨강빛이 같이 도는 강력한 오라 — 20개 넘었으면 정말 열심히 했다는 거니까' (목표와 상관없이 그날 20개↑) */
     function scAura(cx, yb, hh, k, i, lv) {   /* 1027 MJ '그날 그래프가 전체적으로 불타는 느낌 · 드래곤볼 초사이언처럼' — 막대 전체를 감싼 금빛 오라(뾰족한 불꽃 모양 3장을 번갈아 = 애니처럼 번쩍임)·빛 번짐·달아오름·올라가는 불씨 · 줄인 동작이면 멈춘 오라 */
       var yt = yb - hh, sd = i * 7 + 3, r = function () { sd = (sd * 9301 + 49297) % 233280; return sd / 233280; }, f = function (q) { return q[0].toFixed(1) + ' ' + q[1].toFixed(1); };
@@ -16944,6 +16947,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) button.ry-s15l.sm{margin-top:4px!impor
 html:not(#q):not(#w):not(#e) body:not(#r) button.ry-s15l:focus-visible{outline:2px solid #155EEF!important;outline-offset:2px;border-radius:3px!important}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry-s30n{font-size:11px!important;font-weight:600!important;opacity:.75;margin-left:5px;white-space:nowrap}
 html:not(#q):not(#w):not(#e) body:not(#r) .s15p .ry-s30n{margin:2px 0 0}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-stat.s15.s30.s30,html:not(#q):not(#w):not(#e) body:not(#r) .s15p.s30.s30{background:#F4F3FF!important;color:#5925DC!important}   /* 1027 MJ '30일 판매로 바뀌었을 때 글자색이 달랐으면' — 15일(회색·파랑)과 한눈에 구분 */
 html:not(#q):not(#w):not(#e) body:not(#r) .ry-stat.s15.s30>b{display:inline-block;min-width:75px;text-align:center}
 html:not(#q):not(#w):not(#e) body:not(#r) .s15p.s30>b{display:block;min-width:64px;text-align:center}
 html:not(#q):not(#w):not(#e) body:not(#r) .s15-na,html:not(#q):not(#w):not(#e) body:not(#r) .s15-z{background:#F2F4F7;color:#98A2B3}
