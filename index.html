@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvqckiox">
+  <meta name="ry-build" content="mvqfmcgo">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1109,6 +1109,12 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-who .ry-ava{width:30px!importan
 .ry-in-unit{font-size:12px;font-weight:700;color:var(--ry-brand)}
 .ry-in-unit.box{color:#fff;background:#C2410C;border-radius:999px;padding:1px 8px;margin-top:2px}
 .ry-in-qty:has(.ry-in-unit.box) .ry-in-num{color:#C2410C}
+/* 1027 입고대기 [온 수량] — 주문과 다르게 왔을 때 */
+.ry-got-edit{margin-top:6px;display:inline-flex;align-items:center;justify-content:center;gap:3px;min-height:36px;padding:0 10px;border:1px solid #B2CCFF;border-radius:999px;background:#fff;color:#155EEF;font-size:12px;font-weight:800;line-height:1;cursor:pointer;white-space:nowrap;font-family:inherit}
+.ry-got-edit svg{width:13px;height:13px;flex:none}
+.ry-got-edit:focus-visible{outline:2px solid #155EEF;outline-offset:2px}
+html body:not(#_):not(#_) .ry-got,html body:not(#_):not(#_) .ry-in-num.ry-got{color:#B54708!important}
+.ry-got-was{font-size:11px;font-weight:700;color:#667085;text-decoration:line-through}
 .ry-in-act{display:flex;flex-direction:column;justify-content:center;gap:6px;padding:8px 7px;border-left:1px solid var(--ry-line)}
 .ry-in-btn{min-height:44px;width:100%;border-radius:8px;font-size:12px;font-weight:800;line-height:1.15;
   display:flex;align-items:center;justify-content:center;text-align:center;padding:2px 4px;word-break:keep-all;cursor:pointer}
@@ -11747,7 +11753,7 @@ video {
           ${delayReasonHtml(item)}
           ${mrSlot(item, type)}
         </td>
-        <td class="p-3 text-center bg-emerald-50/40 font-extrabold text-base text-emerald-700">${item.targetQty}${item.unit || '개'}</td>
+        <td class="p-3 text-center bg-emerald-50/40 font-extrabold text-base text-emerald-700">${inbQtyHtml(item)}</td>
         <td class="p-3 text-center text-xs text-slate-700 hidden lg:table-cell"><div>${odText(item)}</div></td>
         <td class="p-3 text-center hidden lg:table-cell">${statusBadge}</td>
         <td class="p-3 text-center">${actionBtn}</td>
@@ -11755,6 +11761,22 @@ video {
       return tr;
     }
 
+    /* 1027 MJ '이 화면에서 바로 입고할 때 입고 수량이랑 주문 수량이 달라서 바꿔서 입고가 안 돼' — 입고대기 표·카드에서 [온 수량]으로 바꾸고 [최종 입고완료]
+       = 입고하기 ②와 같은 서버 partialInbound (주문 수량 칸을 온 수량으로 바꾸고 입고완료) · 바꾼 수량은 화면에만 두었다가 입고완료 때 보냄 */
+    var INB_GOT = {};
+    function inbGotEdit(row) {
+      var it = (cachedInboundItems || []).find(function (x) { return x.rowNumber === row; }); if (!it) return;
+      var u = it.unit || '개', oq = parseFloat(String(it.targetQty == null ? '' : it.targetQty).replace(/[^0-9.]/g, '')) || 0;
+      var v = prompt('실제로 온 수량을 적어 주세요 (' + u + ')\n주문: ' + (it.targetQty == null ? '' : it.targetQty) + u, INB_GOT[row] != null ? INB_GOT[row] : oq); if (v == null) return;
+      var n = Math.round(Number(String(v).replace(/[^0-9.]/g, ''))); if (!(n > 0 && n < 100000)) { alert('온 수량을 숫자로 적어 주세요'); return; }
+      if (n === oq) delete INB_GOT[row]; else INB_GOT[row] = n;
+      renderAllViews();
+    }
+    function inbQtyHtml(item) {
+      var u = escapeHtml(item.unit || '개'), q = escapeHtml(String(item.targetQty == null ? '' : item.targetQty)), g = INB_GOT[item.rowNumber];
+      return (g != null ? '<div class="ry-got-was">주문 ' + q + u + '</div><div class="ry-got">' + escapeHtml(String(g)) + u + '</div>' : '<div>' + q + u + '</div>')
+        + '<button type="button" class="ry-got-edit" onclick="inbGotEdit(' + item.rowNumber + ')">' + RYI.pen + '온 수량</button>';
+    }
     function createInboundCard(item, type) {
       const card = document.createElement('div');
       card.setAttribute('data-item', item.rowNumber);
@@ -11779,8 +11801,10 @@ video {
           </div>
           <div class="ry-in-qty">
             <span class="ry-in-lbl">입고</span>
-            <b class="ry-in-num">${escapeHtml(qtyNum)}</b>
+            <b class="ry-in-num${INB_GOT[item.rowNumber] != null ? ' ry-got' : ''}">${escapeHtml(INB_GOT[item.rowNumber] != null ? String(INB_GOT[item.rowNumber]) : qtyNum)}</b>
             <span class="ry-in-unit${(item.unit || '개') === '박스' ? ' box' : ''}">${(item.unit || '개') === '박스' ? RYI.package : ''}${escapeHtml(item.unit || '개')}</span>
+            ${INB_GOT[item.rowNumber] != null ? `<span class="ry-got-was">주문 ${escapeHtml(qtyNum)}</span>` : ''}
+            <button type="button" class="ry-got-edit" onclick="inbGotEdit(${item.rowNumber})">${RYI.pen}온 수량</button>
           </div>
         </div>
         <div class="ry-in-photo">${imgHtml}</div>
@@ -11903,7 +11927,8 @@ video {
       const key = 'complete-' + rowNumber;
       if (inFlight.has(key)) return;
       const satD = rySatDateFor(rowNumber);   /* 0925: '토요일에 도착했어요' 를 눌렀으면 그 토요일 (아니면 빈 값 = 오늘) */
-      if (!quiet && !confirm('이 상품을 [✅ 최종 입고완료] 처리할까요?' + (satD ? '\n입고일: ' + satD + ' (토요일 도착)' : '') + '\n(실수했을 땐 📅 입고내역 탭의 ⏪ 되돌리기로 복구할 수 있어요)')) return;
+      const _it0 = (cachedInboundItems || []).find(it => it.rowNumber === rowNumber) || {}, _got = quiet ? null : INB_GOT[rowNumber];   // 1027 온 수량을 바꿨으면
+      if (!quiet && !confirm((_got != null ? '이 상품을 온 수량 ' + _got + (_it0.unit || '개') + '(주문 ' + _it0.targetQty + (_it0.unit || '개') + ')로' : '이 상품을') + ' [✅ 최종 입고완료] 처리할까요?' + (satD ? '\n입고일: ' + satD + ' (토요일 도착)' : '') + '\n(실수했을 땐 📅 입고내역 탭의 ⏪ 되돌리기로 복구할 수 있어요)')) return;
       inFlight.add(key);
       const _who = String(((cachedInboundItems.find(it => it.rowNumber === rowNumber) || {}).requester) || '').trim();
       showToast((satD ? '최종 입고완료 처리했어요 · 입고일 ' + satD : '최종 입고완료 처리했어요') + (_who && _who !== currentSelectedMember ? ' · ' + _who + '님 앱에 입고 알림이 떠요' : ''), _who ? 3500 : 2200);
@@ -11917,6 +11942,7 @@ video {
         try { delete DELAY_REASONS[delayKey(item)]; } catch (eD) {}
         item.inboundDate = satD || cachedTodayStr || '오늘';
         item.inboundManager = currentSelectedMember;
+        if (_got != null) { item.targetQty = _got; delete INB_GOT[rowNumber]; }
         cachedHistoryItems.unshift(item);
         renderAllViews();
         persistSnapshot();
@@ -11942,7 +11968,7 @@ video {
             alert('입고 처리 오류: ' + msg + '\n(새로고침 후 입고대기에 남아 있으면 다시 눌러 주세요)');
             inbReload();
           })
-          .markInboundComplete(rowNumber, currentSelectedMember, satD, _nm);
+          [_got != null ? 'partialInbound' : 'markInboundComplete'](...(_got != null ? [rowNumber, _nm, _got, currentSelectedMember, satD] : [rowNumber, currentSelectedMember, satD, _nm]));
       };
       INB_Q.push(send); if (!INB_BUSY) inbNext();
     }
