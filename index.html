@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvq3k5zf">
+  <meta name="ry-build" content="mvq53fs9">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -14924,7 +14924,7 @@ video {
       /* 1019 MJ: 묶음으로도 파는 상품은 주문 단위로 합쳐 앱 상품 이름 한 줄로 (레디비타: 1병·7병·28병 → 28병 패키지 수) */
       S15_PACKS.forEach(function (pk) {
         var q = 0, hit = false; out.forEach(function (x) { pk.from.forEach(function (f) { if (s15Key(x.n) === s15Key(f[0])) { q += x.q * f[1]; hit = true; } }); });
-        if (!hit) return; out = out.filter(function (x) { return s15Key(x.n) !== s15Key(pk.to); }); var p = s15Prep(pk.to); p.n = pk.to; p.q = Math.round(q); p.pack = true; var fu = pk.from.filter(function (f) { return f[1] === 1; })[0], fx = fu && out.filter(function (y) { return s15Key(y.n) === s15Key(fu[0]); })[0]; if (fx && fx.price != null) { p.price = fx.price; p.cost = fx.cost; }   /* 1019 MJ: 사입가·판매가는 한 팩(28포·28병) 줄 기준 — 예전엔 비어서 1포 값이 남아 있었음 */
+        if (!hit) return; out = out.filter(function (x) { return s15Key(x.n) !== s15Key(pk.to); }); var p = s15Prep(pk.to); p.n = pk.to; p.q = Math.round(q * 100) / 100; p.pack = true;   /* 1027 하루치엔 낱병 2병 = 0.07팩이 0으로 반올림돼 추정 재고에서 빠지던 것 → 소수 둘째 자리까지 (15일 판매 칸에 쓸 땐 아래에서 반올림) */ var fu = pk.from.filter(function (f) { return f[1] === 1; })[0], fx = fu && out.filter(function (y) { return s15Key(y.n) === s15Key(fu[0]); })[0]; if (fx && fx.price != null) { p.price = fx.price; p.cost = fx.cost; }   /* 1019 MJ: 사입가·판매가는 한 팩(28포·28병) 줄 기준 — 예전엔 비어서 1포 값이 남아 있었음 */
         p.packTxt = pk.from.map(function (f) { var x = out.filter(function (y) { return s15Key(y.n) === s15Key(f[0]); })[0]; return x ? f[0].replace(/^.*?(\d+\s*(?:포|병|ea)).*$/i, '$1') + ' ' + x.q + '개' : ''; }).filter(Boolean).join(' + ') + ' = ' + (Math.round(q * 10) / 10) + '패키지'; out.push(p);
       });
       var pf = {}; S15_PACKS.forEach(function (pk) { pk.from.forEach(function (f) { if (s15Key(f[0]) !== s15Key(pk.to)) pf[s15Key(f[0])] = 1; }); }); out = out.filter(function (x) { return !pf[s15Key(x.n)]; });   /* 1019 합친 낱개 줄은 뺌 — 예전 연결(젤리 → '1포' 줄)이 합친 숫자를 덮어쓰던 것 */
@@ -15335,7 +15335,7 @@ video {
           try { google.script.run.withSuccessHandler(function () { try { if (typeof SP !== 'undefined') { SP.data = null; } } catch (e2) {} try { SP.boxAt = 0; bxLoad(); } catch (e3) {} }).setSetSales15(xs0.map(function (x) { return { n: x.n, q: x.q, p: x.price }; }), per0); } catch (eSet) {}
         })
         .withFailureHandler(function (e) { S15.busy = false; s15Render(); showToast('저장하지 못했어요: ' + (e && e.message || e), 2600); })
-        .updateSales15Batch(list.concat(keep0), links, { from: (document.getElementById('s15From') || {}).value || '', to: (document.getElementById('s15To') || {}).value || '' });
+        .updateSales15Batch(list.map(function (x) { return { row: x.row, value: Math.round(x.value) }; }).concat(keep0), links, { from: (document.getElementById('s15From') || {}).value || '', to: (document.getElementById('s15To') || {}).value || '' });
     }
 
     /* ===== 0925 세트 · 인플루언서 담당 — 서버 getSetDuty (근무표 앱을 읽어 자동 배정) · 문준만 칸 변경 ===== */
