@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvqgxg85">
+  <meta name="ry-build" content="mvqhushu">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1112,10 +1112,13 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-in-who .ry-ava{width:30px!importan
 /* 1027 입고대기 — 수량 숫자를 누르면 온 수량으로 바꾸기 (MJ '온 수량 말고 그냥 숫자 누르면') */
 .ry-qtybtn{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
 button.ry-in-qty.ry-qtybtn{border:0;border-left:1px solid #C3D6EF;margin:0}
-.ry-in-lbl svg{width:11px;height:11px;vertical-align:-1px;opacity:.7}
-.ry-qtybtn-t{display:inline-flex;flex-direction:column;align-items:center;gap:1px;min-height:44px;min-width:72px;padding:6px 12px;border:1px dashed #A4BCE8;border-radius:12px;background:#fff}
-.ry-qtybtn-t i{display:inline-flex;margin-top:2px;opacity:.55}.ry-qtybtn-t i svg{width:12px;height:12px}
-.ry-qtybtn:hover{filter:brightness(.97)}.ry-qtybtn:focus-visible{outline:2px solid #155EEF;outline-offset:2px}
+/* 연필 없이 '숫자 입력칸' 모양 (MJ '그냥 누르면 바뀐다는 모양') — 흰 바탕 · 테두리 · 안쪽 그림자 */
+.ry-qtybtn-t,.ry-qf{background:#fff;border:1px solid #C7D0DD;border-radius:10px;box-shadow:inset 0 1px 2px rgba(16,24,40,.08)}
+.ry-qtybtn-t{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:44px;min-width:84px;padding:6px 14px;cursor:text}
+.ry-qf{display:inline-flex;flex-wrap:wrap;align-items:baseline;justify-content:center;gap:2px;padding:2px 8px;margin:2px 0;max-width:100%}
+.ry-qf .ry-in-unit{white-space:nowrap}.ry-qf .ry-in-unit.box{margin-top:0;padding:1px 6px}
+.ry-qtybtn:hover .ry-qf,.ry-qtybtn-t:hover{border-color:#84ADFF}
+.ry-qtybtn:focus-visible{outline:2px solid #155EEF;outline-offset:2px}
 html body:not(#_):not(#_) .ry-got,html body:not(#_):not(#_) .ry-in-num.ry-got{color:#B54708!important}
 .ry-got-was{font-size:11px;font-weight:700;color:#667085;text-decoration:line-through}
 .ry-in-act{display:flex;flex-direction:column;justify-content:center;gap:6px;padding:8px 7px;border-left:1px solid var(--ry-line)}
@@ -11777,7 +11780,7 @@ video {
     }
     function inbQtyHtml(item) {
       var u = escapeHtml(item.unit || '개'), q = escapeHtml(String(item.targetQty == null ? '' : item.targetQty)), g = INB_GOT[item.rowNumber];
-      return '<button type="button" class="ry-qtybtn ry-qtybtn-t" onclick="inbGotEdit(' + item.rowNumber + ')" aria-label="입고 수량 바꾸기">' + (g != null ? '<span class="ry-got-was">주문 ' + q + u + '</span><span class="ry-got">' + escapeHtml(String(g)) + u + '</span>' : '<span>' + q + u + '</span>') + '<i aria-hidden="true">' + RYI.pen + '</i></button>';   // 1027 MJ '온 수량 말고 그냥 숫자 누르면'
+      return '<button type="button" class="ry-qtybtn ry-qtybtn-t" onclick="inbGotEdit(' + item.rowNumber + ')" aria-label="입고 수량 바꾸기">' + (g != null ? '<span class="ry-got-was">주문 ' + q + u + '</span><span class="ry-got">' + escapeHtml(String(g)) + u + '</span>' : '<span>' + q + u + '</span>') + '</button>';   // 1027 MJ '온 수량 말고 그냥 숫자 누르면'
     }
     function createInboundCard(item, type) {
       const card = document.createElement('div');
@@ -11802,9 +11805,9 @@ video {
             ${mrSlot(item, type)}
           </div>
           <button type="button" class="ry-in-qty ry-qtybtn" onclick="inbGotEdit(${item.rowNumber})" aria-label="입고 수량 바꾸기 (지금 ${escapeHtml(INB_GOT[item.rowNumber] != null ? String(INB_GOT[item.rowNumber]) : qtyNum)}${escapeHtml(item.unit || '개')})">
-            <span class="ry-in-lbl">입고 ${RYI.pen}</span>
-            <b class="ry-in-num${INB_GOT[item.rowNumber] != null ? ' ry-got' : ''}">${escapeHtml(INB_GOT[item.rowNumber] != null ? String(INB_GOT[item.rowNumber]) : qtyNum)}</b>
-            <span class="ry-in-unit${(item.unit || '개') === '박스' ? ' box' : ''}">${(item.unit || '개') === '박스' ? RYI.package : ''}${escapeHtml(item.unit || '개')}</span>
+            <span class="ry-in-lbl">입고</span>
+            <span class="ry-qf"><b class="ry-in-num${INB_GOT[item.rowNumber] != null ? ' ry-got' : ''}">${escapeHtml(INB_GOT[item.rowNumber] != null ? String(INB_GOT[item.rowNumber]) : qtyNum)}</b>
+            <span class="ry-in-unit${(item.unit || '개') === '박스' ? ' box' : ''}">${(item.unit || '개') === '박스' ? RYI.package : ''}${escapeHtml(item.unit || '개')}</span></span>
             ${INB_GOT[item.rowNumber] != null ? `<span class="ry-got-was">주문 ${escapeHtml(qtyNum)}</span>` : ''}
           </button>
         </div>
