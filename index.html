@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvpwconz">
+  <meta name="ry-build" content="mvpz4z06">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -14957,7 +14957,7 @@ video {
     }
     function s15Span(a, b) { return /^\d{4}-\d{2}-\d{2}$/.test(a || '') && /^\d{4}-\d{2}-\d{2}$/.test(b || '') && a <= b ? Math.round((Date.parse(b) - Date.parse(a)) / 864e5) + 1 : 0; }
     function s15Yday() { var d = new Date(); d.setDate(d.getDate() - 1); return sdLocalDate(d); }
-    function s15DayMode() { try { return localStorage.getItem('ry_s15_day') === '1'; } catch (e) { return false; } }
+    function s15DayMode() { return true; }   // 1027 기기마다 따로 켜지던 것(PC 는 옛 15일 문구) → 매일 하루치가 기본
     function s15SetYesterday() { var f = document.getElementById('s15From'), t = document.getElementById('s15To'); if (f && t) { f.value = t.value = s15Yday(); } }
     /* 올린 엑셀(하루치 · 며칠치 · 15일치)을 날짜별로 쌓고 → 최근 15일이 다 차면 그 15일로 원래 15일 계산을 전부 (맞추기·AI·새 상품 등록 → 확인할 게 없으면 자동 저장) */
     function s15SaveDays(list, links, fromV, toV, nDays) {
@@ -16145,7 +16145,7 @@ video {
           ['brief', RYI.clipboard, '뷰티 브리핑 모아보기', '날짜별 목록', '아침 뷰티 브리핑(첫 화면 카드는 10~23시엔 숨김)'],
           ['edu', RYI.bulb, '교육 자료실', '제품 공부', '브랜드 교육 슬라이드 · 손님 고민으로 찾기'],
           ['setduty', RYI.cal, '세트 담당 주간표', k.setduty, '오전·오후 세트 담당, 반차도 포함'],
-          ['roster', RYI.cal, '근무표', '새 창', '약국 근무표 보기']].concat(s15 && !s15.hidden ? [['s15', RYI.clipboard, '15일 판매량 엑셀', '마지막 ' + (((s15.querySelector('small') || {}).textContent || '').replace('판매량 통계 엑셀로 한 번에', '').trim() || '올리기'), 'POS 15일 판매량을 한 번에 넣기(문준)']] : [])],
+          ['roster', RYI.cal, '근무표', '새 창', '약국 근무표 보기']].concat(isAdmin ? [['s15', RYI.clipboard, '15일 판매량 엑셀', '마지막 ' + (((s15.querySelector('small') || {}).textContent || '').replace('판매량 통계 엑셀로 한 번에', '').trim() || '올리기'), 'POS 15일 판매량을 한 번에 넣기(문준)']] : [])],
         ['상품 정리', [
           ['sets', RYI.package, '세트 상품 · 박스 재고', '세트 목록 · 아크릴박스', '세트 구성과 아크릴박스 재고'],
           ['catbrowse', RYI.package, '카테고리별 보기', '어린이 전체 · 분류 고치기', "분류가 비었거나 '기타'인 상품 바로잡기"],
@@ -16180,14 +16180,13 @@ video {
       var scr = document.getElementById('scrEntry'), scrN = parseInt((document.getElementById('scrCnt') || {}).textContent || '', 10) || 0, s15 = document.getElementById('s15Entry');
       var sc = (cachedStockCheckItems || []).length, rg = (typeof rfGroups === 'function' && RF.data) ? rfGroups() : null, rNow = rg ? rg.now.length : 0;
       var stN = (typeof ST !== 'undefined' && ST.data && ST.data.items) ? ST.data.items.filter(function (x) { return x.status !== '처리 중'; }).length : 0;
-      var tmb = document.getElementById('toolMoreBtn'), s15due = !!(tmb && tmb.classList.contains('s15-due'));
-      var s15last = s15 ? ((((s15.querySelector('small') || {}).textContent || '').match(/\d+\/\d+~\d+\/\d+/) || [''])[0]) : '';
+      var s15I = isAdmin && typeof S15 !== 'undefined' && S15.info, s15due = !!(s15I && s15I.to && s15I.to < s15Yday());   // 1027 옛 더보기 버튼(이제 없음)의 점 대신 바로 계산
       var t = typeof sdToday === 'function' ? sdToday() : null, am = t ? [t.am.cn, t.am.jp].filter(Boolean) : [];
       var T = [
         { k: 'missed', g: 0, ic: RYI.bellring, n: '놓친 주문', v: '잘 팔리는데 안 시킨 것', kw: '재고 떨어짐 판매 품절 위험 마지막 입고' },
         { k: 'reorder', g: 0, ic: RYI.rotate, n: '다시 시킬 때', v: rg ? (rNow ? '지금 ' + rNow + '개' : (rg.week.length ? '이번 주 ' + rg.week.length + '개' : '지금은 없음')) : '재주문 후보', cnt: rNow, act: rg && rg.week.length ? '이번 주 ' + rg.week.length + '개 더' : '주기상 지금 시킬 것', pri: 2, kw: '재주문 후보 주기 입고 완료' },
         { k: 'stockCheck', g: 0, ic: RYI.listcheck, n: '재고 확인 요청', v: sc ? '오늘 ' + sc + '개' : '오늘 없음', cnt: sc, act: '물류관리자가 돌려보냄 · 오늘', pri: 1, kw: '취소분 재고있음 반려 확인' }
-      ].concat(isAdmin && s15 && !s15.hidden ? [{ k: 's15', g: 0, ic: RYI.bars, n: '15일 판매량 엑셀', v: (function () { var nx = typeof S15 !== 'undefined' && S15.info && s15Next(S15.info.to); return (s15last ? s15last + ' 올림' : '') + (nx ? (s15last ? ' · ' : '') + '다음 ' + nx.label + (nx.due ? ' 지금 올릴 차례' : ' · ' + nx.when + ' 올리기') : (s15last ? '' : '올리기')); })(),   /* 1019 MJ: 다음에 올릴 기간도 */ cnt: s15due ? 1 : 0, act: '올릴 날이에요', due: true, pri: 0, kw: 'POS 판매량 15일 업로드' }] : [])
+      ].concat(isAdmin ? [{ k: 's15', g: 0, ic: RYI.bars, n: '15일 판매량 엑셀', v: s15I && s15I.to ? '~' + s15Md(s15I.to) + ' 올림 · ' + (s15due ? '어제 하루치 올릴 차례' : '다 올렸어요') : '매일 아침 어제 하루치',   /* 1027 MJ 'PC 주문 챙기기에 그 탭이 없어' — s15Entry 가 숨김으로 남으면 빠지던 것 → isAdmin 만 보고 · 문구도 하루치 방식 */ cnt: s15due ? 1 : 0, act: '어제 하루치 올릴 차례', due: true, pri: 0, kw: 'POS 판매량 15일 업로드' }] : [])
       .concat([
         { k: 'stale', g: 1, ic: RYI.package, n: '창고 정리', v: stN ? '후보 ' + stN + '개' : '오래 안 시킨 것', cnt: stN, act: '오래 안 시킨 상품', pri: 4, kw: '재고 정리 할인 반품 폐기 소진 판매종료' },
         { k: 'loc', g: 1, ic: typeof LOC_I !== 'undefined' ? LOC_I.pin : RYI.package, n: '창고 위치 넣기', v: typeof LOC !== 'undefined' && Object.keys(LOC.map).length ? Object.keys(LOC.map).length + '개 넣음 · 구역-선반-칸' : '구역-선반-칸 (예: A-03-2)', kw: '창고 위치 선반 구역 칸 자리 진열 로케이션 찾기' },
