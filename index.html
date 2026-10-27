@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvq5cgit">
+  <meta name="ry-build" content="mvq5miru">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -11838,8 +11838,47 @@ video {
       var me = currentSelectedMember || '', ok = function () { DUTY_OK[me] = Date.now(); go(); };
       if (DUTY_OK[me] && Date.now() - DUTY_OK[me] < 300000) return go();
       if (typeof google === 'undefined' || !google.script || typeof google.script.run.inboundDutyCheck !== 'function') return ok();
-      google.script.run.withSuccessHandler(function (r) { if (r && r.success === false && r.message) { alert('⛔ ' + r.message); return; } ok(); }).withFailureHandler(ok).inboundDutyCheck(me);
+      google.script.run.withSuccessHandler(function (r) { if (r && r.success === false && r.message) { if (confirm('⛔ ' + r.message + '\n\n일찍 와서 근무 중이거나 근무 시간이 바뀌었으면 관리자에게 요청할 수 있어요.\n[확인] = 관리자에게 요청 보내기 (승인되면 오늘 하루 입고 가능)')) dutyAsk(); return; } ok(); }).withFailureHandler(ok).inboundDutyCheck(me);
     }
+    /* 1027 MJ '근무 시간이 아닌데 일찍 와서 근무할 때 관리자에게 요청하면 입고까지 모든 기능 · 근무 시간이 갑자기 바뀐 날도' — 서버 requestDutyOverride → 문준 카톡 + 관리자 앱 위 카드 [승인]
+       보낸 뒤 30초마다 승인됐는지 보고(30분까지) 승인되면 알림 */
+    var DUTY_ASK = { me: '', n: 0, t: 0 };
+    function dutyAsk() {
+      var me = currentSelectedMember || ''; if (!me || typeof google === 'undefined' || !google.script) return;
+      google.script.run.withSuccessHandler(function (r) {
+        if (!r || r.success === false) { alert((r && r.message) || '요청을 못 보냈어요 · 잠시 뒤 다시'); return; }
+        if (r.ok) { DUTY_OK[me] = Date.now(); showToast('지금은 근무 시간이라 바로 돼요 · 한 번 더 눌러 주세요', 3500); return; }
+        showToast('🙋 관리자에게 요청을 보냈어요 · 승인되면 바로 입고할 수 있어요', 4500);
+        DUTY_ASK.me = me; DUTY_ASK.n = 0; clearTimeout(DUTY_ASK.t); DUTY_ASK.t = setTimeout(dutyAskPoll, 30000);
+      }).withFailureHandler(function () { alert('요청을 못 보냈어요 · 인터넷 확인 후 다시'); }).requestDutyOverride(me);
+    }
+    function dutyAskPoll() {
+      var me = DUTY_ASK.me; if (!me || me !== currentSelectedMember || ++DUTY_ASK.n > 60) return;
+      google.script.run.withSuccessHandler(function (r) { if (r && r.success) { DUTY_OK[me] = Date.now(); alert('✅ 관리자가 근무 요청을 승인했어요\n\n오늘은 ' + me + ' 이름으로 입고할 수 있어요.'); return; } DUTY_ASK.t = setTimeout(dutyAskPoll, 30000); }).withFailureHandler(function () { DUTY_ASK.t = setTimeout(dutyAskPoll, 30000); }).inboundDutyCheck(me);
+    }
+    /* 관리자(문준·물류관리자) 화면 위 카드: 오늘 들어온 근무 요청 [승인]/[거절] · 1분마다 + 화면에 돌아올 때 */
+    function dtAdm() { var m = String(currentSelectedMember || '').trim(); return m === '문준' || m === '물류관리자'; }
+    function dtPop() {
+      var host = document.getElementById('ryTopPops'), el = document.getElementById('dtPop');
+      if (!host || !dtAdm() || document.hidden || typeof google === 'undefined' || !google.script) { if (el && !dtAdm()) el.hidden = true; return; }
+      google.script.run.withSuccessHandler(function (r) {
+        var w = (r && r.list || []).filter(function (x) { return x.st === 'wait'; })[0];
+        el = document.getElementById('dtPop');
+        if (!w || !dtAdm()) { if (el) el.hidden = true; return; }
+        if (!el) { el = document.createElement('div'); el.id = 'dtPop'; el.setAttribute('role', 'status'); host.appendChild(el); }
+        var q = JSON.stringify(w.name).replace(/"/g, '&quot;');
+        el.innerHTML = '<div class="tp-txt"><b class="t">🙋 ' + escapeHtml(w.name) + ' 님 근무 요청 · ' + escapeHtml(w.at) + '</b><p>근무표 시간이 아닌데 지금 근무 중이래요 · 승인하면 오늘 하루 입고까지 돼요</p></div>'
+          + '<button type="button" class="tp-go" onclick="dtDecide(' + q + ', true)">승인</button><button type="button" class="tp-go tp-no" onclick="dtDecide(' + q + ', false)">거절</button>';
+        el.hidden = false;
+      }).withFailureHandler(function () {}).dutyRequests(currentSelectedMember);
+    }
+    function dtDecide(name, ok) {
+      var el = document.getElementById('dtPop'); if (el) el.querySelectorAll('button').forEach(function (b) { b.disabled = true; });
+      google.script.run.withSuccessHandler(function (r) { if (!r || r.success === false) { alert((r && r.message) || '저장하지 못했어요'); } else showToast(ok ? '✅ ' + name + ' 님 오늘 근무 승인 · 입고할 수 있어요' : name + ' 님 요청을 거절했어요', 3500); dtPop(); })
+        .withFailureHandler(function () { alert('저장하지 못했어요 · 다시 눌러 주세요'); dtPop(); }).decideDutyRequest(currentSelectedMember, name, ok);
+    }
+    setInterval(dtPop, 60000); setTimeout(dtPop, 6000);
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') dtPop(); });
     /* 1023 MJ '근무 안 하는 이름이 골라져 있으면 이름 확인해 달라고 알림' — 이름 고를 때 · 앱 열 때 · 다시 켤 때(20분에 한 번) */
     var DUTY_WARN_AT = 0;
     function dutyWarn(force) {
@@ -11847,7 +11886,7 @@ video {
       var at = lw.split('|')[0] === me ? +lw.split('|')[1] || 0 : 0; if (Date.now() - Math.max(at, force ? 0 : DUTY_WARN_AT) < 1200000) return;   // 1027 MJ '근무시간이 아니에요가 2~3번 떠' — 같은 이름은 새로고침·이름 다시 고르기 해도 20분에 한 번만
       DUTY_WARN_AT = Date.now(); try { localStorage.setItem('ry_dw', me + '|' + DUTY_WARN_AT); } catch (eW) {}
       if (typeof google === 'undefined' || !google.script || typeof google.script.run.inboundDutyCheck !== 'function') return;
-      google.script.run.withSuccessHandler(function (r) { if (r && r.success === false && r.message && me === currentSelectedMember) alert('⚠️ 지금 근무 중인 이름이 아닌 것 같아요\n\n골라진 이름: ' + me + '\n내 이름이 맞는지 확인해 주세요.\n(근무 중이 아닌 이름으로는 입고가 안 돼요 · 오른쪽 위 이름을 눌러 바꿀 수 있어요)'); else if (r && r.success) DUTY_OK[me] = Date.now(); }).withFailureHandler(function () {}).inboundDutyCheck(me);
+      google.script.run.withSuccessHandler(function (r) { if (r && r.success === false && r.message && me === currentSelectedMember) alert('⚠️ 지금 근무 중인 이름이 아닌 것 같아요\n\n골라진 이름: ' + me + '\n내 이름이 맞는지 확인해 주세요.\n(근무 중이 아닌 이름으로는 입고가 안 돼요 · 오른쪽 위 이름을 눌러 바꿀 수 있어요)\n\n일찍 와서 근무 중이면: 입고할 때 [관리자에게 요청]을 보내면 돼요.'); else if (r && r.success) DUTY_OK[me] = Date.now(); }).withFailureHandler(function () {}).inboundDutyCheck(me);
     }
     document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') dutyWarn(false); });
     function completeInbound(rowNumber, quiet, cb) {
@@ -19430,6 +19469,7 @@ html body [lang=ja],html body [lang=zh]{word-break:normal!important;line-break:s
 #rlSheet .rl-save{background:#155EEF;color:#fff}
 #rlSheet .rl-save:disabled{opacity:.5}
 #rlSheet .rl-archb{margin-top:10px;width:100%;min-height:44px;border-radius:14px!important;border:1px solid #E4E7EC;background:#fff;color:#475467;font-size:14px;font-weight:700}
+#dtPop{border-color:#B2CCFF!important}#dtPop .tp-txt{flex:1;min-width:0}#dtPop .tp-txt p{margin:2px 0 0;font-size:12.5px;color:#475467;line-height:1.4}#dtPop .tp-no{background:#F2F4F7!important;color:#344054!important}
 #ryTopPops{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translateX(-50%);z-index:67;width:min(420px,calc(100% - 32px));display:flex;flex-direction:column;gap:8px;pointer-events:none}
 #ntPop[hidden]{display:none!important}
 #rjPop[hidden]{display:none!important}
@@ -19439,7 +19479,7 @@ html body [lang=ja],html body [lang=zh]{word-break:normal!important;line-break:s
 #ryTopPops.force>#ntPop,#ryTopPops.force>#rlPop,#ryTopPops.force>#eduPop,#ryTopPops.force>#tutPop,#ryTopPops.force>#rjPop{flex-wrap:wrap;padding:18px!important}
 #ryTopPops.force #ntPop .tp-x,#ryTopPops.force #rlPop .tp-x,#ryTopPops.force #eduPop .tp-x,#ryTopPops.force #tutPop .tp-x,#ryTopPops.force #rjPop .tp-x{display:none!important}
 #ryTopPops.force .tp-go{flex:1 0 100%;min-height:46px;font-size:16px}
-#rlPop,#ntPop,#eduPop,#rjPop,#bxPop,#bxDutyPop,#tutPop{pointer-events:auto;background:#fff;border:1px solid #FECDCA;border-radius:18px!important;box-shadow:0 12px 32px rgba(16,24,40,.18)!important;padding:14px 16px}
+#rlPop,#ntPop,#eduPop,#rjPop,#bxPop,#bxDutyPop,#tutPop,#dtPop{pointer-events:auto;background:#fff;border:1px solid #FECDCA;border-radius:18px!important;box-shadow:0 12px 32px rgba(16,24,40,.18)!important;padding:14px 16px}
 #rlPop b.t,#ntPop b.t{display:block;font-weight:700!important;font-size:15px;color:#101828;margin-bottom:4px}
 #rlPop p,#ntPop p{margin:0;font-size:13.5px;color:#475467;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #rlPop .rl-pb,#ntPop .rl-pb{display:flex;gap:8px;margin-top:10px}
@@ -19455,8 +19495,8 @@ html body [lang=ja],html body [lang=zh]{word-break:normal!important;line-break:s
 .nt-pill .mb-dot{flex:none}
 @media(max-width:767px){.nt-pill{padding:0 10px;min-height:36px;gap:5px}.nt-pill-t{display:none}}
 @media(max-width:440px){.nt-pill b{display:none}.nt-pill .ry-i{width:18px;height:18px}}
-#rlPop,#ntPop,#eduPop,#rjPop,#bxPop,#bxDutyPop,#tutPop{display:flex!important;align-items:center;gap:10px;padding:8px 8px 8px 14px!important;border-radius:16px!important}
-#rlPop[hidden],#ntPop[hidden],#eduPop[hidden],#rjPop[hidden],#bxPop[hidden],#bxDutyPop[hidden],#tutPop[hidden]{display:none!important}
+#rlPop,#ntPop,#eduPop,#rjPop,#bxPop,#bxDutyPop,#tutPop,#dtPop{display:flex!important;align-items:center;gap:10px;padding:8px 8px 8px 14px!important;border-radius:16px!important}
+#rlPop[hidden],#ntPop[hidden],#eduPop[hidden],#rjPop[hidden],#bxPop[hidden],#bxDutyPop[hidden],#tutPop[hidden],#dtPop[hidden]{display:none!important}
 #bxPop{border-color:#FEC84B!important}
 #bxDutyPop,
 #tutPop{border-color:#B2CCFF!important}
