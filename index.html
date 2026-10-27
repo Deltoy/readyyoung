@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvq1oprl">
+  <meta name="ry-build" content="mvq1t89w">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -13810,6 +13810,7 @@ video {
       /* 1027 MJ 'PC에서 스크롤만 되고 아무것도 안 눌려' — 그동안 누른 게 하나도 안 남음(앱은 살아 있었음) = 클릭이 앱에 안 옴 → 다른 창·틀이 가져갔는지 남김 */
       window.addEventListener('blur', function () { var a = document.activeElement; add('blur', a && a.tagName === 'IFRAME' ? 'iframe ' + String(a.src || a.id || '').slice(0, 40) : 'out'); });
       window.addEventListener('focus', function () { add('focus', ''); });
+      try { new PerformanceObserver(function (l) { l.getEntries().forEach(function (e) { if (e.duration > 700) add('jank', '', Math.round(e.duration)); }); }).observe({ type: 'longtask' }); } catch (e) {}   // 앱이 0.7초 넘게 손 놓은 순간 (ms 칸 = 걸린 시간)
       try { var t0 = window.showToast; if (typeof t0 === 'function') window.showToast = function (m) { try { add('toast', String(m || '').slice(0, 40)); } catch (e) {} return t0.apply(this, arguments); }; } catch (e) {}
       try { var a0 = window.alert; window.alert = function (m) { try { add('alert', String(m || '').slice(0, 50)); } catch (e) {} return a0.apply(window, arguments); }; } catch (e) {}
       add('open', location.pathname.slice(-20), Math.round(performance.now()));
