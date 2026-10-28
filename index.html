@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvrlcnch">
+  <meta name="ry-build" content="mvroi24m">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -12368,6 +12368,7 @@ video {
               l.qtyOk = oq5 > 0 && Number(l.appQty != null ? l.appQty : l.qty) === oq5; has = live[l.row]; dup = false; seenRow[l.row] = 1;
             }
           }
+          if (l.row && !l.bundle && (l.unit || '개') === '개' && Number(l.appQty) > 0 && Number(l.appQty) < Number(l.qty)) { var oqF = parseFloat(String(l.orderQty || '').replace(/[^0-9.]/g, '')) || 0; l.appQty = Number(l.qty); l.qtyOk = oqF > 0 && l.appQty === oqF; }   // 1028 MJ '명세서 50 → 낱개 5?' — 낱개(개) 단위 상품은 명세서보다 적게 바꾸지 않음 (이미 읽은 명세서도 다시 그릴 때 바로잡힘)
           if (!has && !l.doneName && l.catName && !l.userPick && !l.doneSkip) { var hd = invDoneByLog(l, r.date); if (hd) { l.doneName = l.catName; l.doneDate = String(hd.inboundDate).slice(0, 10); l.doneQty = hd.targetQty + (hd.unit || '개'); } }   // 1023
           if (!has) tag = l.doneName ? '<span class="inv-tag inv-ok">✓ 이미 입고완료 · ' + escapeHtml(l.doneDate + ' · ' + l.doneQty) + '</span>'
             : l.newItem ? '<span class="inv-tag inv-no">🆕 새 상품으로 등록해요 · ' + escapeHtml(l.clean || l.name) + '</span><div class="inv-ph">' + (l.photo ? '<img src="' + l.photo + '" alt="찍은 상품 사진" onclick="event.preventDefault(); invLinePhoto(' + j + ',' + i + ')">' : '') + '<button type="button" class="inv-alt" onclick="event.preventDefault(); invLinePhoto(' + j + ',' + i + ')">' + (l.photo ? '📷 다시 찍기' : '📷 상품 사진 찍기 (앱에 사진으로 들어가요)') + '</button></div><div class="inv-n">[입고확인]을 누르면 이 이름으로 새 상품 등록해요 <button type="button" class="inv-alt" style="margin:4px 0 0" onclick="event.preventDefault(); invRename(' + j + ',' + i + ')">✏️ 이름 고치기</button></div>'
