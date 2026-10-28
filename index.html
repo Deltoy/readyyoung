@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvruwurv">
+  <meta name="ry-build" content="mvs35s5p">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8021,6 +8021,10 @@ video {
       clearTimeout(_mdT);
       if (!MD.data || mdLocked(MD.data.date, MD.slot)) return;
       if (!currentSelectedMember || currentSelectedMember === '미선택') { checkMemberSelectedOrAlert(); return; }
+      if (!(DUTY_OK[currentSelectedMember] && Date.now() - DUTY_OK[currentSelectedMember] < 300000)) {   // 1028 MJ 세트 상품 입력도 근무 중인 사람만 (아니면 그때 알림)
+        if (Date.now() - (DUTY_NO[currentSelectedMember] || 0) < 60000) { var stD = document.getElementById('mdSt'); if (stD) { stD.className = 'md-st bad'; stD.textContent = '근무 시간이 아니라 저장 안 됐어요 · 관리자 승인 뒤 다시'; } return; }
+        dutyGate(mdSave); return;
+      }
       if (MD.saving) { MD.again = true; return; }   // 저장 중에 또 바꾸면 끝나고 한 번 더
       var list = (MD.list || []).filter(function (x) { return x.q > 0; }), date = MD.data.date, slot = MD.slot, key = JSON.stringify(list);
       if (MD.savedKey === date + slot + key) return;
@@ -9922,7 +9926,7 @@ video {
           currentSelectedMember = savedMyName.trim();
         }
       } catch(e) {}
-      setTimeout(function () { try { dutyWarn(true); } catch (eDw) {} }, 5000);   // 1023 앱 열 때 이름 확인
+      // 1028 MJ '근무 시간이 아닌 사람이 입고·세트 상품 입력을 시도할 때만 알림' → 앱 열 때 이름 확인(dutyWarn)은 끔
 
       updateProfileTextDisplay();
 
@@ -10065,7 +10069,7 @@ video {
       if (!ryAdminGate(name)) return;
       currentSelectedMember = name;
       var ob = document.getElementById('ryOnb'); if (ob) ob.remove();
-      try { dutyWarn(true); } catch (eDw) {}   // 1023
+      // 1028 이름 고를 때 dutyWarn 끔 (입고·세트 기록 때만 dutyGate)
       try {
         localStorage.setItem('s_selected_member', name);
       } catch(e) {}
@@ -11982,7 +11986,7 @@ video {
     }
 
     /* 1023 MJ '근무 안 하는 사람 이름으로는 입고 안 되게' — 서버 inboundDutyCheck (괜찮으면 5분 기억) · 서버의 입고 함수들도 한 번 더 막음 */
-    var DUTY_OK = {};
+    var DUTY_OK = {}, DUTY_NO = {};   // 1028 DUTY_NO = 막힌 시각 (세트 숫자를 바꿀 때마다 같은 창이 또 뜨지 않게 1분)
     /* 1027 MJ '최종 입고완료를 한 번 누르면 대답이 없어서 두세 번 눌러야 묻는 창이 떠' — 근무 확인이 서버까지 2~6초(표시 없음)였음
        → 확인 중엔 '확인 중' 표시 · 그 사이 더 누른 건 한 번으로 · 입고대기 탭을 열 때 미리 확인(go 없이) */
     var DUTY_Q = {};
@@ -11993,7 +11997,7 @@ video {
       if (go) showToast('근무 시간 확인 중이에요…', 2500);
       var q = DUTY_Q[me]; if (q) { if (go) q.go = go; return; }
       q = DUTY_Q[me] = { go: go };
-      var fin = function (r) { delete DUTY_Q[me]; if (r && r.success === false && r.message) { if (q.go && confirm('⛔ ' + r.message + '\n\n일찍 와서 근무 중이거나 근무 시간이 바뀌었으면 관리자에게 요청할 수 있어요.\n[확인] = 관리자에게 요청 보내기 (승인되면 오늘 하루 입고 가능)')) dutyAsk(); return; } DUTY_OK[me] = Date.now(); if (q.go) q.go(); };
+      var fin = function (r) { delete DUTY_Q[me]; if (r && r.success === false && r.message) { DUTY_NO[me] = Date.now(); if (q.go && confirm('⛔ ' + r.message + '\n\n일찍 와서 근무 중이거나 근무 시간이 바뀌었으면 관리자에게 요청할 수 있어요.\n[확인] = 관리자에게 요청 보내기 (승인되면 오늘 하루 입고 가능)')) dutyAsk(); return; } DUTY_OK[me] = Date.now(); if (q.go) q.go(); };
       google.script.run.withSuccessHandler(fin).withFailureHandler(function () { fin(null); }).inboundDutyCheck(me);
     }
     /* 1027 MJ '근무 시간이 아닌데 일찍 와서 근무할 때 관리자에게 요청하면 입고까지 모든 기능 · 근무 시간이 갑자기 바뀐 날도' — 서버 requestDutyOverride → 문준 카톡 + 관리자 앱 위 카드 [승인]
@@ -12117,7 +12121,7 @@ video {
       if (typeof google === 'undefined' || !google.script || typeof google.script.run.inboundDutyCheck !== 'function') return;
       google.script.run.withSuccessHandler(function (r) { if (r && r.success === false && r.message && me === currentSelectedMember) alert('⚠️ 지금 근무 중인 이름이 아닌 것 같아요\n\n골라진 이름: ' + me + '\n내 이름이 맞는지 확인해 주세요.\n(근무 중이 아닌 이름으로는 입고가 안 돼요 · 오른쪽 위 이름을 눌러 바꿀 수 있어요)\n\n일찍 와서 근무 중이면: 입고할 때 [관리자에게 요청]을 보내면 돼요.'); else if (r && r.success) DUTY_OK[me] = Date.now(); }).withFailureHandler(function () {}).inboundDutyCheck(me);
     }
-    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') dutyWarn(false); });
+    // 1028 다시 켤 때 dutyWarn 끔 (입고·세트 기록 때만 dutyGate)
     function completeInbound(rowNumber, quiet, cb) {
       if (!checkMemberSelectedOrAlert()) return;
       if (!quiet && !(DUTY_OK[currentSelectedMember || ''] && Date.now() - DUTY_OK[currentSelectedMember || ''] < 300000)) { dutyGate(function () { completeInbound(rowNumber, quiet, cb); }); return; }   // 1023
@@ -12159,11 +12163,19 @@ video {
           })
           .withFailureHandler(function(err) {
             var msg = String(err && err.message || err);
-            if (/fetch|network|time|시간|service|too many|너무 많|lock|잠금|일시|internal|오류가 발생/i.test(msg) && tries++ < 3) { setTimeout(send, 2500 * tries); return; }   // 1022 연속 입고 때 서버가 잠깐 바쁜 것도 자동으로 다시
-            inFlight.delete(key); inbNext();
-            if (cb) { cb(false, msg); return; }
-            alert('입고 처리 오류: ' + msg + '\n(새로고침 후 입고대기에 남아 있으면 다시 눌러 주세요)');
-            inbReload();
+            var fail = function () {
+              inFlight.delete(key); inbNext();
+              if (cb) { cb(false, msg); return; }
+              alert('입고 처리 오류: ' + msg + '\n(새로고침 후 입고대기에 남아 있으면 다시 눌러 주세요)');
+              inbReload();
+            };
+            if (!/fetch|network|load failed|time|시간|service|too many|너무 많|lock|잠금|일시|internal|오류가 발생/i.test(msg)) return fail();
+            // 1028 MJ 사용 분석 1번: 누르고 바로 앱을 나가면 응답만 끊김(실제론 저장됨) → 다시 보내기·오류창 전에 저장됐는지 먼저 확인 (다시 보내면 두 번 입고될 수 있음)
+            inbSavedCheck(rowNumber, _nm, satD, function () {
+              inFlight.delete(key); inbNext();
+              if (cb) { cb(true); return; }
+              showToast('저장됐어요 · 연결이 잠깐 끊겼지만 입고는 됐어요', 3000); inbReload();
+            }, function () { if (tries++ < 3) setTimeout(send, 2500 * tries); else fail(); });   // 1022 연속 입고 때 서버가 잠깐 바쁜 것도 자동으로 다시
           })
           [_got != null ? 'partialInbound' : 'markInboundComplete'](...(_got != null ? [rowNumber, _nm, _got.q, currentSelectedMember, satD, _got.u] : [rowNumber, currentSelectedMember, satD, _nm]));
       };
@@ -12172,6 +12184,18 @@ video {
     /* 1022 MJ '입고를 연속으로 하면 에러' — 빠르게 여러 개 눌러도 서버엔 하나씩 차례로, 다 끝나고 한 번만 새로고침 (전엔 누를 때마다 동시에 보내고 매번 전체 새로고침) */
     var INB_Q = [], INB_BUSY = false, INB_RT = null;
     function inbNext() { var f = INB_Q.shift(); INB_BUSY = !!f; if (f) f(); }
+    /* 1028 그 줄이 이미 입고됐는지 서버에 물어봄 (앱이 뒤로 가 있으면 다시 보일 때까지 기다렸다가 · 15초 안에 답 없으면 안 된 걸로) */
+    function inbSavedCheck(row, nm, satD, yes, no) {
+      var go = function () {
+        var done = false, t = setTimeout(function () { if (!done) { done = true; no(); } }, 15000);
+        if (typeof google === 'undefined' || !google.script || typeof google.script.run.inboundSavedCheck !== 'function') { done = true; clearTimeout(t); return no(); }
+        google.script.run.withSuccessHandler(function (r) { if (done) return; done = true; clearTimeout(t); (r && r.saved ? yes : no)(); })
+          .withFailureHandler(function () { if (done) return; done = true; clearTimeout(t); no(); }).inboundSavedCheck(row, nm || '', satD || '');
+      };
+      if (!document.hidden) return go();
+      var h = function () { if (document.hidden) return; document.removeEventListener('visibilitychange', h); setTimeout(go, 800); };
+      document.addEventListener('visibilitychange', h);
+    }
     function inbReload() { clearTimeout(INB_RT); INB_RT = setTimeout(function () { if (INB_BUSY || INB_Q.length) return inbReload(); loadAllData(true, true, true); }, 1500); }
 
     /* 1020 MJ '명세서를 찍어 올리면 입고대기에 있는 상품을 찾아서 입고시키고 수량이 맞는지도 체크': AI 가 읽고 짝지은 결과를 보여주고, 고른 것만 입고완료. 단가는 서버가 문준에게만 보냄 */
@@ -14075,7 +14099,7 @@ video {
       };
       document.addEventListener('click', function (e) {
         var el = e.target && e.target.closest && e.target.closest('button, a, [onclick], [role="button"], label.np-save, input[type="checkbox"], input[type="radio"], select, summary');
-        if (el) add('tap', lab(el));
+        if (el) add('tap', el === document.body ? 'bg:' + String(e.target.id || (typeof e.target.className === 'string' && e.target.className.split(' ')[0]) || e.target.tagName || '').slice(0, 28) : lab(el));   // 1028 사용 분석 4번: 버튼이 아닌 곳을 누르면 전엔 'closeDropdownIfOutside'(body)만 남아 어디를 눌렀는지 몰랐음 → 누른 요소
       }, true);
       document.addEventListener('change', function (e) { var el = e.target; if (el && el.matches && el.matches('input[type="file"]')) add('file', el.closest('[id]') ? el.closest('[id]').id : 'file'); }, true);
       window.addEventListener('error', function (e) { add('err', String(e.message || '').slice(0, 60)); });
@@ -14083,14 +14107,18 @@ video {
       /* 1027 MJ 'PC에서 스크롤만 되고 아무것도 안 눌려' — 그동안 누른 게 하나도 안 남음(앱은 살아 있었음) = 클릭이 앱에 안 옴 → 다른 창·틀이 가져갔는지 남김 */
       window.addEventListener('blur', function () { var a = document.activeElement; add('blur', a && a.tagName === 'IFRAME' ? 'iframe ' + String(a.src || a.id || '').slice(0, 40) : 'out'); });
       window.addEventListener('focus', function () { add('focus', ''); });
-      try { new PerformanceObserver(function (l) { l.getEntries().forEach(function (e) { if (e.duration > 700) add('jank', '', Math.round(e.duration)); }); }).observe({ type: 'longtask' }); } catch (e) {}   // 앱이 0.7초 넘게 손 놓은 순간 (ms 칸 = 걸린 시간)
+      var DLG = [];   // 1028 사용 분석 2번: '멈춤'으로 찍힌 건 대부분 확인창(confirm·prompt·alert)을 읽던 시간이었음(현주 15.5초 = 명세서 입고 확인창) → 창이 떠 있던 구간은 jank 에서 뺌
+      var inDlg = function (e) { return DLG.some(function (d) { return d[0] < e.startTime + e.duration && d[1] > e.startTime; }); };
+      try { new PerformanceObserver(function (l) { l.getEntries().forEach(function (e) { if (e.duration > 700 && !inDlg(e)) add('jank', '', Math.round(e.duration)); }); }).observe({ type: 'longtask' }); } catch (e) {}   // 앱이 0.7초 넘게 손 놓은 순간 (ms 칸 = 걸린 시간)
       try { var t0 = window.showToast; if (typeof t0 === 'function') window.showToast = function (m) { try { add('toast', String(m || '').slice(0, 40)); } catch (e) {} return t0.apply(this, arguments); }; } catch (e) {}
-      try { var a0 = window.alert; window.alert = function (m) { try { add('alert', String(m || '').slice(0, 50)); } catch (e) {} return a0.apply(window, arguments); }; } catch (e) {}
+      try { var a0 = window.alert; window.alert = function (m) { try { add('alert', String(m || '').slice(0, 50)); } catch (e) {} var t = performance.now(); try { return a0.apply(window, arguments); } finally { DLG.push([t, performance.now()]); if (DLG.length > 30) DLG.shift(); } }; } catch (e) {}
+      ['confirm', 'prompt'].forEach(function (k) { try { var f0 = window[k]; window[k] = function () { var t = performance.now(); try { return f0.apply(window, arguments); } finally { DLG.push([t, performance.now()]); if (DLG.length > 30) DLG.shift(); } }; } catch (e) {} });
       add('open', location.pathname.slice(-20), Math.round(performance.now()));
+      var sendingUntil = 0;   // 1028 사용 분석: 1분 전송과 앱 나갈 때 전송이 겹쳐 같은 묶음이 두 번 저장(17%)되고, 겹친 뒤엔 안 보낸 기록이 잘려 나갔음 → 한 번에 하나만 (응답이 안 오면 30초 뒤 다시)
       var flush = function () {
-        if (!Q.length || typeof google === 'undefined' || !google.script || !currentSelectedMember) return;
-        var b = Q.slice(0, 300);
-        google.script.run.withSuccessHandler(function (r) { if (r && r.success) { Q = Q.slice(b.length); try { localStorage.setItem(LS, JSON.stringify(Q)); } catch (e) {} } }).withFailureHandler(function () {}).logUsage(b, currentSelectedMember, dev());
+        if (Date.now() < sendingUntil || !Q.length || typeof google === 'undefined' || !google.script || !currentSelectedMember) return;
+        var b = Q.slice(0, 300); sendingUntil = Date.now() + 30000;
+        google.script.run.withSuccessHandler(function (r) { sendingUntil = 0; if (r && r.success) { Q = Q.filter(function (x) { return b.indexOf(x) < 0; }); try { localStorage.setItem(LS, JSON.stringify(Q)); } catch (e) {} } }).withFailureHandler(function () { sendingUntil = 0; }).logUsage(b, currentSelectedMember, dev());
       };
       setInterval(flush, 60000);
       document.addEventListener('visibilitychange', function () { add(document.hidden ? 'hide' : 'show', ''); if (document.hidden) flush(); });
