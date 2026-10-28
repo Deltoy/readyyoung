@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvroi24m">
+  <meta name="ry-build" content="mvruwurv">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -2046,6 +2046,8 @@ html body:not(#_):not(#_) .ry-in-num,html body:not(#_):not(#_) .sp-qty b,html bo
 /* 누름 반응 · 포커스 */
 html body:not(#_):not(#_) button{transition:transform .12s ease,background-color .12s ease,opacity .12s ease}
 html body:not(#_):not(#_) button:active{transform:scale(.95)!important}
+/* 1028 MJ '입고완료 검색 지우기가 잘 안 눌려': 위 누름 효과가 세로 가운데 맞춤(-50%)을 지워 버튼이 22px 내려가며 손가락이 검색창을 누름 → 가운데 맞춤 유지 */
+html body:not(#_):not(#_) button.-translate-y-1\/2:active{transform:translateY(-50%) scale(.95)!important}
 html body:not(#_):not(#_) button:focus-visible,html body:not(#_):not(#_) input:focus-visible,html body:not(#_):not(#_) select:focus-visible,html body:not(#_):not(#_) textarea:focus-visible,html body:not(#_):not(#_) summary:focus-visible{outline:2px solid var(--ap-focus)!important;outline-offset:2px!important}
 html body:not(#_):not(#_) input:focus,html body:not(#_):not(#_) select:focus,html body:not(#_):not(#_) textarea:focus{border-color:var(--ap-focus)!important;--tw-ring-color:transparent!important}
 @media(prefers-reduced-motion:reduce){html body:not(#_):not(#_) button{transition:none}html body:not(#_):not(#_) button:active{transform:none!important}}
@@ -4736,6 +4738,10 @@ video {
 }
 .border-collapse {
   border-collapse: collapse;
+}
+.-translate-y-1 {
+  --tw-translate-y: -0.25rem;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 .-translate-y-1\/2 {
   --tw-translate-y: -50%;
