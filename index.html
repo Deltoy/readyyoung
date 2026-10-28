@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvrja3gq">
+  <meta name="ry-build" content="mvrlcnch">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8275,7 +8275,7 @@ video {
         + (rows.length ? '<table class="sp-bp-t"><thead><tr><th>박스</th><th>상태</th><th>남은 개수</th><th>한 달 사용</th><th>들어가는 세트</th></tr></thead><tbody>' + rows.map(function (r) {
             var st = BX_ST[r.status] || BX_ST.unknown, ss = setsOf[r.box] || [];
             var stTxt = r.status === 'unknown' ? st[0] + ' ' + st[1] : r.status === 'nodata' ? st[0] + ' 사용량 모름<small>세트에 박스 번호 필요</small>' : st[0] + ' ' + (r.days == null ? '판매 기록 없음' : r.days + '일 버팀') + (r.order ? '<small>' + st[1] + ' · ' + r.order + '개</small>' : '');
-            return '<tr class="bx-' + r.status + '"><td><b>' + escapeHtml(bxName(r.box)) + '</b></td><td>' + stTxt + '</td><td>' + (r.left != null ? '<b>' + r.left + '</b>개<small>' + (r.counted !== r.left ? '센 개수 ' + r.counted + ' · ' : '') + escapeHtml(String(r.at || '').slice(5).replace('-', '/')) + '</small>' : '–') + '</td><td>' + (r.month ? r.month + '개' : '–') + '</td><td>'
+            return '<tr class="bx-' + r.status + '"><td><b>' + escapeHtml(bxName(r.box)) + '</b></td><td>' + stTxt + '</td><td>' + (r.left != null ? '<b>' + r.left + '</b>개<small>' + (r.counted !== r.left ? '센 ' + r.counted + (r.used ? ' − 만든 세트 ' + r.used : '') + (r.inbAfter ? ' + 입고 ' + r.inbAfter : '') + (r.minusAfter ? ' − 뺀 ' + r.minusAfter : '') + ' · ' : '') + escapeHtml(String(r.at || '').slice(5).replace('-', '/')) + '</small>' : '–') + '</td><td>' + (r.month ? r.month + '개' : '–') + '</td><td>'
               + ss.map(function (s) { return '<button type="button" data-id="' + escapeHtml(s.id) + '" onclick="spOpenSet(this.dataset.id)">' + escapeHtml(s.name) + (s.s15 !== '' && s.s15 != null ? ' <i>' + s.s15 + '</i>' : '') + '</button>'; }).join('') + (!ss.length ? '<small>이 박스를 쓰는 세트가 아직 없어요</small>' : '') + '</td></tr>';
           }).join('') + '</tbody></table>' : '')
         + (none.length ? '<div class="sp-bp-none"><b>박스 번호가 없는 세트</b> · 누르고 [세트 고치기]에서 박스 번호를 넣어 주세요<div>' + none.map(function (s) { return '<button type="button" data-id="' + escapeHtml(s.id) + '" onclick="spOpenSet(this.dataset.id)">' + escapeHtml(s.name) + '</button>'; }).join('') + '</div></div>' : '')
