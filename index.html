@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvrgz9j1">
+  <meta name="ry-build" content="mvrja3gq">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -13439,7 +13439,7 @@ video {
       return alts;
     }
     /* 1015 MJ '다이어트 치면 다이어트 제품 다': 이름·분류 + 용도 태그(다이어트 등)까지 찾는다 */
-    function ryKeyOf(it) { var k = String(it._k || ''); if (/[a-z]{2}/.test(k)) k += '|' + k.replace(/[a-z]{2,}/g, function (w) { return w.replace(/[a-z]/g, function (c) { return RY_ABC[c]; }); });   /* 1020 MJ: 반대로 '이엘티'로 쳐도 영어 이름 'ELT …' 상품이 나오게 */ return it.uses && it.uses.length ? k + '|' + it.uses.join(',').replace(/\s+/g, '').toLowerCase() : k; }
+    function ryKeyOf(it) { var k = String(it._k || ''); if (/[a-z]/.test(k)) k += '|' + k.replace(/[a-z]+/g, function (w) { return w.replace(/[a-z]/g, function (c) { return RY_ABC[c]; }); });   /* 1020 MJ: 반대로 '이엘티'로 쳐도 영어 이름 'ELT …' 상품이 나오게 · 1028 MJ '디판테놀로 검색해도' — 한 글자도 (D판테놀 → 디판테놀, 비타민D → 비타민디) */ return it.uses && it.uses.length ? k + '|' + it.uses.join(',').replace(/\s+/g, '').toLowerCase() : k; }
     /* 1016 MJ: 검색 결과 — 주문(입고) 많이 한 상품이 위, 판매종료·취급안함은 모아서 맨 아래. 같으면 15일 판매 많은 순, 그다음 원래 순서 */
     function rySortSR(list) {
       var nk = function (x) { return String(x || '').replace(/\s+/g, '').toLowerCase(); }, cnt = {};
