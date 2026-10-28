@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvrel2rf">
+  <meta name="ry-build" content="mvrgz9j1">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -10046,11 +10046,12 @@ video {
         del.innerText = '✕';
 
         row.appendChild(pick);
-        row.appendChild(del);
+        if (dtAdm()) row.appendChild(del);   // 1028 지우기는 관리자만
         listContainer.appendChild(row);
       });
 
       updateProfileTextDisplay();
+      if (window.DV && DV.st && DV.st !== 'ok' && DV.st !== 'wait') dvRender();   // 1028 잠금 화면 이름 목록도 같이 (근무표·이름 목록이 늦게 와도)
     }
 
     function selectMember(name, e) {
@@ -10077,6 +10078,7 @@ video {
 
     function removeMember(name, e) {
       if (e) e.stopPropagation();
+      if (!dtAdm()) { alert('이름 지우기는 관리자만 할 수 있어요.\n(근무표에서 빠진 사람은 자동으로 지워져요)'); return; }   // 1028
       if (sharedMemberList.length <= 1) { alert('최소 한 명은 남겨두어야 합니다.'); return; }
       if (!confirm(`'${name}' 이름을 목록에서 삭제할까요?`)) return;
 
@@ -10096,7 +10098,7 @@ video {
           alert('이름 삭제 오류: ' + (err && err.message ? err.message : err));
           loadAllData(true, false, true);
         })
-        .removeSharedMember(name);
+        .removeSharedMember(name, currentSelectedMember);
     }
 
     // 🔗 내 전용 링크: 홈 화면에 추가해 두면 열 때마다 내 이름이 자동 선택됨
@@ -10127,6 +10129,12 @@ video {
       if (menu) menu.classList.add('hidden');
 
       const newName = prompt('추가할 직원 이름을 입력하세요:');
+      if (newName && newName.trim() && !dtAdm()) {   // 1028 MJ '새로 들어오는 사람부터는 관리자 허가' — 관리자가 승인하면 목록에 생김
+        const nm = newName.trim();
+        google.script.run.withSuccessHandler(function () { showToast('🔐 ' + nm + ' 이름 승인 요청을 보냈어요 · 관리자가 승인하면 목록에 생겨요', 4500); })
+          .withFailureHandler(function (err) { alert(String(err && err.message ? err.message : err).replace(/^Error:\s*/, '')); }).addSharedMember(nm, currentSelectedMember);
+        return;
+      }
       if (newName && newName.trim()) {
         const trimmed = newName.trim();
         if (!sharedMemberList.includes(trimmed)) {
@@ -10142,7 +10150,8 @@ video {
               renderDropdownItems();
             }
           })
-          .addSharedMember(trimmed);
+          .withFailureHandler(function (err) { sharedMemberList = sharedMemberList.filter(function (n) { return n !== trimmed; }); renderDropdownItems(); alert(String(err && err.message ? err.message : err).replace(/^Error:\s*/, '')); })
+          .addSharedMember(trimmed, currentSelectedMember);
       }
     }
 
@@ -12019,6 +12028,79 @@ video {
         .withFailureHandler(function () { alert('저장하지 못했어요 · 다시 눌러 주세요'); dtPop(); }).decideDutyRequest(currentSelectedMember, name, ok);
     }
     setInterval(dtPop, 60000); setTimeout(dtPop, 6000);
+    /* 1028 MJ '관리자가 허락을 해야 들어올 수 있게 · 이미 쓰는 사람은 괜찮고 새로 들어오는 사람부터 · 퇴사자는 허가를 거둬들이고 더 이상 못 쓰게'
+       기기마다 ry_dev_id · 이 버전을 처음 열 때 이미 이름이 골라져 있었으면 = 이미 쓰던 기기(ry_dev_had → 서버가 바로 승인)
+       새 기기 = 화면 전체 잠금 + 이름 골라 승인 요청 → 관리자 위 카드 [승인] · 퇴사(근무표에서 빠짐)로 거둬진 기기도 잠금 · 서버를 못 읽으면 막지 않음 */
+    var RY_DEV = (function () { try { var d = localStorage.getItem('ry_dev_id'), had = localStorage.getItem('ry_dev_had') === '1' || (!d && !!localStorage.getItem('s_selected_member')); if (!d) { d = (Date.now().toString(36) + Math.random().toString(36).slice(2, 10)).slice(0, 20); localStorage.setItem('ry_dev_id', d); } if (had) localStorage.setItem('ry_dev_had', '1'); return { id: d, had: had }; } catch (e) { return { id: '', had: false }; } })();
+    var DV = { st: '', n: '', gone: '', tab: 'all', pick: '' };
+    function dvCheck() {
+      if (!RY_DEV.id || typeof google === 'undefined' || !google.script || typeof google.script.run.devStatus !== 'function') return;
+      google.script.run.withSuccessHandler(function (r) {
+        if (!r || r.success === false) return;
+        try { localStorage.removeItem('ry_dev_had'); } catch (e) {}
+        DV.st = r.st; DV.n = r.n || ''; DV.gone = r.gone || '';
+        if (r.st === 'ok' && !currentSelectedMember && r.n && sharedMemberList.indexOf(r.n) >= 0) { currentSelectedMember = r.n; try { localStorage.setItem('s_selected_member', r.n); } catch (e) {} renderDropdownItems(); }
+        dvRender();
+      }).withFailureHandler(function () {}).devStatus(RY_DEV.id, currentSelectedMember || '', RY_DEV.had);
+    }
+    function dvRender() {
+      var el = document.getElementById('dvGate');
+      if (DV.st === 'ok' || !DV.st) { if (el) el.remove(); document.documentElement.classList.remove('dv-lock'); return; }
+      if (!el) { el = document.createElement('div'); el.id = 'dvGate'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-labelledby', 'dvT'); document.body.appendChild(el); }
+      document.documentElement.classList.add('dv-lock'); var ob = document.getElementById('ryOnb'); if (ob) ob.remove();
+      var h = '<div class="dv-card">';
+      if (DV.st === 'wait') {
+        h += '<div class="dv-ic">⏳</div><h2 id="dvT">관리자 승인을 기다리고 있어요</h2><p><b>' + escapeHtml(DV.n) + '</b> 이름으로 승인 요청을 보냈어요.<br>관리자가 승인하면 바로 열려요.</p>'
+          + '<button type="button" class="dv-btn" onclick="dvCheck()">승인됐는지 다시 확인</button><button type="button" class="dv-link" onclick="DV.st=\'new\';dvRender()">이름을 잘못 골랐어요 · 다시 고르기</button>';
+      } else {
+        var gone = DV.st === 'no' && DV.gone, no = DV.st === 'no';
+        h += gone ? '<div class="dv-ic">🔒</div><h2 id="dvT">이 기기는 더 쓸 수 없어요</h2><p><b>' + escapeHtml(DV.gone) + '</b>님은 근무표에서 빠져서 물류앱 허가가 끝났어요.<br>다른 직원이 이 기기를 쓰려면 아래에서 이름을 골라 관리자 승인을 받아 주세요.</p>'
+          : no ? '<div class="dv-ic">🔒</div><h2 id="dvT">이 기기는 승인되지 않았어요</h2><p>관리자가 승인하지 않았어요. 내 이름을 다시 골라 요청하거나 관리자에게 말해 주세요.</p>'
+          : '<div class="dv-ic">👋</div><h2 id="dvT">처음 쓰는 기기예요</h2><p>내 이름을 고르면 관리자에게 승인 요청이 가요.<br>승인되면 바로 물류앱이 열려요.</p>';
+        var cnt = { all: sharedMemberList.length, ph: 0, cn: 0, jp: 0 }, grp = {};
+        sharedMemberList.forEach(function (n) { var g = grp[n] = memGroup(n); if (g) cnt[g]++; });
+        var tabs = MEM_TABS.filter(function (t) { return t[0] === 'all' || cnt[t[0]]; }); if (!cnt[DV.tab]) DV.tab = 'all';
+        if (tabs.length > 1) h += '<div class="dv-tabs" role="tablist" aria-label="이름 나눠 보기">' + tabs.map(function (t) { var on = t[0] === DV.tab; return '<button type="button" role="tab" aria-selected="' + on + '"' + (on ? ' class="on"' : '') + ' onclick="DV.tab=\'' + t[0] + '\';dvRender()">' + t[1] + '<small>' + cnt[t[0]] + '</small></button>'; }).join('') + '</div>';
+        h += '<div class="dv-names">' + sharedMemberList.filter(function (n) { return n !== DV.gone && (DV.tab === 'all' || grp[n] === DV.tab); }).sort(function (a, b) { return MEM_ORD[grp[a]] - MEM_ORD[grp[b]] || a.localeCompare(b, 'ko'); })
+          .map(function (n) { return '<button type="button" onclick="dvAsk(' + JSON.stringify(n).replace(/"/g, '&quot;') + ')">' + escapeHtml(n) + '</button>'; }).join('') + '</div>'
+          + '<button type="button" class="dv-link" onclick="var v=prompt(\'근무표에 있는 내 이름을 넣어 주세요 (예: 김하은 → 하은)\');if(v&&v.trim())dvAsk(v.trim())">목록에 내 이름이 없어요</button>';
+      }
+      el.innerHTML = h + '</div>';
+    }
+    function dvAsk(name) {
+      if (!name) return;
+      var admin = name === RY_ADMIN;
+      if (admin && !ryAdminGate(name)) return;
+      if (!admin && !confirm(name + ' 이름으로 승인 요청을 보낼까요?\n(꼭 내 이름을 골라 주세요)')) return;
+      var el = document.getElementById('dvGate'); if (el) el.querySelectorAll('button').forEach(function (b) { b.disabled = true; });
+      google.script.run.withSuccessHandler(function (r) {
+        if (!r || r.success === false) { alert((r && r.message) || '요청을 보내지 못했어요'); dvRender(); return; }   // 근무표에 없는 이름 등
+        if (admin) { google.script.run.withSuccessHandler(function () { dvCheck(); }).withFailureHandler(function () { dvCheck(); }).decideDevRequest(RY_ADMIN, RY_DEV.id, true); return; }   // 관리자 본인은 비밀번호로 바로
+        DV.st = r.st || 'wait'; DV.n = name; DV.gone = ''; dvRender(); if (DV.st === 'ok') dvCheck();
+      }).withFailureHandler(function () { alert('요청을 보내지 못했어요 · 다시 눌러 주세요'); dvRender(); }).devRequest(RY_DEV.id, name);
+    }
+    /* 관리자 위 카드: 새 기기·새 이름 승인 요청 [승인]/[거절] (근무 요청 카드와 같은 자리 · 1분마다) */
+    function dvPop() {
+      var host = document.getElementById('ryTopPops'), el = document.getElementById('dvPop');
+      if (!host || !dtAdm() || document.hidden || typeof google === 'undefined' || !google.script || typeof google.script.run.devRequests !== 'function') { if (el && !dtAdm()) el.hidden = true; return; }
+      google.script.run.withSuccessHandler(function (r) {
+        var L = (r && r.list) || [], w = L[0]; el = document.getElementById('dvPop');
+        if (!w || !dtAdm()) { if (el) el.hidden = true; return; }
+        if (!el) { el = document.createElement('div'); el.id = 'dvPop'; el.setAttribute('role', 'status'); host.appendChild(el); }
+        var q = JSON.stringify(w.key).replace(/"/g, '&quot;');
+        el.innerHTML = '<div class="tp-txt"><b class="t">🔐 ' + (w.kind === 'name' ? '새 이름' : '새 기기') + ' 승인 요청 · ' + escapeHtml(w.name) + '</b><p>' + escapeHtml(String(w.at || '').slice(5)) + (L.length > 1 ? ' · 외 ' + (L.length - 1) + '건' : '') + ' · 승인하면 ' + (w.kind === 'name' ? '이름 목록에 생겨요' : '그 기기에서 물류앱이 열려요') + '</p></div>'
+          + '<button type="button" class="tp-go" onclick="dvDecide(' + q + ', true)">승인</button><button type="button" class="tp-go tp-no" onclick="dvDecide(' + q + ', false)">거절</button>';
+        el.hidden = false;
+      }).withFailureHandler(function () {}).devRequests(currentSelectedMember);
+    }
+    function dvDecide(key, ok) {
+      var el = document.getElementById('dvPop'); if (el) el.querySelectorAll('button').forEach(function (b) { b.disabled = true; });
+      google.script.run.withSuccessHandler(function (r) { if (!r || r.success === false) alert((r && r.message) || '저장하지 못했어요'); else { showToast(ok ? '✅ ' + r.name + ' 승인했어요' : r.name + ' 요청을 거절했어요', 3500); if (ok) loadAllData(true, false, true); } dvPop(); })
+        .withFailureHandler(function () { alert('저장하지 못했어요 · 다시 눌러 주세요'); dvPop(); }).decideDevRequest(currentSelectedMember, key, ok);
+    }
+    setTimeout(dvCheck, 1200); setInterval(function () { if (DV.st && DV.st !== 'ok') dvCheck(); else if (Math.random() < .1) dvCheck(); }, 30000);   // 잠겨 있으면 30초마다 (승인 기다림) · 열려 있으면 가끔 (퇴사로 거둬졌는지)
+    setInterval(dvPop, 60000); setTimeout(dvPop, 7000);
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') { dvCheck(); dvPop(); } });
     document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') dtPop(); });
     /* 1023 MJ '근무 안 하는 이름이 골라져 있으면 이름 확인해 달라고 알림' — 이름 고를 때 · 앱 열 때 · 다시 켤 때(20분에 한 번) */
     var DUTY_WARN_AT = 0;
@@ -19623,7 +19705,21 @@ html body [lang=ja],html body [lang=zh]{word-break:normal!important;line-break:s
 #rlSheet .rl-save{background:#155EEF;color:#fff}
 #rlSheet .rl-save:disabled{opacity:.5}
 #rlSheet .rl-archb{margin-top:10px;width:100%;min-height:44px;border-radius:14px!important;border:1px solid #E4E7EC;background:#fff;color:#475467;font-size:14px;font-weight:700}
-#dtPop{border-color:#B2CCFF!important}#dtPop .tp-txt{flex:1;min-width:0}#dtPop .tp-txt p{margin:2px 0 0;font-size:12.5px;color:#475467;line-height:1.4}#dtPop .tp-no{background:#F2F4F7!important;color:#344054!important}
+#dtPop{border-color:#B2CCFF!important}
+#dvPop{pointer-events:auto;background:#fff;border:1px solid #B2CCFF;box-shadow:0 12px 32px rgba(16,24,40,.18)!important;display:flex!important;align-items:center;gap:10px;padding:8px 8px 8px 14px!important;border-radius:16px!important}#dvPop[hidden]{display:none!important}#dvPop .tp-txt{flex:1;min-width:0}#dvPop .tp-txt p{margin:2px 0 0;font-size:12.5px;color:#475467;line-height:1.4}#dvPop .tp-no{background:#F2F4F7!important;color:#344054!important}
+html.dv-lock,html.dv-lock body{overflow:hidden!important}
+#dvGate{position:fixed;inset:0;z-index:2147483000;background:#F7F8FA;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:max(48px,env(safe-area-inset-top)) 16px 32px}
+#dvGate .dv-card{width:min(440px,100%);background:#fff;border:1px solid #EAECF0;border-radius:20px;padding:28px 20px 20px;box-shadow:0 12px 32px rgba(16,24,40,.08);text-align:left}
+#dvGate .dv-ic{font-size:34px;line-height:1}#dvGate h2{margin:14px 0 6px;font-size:20px;font-weight:800;color:#101828;letter-spacing:-.01em}#dvGate p{margin:0 0 16px;font-size:14.5px;line-height:1.55;color:#475467}#dvGate p b{color:#101828}
+#dvGate .dv-tabs{display:flex;gap:4px;margin:0 0 10px}
+html:not(#q):not(#w):not(#e) body:not(#r) #dvGate .dv-tabs button{flex:1 1 auto;min-height:36px;padding:0 8px;border-radius:999px!important;border:0;background:#F2F4F7!important;color:#344054!important;font-size:13px;font-weight:600!important;white-space:nowrap}
+html:not(#q):not(#w):not(#e) body:not(#r) #dvGate .dv-tabs button.on{background:#155EEF!important;color:#fff!important}#dvGate .dv-tabs small{font-size:11px;opacity:.75;margin-left:3px}
+#dvGate .dv-names{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:6px;max-height:min(46vh,420px);overflow-y:auto;margin:0 0 12px}
+html:not(#q):not(#w):not(#e) body:not(#r) #dvGate .dv-names button{min-height:44px;border-radius:12px;border:1px solid #EAECF0;background:#fff;color:#101828;font-size:15px;font-weight:600}
+html:not(#q):not(#w):not(#e) body:not(#r) #dvGate .dv-names button:active{background:#EFF4FF;border-color:#155EEF}
+html:not(#q):not(#w):not(#e) body:not(#r) #dvGate .dv-btn{width:100%;min-height:48px;border-radius:14px;border:0;background:#155EEF;color:#fff;font-size:15.5px;font-weight:700;margin:0 0 8px}
+html:not(#q):not(#w):not(#e) body:not(#r) #dvGate .dv-link{width:100%;min-height:44px;border:0;background:transparent;color:#155EEF;font-size:14px;font-weight:600}
+#dvGate button:disabled{opacity:.5}#dtPop .tp-txt{flex:1;min-width:0}#dtPop .tp-txt p{margin:2px 0 0;font-size:12.5px;color:#475467;line-height:1.4}#dtPop .tp-no{background:#F2F4F7!important;color:#344054!important}
 #ryTopPops{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translateX(-50%);z-index:67;width:min(420px,calc(100% - 32px));display:flex;flex-direction:column;gap:8px;pointer-events:none}
 #ntPop[hidden]{display:none!important}
 #rjPop[hidden]{display:none!important}
