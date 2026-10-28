@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvqslc0q">
+  <meta name="ry-build" content="mvrel2rf">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -3414,6 +3414,14 @@ html:not(#q):not(#w):not(#e) body:not(#r) .sp-cats{display:flex;flex-wrap:wrap;g
 html:not(#q):not(#w):not(#e) body:not(#r) .sp-cats-l{font-size:12px;font-weight:700;color:#6b7280;margin-right:2px}
 html:not(#q):not(#w):not(#e) body:not(#r) .sp-cat.on{background:#1f4f99!important;border-color:#1f4f99!important;color:#fff!important}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-greet{font-weight:600;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+html:not(#q):not(#w):not(#e) body:not(#r) #profileDropdownMenu{width:18rem}
+#memTabs{display:flex;gap:4px;padding:8px 10px}
+#memTabs:empty{display:none}
+html:not(#q):not(#w):not(#e) body:not(#r) #profileDropdownMenu #memTabs button{flex:1 1 auto;min-height:34px!important;justify-content:center;gap:3px;padding:0 8px;border-radius:999px!important;background:#F2F4F7!important;color:#344054!important;font-size:12px;font-weight:600!important;white-space:nowrap}
+html:not(#q):not(#w):not(#e) body:not(#r) #profileDropdownMenu #memTabs button.on{background:#155EEF!important;color:#fff!important}
+#memTabs small{font-size:11px;opacity:.75;font-variant-numeric:tabular-nums}
+#dropdownItemsList{max-height:min(52vh,440px)}   /* 1028 한 번에 더 많은 이름 (전엔 4명쯤) */
+#dropdownItemsList>div{padding-top:2px;padding-bottom:2px}
 html:not(#q):not(#w):not(#e) body:not(#r) .mem-title{font-size:11px;font-weight:700;color:#155EEF;background:#eff4ff;border-radius:999px;padding:1px 7px;margin-left:4px}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-greet{display:flex!important;flex-direction:column;min-width:0;line-height:1.35}
 html:not(#q):not(#w):not(#e) body:not(#r) .sd-greet b{display:block;font-weight:800!important;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -5750,6 +5758,7 @@ video {
               <span>내 이름을 선택하세요</span>
               <span class="text-[9px] text-slate-400 font-normal">탭하여 변경 · ✕ 삭제</span>
             </div>
+            <div id="memTabs" role="tablist" aria-label="이름 나눠 보기"></div>
             <div id="dropdownItemsList" class="max-h-56 overflow-y-auto no-scrollbar py-0.5"></div>
             <div class="p-1.5 bg-slate-50">
               <button type="button" onclick="promptAddNewMember(event)" 
@@ -9997,12 +10006,25 @@ video {
       }
     }
 
+    /* 1028 MJ '약사를 누르면 약사 이름만 · 중국어(조순주 팀장 포함) · 일본어' — 이름 목록을 직함(근무표 부서)으로 나눈 탭 · 고른 탭은 이 기기가 기억 */
+    var MEM_TABS = [['all', '전체'], ['ph', '약사'], ['cn', '중국어'], ['jp', '일본어']], MEM_ORD = { ph: 0, cn: 1, jp: 2, '': 3 };
+    var memTab = (function () { try { return localStorage.getItem('ry_mem_tab') || 'all'; } catch (e) { return 'all'; } })();
+    function memGroup(n) { var t = memberTitle(n); return /약사/.test(t) ? 'ph' : (t === '중국어' || t === '팀장') ? 'cn' : t === '일본어' ? 'jp' : ''; }   // 팀장(순주) = 중국어팀
+    function memSetTab(k, e) { if (e) e.stopPropagation(); memTab = k; try { localStorage.setItem('ry_mem_tab', k); } catch (eS) {} renderDropdownItems(); }
     function renderDropdownItems() {
       const listContainer = document.getElementById('dropdownItemsList');
       if (!listContainer) return;
       listContainer.innerHTML = '';
 
-      sharedMemberList.forEach(name => {
+      var cnt = { all: sharedMemberList.length, ph: 0, cn: 0, jp: 0 }, grp = {};
+      sharedMemberList.forEach(function (n) { var g = grp[n] = memGroup(n); if (g) cnt[g]++; });
+      var tabs = MEM_TABS.filter(function (t) { return t[0] === 'all' || cnt[t[0]]; });
+      if (!cnt[memTab] || tabs.length < 2) memTab = 'all';
+      var tabEl = document.getElementById('memTabs');
+      if (tabEl) tabEl.innerHTML = tabs.length < 2 ? '' : tabs.map(function (t) { var on = t[0] === memTab; return '<button type="button" role="tab" aria-selected="' + on + '"' + (on ? ' class="on"' : '') + ' onclick="memSetTab(\'' + t[0] + '\', event)">' + t[1] + '<small>' + cnt[t[0]] + '</small></button>'; }).join('');
+
+      sharedMemberList.filter(function (n) { return memTab === 'all' || grp[n] === memTab; })
+        .sort(function (a, b) { return MEM_ORD[grp[a]] - MEM_ORD[grp[b]] || a.localeCompare(b, 'ko'); }).forEach(name => {
         const isSelected = (name === currentSelectedMember);
         const row = document.createElement('div');
         row.className = isSelected
