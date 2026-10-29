@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvtaj6vg">
+  <meta name="ry-build" content="mvtkqs4u">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -12275,13 +12275,13 @@ video {
        기기마다 ry_dev_id · 이 버전을 처음 열 때 이미 이름이 골라져 있었으면 = 이미 쓰던 기기(ry_dev_had → 서버가 바로 승인)
        새 기기 = 화면 전체 잠금 + 이름 골라 승인 요청 → 관리자 위 카드 [승인] · 퇴사(근무표에서 빠짐)로 거둬진 기기도 잠금 · 서버를 못 읽으면 막지 않음 */
     var RY_DEV = (function () { try { var d = localStorage.getItem('ry_dev_id'), had = localStorage.getItem('ry_dev_had') === '1' || (!d && !!localStorage.getItem('s_selected_member')); if (!d) { d = (Date.now().toString(36) + Math.random().toString(36).slice(2, 10)).slice(0, 20); localStorage.setItem('ry_dev_id', d); } if (had) localStorage.setItem('ry_dev_had', '1'); return { id: d, had: had }; } catch (e) { return { id: '', had: false }; } })();
-    var DV = { st: '', n: '', gone: '', tab: 'all', pick: '' };
+    var DV = { st: '', n: '', gone: '', tab: 'all', pick: '', code: '' };
     function dvCheck() {
       if (!RY_DEV.id || typeof google === 'undefined' || !google.script || typeof google.script.run.devStatus !== 'function') return;
       google.script.run.withSuccessHandler(function (r) {
         if (!r || r.success === false) return;
         try { localStorage.removeItem('ry_dev_had'); } catch (e) {}
-        DV.st = r.st; DV.n = r.n || ''; DV.gone = r.gone || '';
+        DV.st = r.st; DV.n = r.n || ''; DV.gone = r.gone || ''; DV.code = r.code || '';
         if (r.st === 'ok' && !currentSelectedMember && r.n && sharedMemberList.indexOf(r.n) >= 0) { currentSelectedMember = r.n; try { localStorage.setItem('s_selected_member', r.n); } catch (e) {} renderDropdownItems(); }
         dvRender();
       }).withFailureHandler(function () {}).devStatus(RY_DEV.id, currentSelectedMember || '', RY_DEV.had);
@@ -12293,7 +12293,8 @@ video {
       document.documentElement.classList.add('dv-lock'); var ob = document.getElementById('ryOnb'); if (ob) ob.remove();
       var h = '<div class="dv-card">';
       if (DV.st === 'wait') {
-        h += '<div class="dv-ic">⏳</div><h2 id="dvT">관리자 승인을 기다리고 있어요</h2><p><b>' + escapeHtml(DV.n) + '</b> 이름으로 승인 요청을 보냈어요.<br>관리자가 승인하면 바로 열려요.</p>'
+        h += '<div class="dv-ic">⏳</div><h2 id="dvT">관리자 승인을 기다리고 있어요</h2><p><b>' + escapeHtml(DV.n) + '</b> 이름으로 승인 요청을 보냈어요.<br>' + (DV.code ? '관리자에게 아래 번호를 알려 주세요.<br>승인되면 바로 열려요.' : '관리자가 승인하면 바로 열려요.') + '</p>'
+          + (DV.code ? '<div class="dv-code"><small>승인 번호</small><b>' + DV.code + '</b></div>' : '')   // 1029 MJ '번호를 알려주면 그 번호로 허락'
           + '<button type="button" class="dv-btn" onclick="dvCheck()">승인됐는지 다시 확인</button><button type="button" class="dv-link" onclick="DV.st=\'new\';dvRender()">이름을 잘못 골랐어요 · 다시 고르기</button>';
       } else {
         var gone = DV.st === 'no' && DV.gone, no = DV.st === 'no';
@@ -12319,7 +12320,7 @@ video {
       google.script.run.withSuccessHandler(function (r) {
         if (!r || r.success === false) { alert((r && r.message) || '요청을 보내지 못했어요'); dvRender(); return; }   // 근무표에 없는 이름 등
         if (admin) { google.script.run.withSuccessHandler(function () { dvCheck(); }).withFailureHandler(function () { dvCheck(); }).decideDevRequest(RY_ADMIN, RY_DEV.id, true); return; }   // 관리자 본인은 비밀번호로 바로
-        DV.st = r.st || 'wait'; DV.n = name; DV.gone = ''; dvRender(); if (DV.st === 'ok') dvCheck();
+        DV.st = r.st || 'wait'; DV.n = name; DV.gone = ''; DV.code = r.code || ''; dvRender(); if (DV.st === 'ok') dvCheck();
       }).withFailureHandler(function () { alert('요청을 보내지 못했어요 · 다시 눌러 주세요'); dvRender(); }).devRequest(RY_DEV.id, name);
     }
     /* 관리자 위 카드: 새 기기·새 이름 승인 요청 [승인]/[거절] (근무 요청 카드와 같은 자리 · 1분마다) */
@@ -12331,7 +12332,7 @@ video {
         if (!w || !dtAdm()) { if (el) el.hidden = true; return; }
         if (!el) { el = document.createElement('div'); el.id = 'dvPop'; el.setAttribute('role', 'status'); host.appendChild(el); }
         var q = JSON.stringify(w.key).replace(/"/g, '&quot;');
-        el.innerHTML = '<div class="tp-txt"><b class="t">🔐 ' + (w.kind === 'name' ? '새 이름' : '새 기기') + ' 승인 요청 · ' + escapeHtml(w.name) + '</b><p>' + escapeHtml(String(w.at || '').slice(5)) + (L.length > 1 ? ' · 외 ' + (L.length - 1) + '건' : '') + ' · 승인하면 ' + (w.kind === 'name' ? '이름 목록에 생겨요' : '그 기기에서 물류앱이 열려요') + '</p></div>'
+        el.innerHTML = '<div class="tp-txt"><b class="t">🔐 ' + (w.kind === 'name' ? '새 이름' : '새 기기') + ' 승인 요청 · ' + escapeHtml(w.name) + '</b><p>' + (w.code ? '번호 ' + escapeHtml(w.code) + ' · ' : '') + escapeHtml(String(w.at || '').slice(5)) + (L.length > 1 ? ' · 외 ' + (L.length - 1) + '건' : '') + ' · 승인하면 ' + (w.kind === 'name' ? '이름 목록에 생겨요' : '그 기기에서 물류앱이 열려요') + '</p></div>'
           + '<button type="button" class="tp-go" onclick="dvDecide(' + q + ', true)">승인</button><button type="button" class="tp-go tp-no" onclick="dvDecide(' + q + ', false)">거절</button>';
         el.hidden = false;
       }).withFailureHandler(function () {}).devRequests(currentSelectedMember);
@@ -20452,6 +20453,7 @@ html.dv-lock,html.dv-lock body{overflow:hidden!important}
 #dvGate{position:fixed;inset:0;z-index:2147483000;background:#F7F8FA;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:max(48px,env(safe-area-inset-top)) 16px 32px}
 #dvGate .dv-card{width:min(440px,100%);background:#fff;border:1px solid #EAECF0;border-radius:20px;padding:28px 20px 20px;box-shadow:0 12px 32px rgba(16,24,40,.08);text-align:left}
 #dvGate .dv-ic{font-size:34px;line-height:1}#dvGate h2{margin:14px 0 6px;font-size:20px;font-weight:800;color:#101828;letter-spacing:-.01em}#dvGate p{margin:0 0 16px;font-size:14.5px;line-height:1.55;color:#475467}#dvGate p b{color:#101828}
+#dvGate .dv-code{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 16px;padding:14px 16px;border-radius:14px;background:#EFF4FF;border:1px solid #D1E0FF}#dvGate .dv-code small{font-size:14px;font-weight:700;color:#344054}#dvGate .dv-code b{font-size:34px;font-weight:800;letter-spacing:.12em;color:#155EEF;font-variant-numeric:tabular-nums}
 #dvGate .dv-tabs{display:flex;gap:4px;margin:0 0 10px}
 html:not(#q):not(#w):not(#e) body:not(#r) #dvGate .dv-tabs button{flex:1 1 auto;min-height:36px;padding:0 8px;border-radius:999px!important;border:0;background:#F2F4F7!important;color:#344054!important;font-size:13px;font-weight:600!important;white-space:nowrap}
 html:not(#q):not(#w):not(#e) body:not(#r) #dvGate .dv-tabs button.on{background:#155EEF!important;color:#fff!important}#dvGate .dv-tabs small{font-size:11px;opacity:.75;margin-left:3px}
