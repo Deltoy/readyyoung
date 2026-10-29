@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvtkqs4u">
+  <meta name="ry-build" content="mvtn7uc5">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -10157,12 +10157,13 @@ video {
 
     /* 0926 이름 뒤 직함 (이름 목록 · 위쪽 "OO 님" 자리) */
     var MEMBER_TITLES = { '문준': '물류관리자', '순주': '팀장', '유현': '약사', '새희': '약사', '지수': '약사', '진성': '관리약사', '하은': '관리약사' };
+    var SD_T0 = (function () { try { return JSON.parse(localStorage.getItem('ry_sd_t') || 'null') || {}; } catch (e) { return {}; } })();   // 1029 MJ '이름선택에 일본어가 안보여' — 근무표를 다 읽기 전(앱 열고 몇 초)에도 지난번 부서로 탭·직함
     function memberTitle(n) {   // 정해 둔 직함 먼저, 없으면 근무표의 팀(중국어 · 일본어). 앱 이름이 짧으면 근무표 이름 끝이 같은 사람 한 명일 때만
       if (!n) return ''; if (MEMBER_TITLES[n]) return MEMBER_TITLES[n];
-      var tt = (typeof SD !== 'undefined' && SD.data && SD.data.titles) || {}, tk = Object.keys(tt);   // 0927 근무표 부서(약사·중국어·일본어) 자동
+      var tt = (typeof SD !== 'undefined' && SD.data && SD.data.titles) || (typeof SD_T0 !== 'undefined' && SD_T0.titles) || {}, tk = Object.keys(tt);   // 0927 근무표 부서(약사·중국어·일본어) 자동
       if (tt[n]) return tt[n];
       var tk2 = tk.filter(function (k) { return k.length > n.length && k.slice(-n.length) === n; }); if (tk2.length === 1) return tt[tk2[0]];
-      var st = (typeof SD !== 'undefined' && SD.data && SD.data.staff) || [], hit = st.filter(function (x) { return x.name === n; });
+      var st = (typeof SD !== 'undefined' && SD.data && SD.data.staff) || (typeof SD_T0 !== 'undefined' && SD_T0.staff) || [], hit = st.filter(function (x) { return x.name === n; });
       if (!hit.length) hit = st.filter(function (x) { return x.name.length > n.length && x.name.slice(-n.length) === n; });
       return hit.length === 1 ? (hit[0].team === 'jp' ? '일본어' : hit[0].team === 'cn' ? '중국어' : '') : '';
     }
@@ -15966,7 +15967,7 @@ video {
       if (typeof google === 'undefined' || !google.script || !google.script.run || typeof google.script.run.getSetDuty !== 'function') { SD.err = 'old'; sdRenderCard(); return; }
       SD.loading = true; sdRenderCard();
       google.script.run
-        .withSuccessHandler(function (res) { SD.loading = false; SD.at = Date.now(); if (res && res.ok && Array.isArray(res.days)) { SD.data = res; SD.err = ''; try { updateProfileTextDisplay(); renderDropdownItems(); } catch (eT) {} try { bxDotSync(); } catch (eBd) {} } else { SD.err = 'load'; } sdRenderCard(); sdRenderSheet(); })
+        .withSuccessHandler(function (res) { SD.loading = false; SD.at = Date.now(); if (res && res.ok && Array.isArray(res.days)) { SD.data = res; SD.err = ''; try { localStorage.setItem('ry_sd_t', JSON.stringify({ titles: res.titles || {}, staff: (res.staff || []).map(function (x) { return { name: x.name, team: x.team }; }) })); } catch (eL) {} try { updateProfileTextDisplay(); renderDropdownItems(); if (DV.st && DV.st !== 'ok' && !document.querySelector('#dvGate button:disabled')) dvRender(); } catch (eT) {} try { bxDotSync(); } catch (eBd) {} } else { SD.err = 'load'; } sdRenderCard(); sdRenderSheet(); })
         .withFailureHandler(function () { SD.loading = false; SD.err = 'load'; sdRenderCard(); sdRenderSheet(); })
         .getSetDuty(sdWeekStart(), 14);   /* 0927 이번 주 + 다음 주(예정) */
     }
