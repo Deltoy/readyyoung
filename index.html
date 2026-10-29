@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvta48rr">
+  <meta name="ry-build" content="mvta8663">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -17966,7 +17966,7 @@ setTimeout(locSortBtnSync, 0);
 </div>
 <div id="buDim" hidden role="dialog" aria-modal="true" aria-label="1박스 개수 채우기" style="display:none;position:fixed;inset:0;z-index:9000;background:var(--ry-bg,#f5f6f8);overflow:auto;-webkit-overflow-scrolling:touch">
   <div style="position:sticky;top:0;background:#fff;border-bottom:1px solid #e5e7eb;padding:12px 16px;display:flex;align-items:center;gap:10px;z-index:1"><b style="font-size:17px;flex:1">1박스 개수 채우기 <span id="buCnt" style="color:#6b7280;font-weight:600;font-size:14px"></span></b><button type="button" onclick="buClose()" style="min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #e5e7eb;background:#fff;font-weight:700">닫기</button></div>
-  <div class="bu-top"><p>많이 팔리는 순서예요. 1박스에 든 개수를 적고 <b>엔터</b>(폰은 ‘다음’) → 저장하고 다음 칸으로 가요. 모르면 비워 두고 넘어가요.</p><input id="buQ" type="search" placeholder="상품 이름으로 찾기" aria-label="상품 이름으로 찾기" oninput="buRender()"></div>
+  <div class="bu-top"><p>많이 팔리는 순서예요. 1박스에 든 개수를 적고 <b>엔터</b>(폰은 ‘다음’) → 저장하고 다음 칸으로 가요. 모르면 비워 두고 넘어가요.</p><input id="buQ" type="search" placeholder="상품 이름으로 찾기" aria-label="상품 이름으로 찾기" oninput="buRender()" onkeydown="if(event.key==='ArrowDown'||event.key==='Enter'){event.preventDefault();buFocus(0)}"></div>
   <div id="buList"></div>
 </div>
 <div id="scrDim" hidden role="dialog" aria-modal="true" aria-label="하위 섹터 확인 필요" style="display:none;position:fixed;inset:0;z-index:9000;background:var(--ry-bg,#f5f6f8);overflow:auto;-webkit-overflow-scrolling:touch">
@@ -18103,13 +18103,22 @@ function moOpen(min) {
 function nophOpen() { var d = document.getElementById('nophDim'); d.hidden = false; d.style.display = 'block'; document.documentElement.classList.add('mb-lock'); if (typeof ryCatLoad === 'function') ryCatLoad(false); nophRender(); }
 /* 1029 MJ '박스당 개입수가 안 들어가 있는 제품 리스트 → 하나씩 넣어 줘야겠어' — 최근 60일에 팔렸거나 주문한 상품 중 1박스 개수 빈 것 · 15일 판매 많은 순
    엔터 = 저장(뒤에서) + 다음 칸 · 저장되면 목록에서 빠짐 · 안 되면 되돌리고 알림 */
-var BU = { done: {}, n: 0, dirty: false };
+var BU = { done: {}, skip: {}, n: 0, dirty: false };
 function buItems() {
   var seen = {}, out = [], recent = function (x) { if ((s15Num(x.sales15) || 0) > 0) return true; return [x.inboundDate, x.orderDate].some(function (d) { var a = daysSince(d); return a != null && a >= 0 && a <= 60; }); };
   boxItems_().concat(cachedInboundItems || []).forEach(function (x) { if (!x || !x.rowNumber || x.isLog || seen[x.rowNumber]) return; seen[x.rowNumber] = 1; if (/\d/.test(String(x.boxUnit == null ? '' : x.boxUnit)) || BU.done[x.rowNumber] || /\(합침\)/.test(x.name || '')) return; if (recent(x)) out.push(x); });
-  return out.sort(function (a, b) { return (s15Num(b.sales15) || 0) - (s15Num(a.sales15) || 0); });
+  return out.sort(function (a, b) { return (BU.skip[a.rowNumber] ? 1 : 0) - (BU.skip[b.rowNumber] ? 1 : 0) || (s15Num(b.sales15) || 0) - (s15Num(a.sales15) || 0); });   // 비우고 넘어간 건 맨 뒤로
 }
-function buOpen() { var d = document.getElementById('buDim'); d.hidden = false; d.style.display = 'block'; document.documentElement.classList.add('mb-lock'); if (typeof ryCatLoad === 'function') ryCatLoad(false); buRender(); }
+/* 1029 MJ '방향키 위아래로 · 마우스 없이 키보드로만' — ↑↓ 칸 이동(옮길 때 저장) · 엔터 저장+다음 · 열면 첫 칸 · Esc 닫기 */
+function buFocus(i) { var a = document.querySelectorAll('#buList .bu-row:not(.gone) input'), el = a[Math.max(0, Math.min(a.length - 1, i))]; if (el) { el.focus(); el.scrollIntoView({ block: 'nearest' }); } }
+function buKey(e, row, inp) {
+  if (e.key !== 'Enter' && e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+  e.preventDefault();
+  if (e.key === 'ArrowUp') { var a = [].slice.call(document.querySelectorAll('#buList .bu-row:not(.gone) input')), i = a.indexOf(inp); if (i > 0) a[i - 1].focus(); else { var q = document.getElementById('buQ'); if (q) q.focus(); } return; }   // 맨 위에서 ↑ = 검색칸
+  buSave(row, inp, 1);
+}
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { var d = document.getElementById('buDim'); if (d && !d.hidden) { e.preventDefault(); buClose(); } } });
+function buOpen() { var d = document.getElementById('buDim'); d.hidden = false; d.style.display = 'block'; document.documentElement.classList.add('mb-lock'); if (typeof ryCatLoad === 'function') ryCatLoad(false); buRender(); if (!(window.matchMedia && matchMedia('(pointer: coarse)').matches)) setTimeout(function () { buFocus(0); }, 60); }   // PC는 열자마자 첫 칸에 커서
 function buClose() { var d = document.getElementById('buDim'); d.hidden = true; d.style.display = 'none'; document.documentElement.classList.remove('mb-lock'); if (BU.dirty) { BU.dirty = false; try { persistSnapshot(); renderAllViews(); } catch (e) {} } }
 function buCntTxt(n) { var c = document.getElementById('buCnt'); if (c) c.textContent = n + '개 남음' + (BU.n ? ' · 이번에 ' + BU.n + '개 넣음' : ''); }
 function buRender() {
@@ -18121,13 +18130,13 @@ function buRender() {
     var nm = String(x.name || '').split('\n')[0];
     return '<div class="bu-row" data-row="' + x.rowNumber + '"><span class="bu-ph">' + (x.imgUrl ? '<img src="' + escapeHtml(x.imgUrl) + '" alt="" referrerpolicy="no-referrer" loading="lazy" data-row="' + x.rowNumber + '" onerror="imgFallback(this)">' : '') + '</span>'
       + '<span class="bu-tx"><b>' + escapeHtml(nm) + '</b><small>' + escapeHtml([catLabel(x.category || ''), '15일 ' + s15Txt(x.sales15) + '개'].filter(Boolean).join(' · ')) + '</small></span>'
-      + '<label class="bu-in"><input type="text" inputmode="numeric" enterkeyhint="next" autocomplete="off" id="bu-' + x.rowNumber + '" aria-label="' + escapeHtml(nm) + ' 1박스 개수" placeholder="개수" onkeydown="if(event.key===\'Enter\'){event.preventDefault();buSave(' + x.rowNumber + ',this,1)}" onblur="buSave(' + x.rowNumber + ',this)">개</label></div>';
+      + '<label class="bu-in"><input type="text" inputmode="numeric" enterkeyhint="next" autocomplete="off" id="bu-' + x.rowNumber + '" aria-label="' + escapeHtml(nm) + ' 1박스 개수" placeholder="개수" onkeydown="buKey(event,' + x.rowNumber + ',this)" onblur="buSave(' + x.rowNumber + ',this)">개</label></div>';
   }).join('') + (items.length > 200 ? '<div class="bu-more">…외 ' + (items.length - 200) + '개 · 위 칸을 채우면 다음 상품이 올라와요 (이름으로 찾아도 돼요)</div>' : '');
 }
 function buSave(row, inp, next) {
   var r = inp.closest('.bu-row'), nx = r && r.nextElementSibling, ni = nx && nx.querySelector && nx.querySelector('input');
   var raw = String(inp.value || '').trim();
-  if (next) { if (ni) ni.focus(); else inp.blur(); }   // 비워도 다음 칸으로
+  if (next) { if (!raw) BU.skip[row] = 1; if (ni) { ni.focus(); ni.scrollIntoView({ block: 'nearest' }); } else { inp.blur(); setTimeout(function () { buRender(); buFocus(0); }, 260); } }   // 비워도 다음 칸으로 · 보이는 칸 끝이면 다음 묶음
   if (!raw || BU.done[row]) return;
   var n = parseInt(raw.replace(/[^0-9]/g, ''), 10);
   if (!(n >= 1 && n <= 99999)) { inp.value = ''; showToast('개수를 숫자로 적어 주세요'); return; }
