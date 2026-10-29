@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvta8663">
+  <meta name="ry-build" content="mvtaj6vg">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -10535,7 +10535,7 @@ video {
     var HIST_OPEN = {};
     function histToggle(head) { var d = head.dataset.date; if (!d) return; HIST_OPEN[d] = !HIST_OPEN[d]; try { renderAllViews(); } catch (e) {} var again = document.querySelector('.hist-date-head[data-date="' + d + '"]'); if (again) again.scrollIntoView({ block: 'nearest' }); }
     function renderAllViews() {
-      var aeQ = document.activeElement; if (aeQ && /^(m-)?in-qty-/.test(aeQ.id || '')) { INB_RPEND = 1; return; }   // 1027 입고 수량 입력 중이면 나중에 (inbQtyBlur)
+      var aeQ = document.activeElement; if (aeQ && /^(m-)?in-qty-/.test(aeQ.id || '') && aeQ.value !== aeQ.defaultValue) { INB_RPEND = 1; return; }   // 1027 입고 수량 입력 중이면 나중에 (inbQtyBlur) · 1029 숫자를 안 고친 칸(방향키로 옮겨 온 칸)은 바로 그림 — 커서는 ryQty 가 지킴
       try { var sn = document.getElementById('satNudge'); if (sn) sn.hidden = new Date(Date.now() + 9 * 3600000).getUTCDay() !== 6; } catch (eSn) {}   // 1001 토요일 안내
       try { ryArrivedNotice(); } catch (eAr) {}
       const pureReviewItems = [];
@@ -11463,10 +11463,42 @@ video {
       var go = [].slice.call(document.querySelectorAll(sel)).filter(function (b) { return b.offsetParent && !b.disabled; })[0];
       if (!go) return;
       e.preventDefault();
-      var n = parseInt(String(el.value).trim(), 10);
+      var n = parseInt(String(el.value).trim(), 10), fam = ryQtyFam(id), nx = null;
+      if (fam && fam !== 's-qty-') { var L = ryQtyList(fam), i = L.indexOf(el); nx = L[i + 1] ? L[i + 1].id : (L[i - 1] ? L[i - 1].id : ''); }   // 1029 엔터 뒤 다음 줄 수량 칸으로 (검색은 그대로)
       el.blur();
-      if (Number.isFinite(n) && n > 0 && n <= 99999) go.click();
+      if (Number.isFinite(n) && n > 0 && n <= 99999) { go.click(); if (nx) ryQtyWant(nx); }
     });
+    /* 1029 MJ '수량 칸을 방향키 위아래로 · 1차 검토·최종 발주·입고대기도 똑같이' (마우스 없이 키보드만) — ↑↓ = 위·아래 줄 수량 칸 (옮기면 onblur 가 저장) · 숫자는 안 바뀜
+       화면이 다시 그려져도 커서가 그 칸에 남게 (renderAllViews 뒤 되돌림) · PC만 */
+    var RY_QTY_RX = /^(?:m-)?(?:s-|in-|rf-)?qty-\d+$/, RY_QTY_W = null;
+    function ryQtyFam(id) { var m = RY_QTY_RX.test(id || '') && String(id).match(/^(?:m-)?((?:s-|in-|rf-)?qty-)/); return m ? m[1] : ''; }
+    function ryQtyList(fam) { return [].slice.call(document.querySelectorAll('input[id*="' + fam + '"]')).filter(function (x) { return x.offsetParent && !x.disabled && ryQtyFam(x.id) === fam; }); }
+    function ryQtyGo(el) { if (!el) return false; el.focus(); try { el.select(); } catch (e) {} el.scrollIntoView({ block: 'nearest' }); return true; }
+    function ryQtyWant(id) { RY_QTY_W = { id: id, until: Date.now() + 5000 }; [60, 500, 1200].forEach(function (ms) { setTimeout(ryQtyApply, ms); }); }
+    function ryQtyApply() {
+      var w = RY_QTY_W; if (!w || Date.now() > w.until) { RY_QTY_W = null; return; }
+      if (document.getElementById('ryCf')) { w.until = Math.max(w.until, Date.now() + 1500); setTimeout(ryQtyApply, 300); return; }   // 확인창이 떠 있으면 닫힌 뒤에
+      var a = document.activeElement; if (a && a !== document.body && a.id !== w.id && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) { RY_QTY_W = null; return; }   // 다른 칸을 쓰고 있으면 손대지 않음
+      var el = document.getElementById(w.id); if (el && el.offsetParent && a !== el) ryQtyGo(el);
+    }
+    document.addEventListener('keydown', function (e) {
+      if ((e.key !== 'ArrowDown' && e.key !== 'ArrowUp') || e.isComposing || e.shiftKey || e.altKey || e.ctrlKey || e.metaKey) return;
+      var el = e.target, fam = el && el.tagName === 'INPUT' ? ryQtyFam(el.id) : '';
+      if (!fam || (window.matchMedia && matchMedia('(pointer: coarse)').matches)) return;
+      e.preventDefault();
+      var L = ryQtyList(fam), i = L.indexOf(el), t = L[i + (e.key === 'ArrowDown' ? 1 : -1)];
+      if (t) { RY_QTY_W = null; ryQtyGo(t); ryQtyWant(t.id); }
+    });
+    (function () {   // 다시 그릴 때 커서·쓰던 숫자 지키기
+      var r0 = renderAllViews;
+      renderAllViews = function () {
+        var a = document.activeElement, id = a && a.tagName === 'INPUT' && RY_QTY_RX.test(a.id || '') ? a.id : '', v = id ? a.value : null;
+        var res = r0.apply(this, arguments);
+        if (id && !(window.matchMedia && matchMedia('(pointer: coarse)').matches)) { var b = document.getElementById(id); if (b && b !== document.activeElement && b.offsetParent) { if (v != null && b.value !== v) { b.value = v; b.focus(); } else ryQtyGo(b); } }   // 쓰던 숫자가 있으면 고르지 않고 커서만
+        if (RY_QTY_W) ryQtyApply();
+        return res;
+      };
+    })();
     function saveModifiedQtyAndUnit(rowNumber, srcEl) {
       const pcInput = document.getElementById('qty-' + rowNumber);
       const mInput  = document.getElementById('m-qty-' + rowNumber);
@@ -12099,7 +12131,7 @@ video {
     function inbQtyIn(el, row) { var n = Math.round(Number(el.value)); if (n > 0 && n < 100000) inbGotSet(row, n); }
     function inbQtyBlur(el, row) {
       var it = (cachedInboundItems || []).find(function (x) { return x.rowNumber === row; }); if (it && !(Number(el.value) > 0)) el.value = inbCur(it).q;   // 비우거나 0이면 되돌림
-      if (INB_RPEND) setTimeout(function () { var a = document.activeElement; if (INB_RPEND && !(a && /^(m-)?in-qty-/.test(a.id || ''))) { INB_RPEND = 0; renderAllViews(); } }, 450);   // 입력 중 미뤄 둔 화면 갱신 (바로 하면 누른 버튼이 사라져 클릭이 씹힘)
+      if (INB_RPEND) setTimeout(function () { var a = document.activeElement; if (INB_RPEND && !(a && /^(m-)?in-qty-/.test(a.id || '') && a.value !== a.defaultValue)) { INB_RPEND = 0; renderAllViews(); } }, 450);   // 입력 중 미뤄 둔 화면 갱신 (바로 하면 누른 버튼이 사라져 클릭이 씹힘)
     }
     function inbUnitTg(row) { var it = (cachedInboundItems || []).find(function (x) { return x.rowNumber === row; }); if (it) inbGotSet(row, null, inbCur(it).u === '박스' ? '개' : '박스'); }
     function inbQtyHtml(item, m) {   // m = 폰 카드
