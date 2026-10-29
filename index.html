@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvt9blv8">
+  <meta name="ry-build" content="mvt9qhr6">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -12378,12 +12378,17 @@ video {
     var INB_Q = [], INB_BUSY = false, INB_RT = null;
     function inbNext() { var f = INB_Q.shift(); INB_BUSY = !!f; if (f) f(); }
     /* 1028 그 줄이 이미 입고됐는지 서버에 물어봄 (앱이 뒤로 가 있으면 다시 보일 때까지 기다렸다가 · 15초 안에 답 없으면 안 된 걸로) */
-    function inbSavedCheck(row, nm, satD, yes, no) {
+    /* 1029 사용 기록: 상희 14:40 명세서 입고 → 6초 뒤 앱을 나감 → 15:12 다시 켜자마자 '입고 처리 안 된 상품 · Load failed' 창 — 서버엔 14:40:56 에 저장돼 있었음(헛알림)
+       = 앱이 뒤에서 멈춰 있던 동안 지난 시간을 '15초 답 없음'으로 치거나, 다시 켠 직후 인터넷이 붙기 전 확인이 끊긴 걸 '안 됨'으로 봤음
+       → 서버가 '저장 안 됨'이라고 답했을 때만 no · 확인이 끊기거나 멈춰 있던 시간이면 보일 때 다시 물어봄 (최대 4번) */
+    function inbSavedCheck(row, nm, satD, yes, no, n) {
+      n = n || 0;
+      var again = function () { if (n < 3) inbSavedCheck(row, nm, satD, yes, no, n + 1); else no(); };
       var go = function () {
-        var done = false, t = setTimeout(function () { if (!done) { done = true; no(); } }, 15000);
+        var done = false, t0 = Date.now(), t = setTimeout(function () { if (done) return; done = true; (document.hidden || Date.now() - t0 > 20000) ? again() : no(); }, 15000);
         if (typeof google === 'undefined' || !google.script || typeof google.script.run.inboundSavedCheck !== 'function') { done = true; clearTimeout(t); return no(); }
         google.script.run.withSuccessHandler(function (r) { if (done) return; done = true; clearTimeout(t); (r && r.saved ? yes : no)(); })
-          .withFailureHandler(function () { if (done) return; done = true; clearTimeout(t); no(); }).inboundSavedCheck(row, nm || '', satD || '');
+          .withFailureHandler(function () { if (done) return; done = true; clearTimeout(t); setTimeout(again, 2000); }).inboundSavedCheck(row, nm || '', satD || '');
       };
       if (!document.hidden) return go();
       var h = function () { if (document.hidden) return; document.removeEventListener('visibilitychange', h); setTimeout(go, 800); };
