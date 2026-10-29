@@ -52,29 +52,40 @@
   var locked = false;
   /* 1022 MJ '주문 요청이 저장되지 않았어요 (Unexpected token <, <!DOCTYPE)' — 서버가 잠깐 JSON 대신 구글 오류 페이지(HTML)를 줄 때가 있다
      (배포가 바뀌는 순간 · 구글 쪽 일시 오류). 그럴 땐 1.5 · 4 · 8초 뒤 자동으로 다시 보내고, 그래도 안 되면 알아듣기 쉬운 말로 */
-  function post(fn, args, key, n) {
+  function post(fn, args, key, n, rid) {
     n = n || 0;
-    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ rpc: fn, args: args, k: key }) })
+    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ rpc: fn, args: args, k: key, rid: rid || undefined }) })
       .then(function (r) { return r.text(); })
       .then(function (t) {
         try { return JSON.parse(t); } catch (e) {
-          if (n < 3) return new Promise(function (res) { setTimeout(res, [1500, 4000, 8000][n]); }).then(function () { return post(fn, args, key, n + 1); });
+          if (n < 3) return new Promise(function (res) { setTimeout(res, [1500, 4000, 8000][n]); }).then(function () { return post(fn, args, key, n + 1, rid); });
           var m = /<title>([^<]*)/i.exec(t || '');
           throw new Error('서버가 잠깐 응답하지 않았어요. 잠시 뒤 다시 눌러 주세요.' + (m ? ' (' + m[1].trim().slice(0, 40) + ')' : ''));
         }
       });
   }
-  function send(fn, args, ok, fail, uo, n) {
+  /* 1029 MJ '저장이 실패하는 상황이 없게 · 실패하면 알아서 다시' — 연결이 끊기면(Failed to fetch 등) 쓰기도 같은 요청 번호(rid)로 다시 보낸다.
+     서버가 같은 번호는 한 번만 실행하고 처음 결과를 돌려줘서 두 번 저장되지 않는다. 1.5 · 4 · 10 · 20 · 40초 뒤 (앱이 뒤로 가 있으면 다시 보일 때 바로) */
+  var RETRY_MS = [1500, 4000, 10000, 20000, 40000];
+  function newRid() { var a = ''; try { var u = new Uint8Array(12); crypto.getRandomValues(u); for (var i = 0; i < u.length; i++) a += ('0' + u[i].toString(16)).slice(-2); } catch (e) { a = Date.now().toString(36) + Math.random().toString(36).slice(2, 12); } return a; }
+  function later(ms, f) {
+    var t = setTimeout(go, ms), done = false;
+    function go() { if (done) return; if (document.hidden) return; done = true; clearTimeout(t); document.removeEventListener('visibilitychange', go); f(); }
+    document.addEventListener('visibilitychange', go);   // 폰에서 앱이 뒤로 가 있으면 타이머가 멈추니, 다시 보이면 바로
+  }
+  function send(fn, args, ok, fail, uo, n, rid) {
     if (fn === 'getWebAppUrl') { setTimeout(function () { ok && ok(location.origin + location.pathname, uo); }); return; }   /* 전용 링크는 이 화면 주소로 */
     if (locked || !k) { showGate(); return; }
-    post(fn, args, k).then(function (j) {
+    n = n || 0;
+    if (!rid && !/^(get|list|search)/.test(fn)) rid = newRid();   // 읽기는 번호 없이 (다시 해도 안전)
+    var again = function (e) { if (n >= RETRY_MS.length) { if (fail) fail(e, uo); else console.error(fn, e); return; } later(RETRY_MS[n], function () { send(fn, args, ok, fail, uo, n + 1, rid); }); };
+    post(fn, args, k, 0, rid).then(function (j) {
       if (j && j.__auth) { locked = true; showGate(j.__err); return; }
+      if (j && j.__busy) { again(new Error(j.__err)); return; }   // 앞의 같은 요청이 아직 처리 중
       if (j && j.__err) { if (fail) fail(new Error(j.__err), uo); else console.error(fn, j.__err); return; }
       ok && ok(j, uo);
     }, function (e) {
-      /* 1022 'Failed to fetch' (구글 응답 주소가 잠깐 404) — 읽기만 하는 호출은 2번 더 (쓰기는 서버에서 이미 됐을 수 있어 그대로 알림) */
-      n = n || 0;
-      if (/^(get|list|search)/.test(fn) && n < 2 && /fetch|network|load/i.test(String(e && e.message || e))) { setTimeout(function () { send(fn, args, ok, fail, uo, n + 1); }, 2000 * (n + 1)); return; }
+      if (/fetch|network|load|서버가 잠깐/i.test(String(e && e.message || e))) { again(e); return; }
       if (fail) fail(e, uo); else console.error(fn, e);
     });
   }
