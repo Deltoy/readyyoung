@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvt5kla1">
+  <meta name="ry-build" content="mvt5vkys">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -7079,7 +7079,7 @@ video {
         .withSuccessHandler(function (res) {
           if (!res || res.success === false) { showToast(res && res.message ? res.message : '저장 실패'); loadAllData(true, true, true); }
         })
-        .withFailureHandler(function () { showToast('저장 실패 — 새로고침할게요'); loadAllData(true, true, true); })
+        .withFailureHandler(function () { showToast('저장이 안 돼서 다시 불러올게요'); loadAllData(true, true, true); })
         .setDiscontinue(rowNumber, item.name, currentSelectedMember || '', turnOn);
     }
 
@@ -7366,7 +7366,7 @@ video {
     }
     function openMyRejects() { openRejects(currentSelectedMember || ''); }
     function openRejects(name) {
-      if (!name) { showToast('먼저 이름을 선택해 주세요'); return; }
+      if (!name) { showToast('먼저 위에서 내 이름을 골라 주세요'); return; }
       var list = rejectsOf(name);
       document.getElementById('rejTitle').textContent = name + ' 님 · 반려 ' + list.length + '건';
       document.getElementById('rejBody').innerHTML = list.length ? list.map(function (it) {
@@ -7392,7 +7392,7 @@ video {
       if (!checkMemberSelectedOrAlert()) return;
       var input = document.getElementById('rej-qty-' + rowNumber);
       var n = parseInt(input ? input.value.trim() : '1', 10);
-      if (!Number.isFinite(n) || n <= 0 || n > 99999) { alert('수량을 1~99999 사이 숫자로 입력해 주세요.'); return; }
+      if (!Number.isFinite(n) || n <= 0 || n > 99999) { alert('수량을 숫자로 적어 주세요'); return; }
       var key = 'rej-' + rowNumber;
       if (inFlight.has(key)) return;
       inFlight.add(key);
@@ -7456,13 +7456,13 @@ video {
         .withSuccessHandler(function (res) {
           if (rev !== ST.rev) return;
           if (!res || res.success === false) {
-            if (quiet && ST.data) { showToast('목록을 새로 불러오지 못했어요. 닫았다 다시 열어주세요'); return; }
+            if (quiet && ST.data) { showToast('목록을 못 불러왔어요 · 닫았다 다시 열어 주세요'); return; }
             document.getElementById('stBody').innerHTML = '<div class="st-msg">' + escapeHtml((res && res.message) || '불러오지 못했어요') + '</div>'; return;
           }
           ST.data = res; renderStale(); if (ST.open) stReveal(ST.open);
           try { rjaStaleFocus(); } catch (eR) {}   /* 0925: 반려 분석에서 넘어온 상품으로 이동 */
         })
-        .withFailureHandler(function () { if (rev !== ST.rev) return; if (quiet && ST.data) { showToast('목록을 새로 불러오지 못했어요. 닫았다 다시 열어주세요'); return; } document.getElementById('stBody').innerHTML = '<div class="st-msg">불러오지 못했어요. 잠시 뒤 다시 열어주세요.</div>'; })
+        .withFailureHandler(function () { if (rev !== ST.rev) return; if (quiet && ST.data) { showToast('목록을 못 불러왔어요 · 닫았다 다시 열어 주세요'); return; } document.getElementById('stBody').innerHTML = '<div class="st-msg">불러오지 못했어요. 잠시 뒤 다시 열어주세요.</div>'; })
         .getStaleProducts(currentSelectedMember || '');
     }
     function stLists() {
@@ -7621,9 +7621,9 @@ video {
     }
     function stBatch(fn, args, okMsg) {
       if (ST.busy.batch) return; ST.busy.batch = 1;
-      if (typeof google.script.run[fn] !== 'function') { ST.busy.batch = 0; showToast('서버(Code.gs)가 예전 버전이에요. Code.gs 를 새로 붙여넣고 배포해주세요'); return; }
+      if (typeof google.script.run[fn] !== 'function') { ST.busy.batch = 0; showToast('앱을 새로고침한 뒤 다시 해 주세요'); return; }
       var runner = google.script.run.withSuccessHandler(function (res) { ST.busy.batch = 0; if (!res || res.success === false) { showToast((res && res.message) || '저장하지 못했어요'); renderStale(); return; } ST.changed = true; showToast(okMsg(res), 2600); stLoad(true); })
-        .withFailureHandler(function () { ST.busy.batch = 0; showToast('저장하지 못했어요. 잠시 뒤 다시 시도해주세요.'); renderStale(); });
+        .withFailureHandler(function () { ST.busy.batch = 0; showToast('저장이 안 됐어요 · 다시 눌러 주세요'); renderStale(); });
       runner[fn].apply(runner, args.concat([currentSelectedMember || '']));
     }
     function stToggle(row) { ST.open = row || ''; renderStale(); stReveal(row); }
@@ -7654,7 +7654,7 @@ video {
           }
           ST.open = next; showToast(okMsg(res)); stLoad(true);
         })
-        .withFailureHandler(function () { delete ST.busy[row]; showToast('저장하지 못했어요. 잠시 뒤 다시 시도해주세요.'); renderStale(); });
+        .withFailureHandler(function () { delete ST.busy[row]; showToast('저장이 안 됐어요 · 다시 눌러 주세요'); renderStale(); });
       runner[fn].apply(runner, args.concat([member]).concat(fn === 'saveCleanupDecision' ? [btn.dataset.last || ''] : []));
     }
     function stDecide(btn) {
@@ -8065,7 +8065,7 @@ video {
       var v = parseInt(String(n).replace(/[^0-9]/g, ''), 10); if (!(v >= 0)) { showToast('숫자로 적어 주세요', 1800); return; }
       var memo = kind === '빼기' ? (prompt('이유 (안 적어도 돼요)') || '') : '직접 셈';
       google.script.run.withSuccessHandler(function (r) { if (!r || !r.success) { showToast((r && r.message) || '저장하지 못했어요', 2200); return; } LG = r; lgRender(); showToast('저장했어요', 1500); })
-        .withFailureHandler(function () { showToast('저장하지 못했어요 · 인터넷 확인', 2200); }).boxLedgerSave(currentSelectedMember || '', box, kind, v, memo);
+        .withFailureHandler(function () { showToast('저장이 안 됐어요 · 다시 눌러 주세요', 2200); }).boxLedgerSave(currentSelectedMember || '', box, kind, v, memo);
     }
     /* ── 1022 오늘 만든 세트 기록 (종이 대신) — 서버 getSetMade · saveSetMade (저장하면 박스 남은 개수에서 바로 빠짐) ── */
     var MD = { date: '', slot: '', data: null, busy: false };
@@ -8245,7 +8245,7 @@ video {
     function bxPastePreview() { var r = bxParse(document.getElementById('bxText').value); document.getElementById('bxPrev').textContent = r.length ? r.map(function (x) { return (x.box.indexOf('무지') === 0 ? '무지 ' + x.box.slice(2) : x.box) + '번 ' + x.n + '개'; }).join(' · ') : '"1번 59+139" 같은 줄을 찾지 못했어요'; document.getElementById('bxSave').disabled = !r.length; }
     function bxPasteSave(btn) {
       var r = bxParse(document.getElementById('bxText').value), me = currentSelectedMember || '';
-      if (!r.length) return; if (!me || me === '미선택') { showToast('위에서 내 이름을 먼저 골라 주세요', 1800); return; }
+      if (!r.length) return; if (!me || me === '미선택') { showToast('먼저 위에서 내 이름을 골라 주세요', 1800); return; }
       btn.disabled = true; btn.textContent = '✓ 저장했어요'; showToast('박스 남은 개수를 저장했어요', 1800);   // 1029 바로 끝난 것처럼 (신호등은 서버 계산이 오면)
       google.script.run.withSuccessHandler(function (x) { btn.disabled = false; btn.textContent = '저장'; if (!x || !x.success) { alert('박스 개수가 저장되지 않았어요: ' + ((x && x.message) || '')); return; } SP.box = x; SP.boxAt = Date.now(); bxDotSync(); showToast('박스 ' + x.saved + '종 남은 개수를 저장했어요' + ((x.requested || []).length ? ' · 🔴 ' + x.requested.map(function (b) { return b + '번'; }).join(', ') + ' 1박스 약사 발주에 올렸어요' : ''), (x.requested || []).length ? 3600 : 1800); spRenderSets(); try { bxPopup(true); } catch (e) {} })
         .withFailureHandler(function (e) { btn.disabled = false; btn.textContent = '저장'; alert('박스 개수가 저장되지 않았어요: ' + (e && e.message || '')); }).saveBoxStock(r, me);
@@ -8316,7 +8316,7 @@ video {
       ps.forEach(function (x) { var inp = document.querySelector(root + ' input[data-k="' + x.box + '"]'); if (inp) { inp.value = String(x.n); bxSumShow(inp); if (x.box.indexOf('무지') === 0) { var gm = document.querySelector(root + ' .bx-more + .bx-grid'); if (gm) gm.hidden = false; var mb = document.querySelector(root + ' .bx-more'); if (mb) mb.textContent = '－ 무지박스 접기'; } } }); }
     function bxSheetSave(btn) { return bxSave('#bxSheet', btn); }
     function bxSave(root, btn) {
-      var me = currentSelectedMember || ''; if (!me || me === '미선택') { showToast('위에서 내 이름을 먼저 골라 주세요', 1800); return; }
+      var me = currentSelectedMember || ''; if (!me || me === '미선택') { showToast('먼저 위에서 내 이름을 골라 주세요', 1800); return; }
       var label = btn.textContent, list = [].slice.call(document.querySelectorAll(root + ' input[data-k]')).map(function (inp) { var ns = String(inp.value || '').replace(/\([^)]*\)/g, '').match(/\d+/g); return ns ? { box: inp.dataset.k, n: ns.reduce(function (a, x) { return a + (+x); }, 0) } : null; }).filter(Boolean);
       if (!list.length) { showToast('적은 숫자가 없어요', 1600); return; }
       btn.disabled = true; btn.textContent = '✓ 저장했어요';   // 1029 바로 끝난 것처럼 (신호등은 서버 계산이 오면 아래에)
@@ -8782,8 +8782,8 @@ video {
     function seBoxPick(v) { document.getElementById('seBox').value = v; seBoxRender(); }
     function seSnap() { return JSON.stringify([document.getElementById('seName').value, document.getElementById('seBox').value, document.getElementById('seMemo').value, document.getElementById('seWd').value, document.getElementById('seWe').value, SE.items, SE.photo]); }
     function openSetEdit(id) {
-      if (!currentSelectedMember) { showToast('먼저 발주 화면 위쪽에서 이름을 선택해주세요', 3500); return; }
-      if (!SP.data) { showToast('세트 정보를 불러오는 중이에요. 잠시 뒤 다시 눌러주세요'); return; }
+      if (!currentSelectedMember) { showToast('먼저 위에서 내 이름을 골라 주세요', 3500); return; }
+      if (!SP.data) { showToast('세트 정보를 불러오는 중이에요 · 잠시 뒤 다시 눌러 주세요'); return; }
       var s = id ? SP.data.sets.filter(function (x) { return x.id === id; })[0] : null;
       SE = { id: s ? s.id : '', items: s ? s.items.map(function (it) { return { name: it.name, qty: it.qty }; }) : [], photo: s ? s.photo : '', uploading: false };
       document.getElementById('seTitle').textContent = s ? '세트 고치기' : '새 세트';
@@ -8802,7 +8802,7 @@ video {
       document.querySelector('#seSheet .se-scroll').scrollTop = 0;
     }
     function closeSetEdit(force) {
-      if (force !== true && SE.saving) { showToast('저장하는 중이에요. 잠시만 기다려주세요'); return; }
+      if (force !== true && SE.saving) { showToast('저장하는 중이에요 · 잠시만요'); return; }
       if (force !== true && document.getElementById('seSheet').classList.contains('on') && SE.snap != null && seSnap() !== SE.snap
           && !confirm('작성 중인 내용이 사라져요. 닫을까요?')) return;
       document.getElementById('seDim').classList.remove('on'); document.getElementById('seSheet').classList.remove('on');
@@ -8870,7 +8870,7 @@ video {
       var exact = (SE.sug || []).filter(function (p) { return spKey(p.name) === spKey(raw); })[0];
       if (exact) return seAddName(exact.name);
       if (SE.sug && SE.sug.length === 1) return seAdd(0);
-      if (spKey(raw)) showToast('아래 목록에서 상품을 눌러 추가해주세요');
+      if (spKey(raw)) showToast('아래 목록에서 상품을 눌러 넣어 주세요');
     }
     function saveSetUi() {
       var e = document.getElementById('seErr'), btn = document.getElementById('seSaveBtn');
@@ -8913,7 +8913,7 @@ video {
           SP.data.sets = SP.data.sets.filter(function (s) { return s.id !== id; });
           closeSetEdit(true); SP.view = 'sets'; SP.setId = null; spRender(); showToast('세트를 지웠어요');
         })
-        .withFailureHandler(function () { btn.disabled = false; SE.saving = false; showToast('지우지 못했어요. 잠시 뒤 다시 시도해주세요'); })
+        .withFailureHandler(function () { btn.disabled = false; SE.saving = false; showToast('지우지 못했어요 · 다시 눌러 주세요'); })
         .deleteSet(id);
     }
 
@@ -9283,7 +9283,7 @@ video {
           var live0 = findItemByRow(rowNumber); if (live0) { live0.category = res.category || to; renderAllViews(); }
           var keep0 = document.getElementById('cbBody').scrollTop; renderCatBrowseList(); document.getElementById('cbBody').scrollTop = keep0;
           showToast(it0.name + ' → ' + catLabel(res.category || to));
-        }).withFailureHandler(function () { sel.disabled = false; it0.sub = prev; renderCatBrowseList(); showToast('하위를 바꾸지 못했어요. 잠시 뒤 다시 시도해주세요'); })
+        }).withFailureHandler(function () { sel.disabled = false; it0.sub = prev; renderCatBrowseList(); showToast('하위 분류를 못 바꿨어요 · 다시 눌러 주세요'); })
           .setCategory(rowNumber, it0.name, to);
         return;
       }
@@ -9413,7 +9413,7 @@ video {
       var file = ev.target.files && ev.target.files[0];
       try { ev.target.value = ''; } catch (e) {}
       if (!file) return;
-      if (!file.type || file.type.indexOf('image/') !== 0) { alert('이미지 파일만 등록할 수 있어요.'); return; }
+      if (!file.type || file.type.indexOf('image/') !== 0) { alert('사진 파일만 넣을 수 있어요'); return; }
       var cam = document.getElementById('npPhotoCamBtn'), lib = document.getElementById('npPhotoLibBtn');
       var label0 = ['📷 사진 찍기', '🖼 사진첩'];
       cam.textContent = '⏳ 처리 중…'; lib.textContent = '';
@@ -9566,7 +9566,7 @@ video {
     var AVA_TARGET = '', AVA_GROUP = '사람';
     function openAvaPicker(target) {
       var who = target || ((typeof currentSelectedMember !== 'undefined' && currentSelectedMember) ? currentSelectedMember : '');
-      if (!who) { if (typeof showToast === 'function') showToast('먼저 이름을 선택해주세요'); return; }
+      if (!who) { if (typeof showToast === 'function') showToast('먼저 위에서 내 이름을 골라 주세요'); return; }
       AVA_TARGET = who;
       drawAvaPicker();
       document.getElementById('avaDim').classList.add('on');
@@ -9660,7 +9660,7 @@ video {
           updateMyAvatar();
           if (typeof renderAllViews === 'function') renderAllViews();
           if (document.getElementById('avaSheet').classList.contains('on')) drawAvaPicker();
-          if (typeof showToast === 'function') showToast('저장 실패 — 캐릭터를 되돌렸어요');
+          if (typeof showToast === 'function') showToast('저장이 안 돼서 캐릭터를 되돌렸어요');
         })
         .setMemberAvatar(who, face);
     }
@@ -9878,7 +9878,7 @@ video {
         alert('어느 상품의 사진인지 확인하지 못했어요.\n상품 카드의 [사진추가]를 다시 눌러 주세요.');
         return;
       }
-      if (!file.type || file.type.indexOf('image/') !== 0) { alert('이미지 파일만 등록할 수 있어요.'); return; }
+      if (!file.type || file.type.indexOf('image/') !== 0) { alert('사진 파일만 넣을 수 있어요'); return; }
 
       setPhotoBtnState(rowNumber, '⏳', '처리중');
       resizeImageFile(file, 1000, 0.82).then(dataUrl => {
@@ -9934,10 +9934,10 @@ video {
             google.script.run.withSuccessHandler(function () {
               google.script.run.withSuccessHandler(function (r2) {
                 if (r2 && r2.success) { applyNewPhoto(rowNumber, r2.imgUrl); showToast('✓ 사진을 저장했어요'); }
-                else { alert('그래도 저장되지 않았어요.\n' + ((r2 && r2.error) || '') + '\n시트에서 그 칸이 병합됐는지 확인해주세요.'); resetPhotoBtn(rowNumber); }
+                else { alert('그래도 저장이 안 됐어요\n' + ((r2 && r2.error) || '') + '\n시트에서 그 칸이 병합됐는지 확인해주세요.'); resetPhotoBtn(rowNumber); }
               }).withFailureHandler(function () { resetPhotoBtn(rowNumber); })
                 .uploadProductPhoto(rowNumber, dataUrl, ryNameOf(rowNumber));
-            }).withFailureHandler(function () { alert('필터를 푸는 데 실패했어요.'); resetPhotoBtn(rowNumber); })
+            }).withFailureHandler(function () { alert('시트 필터를 못 풀었어요'); resetPhotoBtn(rowNumber); })
               .clearSheetFilter();
             return;
           }
@@ -9946,7 +9946,7 @@ video {
         }
         resetPhotoBtn(rowNumber);
       }).withFailureHandler(function () {
-        alert('사진이 시트에 저장되지 않았어요. 잠시 뒤 다시 시도해주세요.');
+        alert('사진이 저장되지 않았어요 · 다시 눌러 주세요');
         resetPhotoBtn(rowNumber);
       }).getSheetFilterInfo();
     }
@@ -10246,8 +10246,8 @@ video {
 
     function removeMember(name, e) {
       if (e) e.stopPropagation();
-      if (!dtAdm()) { alert('이름 지우기는 관리자만 할 수 있어요.\n(근무표에서 빠진 사람은 자동으로 지워져요)'); return; }   // 1028
-      if (sharedMemberList.length <= 1) { alert('최소 한 명은 남겨두어야 합니다.'); return; }
+      if (!dtAdm()) { alert('이름은 관리자만 지울 수 있어요\n(근무표에서 빠진 사람은 저절로 지워져요)'); return; }   // 1028
+      if (sharedMemberList.length <= 1) { alert('한 명은 남겨 둬야 해요'); return; }
       if (!confirm(`'${name}' 이름을 목록에서 삭제할까요?`)) return;
 
       // 낙관적 반영
@@ -10274,7 +10274,7 @@ video {
       if (e) e.stopPropagation();
       const menu = document.getElementById('profileDropdownMenu');
       if (menu) menu.classList.add('hidden');
-      if (!currentSelectedMember || !currentSelectedMember.trim()) { alert('먼저 내 이름을 선택해 주세요.'); return; }
+      if (!currentSelectedMember || !currentSelectedMember.trim()) { alert('먼저 위에서 내 이름을 골라 주세요'); return; }
       const name = currentSelectedMember.trim();
       const show = function(base) {
         const url = base + (base.indexOf('?') === -1 ? '?' : '&') + 'me=' + encodeURIComponent(name);
@@ -10325,7 +10325,7 @@ video {
 
     function checkMemberSelectedOrAlert() {
       if (!currentSelectedMember || !currentSelectedMember.trim()) {
-        alert('⚠️ 상단 프로필에서 [내 이름]을 먼저 선택해 주세요!');
+        alert('먼저 위에서 내 이름을 골라 주세요');
         toggleDropdown();
         return false;
       }
@@ -11016,12 +11016,10 @@ video {
       }
     }
 
-    function handleUndoInbound(rowNumber) {
+    function handleUndoInbound(rowNumber, ok0) {
       const key = 'undo-' + rowNumber;
       if (inFlight.has(key)) return;
-      if (!confirm('이 상품을 다시 [📦 입고 대기] 상태로 되돌리시겠습니까?\n(실수로 입고완료를 눌렀을 때 사용합니다)')) {
-        return;
-      }
+      if (!ok0) { var _un = String(((cachedHistoryItems || []).find(it => it.rowNumber === rowNumber && !it.isLog) || {}).name || '').split('\n')[0]; ryConfirm({ title: '입고 대기로 되돌릴까요?', items: [{ h: _un.slice(0, 28) || '이 상품', d: '입고완료를 잘못 눌렀을 때 써요' }], ok: '되돌리기' }).then(function (y) { if (y) handleUndoInbound(rowNumber, true); }); return; }   // 1029 앱 확인창
       inFlight.add(key);
       showToast('입고 대기로 되돌렸어요');
 
@@ -11323,7 +11321,7 @@ video {
       if (raw === before) return;                                  // 안 바뀌었으면 저장 안 함
       if (raw !== '' && !raw.replace(/[^0-9]/g, '')) {             // 숫자가 하나도 없으면 되돌림
         if (srcEl) srcEl.value = before;
-        showToast('숫자로 적어주세요 (예: 30)');
+        showToast('숫자로 적어 주세요 (예: 30)');
         return;
       }
       var key = 'boxref-' + rowNumber;
@@ -11583,7 +11581,7 @@ video {
       google.script.run.withSuccessHandler(function (res) {
         if (!res || !res.ok) { MR.map[r] = before; mrPaint(r); showToast((res && res.msg) || '저장하지 못했어요'); return; }
         MR.map[r] = { maker: String(res.maker || ''), route: String(res.route || '') }; mrPaint(r); showToast('제조사·경로를 저장했어요');
-      }).withFailureHandler(function () { MR.map[r] = before; mrPaint(r); showToast('저장 실패 — 잠시 뒤 다시 시도해주세요.'); }).setMakerRoute(r, maker, route, currentSelectedMember);
+      }).withFailureHandler(function () { MR.map[r] = before; mrPaint(r); showToast('저장이 안 됐어요 · 다시 눌러 주세요'); }).setMakerRoute(r, maker, route, currentSelectedMember);
     }
     function ryCanConfirmOrder() { try { return /^(관리약사|약사|물류관리자)$/.test(memberTitle(currentSelectedMember)); } catch (e) { return false; } }
     function confirmOrderPlaced(rowNumber) {
@@ -11618,9 +11616,9 @@ video {
         .confirmOrderPlaced(rowNumber, currentSelectedMember, _nm);
     }
     function rejectOrder(rowNumber, skipConfirm) {
+      if (!skipConfirm) { var _rn = String(ryNameOf(rowNumber) || '').split('\n')[0]; ryConfirm({ title: '재고있음으로 처리할까요?', items: [{ h: _rn.slice(0, 28) || '이 상품', d: '이번 발주에서 빠지고 재고 확인으로 가요' }], ok: '재고있음' }).then(function (y) { if (y) rejectOrder(rowNumber, true); }); return; }   // 1029 앱 확인창
       const key = 'reject-' + rowNumber;
       if (inFlight.has(key)) return;
-      if (!skipConfirm && !confirm('이 품목을 [재고있음]으로 처리해 목록에서 제거할까요?\n(되돌리기가 없으니 확인해 주세요)')) return;
       inFlight.add(key);
       showToast('재고있음 처리 · 재고확인으로 옮겼어요');
       // 누르는 즉시 [재고확인] 탭에도 보이게 (서버 재조회는 1~2분 걸릴 수 있어서 기다리지 않음)
@@ -11694,14 +11692,14 @@ video {
     }
     function quickReorder(row) {
       var item = (cachedInboundItems || []).filter(function (x) { return x.rowNumber === row; })[0]; if (!item) { showToast('상품을 찾을 수 없어요'); return; }
-      if (!currentSelectedMember) { showToast('먼저 위에서 이름을 선택해주세요'); return; }
+      if (!currentSelectedMember) { showToast('먼저 위에서 내 이름을 골라 주세요'); return; }
       if (!confirm('[' + String(item.name || '').split('\n')[0] + ']\n오늘 공급사에 다시 주문했어요?\n\n오늘부터 다시 세서 \'오래 기다린 주문\'(맨 위)에서 빠져요')) return;
       openDelayReason(row); drReorderToday();
     }
     function openDelayReason(rowNumber) {
       var item = (cachedInboundItems || []).filter(function (x) { return x.rowNumber === rowNumber; })[0];
       if (!item) { showToast('상품을 찾을 수 없어요'); return; }
-      if (!currentSelectedMember) { showToast('먼저 위에서 이름을 선택해주세요'); return; }
+      if (!currentSelectedMember) { showToast('먼저 위에서 내 이름을 골라 주세요'); return; }
       DELAY_CUR = item;
       var r = delayReasonOf(item);
       document.getElementById('drTitle').textContent = item.name;
@@ -12192,7 +12190,7 @@ video {
         if (r.ok) { DUTY_OK[me] = Date.now(); showToast('지금은 근무 시간이라 바로 돼요 · 한 번 더 눌러 주세요', 3500); return; }
         showToast('🙋 관리자에게 요청을 보냈어요 · 승인되면 바로 입고할 수 있어요', 4500);
         DUTY_ASK.me = me; DUTY_ASK.n = 0; clearTimeout(DUTY_ASK.t); DUTY_ASK.t = setTimeout(dutyAskPoll, 30000);
-      }).withFailureHandler(function () { alert('요청을 못 보냈어요 · 인터넷 확인 후 다시'); }).requestDutyOverride(me);
+      }).withFailureHandler(function () { alert('요청을 못 보냈어요 · 다시 눌러 주세요'); }).requestDutyOverride(me);
     }
     function dutyAskPoll() {
       var me = DUTY_ASK.me; if (!me || me !== currentSelectedMember || ++DUTY_ASK.n > 60) return;
@@ -12450,7 +12448,7 @@ video {
     function invLinePhoto(j, i) { inbPhoto(function (u) { var l = INVS[j] && INVS[j].lines[i]; if (!l) return; l.photo = u; invSave(); invRender(); }); }
     function inb1New(q) {
       var nm = prompt('새 상품 이름을 적어 주세요 (박스에 적힌 이름 그대로)', q || ''); if (nm == null) return; nm = String(nm).replace(/\s+/g, ' ').trim(); if (!nm) return;
-      if ((RY_CAT && RY_CAT.items || []).some(function (x) { return String(x.name).split('\n')[0].replace(/\s+/g, '') === nm.replace(/\s+/g, ''); })) { alert('이미 앱에 있는 상품이에요. 검색 결과에서 골라 주세요.'); return; }
+      if ((RY_CAT && RY_CAT.items || []).some(function (x) { return String(x.name).split('\n')[0].replace(/\s+/g, '') === nm.replace(/\s+/g, ''); })) { alert('이미 앱에 있는 상품이에요 · 검색 결과에서 골라 주세요'); return; }
       INB1.add.push({ row: 0, name: nm, qty: 0, isNew: true, t: Date.now() }); inb1Save(); inb1S0(); inb1Rows(INB1.add.length - 1);
     }
     function inb1Add(row, name) {
@@ -12479,7 +12477,7 @@ video {
       document.getElementById('invBox').innerHTML = html;
     }
     function invClose(force) {
-      if (!force && INVS.some(function (r) { return r.success && (r.lines || []).length; }) && !confirm('명세서 확인 창을 닫을까요?\n(입고완료를 안 눌렀으면 읽은 내용이 사라져요)')) return;
+      if (!force && INVS.some(function (r) { return r.success && (r.lines || []).length; })) { ryConfirm({ title: '명세서 창을 닫을까요?', items: [{ d: '입고확인을 안 눌렀으면 읽은 내용이 사라져요' }], ok: '닫기' }).then(function (y) { if (y) invClose(true); }); return; }   // 1029 앱 확인창
       INB1.on = false;   // 1023 체크·추가한 건 2시간 동안 이 폰에 남음 (다시 열면 이어서)
       var d = document.getElementById('invDim'); if (d) { d.remove(); try { ryLockScroll(false); } catch (e) {} } INVS = []; INV_Q = []; INV_BUSY = false; invSave();
     }
@@ -12820,13 +12818,13 @@ video {
     }
 
     // 🚫 공급사 품절: 입고대기에서 빼고 특이사항에 품절 표시 → 🚫 품절 탭으로 (누르는 즉시 화면 반영)
-    function cancelSoldOut(rowNumber) {
+    function cancelSoldOut(rowNumber, ok0) {
       if (!checkMemberSelectedOrAlert()) return;
       const key = 'soldout-' + rowNumber;
       if (inFlight.has(key)) return;
       const target = cachedInboundItems.find(it => it.rowNumber === rowNumber);
       const nm = target ? String(target.name || '') : '';
-      if (!confirm('[' + nm + ']\n공급사 품절로 못 들어오는 상품인가요?\n\n확인을 누르면 특이사항에 "품절"이 기록되고 🚫 품절 탭으로 옮겨져요.\n(다시 발주하려면 시트 특이사항의 품절 글자를 지우면 최종 발주로 돌아와요)')) return;
+      if (!ok0) { ryConfirm({ title: '공급사 품절인가요?', items: [{ h: nm.split('\n')[0].slice(0, 28), d: '특이사항에 \'품절\'이 적히고 🚫 품절 탭으로 가요' }], ok: '품절 처리', danger: true }).then(function (y) { if (y) cancelSoldOut(rowNumber, true); }); return; }   // 1029 앱 확인창
       inFlight.add(key);
       showToast('품절로 옮겼어요');
 
@@ -13209,7 +13207,7 @@ video {
               var w = msLast12(), have = (MS.data && MS.data.months || []).concat([ym]);
               MS.ym = w.filter(function (m) { return have.indexOf(m) === -1; })[0] || '';
               showToast(ym + ' 판매 ' + r.saved + '개 상품을 올렸어요', 2600); msLoad(true);
-            }).withFailureHandler(function () { MS.busy = false; msRender(); showToast('서버 파일(Code.gs)을 새로 배포한 뒤에 쓸 수 있어요', 3000); })
+            }).withFailureHandler(function () { MS.busy = false; msRender(); showToast('앱을 새로고침한 뒤 다시 해 주세요', 3000); })
               .saveMonthlySales(ym, xs.map(function (x) { return { n: x.n, q: x.q }; }), currentSelectedMember || '');
           } catch (e) { MS.busy = false; msRender(); showToast('엑셀을 읽지 못했어요', 2600); }
         };
@@ -13609,6 +13607,7 @@ video {
     try { RY_CAT = JSON.parse(localStorage.getItem(RY_CAT_KEY) || 'null'); } catch (e) {}
     /* 0930: 서버가 '화면과 시트의 상품이 달라요'라고 하면(행이 지워져 번호가 밀림) 폰 목록을 버리고 바로 다시 받는다 */
     function ryCatStale() { if (RY_CAT) RY_CAT.t = 0; try { localStorage.removeItem(RY_CAT_KEY); } catch (e) {} ryCatLoad(true); }
+    try { window.alert = function (m) { try { ryAlert(m); } catch (e) {} }; } catch (eA) {}   /* 1029 앱 카드 알림 (아래 감싸기들이 이걸 다시 감쌈) */
     (function () { var a = window.alert; window.alert = function (m) { if (/달라요/.test(String(m || ''))) { try { ryCatStale(); } catch (e) {} } return a.call(window, m); }; })();   // 63곳의 alert 를 한 곳에서 잡는다
     function ryCatLoad(force) {
       if (_catLoading || typeof google === 'undefined' || !google.script || !google.script.run) return;
@@ -13990,7 +13989,7 @@ video {
       if (!(n > 0 && n < 100000)) { alert('들어온 수량을 숫자로 적어 주세요'); return; }
       var custom = QIN.why === '기타', why = custom ? String((document.getElementById('qinEtc') || {}).value || '').replace(/\s+/g, ' ').trim() : QIN.why || '';   // 1023 MJ '사유는 특별한 일 있을 때만' — 비면 서버가 '주문없이입고 · 명세서 없음'
       if (custom && !why) custom = false;   // 기타를 눌러 놓고 안 적었으면 그냥 주문없이입고
-      if (!QIN.row && (RY_CAT && RY_CAT.items || []).some(function (x) { return String(x.name).split('\n')[0].replace(/\s+/g, '') === name.replace(/\s+/g, ''); })) { alert('이미 앱에 있는 상품이에요. 검색해서 그 상품의 [📦 바로 입고]를 눌러 주세요.'); return; }
+      if (!QIN.row && (RY_CAT && RY_CAT.items || []).some(function (x) { return String(x.name).split('\n')[0].replace(/\s+/g, '') === name.replace(/\s+/g, ''); })) { alert('이미 앱에 있는 상품이에요 · 검색해서 [📦 바로 입고]를 눌러 주세요'); return; }
       if (!confirm('[' + name + '] ' + n + '개 · ' + (why || '주문없이입고') + '\n' + (QIN.row ? '' : '🆕 새 상품으로 등록하고 ') + '입고할까요?')) return;
       var q = QIN;
       /* 1029 MJ '누르면 바로 끝난 것처럼' — 창을 먼저 닫고 입고는 뒤에서 (같은 입고는 서버가 두 번 안 넣음) · 안 되면 무엇이 안 됐는지 알림 */
@@ -14173,24 +14172,31 @@ video {
     let _toastTimer = null;
     /* 1029 MJ '입고확인 누르면 알림창이 너무 안 예뻐 — 우리 앱 스타일로' — 브라우저 기본 confirm 대신 앱 카드 확인창 (Promise → true/false)
        o = 글자 또는 { title, items: [{ t: 'bad'|'warn'|'', h: 굵은 줄, d: 설명(줄바꿈 가능) }], note, ok, cancel } · Enter = 확인 · Esc·뒤로가기·바깥 = 취소 */
-    function ryConfirm(o) {
+    var RY_CF_P = Promise.resolve();   // 확인창·알림창은 하나씩 차례로
+    function ryConfirm(o) { var p = RY_CF_P.then(function () { return ryConfirm_(o); }); RY_CF_P = p.catch(function () {}); return p; }
+    function ryConfirm_(o) {
       if (typeof o === 'string') o = { title: o.split('\n')[0], items: o.split('\n').slice(1).filter(Boolean).map(function (x) { return { h: x }; }) };
       return new Promise(function (res) {
         var old = document.getElementById('ryCf'); if (old) { old._res && old._res(false); old.remove(); }
         var d = document.createElement('div'); d.id = 'ryCf'; d.className = 'ry-cf'; d.setAttribute('role', 'alertdialog'); d.setAttribute('aria-modal', 'true'); d.setAttribute('aria-labelledby', 'ryCfT');
-        var row = function (x) { return '<div class="ry-cf-i' + (x.t ? ' ' + x.t : '') + '"><b>' + escapeHtml(x.h || '') + '</b>' + (x.d ? '<p>' + escapeHtml(x.d) + '</p>' : '') + '</div>'; };
+        var row = function (x) { return '<div class="ry-cf-i' + (x.t ? ' ' + x.t : '') + '">' + (x.h ? '<b>' + escapeHtml(x.h) + '</b>' : '') + (x.d ? '<p>' + escapeHtml(x.d) + '</p>' : '') + '</div>'; };
         d.innerHTML = '<div class="ry-cf-dim"></div><div class="ry-cf-card" role="document"><b class="ry-cf-t" id="ryCfT">' + escapeHtml(o.title || '확인') + '</b>'
           + ((o.items || []).length ? '<div class="ry-cf-l">' + o.items.map(row).join('') + '</div>' : '') + (o.note ? '<p class="ry-cf-n">' + escapeHtml(o.note) + '</p>' : '')
-          + '<div class="ry-cf-b"><button type="button" class="no" id="ryCfNo">' + escapeHtml(o.cancel || '취소') + '</button><button type="button" class="ok' + (o.danger ? ' danger' : '') + '" id="ryCfOk">' + escapeHtml(o.ok || '확인') + '</button></div></div>';
+          + '<div class="ry-cf-b' + (o.alert ? ' one' : '') + '">' + (o.alert ? '' : '<button type="button" class="no" id="ryCfNo">' + escapeHtml(o.cancel || '취소') + '</button>') + '<button type="button" class="ok' + (o.danger ? ' danger' : '') + '" id="ryCfOk">' + escapeHtml(o.ok || '확인') + '</button></div></div>';
         var done = function (v) { if (d._done) return; d._done = 1; document.removeEventListener('keydown', key, true); d.classList.remove('on'); setTimeout(function () { d.remove(); try { rySync(); } catch (e) {} }, 160); res(v); };
         var key = function (e) { if (!document.body.contains(d)) return; if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); done(false); } else if (e.key === 'Enter' && !e.isComposing && !e.repeat) { e.preventDefault(); e.stopPropagation(); done(document.activeElement && document.activeElement.id === 'ryCfNo' ? false : true); } };
         d._res = done; document.addEventListener('keydown', key, true);
         d.querySelector('.ry-cf-dim').onclick = function () { done(false); };
-        d.querySelector('#ryCfNo').onclick = function () { done(false); };
+        if (d.querySelector('#ryCfNo')) d.querySelector('#ryCfNo').onclick = function () { done(false); };
         d.querySelector('#ryCfOk').onclick = function () { done(true); };
         document.body.appendChild(d); void d.offsetWidth; d.classList.add('on');
         setTimeout(function () { try { d.querySelector('#ryCfOk').focus({ preventScroll: true }); } catch (e) {} try { rySync(); } catch (e) {} }, 30);
       });
+    }
+    /* 1029 브라우저 기본 경고창(alert)도 앱 카드로 — 첫 줄 = 제목, 나머지 = 설명 · 누르기 전까지 기다리지 않음(뒤 코드는 그대로 진행) */
+    function ryAlert(msg) {
+      var L = String(msg == null ? '' : msg).replace(/\r/g, '').split('\n'), first = (L.shift() || '').trim(), rest = L.join('\n').trim();
+      return ryConfirm({ title: first || '알림', items: rest ? [{ d: rest }] : [], ok: '확인', alert: true });
     }
     function showToast(msg, ms) {
       let el = document.getElementById('appToast');
@@ -14251,7 +14257,7 @@ video {
       if (!checkMemberSelectedOrAlert()) return;
       const key = 'reorder-' + rowNumber;
       if (inFlight.has(key)) return;
-      if (!Number.isFinite(n) || n <= 0 || n > 99999) { alert('수량을 1~99999 사이 숫자로 입력해 주세요.'); return; }
+      if (!Number.isFinite(n) || n <= 0 || n > 99999) { alert('수량을 숫자로 적어 주세요'); return; }
       if (!confirm(`[${src && src.name ? src.name : '이 상품'}] 을(를) ${n}${unit} 다시 주문 요청할까요?\n(이전 입고 기록은 📅 입고내역에 그대로 남습니다)`)) return;
       inFlight.add(key);
       /* 1002 빠르게: 바로 보여 주고 뒤에서 저장, 실패하면 되돌림 */
@@ -14399,7 +14405,7 @@ video {
       const input = document.getElementById((isMobile ? 'm-s-qty-' : 's-qty-') + rowNumber);
       const raw = input ? input.value.trim() : '1';
       const n = parseInt(raw, 10);
-      if (!Number.isFinite(n) || n <= 0 || n > 99999) { alert('수량을 1~99999 사이 숫자로 입력해 주세요.'); return; }
+      if (!Number.isFinite(n) || n <= 0 || n > 99999) { alert('수량을 숫자로 적어 주세요'); return; }
       const u = rySUnit(rowNumber);
 
       inFlight.add(key);
@@ -14439,7 +14445,7 @@ video {
     function copyKakaoInboundNotice() {
       var items = todayInboundItems();
       if (!items.length) {
-        alert('오늘 입고 완료된 품목이 아직 없어요.');
+        alert('오늘 입고한 상품이 아직 없어요');
         return;
       }
       var byCat = {};
@@ -14462,7 +14468,7 @@ video {
         text += '\n';
       });
       text += '확인 부탁드립니다 🙏';
-      var done = function () { showToast('📋 오늘 입고 내역을 복사했어요. 카톡에 붙여넣으세요'); };
+      var done = function () { showToast('📋 오늘 입고 내역을 복사했어요 · 카톡에 붙여넣기'); };
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(done).catch(function () { fallbackCopy(text, done); });
       } else { fallbackCopy(text, done); }
@@ -14505,12 +14511,12 @@ video {
         ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px';
         document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
         done();
-      } catch (e) { alert('복사에 실패했어요. 아래 내용을 길게 눌러 복사해주세요.\n\n' + text); }
+      } catch (e) { alert('복사가 안 됐어요 · 아래 글을 길게 눌러 복사해 주세요\n\n' + text); }
     }
 
     function copyKakaoStockCheckNotice() {
       if (!cachedStockCheckItems || cachedStockCheckItems.length === 0) {
-        alert('오늘 재고확인(주문취소)된 품목이 없습니다.');
+        alert('오늘 재고확인된 상품이 없어요');
         return;
       }
       let text = `📢 [성수레디영 재고확인 안내] (${cachedTodayStr})\n매장 및 창고에 재고가 확인되어 주문 요청이 취소된 품목입니다.\n\n`;
@@ -14518,9 +14524,9 @@ video {
         text += `${idx + 1}. ${escapeHtml(item.name)} (요청: ${item.targetQty}${item.unit || '개'})\n`;
       });
       navigator.clipboard.writeText(text).then(() => {
-        alert('📋 카카오톡 공지문이 복사되었습니다!');
+        alert('📋 카톡 공지를 복사했어요');
       }).catch(() => {
-        alert('복사에 실패했습니다. 브라우저 권한을 확인해 주세요.');
+        alert('복사가 안 됐어요 · 다시 눌러 주세요');
       });
     }
 
@@ -14930,7 +14936,7 @@ video {
       if (inFlight.has(key)) return;
       var inp = document.getElementById('rf-qty-' + row);
       var n = parseInt(inp ? inp.value.trim() : '1', 10);
-      if (!Number.isFinite(n) || n <= 0 || n > 99999) { alert('수량을 1~99999 사이 숫자로 입력해 주세요.'); return; }
+      if (!Number.isFinite(n) || n <= 0 || n > 99999) { alert('수량을 숫자로 적어 주세요'); return; }
       var unit = it.unit === '박스' ? '박스' : '개', nm0 = ryNameOf(row);
       inFlight.add(key);
       /* 1029 MJ '요청 중 시간이 너무 길다 · 1차 검토로 들어가는 모션' — 검색 [+ 요청]처럼 바로 보여 주고 뒤에서 저장, 안 되면 되돌림 */
@@ -15071,7 +15077,7 @@ video {
     }
     function pfaRun() {
       if (PFA.running) return;
-      if (typeof google.script.run.autoFillPhotos !== 'function') { showToast('서버 파일(Code.gs)을 새 버전으로 교체 · 배포해 주세요'); return; }
+      if (typeof google.script.run.autoFillPhotos !== 'function') { showToast('앱을 새로고침한 뒤 다시 해 주세요'); return; }
       PFA.running = true; pfaRender();
       showToast('인터넷에서 사진을 찾는 중이에요 · 1~2분 걸릴 수 있어요', 3000);
       google.script.run
@@ -16435,14 +16441,14 @@ video {
     function ntRsvp(btn) {
       var id = btn.dataset.id, n = ntFind(id), me = ntMe();
       if (!n || !n.rsvp) return;
-      if (!me) { showToast('위에서 내 이름을 먼저 골라 주세요', 1800); return; }
+      if (!me) { showToast('먼저 위에서 내 이름을 골라 주세요', 1800); return; }
       var cur = n.rsvp.yes.indexOf(me) !== -1 ? '참석' : n.rsvp.no.indexOf(me) !== -1 ? '불참' : '', next = cur === btn.dataset.c ? '' : btn.dataset.c, old = { yes: n.rsvp.yes.slice(), no: n.rsvp.no.slice() };
       n.rsvp.yes = n.rsvp.yes.filter(function (x) { return x !== me; }); n.rsvp.no = n.rsvp.no.filter(function (x) { return x !== me; });
       if (next) n.rsvp[next === '참석' ? 'yes' : 'no'].push(me);
       ntRedraw(id);
       google.script.run
         .withSuccessHandler(function (r) { if (r && r.success) { n.rsvp.yes = r.yes; n.rsvp.no = r.no; ntRedraw(id); showToast(next ? next + '으로 표시했어요' : '참석 여부를 지웠어요', 1400); } else { n.rsvp = old; ntRedraw(id); showToast((r && r.message) || '저장하지 못했어요', 2000); } })
-        .withFailureHandler(function () { n.rsvp = old; ntRedraw(id); showToast('저장하지 못했어요 · 인터넷 확인', 2000); })
+        .withFailureHandler(function () { n.rsvp = old; ntRedraw(id); showToast('저장이 안 됐어요 · 다시 눌러 주세요', 2000); })
         .setNoticeRsvp(id, next, me);
     }
     function ntCmtSend(f) {
@@ -17980,7 +17986,7 @@ function scrPick(i, sub) {
     SCR.items = SCR.items.filter(function (y) { return y.row !== x.row; }); SCR.total = Math.max(0, (SCR.total || 1) - 1);
     var live = findItemByRow(x.row); if (live) { live.category = r.done[0].cat; renderAllViews(); }
     scrRender(); showToast(x.name + ' → ' + catLabel(r.done[0].cat));
-  }).withFailureHandler(function () { delete SCR.busy[x.row]; if (rowEl) rowEl.classList.remove('busy'); showToast('저장하지 못했어요. 잠시 뒤 다시 눌러주세요'); })
+  }).withFailureHandler(function () { delete SCR.busy[x.row]; if (rowEl) rowEl.classList.remove('busy'); showToast('저장이 안 됐어요 · 다시 눌러 주세요'); })
     .applySubcat([{ row: x.row, cat: catJoin(x.top, sub), name: x.name }], currentSelectedMember || '');
 }
 /* 0930 사진 없는 상품 찍기 — 폰 상품 목록(RY_CAT)·탭 목록에서 사진 없는 것만 모아 카메라로 바로 넣기 */
@@ -18013,7 +18019,7 @@ function moSnooze(row, btn) {
   showToast(it.name + ' · ' + days + '일 뒤에 다시 보여요', 2600);
   var back = function (msg) { list.splice(idx, 0, it); els.forEach(function (e) { e.style.display = ''; }); bump(1); showToast(msg, 3000); };
   google.script.run.withSuccessHandler(function (r) { if (!r || !r.ok) back((r && r.message) || '저장하지 못했어요'); })
-    .withFailureHandler(function () { back('서버 파일(Code.gs)을 새로 배포한 뒤에 쓸 수 있어요'); })
+    .withFailureHandler(function () { back('앱을 새로고침한 뒤 다시 해 주세요'); })
     .snoozeMissed(row, it.name, days, currentSelectedMember || '');
 }
 function moSales(it) { var n = Number(String(it.sales15 == null ? '' : it.sales15).replace(/[^0-9.]/g, '')); return isFinite(n) ? n : 0; }
@@ -18522,6 +18528,7 @@ html body:not(#_):not(#_) .ry-cf-b .no{background:#f2f2f7!important;color:#1d1d1
 html body:not(#_):not(#_) .ry-cf-b .ok{background:var(--ry-brand,#0066cc)!important;color:#fff!important}
 html body:not(#_):not(#_) .ry-cf-b button:focus:not(:focus-visible){outline:none!important;box-shadow:none!important}
 html body:not(#_):not(#_) .ry-cf-b .ok.danger{background:var(--ry-bad,#b42318)!important}
+.ry-cf-b.one{grid-template-columns:1fr}
 @media(min-width:720px){ html:not(#q):not(#w):not(#e) body:not(#r) .edu-repf .edu-draft-a{grid-template-columns:1fr 1fr} html:not(#q):not(#w):not(#e) body:not(#r) .edu-draft-a{grid-template-columns:2fr 1fr 1fr} html:not(#q):not(#w):not(#e) body:not(#r) .edu-draft-a .edu-btn.pri{grid-column:auto} html:not(#q):not(#w):not(#e) body:not(#r) .edu-draft-a .edu-btn.one{grid-column:auto} html:not(#q):not(#w):not(#e) body:not(#r) .edu-draft-a .edu-btn.one:only-child{grid-column:1/-1} html:not(#q):not(#w):not(#e) body:not(#r) .edu-draft-a .edu-btn.one+.edu-btn.one{grid-column:span 2} }
 html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-srcjump{display:inline;min-height:0!important;height:auto;padding:0!important;margin:0;line-height:inherit;vertical-align:baseline;border-radius:0!important}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-claim dt{color:#155EEF}
@@ -19279,7 +19286,7 @@ function eduRepOpen(id) {
 function eduRepSend(id, btn) {
   var t = document.getElementById('eduRepT'), text = t ? t.value.trim() : '', me = eduMeSure(), run = eduRun();
   if (text.length < 2) { showToast('무엇이 이상한지 적어 주세요', 1600); if (t) t.focus(); return; }
-  if (!me) { showToast('먼저 내 이름을 골라 주세요', 1800); return; }
+  if (!me) { showToast('먼저 위에서 내 이름을 골라 주세요', 1800); return; }
   if (!run) return;
   /* 1029 바로 끝난 것처럼 — 먼저 받은 걸로 보여 주고 뒤에서 보냄 · 안 되면 적은 글과 함께 알림 */
   var d = EDU.data, rep = { at: eduToday() + ' ' + new Date(Date.now() + 9 * 3600000).toISOString().slice(11, 16), by: me, id: id, text: text.slice(0, 300) };
@@ -20127,11 +20134,11 @@ function eduUpload(inp) {
   var f = inp.files && inp.files[0], F = EDU.form; inp.value = '';
   if (!f || !F) return;
   var run = eduRun();
-  if (!run || typeof run.uploadEduSlide !== 'function') { showToast('서버 파일(Code.gs)을 새로 배포한 뒤에 올릴 수 있어요', 2400); return; }
+  if (!run || typeof run.uploadEduSlide !== 'function') { showToast('앱을 새로고침한 뒤 다시 해 주세요', 2400); return; }
   eduFormKeep(); F.busy = true; eduFormDraw(F.id);
   resizeImageFile(f, 2000, 0.86).then(function (du) {
     run.withSuccessHandler(function (r) { F.busy = false; if (r && r.ok && r.url) { F.img = r.url; showToast('슬라이드 사진을 올렸어요', 1400); } else showToast((r && r.message) || '사진을 올리지 못했어요', 2200); eduFormKeep(); eduFormDraw(F.id); })
-      .withFailureHandler(function () { F.busy = false; showToast('사진을 올리지 못했어요 · 서버 파일(Code.gs)을 새로 배포했는지 확인해 주세요', 2600); eduFormKeep(); eduFormDraw(F.id); })
+      .withFailureHandler(function () { F.busy = false; showToast('사진을 못 올렸어요 · 다시 눌러 주세요', 2600); eduFormKeep(); eduFormDraw(F.id); })
       .uploadEduSlide(du, (F.slide === 'new' ? '새묶음' : '슬라이드' + F.slide), eduMe());
   }, function () { F.busy = false; showToast('사진을 읽지 못했어요', 1800); eduFormDraw(F.id); });
 }
@@ -20168,7 +20175,7 @@ function eduSave(btn) {
     pkind: val('pkind'), claim: val('claim'), caution: val('caution') });
   change.push(card);
   var run = eduRun();
-  if (!run || typeof run.saveEduCard !== 'function') { alert('서버 파일(Code.gs)을 새 버전으로 교체 · 배포한 뒤에 저장할 수 있어요.'); return; }
+  if (!run || typeof run.saveEduCard !== 'function') { alert('앱을 새로고침한 뒤 다시 해 주세요'); return; }
   var payload = eduPayload(change);
   /* 1029 바로 끝난 것처럼 — 화면에 먼저 넣고 닫음, 저장은 뒤에서 · 안 되면 적던 화면을 다시 열어 줌 */
   eduApply(payload); EDU.form = null; showToast(orig ? '고친 내용을 저장했어요' : '자료를 추가했어요', 1500);
@@ -20186,7 +20193,7 @@ function eduDelete(id, btn) {
   if (!run) return;
   var prev = setBtnBusy(btn, '✓ 지웠어요'), seed = EDU.data.seed;   // 1029 버튼은 바로 '지웠어요' (화면 정리는 서버 답 뒤 — 되돌리기 어려운 삭제라)
   var done = function (r) { restoreBtn(btn, prev); if (!r || !r.ok) { alert('지우지 못했어요: ' + ((r && r.message) || '')); return; } eduApply(seed ? eduPayload([], id) : [], id); showToast(c.rowType === 'ing' ? '성분을 지웠어요' : '자료를 지웠어요', 1400); EDU.stack = [{ v: 'hub' }]; eduRender(); };
-  var fail = function () { restoreBtn(btn, prev); alert('지우지 못했어요. 서버 파일(Code.gs)을 새로 배포했는지 확인해 주세요.'); };
+  var fail = function () { restoreBtn(btn, prev); alert('지우지 못했어요 · 다시 눌러 주세요'); };
   if (seed) run.withSuccessHandler(done).withFailureHandler(fail).saveEduCard(eduPayload([], id), eduMe());
   else run.withSuccessHandler(done).withFailureHandler(fail).deleteEduCard(id, eduMe());
 }
@@ -20595,18 +20602,18 @@ function rlCardHtml(r) {
 }
 function rlReadAll() { var u = rlUnread(); if (u.length && confirm('안 읽은 ' + u.length + '개를 모두 읽으셨나요?')) rlRead(u.map(function (r) { return r.id; })); }
 function rlRead(ids) {
-  var me = rlMe(); if (!me) { showToast('위에서 내 이름을 먼저 골라 주세요', 1800); return; }
+  var me = rlMe(); if (!me) { showToast('먼저 위에서 내 이름을 골라 주세요', 1800); return; }
   ids = (ids || []).filter(Boolean); if (!ids.length) return;
   var rules = (RL.data && RL.data.rules) || [], undo = [];
   rules.forEach(function (r) { if (ids.indexOf(r.id) !== -1 && (r.reads || []).indexOf(me) === -1) { r.reads = (r.reads || []).concat([me]); undo.push(r); } });
   rlRender(); rlBadge(); showToast(ids.length > 1 ? ids.length + '개 숙지했어요' : '숙지했어요', 1400);
   google.script.run.withSuccessHandler(function (r) { if (!r || !r.success) { undo.forEach(function (x) { x.reads = x.reads.filter(function (n) { return n !== me; }); }); rlRender(); rlBadge(); showToast((r && r.message) || '저장하지 못했어요', 2000); } })
-    .withFailureHandler(function () { undo.forEach(function (x) { x.reads = x.reads.filter(function (n) { return n !== me; }); }); rlRender(); rlBadge(); showToast('저장하지 못했어요 · 인터넷 확인', 2000); })
+    .withFailureHandler(function () { undo.forEach(function (x) { x.reads = x.reads.filter(function (n) { return n !== me; }); }); rlRender(); rlBadge(); showToast('저장이 안 됐어요 · 다시 눌러 주세요', 2000); })
     .readRules(ids, me);
 }
 /* ── 쓰기 · 고치기 ── */
 function rlEdit(id) {
-  if (!rlMe()) { showToast('위에서 내 이름을 먼저 골라 주세요', 1800); return; }
+  if (!rlMe()) { showToast('먼저 위에서 내 이름을 골라 주세요', 1800); return; }
   var r = id ? ((RL.data && RL.data.rules) || []).filter(function (x) { return x.id === id; })[0] : null;
   RL.edit = { id: r ? r.id : '', topic: r ? r.topic : (RL.topic && RL.topic.indexOf('__') !== 0 ? RL.topic : ''), photos: r ? r.photos.map(function (p) { var o = p.l ? { u: p.u, m: p.m, l: p.l } : { u: p.u, m: p.m }; if (p.v) o.v = p.v; return o; }) : [], archived: r ? r.archived : false };
   document.getElementById('rlSheetT').textContent = r ? '규칙 고치기' : '규칙 추가';
@@ -20663,7 +20670,7 @@ function rlArchive() {
   var on = !e.archived;
   if (on && !confirm('이 규칙을 보관함으로 옮길까요?\n(목록과 알림에서 빠지고, 보관함에서 다시 꺼낼 수 있어요)')) return;
   google.script.run.withSuccessHandler(function (r) { if (r && r.success) { rlEditClose(); showToast(on ? '보관함으로 옮겼어요' : '다시 꺼냈어요', 1600); rlLoad(); } else showToast((r && r.message) || '실패', 2000); })
-    .withFailureHandler(function () { showToast('실패 · 인터넷 확인', 2000); }).archiveRule(e.id, on, rlMe());
+    .withFailureHandler(function () { showToast('안 됐어요 · 다시 눌러 주세요', 2000); }).archiveRule(e.id, on, rlMe());
 }
 /* ===== 1016 새 공지 알림: 날씨 줄 '📢 공지' 빨간 점 + 앱 열 때 위에 작은 팝업 (본 시각은 이 폰에 사람마다 저장) ===== */
 function ntSeenKey() { return 'ntSeen_' + (rlMe() || '-'); }
@@ -20838,7 +20845,7 @@ function evBoxHtml(n) {
 }
 function evEnd(btn) {
   var id = btn.dataset.id, on = btn.dataset.on === '1', me = rlMe(), n = ntFind(id);
-  if (!me) { showToast('위에서 내 이름을 먼저 골라 주세요', 1800); return; }
+  if (!me) { showToast('먼저 위에서 내 이름을 골라 주세요', 1800); return; }
   if (on && !confirm('이 이벤트를 끝낼까요?\n(상품 옆 🎁 배지가 사라져요 · 다시 진행도 할 수 있어요)')) return;
   var old = n && n.ev ? JSON.parse(JSON.stringify(n.ev)) : null;   // 바로 바꿔 보여 주고(서버가 느릴 때 대비), 실패하면 되돌림
   var apply = function (ev) { if (n && ev) n.ev = ev; evIndex(); try { ntRedraw(id); } catch (e) {} evRefreshLists(); };
@@ -20847,12 +20854,12 @@ function evEnd(btn) {
   google.script.run.withSuccessHandler(function (r) {
     if (!r || !r.success) { apply(old); showToast((r && r.message) || '저장하지 못했어요', 2000); return; }
     apply(r.ev);
-  }).withFailureHandler(function () { apply(old); showToast('저장하지 못했어요 · 인터넷 확인', 2000); }).setEventEnded(id, on, me);
+  }).withFailureHandler(function () { apply(old); showToast('저장이 안 됐어요 · 다시 눌러 주세요', 2000); }).setEventEnded(id, on, me);
 }
 function evRefreshLists() { try { RY_SR_FULL = ''; if (typeof lastSearchResults !== 'undefined' && lastSearchResults && lastSearchResults.length && RY_SR.q) ryRenderSearchSafe(lastSearchResults, RY_SR.q); } catch (e) {} try { renderAllViews(); } catch (e2) {} }
 /* ── 등록 ── */
 function evOpen() {
-  if (!rlMe()) { showToast('위에서 내 이름을 먼저 골라 주세요', 1800); return; }
+  if (!rlMe()) { showToast('먼저 위에서 내 이름을 골라 주세요', 1800); return; }
   ['evTitle', 'evLine', 'evQ', 'evBody', 'evUntil'].forEach(function (k) { document.getElementById(k).value = ''; });
   EV.pick = []; EV.hits = []; evHitsRender(); document.getElementById('evErr').textContent = '';
   document.getElementById('evDim').hidden = false; document.getElementById('evSheet').hidden = false;
