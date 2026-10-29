@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvt5vkys">
+  <meta name="ry-build" content="mvt8bhk7">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -10968,6 +10968,9 @@ video {
               ? `<span class="inline-flex items-center gap-1 bg-slate-100 text-slate-700 border border-slate-200 px-1.5 py-0.2 rounded text-[10px] font-black" title="발주일 → 입고일">${RYI.timer}${leadDays}일 소요</span>`
               : '';
 
+            /* 1029 MJ '입고된 시간도 표시' — 서버 inTime(1026부터 저장) */
+            const timeChip = /^\d{2}:\d{2}/.test(item.inTime || '') ? `<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.2 rounded text-[10px] font-black" title="입고완료를 누른 시각">🕒 ${item.inTime.slice(0, 5)} 입고</span>` : '';
+
             itemsHtml += `
               <div class="p-3 sm:p-3.5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-x-2.5 gap-y-2 hover:bg-slate-50/70 transition" id="hist-row-${item.isLog ? 'log' + item.logRow : item.rowNumber}" data-item="${item.rowNumber}">
                 <div class="flex items-center gap-3 min-w-0 flex-1 basis-full sm:basis-auto">
@@ -10976,6 +10979,7 @@ video {
                     <div class="font-bold text-slate-900 text-xs sm:text-sm break-keep leading-snug">${escapeHtml(item.name)} ${endedBadge(item)}</div>
                     <div class="text-[11px] text-slate-500 flex flex-wrap items-center gap-2">
                       <span>수량: <b class="text-slate-800 font-extrabold">${item.targetQty}${item.unit || '개'}</b></span>
+                      ${timeChip}
                       ${mgrBadge}
                       ${leadChip}
                       ${reqInfo}
@@ -12328,6 +12332,7 @@ video {
         try { delete DELAY_REASONS[delayKey(item)]; } catch (eD) {}
         item.inboundDate = satD || cachedTodayStr || '오늘';
         item.inboundManager = currentSelectedMember;
+        if (!satD) item.inTime = new Date(Date.now() + 9 * 3600e3).toISOString().slice(11, 19);   // 1029 바로 시각 표시 (서버도 같은 때 저장)
         if (_got != null) { item.targetQty = _got.q; item.unit = _got.u; delete INB_GOT[rowNumber]; }
         cachedHistoryItems.unshift(item);
         renderAllViews();
