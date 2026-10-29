@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvt59gxl">
+  <meta name="ry-build" content="mvt5kla1">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8984,6 +8984,7 @@ video {
       var sp = document.getElementById('setPage');
       if (sp && sp.classList.contains('on')) { L.push('setpage'); if (typeof SP !== 'undefined' && SP.view === 'detail') L.push('setdetail'); }
       var dp = document.getElementById('dshPage'); if (dp && dp.classList.contains('on')) L.push('dsh');   /* 1029 대시보드 */
+      var cf = document.getElementById('ryCf'); if (cf && !cf._done) L.push('cf');   /* 1029 앱 확인창 — 뒤로가기 = 취소 */
       if (ryShown('ryLaunch')) L.push('launch');
       if (ryShown('mbReader')) { L.push('mb'); if (typeof MB !== 'undefined' && MB.view === 'archive' && MB.cur) L.push('mb'); }
       if (ryShown('scrDim')) L.push('scr');
@@ -9033,6 +9034,7 @@ video {
         else if (top === 'launch') ryLaunchClose();
         else if (top === 'setdetail' || top === 'setpage') spBack();
         else if (top === 'dsh') dshClose();
+        else if (top === 'cf') { var cfe = document.getElementById('ryCf'); if (cfe && cfe._res) cfe._res(false); }
         else if (top === 'search') clearGlobalSearch();
         else if (top === 'tab') { RY_NAV.tabs = [RY_NAV.tabs[0]]; RY_NAV._sw(RY_NAV.tabs[0]); window.scrollTo(0, 0); }
       } catch (e) {}
@@ -12302,14 +12304,19 @@ video {
       google.script.run.withSuccessHandler(function (r) { if (r && r.success === false && r.message && me === currentSelectedMember) alert('⚠️ 지금 근무 중인 이름이 아닌 것 같아요\n\n골라진 이름: ' + me + '\n내 이름이 맞는지 확인해 주세요.\n(근무 중이 아닌 이름으로는 입고가 안 돼요 · 오른쪽 위 이름을 눌러 바꿀 수 있어요)\n\n일찍 와서 근무 중이면: 입고할 때 [관리자에게 요청]을 보내면 돼요.'); else if (r && r.success) DUTY_OK[me] = Date.now(); }).withFailureHandler(function () {}).inboundDutyCheck(me);
     }
     // 1028 다시 켤 때 dutyWarn 끔 (입고·세트 기록 때만 dutyGate)
-    function completeInbound(rowNumber, quiet, cb) {
+    function completeInbound(rowNumber, quiet, cb, ok0) {
       if (!checkMemberSelectedOrAlert()) return;
       if (!quiet && !(DUTY_OK[currentSelectedMember || ''] && Date.now() - DUTY_OK[currentSelectedMember || ''] < 300000)) { dutyGate(function () { completeInbound(rowNumber, quiet, cb); }); return; }   // 1023
       const key = 'complete-' + rowNumber;
       if (inFlight.has(key)) return;
       const satD = rySatDateFor(rowNumber);   /* 0925: '토요일에 도착했어요' 를 눌렀으면 그 토요일 (아니면 빈 값 = 오늘) */
       const _it0 = (cachedInboundItems || []).find(it => it.rowNumber === rowNumber) || {}, _got = quiet ? null : INB_GOT[rowNumber];   // 1027 온 수량을 바꿨으면
-      if (!quiet && !confirm((_got != null ? '이 상품을 온 수량 ' + _got.q + _got.u + '(주문 ' + inbOrd(_it0).q + inbOrd(_it0).u + ')로' : '이 상품을') + ' [✅ 최종 입고완료] 처리할까요?' + (satD ? '\n입고일: ' + satD + ' (토요일 도착)' : '') + '\n(실수했을 땐 📅 입고내역 탭의 ⏪ 되돌리기로 복구할 수 있어요)')) return;
+      if (!quiet && !ok0) {   /* 1029 MJ '알림창을 우리 앱 스타일로' */
+        var _nmC = String(_it0.name || '').split('\n')[0];
+        ryConfirm({ title: '입고완료할까요?', ok: '입고완료', items: [{ t: _got != null ? 'warn' : '', h: _nmC.slice(0, 28), d: _got != null ? '주문 ' + inbOrd(_it0).q + inbOrd(_it0).u + ' → 온 ' + _got.q + _got.u : '주문 수량 ' + inbOrd(_it0).q + inbOrd(_it0).u + ' 그대로' }].concat(satD ? [{ h: '입고일 ' + satD + ' (토요일 도착)' }] : []), note: '잘못 넣었으면 입고내역에서 ⏪ 되돌리기' })
+          .then(function (y) { if (y) completeInbound(rowNumber, quiet, cb, true); });
+        return;
+      }
       inFlight.add(key);
       const _who = String(((cachedInboundItems.find(it => it.rowNumber === rowNumber) || {}).requester) || '').trim();
       showToast((satD ? '최종 입고완료 처리했어요 · 입고일 ' + satD : '최종 입고완료 처리했어요') + (_who && _who !== currentSelectedMember ? ' · ' + _who + '님 앱에 입고 알림이 떠요' : ''), _who ? 3500 : 2200);
@@ -12582,17 +12589,17 @@ video {
           if (!has && !l.doneName && l.catName && !l.userPick && !l.doneSkip) { var hd = invDoneByLog(l, r.date); if (hd) { l.doneName = l.catName; l.doneDate = String(hd.inboundDate).slice(0, 10); l.doneQty = hd.targetQty + (hd.unit || '개'); } }   // 1023
           if (!has) tag = l.doneName ? '<span class="inv-tag inv-ok">✓ 이미 입고완료 · ' + escapeHtml(l.doneDate + ' · ' + l.doneQty) + '</span>'
             : l.newItem ? '<span class="inv-tag inv-no">🆕 새 상품으로 등록해요 · ' + escapeHtml(l.clean || l.name) + '</span><div class="inv-ph">' + (l.photo ? '<img src="' + l.photo + '" alt="찍은 상품 사진" onclick="event.preventDefault(); invLinePhoto(' + j + ',' + i + ')">' : '') + '<button type="button" class="inv-alt" onclick="event.preventDefault(); invLinePhoto(' + j + ',' + i + ')">' + (l.photo ? '📷 다시 찍기' : '📷 상품 사진 찍기 (앱에 사진으로 들어가요)') + '</button></div><div class="inv-n">[입고확인]을 누르면 이 이름으로 새 상품 등록해요 <button type="button" class="inv-alt" style="margin:4px 0 0" onclick="event.preventDefault(); invRename(' + j + ',' + i + ')">✏️ 이름 고치기</button></div>'
-            : '<span class="inv-tag inv-warn">📋 주문내역 없는 상품 · 체크하고 [입고확인]을 누르면 재고에 들어가요 · 실제로 없으면 체크 해제</span>' + (l.catName ? '<div class="inv-n">위 상자의 상품이 아니면 [🔁 다른 상품으로 바꾸기] 또는 [🆕 새 상품으로 등록]</div>' : '');
+            : '<span class="inv-tag inv-warn">📋 주문 안 한 상품 · 체크하면 재고에 넣어요</span>' + (l.catName ? '<div class="inv-n">다른 상품이면 [🔁 다른 상품으로 바꾸기]</div>' : '');
           else if (dup) tag = '<span class="inv-tag inv-no">다른 명세서에도 있는 같은 상품이에요</span>';
           else if (r.wrongStore) tag = r.holdWhy ? '<span class="inv-tag inv-warn">⚠️ 이미 들어간 명세서라 빼 뒀어요</span>' : '<span class="inv-tag inv-up">⛔ 다른 곳 명세서 · 입고하지 마세요</span>';
           else {   // 1020 MJ '더 들어온 건 괜찮은데 덜 들어왔을 때가 문제' → 주문 수량과 비교해서 모자라면 빨간 경고
             var oqN = parseFloat(String(l.orderQty || '').replace(/[^0-9.]/g, '')) || 0, aqN = Number(l.bundle ? l.qty : (l.appQty != null ? l.appQty : l.qty)) || 0, dsc = l.early ? ' · 발주일보다 빠른 명세서' : '';
-            if (l.qtyOk || (oqN > 0 && aqN === oqN)) { tag = '<span class="inv-tag inv-ok">✓ 수량 맞음' + (l.orderDate ? ' · 발주 ' + escapeHtml(l.orderDate) + ' 이후 명세서' : '') + '</span>'; chk = ' checked'; nOk++; }
-            else if (oqN > 0 && aqN > oqN) { tag = '<span class="inv-tag inv-ok">✓ 주문 ' + oqN + ' · 명세서 ' + aqN + ' → ' + (aqN - oqN) + '개 더 들어왔어요 (괜찮아요)</span>'; chk = ' checked'; nOk++; }
-            else if (oqN > 0 && aqN > 0 && aqN < oqN && l.qtyEdited) { tag = '<span class="inv-tag inv-warn">✏️ 고친 수량 ' + aqN + '개로 입고해요 · 주문 ' + oqN + '보다 ' + (oqN - aqN) + '개 적어요</span>'; chk = ' checked'; nOk++; }   // 1029 사람이 수량을 고쳤으면 확인한 걸로
-            else if (oqN > 0 && aqN > 0 && aqN < oqN) tag = '<span class="inv-tag inv-short">⛔ 덜 들어왔어요 · 주문 ' + oqN + ' / 명세서 ' + aqN + ' → ' + (oqN - aqN) + '개 모자라요 · 확인 필요</span>';
-            else tag = '<span class="inv-tag inv-warn">⚠ 수량 확인 · 주문 ' + escapeHtml(l.orderQty + l.unit) + ' / 명세서 ' + escapeHtml(String(aqN || l.qty)) + '</span>';
-            if (dsc && chk) { chk = ''; nOk--; tag += '<span class="inv-tag inv-warn">⚠ 명세서 날짜(' + escapeHtml(r.date) + ')가 발주일(' + escapeHtml(l.orderDate) + ')보다 빨라요 · 이전 주문분일 수 있어요</span>'; }
+            if (l.qtyOk || (oqN > 0 && aqN === oqN)) { tag = '<span class="inv-tag inv-ok">✓ 수량 맞음</span>'; chk = ' checked'; nOk++; }
+            else if (oqN > 0 && aqN > oqN) { tag = '<span class="inv-tag inv-ok">✓ 주문보다 ' + (aqN - oqN) + '개 더 왔어요</span>'; chk = ' checked'; nOk++; }
+            else if (oqN > 0 && aqN > 0 && aqN < oqN && l.qtyEdited) { tag = '<span class="inv-tag inv-warn">✏️ ' + aqN + '개로 입고 · 주문보다 ' + (oqN - aqN) + '개 적어요</span>'; chk = ' checked'; nOk++; }   // 1029 사람이 수량을 고쳤으면 확인한 걸로
+            else if (oqN > 0 && aqN > 0 && aqN < oqN) tag = '<span class="inv-tag inv-short">⛔ 주문보다 ' + (oqN - aqN) + '개 적어요 · 맞으면 체크</span>';
+            else tag = '<span class="inv-tag inv-warn">⚠ 수량 확인 · 주문 ' + escapeHtml(l.orderQty + l.unit) + ' · 명세서 ' + escapeHtml(String(aqN || l.qty)) + '</span>';
+            if (dsc && chk) { chk = ''; nOk--; tag += '<span class="inv-tag inv-warn">⚠ 주문(' + escapeHtml(l.orderDate) + ')보다 앞선 명세서예요 · 지난 주문분인지 확인</span>'; }
           }
           var vAn = has && !dup ? l.appName : (!has && !l.doneName && !l.newItem ? l.catName : ''), vw = vAn && !l.userPick && !l.nameOk && !r.wrongStore ? invVariantDiff(l.name + ' ' + (l.spec || ''), vAn) : '';   // 1023
           var gs = (l.guess || (l._guess && !has && !l.doneName)) && !l.userPick && !l.nameOk && !r.wrongStore && !dup;   // 1024 짐작으로 찾은 짝
@@ -12624,9 +12631,9 @@ video {
       }).join('');
       var nFail = INVS.filter(function (r) { return !r.success && r._file; }).length;
       var head = INB1.on && !INVS.length ? '<h3>📦 입고하기' + (busyMsg ? ' · ' + escapeHtml(busyMsg) : '') + '</h3><div class="inv-sub">① 명세서 찍기 · ② 명세서 없이 온 상품은 검색해서 고르기 → 맨 아래 버튼 하나로 입고</div>'
-        : '<h3>' + (INB1.on ? '📦 입고하기 · ' : '📄 ') + '명세서 ' + INVS.length + '장' + (busyMsg ? ' · ' + escapeHtml(busyMsg) : '') + '</h3><div class="inv-sub">' + nLine + '줄 · 수량이 맞는 ' + nOk + '개' + (nEx ? ' · 주문 안 한 ' + nEx + '개' : '') + '는 미리 골라 뒀어요 · 실제로 없는 건 체크 해제</div>'
+        : '<h3>' + (INB1.on ? '📦 입고하기 · ' : '📄 ') + '명세서 ' + INVS.length + '장' + (busyMsg ? ' · ' + escapeHtml(busyMsg) : '') + '</h3><div class="inv-sub">' + nLine + '줄 · ' + (nOk + nEx) + '개 미리 체크 · 안 온 건 체크를 빼 주세요</div>'
         + (nFail > 1 && !busyMsg ? '<button type="button" class="inv-retry" style="width:100%;margin:0 0 8px" onclick="invRetryAll()">↻ 못 읽은 ' + nFail + '장 한 번에 다시 읽기</button>' : '');   // 1020 MJ '여러 장 실패하면 한 번에 다시'
-      var warnBox = INVS.some(function (r) { return r.success; }) ? '<div class="inv-must">⚠️ <b>입고완료 전에 꼭!</b> 명세서 이름과 <b>앱: ○○</b> 이름이 같은 상품인지 하나씩 확인해 주세요. 다르면 [🔁 다른 상품으로 바꾸기]</div>' : '';   // 1020 MJ '이름 꼭 확인 후 입고완료 — 강조'
+      var warnBox = INVS.some(function (r) { return r.success; }) ? '<div class="inv-must">⚠️ 명세서와 앱의 <b>상품 · 수량</b>이 같은지 확인해 주세요</div>' : '';   // 1020 MJ '이름 꼭 확인 후 입고완료 — 강조'
       var cam = INB1.on ? '<div class="inb1-h">① 명세서 있는 상품</div><div class="inb1-cam"><button type="button" class="inv-go" onclick="invPick(true)"' + (busyMsg ? ' disabled' : '') + '>📷 명세서 찍기' + (INVS.length ? ' (한 장 더)' : '') + '</button><button type="button" class="inv-x" onclick="invPick(false)"' + (busyMsg ? ' disabled' : '') + '>🖼 사진첩 (여러 장)</button></div>' : '';
       if (INB1.on && !INVS.length && !busyMsg) secs = '<div class="inb1-empty"><b>📄 명세서가 같이 왔으면 위 [📷 명세서 찍기]</b><span>AI가 읽어서 입고대기 상품과 자동으로 짝지어 체크해요 · 여러 장도 한 번에</span><span>명세서가 없으면 ② 검색만 쓰면 돼요</span></div>';   // 1023 PC 세 칸에서 ① 칸이 비어 보이지 않게
       var sAf = document.activeElement && document.activeElement.id === 'inb1S';
@@ -12724,7 +12731,7 @@ video {
     function invQtyNow(l) { return Number(l.bundle ? l.qty : (l.appQty != null ? l.appQty : l.qty)) || 0; }
     function invQtyEditHtml(r, l, j, i) {
       if (r.wrongStore || (l.doneName && !l.doneSkip)) return '';
-      return '<span class="inv-qe">실제로 온 수량 <input type="number" inputmode="numeric" min="1" max="99999" value="' + invQtyNow(l) + '" aria-label="실제로 온 수량" onclick="event.stopPropagation()" onfocus="this.select()" onkeydown="if (event.key === \'Enter\') { event.preventDefault(); this.blur(); }" onchange="invQtyEdit(' + j + ',' + i + ',this.value)">' + escapeHtml(l.unit || '개') + (l.qtyEdited ? '<small>✏️ 고침</small>' : '') + '</span>';
+      return '<span class="inv-qe">온 수량 <input type="number" inputmode="numeric" min="1" max="99999" value="' + invQtyNow(l) + '" aria-label="온 수량" onclick="event.stopPropagation()" onfocus="this.select()" onkeydown="if (event.key === \'Enter\') { event.preventDefault(); this.blur(); }" onchange="invQtyEdit(' + j + ',' + i + ',this.value)">' + escapeHtml(l.unit || '개') + (l.qtyEdited ? '<small>✏️ 고침</small>' : '') + '</span>';
     }
     function invQtyEdit(j, i, v) {
       var l = INVS[j] && INVS[j].lines[i], n = parseInt(String(v).replace(/[^0-9]/g, ''), 10); if (!l) return;
@@ -12751,10 +12758,10 @@ video {
       var live = {}; (cachedInboundItems || []).forEach(function (it) { live[it.rowNumber] = 1; });
       return INVS.filter(function (r) { return !r.wrongStore; }).map(function (r) { return { info: { supplier: r.supplier, date: r.date }, ex: (r.lines || []).filter(function (l) { return !(l.row && live[l.row]) && !l.doneName && !l.exOff; }).map(function (l) { return { name: l.newItem && l.clean ? l.clean : l.name, qty: l.qty, newItem: !!l.newItem, catName: l.catName || '', photo: l.newItem && l.photo ? l.photo : '' }; }) }; }).filter(function (g) { return g.ex.length; });
     }
-    function invCount(busy) { var b = document.getElementById('invGo'); if (!b) return; var n = invPicked().length, x = invExtras().reduce(function (a, g) { return a + g.ex.length; }, 0) + inb1Picked().length + inb1Adds().length; b.disabled = busy || INV_BUSY || (!n && !x); var nb = document.getElementById('inb1N'); if (nb) nb.textContent = (INB1.nList || 0) + '개 중 ' + inb1Picked().length + '개 골랐어요 · 온 것만 체크'; b.textContent = busy || INV_BUSY ? '읽는 중…' : n + x ? '고른 ' + (n + x) + '개 입고확인' : '입고할 상품을 고르세요'; }   // 1022 MJ '알림이 아니라 입고확인 버튼으로'
+    function invCount(busy) { var b = document.getElementById('invGo'); if (!b) return; var n = invPicked().length, x = invExtras().reduce(function (a, g) { return a + g.ex.length; }, 0) + inb1Picked().length + inb1Adds().length; b.disabled = busy || INV_BUSY || (!n && !x); var nb = document.getElementById('inb1N'); if (nb) nb.textContent = (INB1.nList || 0) + '개 중 ' + inb1Picked().length + '개 체크 · 온 것만 체크해요'; b.textContent = busy || INV_BUSY ? '읽는 중…' : n + x ? (n + x) + '개 입고확인' : '입고할 상품을 체크해 주세요'; }   // 1022 MJ '알림이 아니라 입고확인 버튼으로'
     function invPlanS(r) { return !!r && !r.wrongStore && /플랜에스/.test(String(r.receiver || '').replace(/\s+/g, '')); }   // 1021 MJ: 자회사 플랜에스의원 앞 명세서 — 막지 말고 한 번 더 확인만
     function invDo() { if (checkMemberSelectedOrAlert()) dutyGate(invDo_); }   // 1023 근무 중인 사람만
-    function invDo_() {
+    async function invDo_() {
       var rows = invPicked(), gs = invExtras(), ex = gs.reduce(function (a, g) { return a.concat(g.ex); }, []), nw = ex.filter(function (x) { return x.newItem; }).length;
       var bRows = inb1Picked().filter(function (r) { return rows.indexOf(r) < 0; }), adds = inb1Adds();   // 1023 명세서 없이 온 주문 · 주문 안 한 것
       var oqOf = function (r) { var it = (cachedInboundItems || []).filter(function (x) { return x.rowNumber === r; })[0]; return it ? parseInt(it.targetQty, 10) || 0 : 0; }, nmOf = function (r) { var it = (cachedInboundItems || []).filter(function (x) { return x.rowNumber === r; })[0]; return it ? String(it.name).split('\n')[0] : ''; }, unOf = function (r) { var it = (cachedInboundItems || []).filter(function (x) { return x.rowNumber === r; })[0]; return it && it.unit || '개'; };
@@ -12767,8 +12774,17 @@ video {
       var nInv = rows.length; rows = rows.concat(bRows);
       if (!rows.length && !ex.length && !adds.length && !diff.length) return;
       var shorts = []; INVS.forEach(function (r) { (r.lines || []).forEach(function (l) { if (l.row && rows.indexOf(l.row) !== -1) { var o = parseFloat(String(l.orderQty || '').replace(/[^0-9.]/g, '')) || 0, a = Number(l.bundle ? l.qty : (l.appQty != null ? l.appQty : l.qty)) || 0; if (o > 0 && a > 0 && a < o) shorts.push(String(l.appName || l.name).slice(0, 20) + ' (' + a + '/' + o + ')'); } }); });
-      if (INVS.some(invPlanS) && !confirm('⚠️ 플랜에스의원(자회사) 앞으로 온 명세서가 있어요.\n우리 매장으로 넘어온 물건이 맞는지 한 번 더 확인했나요?')) return;
-      if (!confirm((shorts.length ? '⛔ 주문보다 덜 들어온 상품이 있어요:\n' + shorts.join('\n') + '\n→ 명세서에 적힌 수량(온 수량)으로 입고해요.\n\n' : '') + (nInv ? '⚠️ 명세서 이름과 앱 상품 이름이 같은지 확인했나요?\n\n' : '') + (rows.length ? rows.length + '개를 [✅ 최종 입고완료] 처리할까요?' + (bRows.length ? ' (명세서 없이 온 주문 ' + bRows.length + '개 포함)' : '') + '\n' : '') + (diff.length ? '주문과 수량이 다른 것: ' + diff.map(function (r) { return nmOf(r).slice(0, 14) + ' 주문 ' + oqOf(r) + ' → 온 ' + INB1.got[r] + unOf(r); }).join(', ') + '\n' : '') + (adds.length ? '주문 안 한 상품 ' + adds.length + '개 (명세서 없음): ' + adds.map(function (a) { return (a.isNew ? '🆕' : '') + a.name.slice(0, 14) + ' ' + a.qty + '개'; }).join(', ') + (adds.some(function (a) { return a.isNew; }) ? ' (🆕 = 새 상품으로 등록)' : '') + '\n' : '') + (ex.length ? '주문 안 한 상품 ' + ex.length + '개도 입고확인해서 재고에 넣어요' + (nw ? ' (앱에 없는 ' + nw + '개는 새 상품으로 등록)' : '') + '\n' : '') + (rows.length ? '(실수했을 땐 입고내역 탭의 ⏪ 되돌리기로 복구할 수 있어요)' : ''))) return;
+      if (INVS.some(invPlanS) && !(await ryConfirm({ title: '플랜에스의원 앞 명세서예요', items: [{ t: 'warn', h: '자회사 플랜에스의원 앞으로 온 명세서가 있어요', d: '우리 매장으로 넘어온 물건이 맞는지 확인했나요?' }], ok: '맞아요, 입고' }))) return;
+      /* 1029 MJ '알림창을 우리 앱 스타일로 · 말은 심플하게' */
+      var cf = { title: (rows.length + diff.length + adds.length + ex.length) + '개 입고할까요?', ok: '입고확인', items: [] };
+      if (shorts.length) cf.items.push({ t: 'bad', h: '주문보다 적게 왔어요 · 온 수량으로 입고', d: shorts.join('\n') });
+      if (diff.length) cf.items.push({ t: 'warn', h: '주문과 수량이 달라요 · 온 수량으로 입고', d: diff.map(function (r) { return nmOf(r).slice(0, 18) + '  주문 ' + oqOf(r) + ' → 온 ' + INB1.got[r] + unOf(r); }).join('\n') });
+      if (nInv) cf.items.push({ t: 'warn', h: '명세서 이름과 앱 상품이 같은지 확인했나요?' });
+      if (rows.length) cf.items.push({ h: '입고완료 ' + rows.length + '개' + (bRows.length ? ' (명세서 없는 주문 ' + bRows.length + '개 포함)' : '') });
+      if (adds.length) cf.items.push({ h: '주문 안 한 상품 ' + adds.length + '개', d: adds.map(function (a) { return (a.isNew ? '🆕 ' : '') + a.name.slice(0, 18) + '  ' + a.qty + '개'; }).join('\n') + (adds.some(function (a) { return a.isNew; }) ? '\n🆕 = 새 상품으로 등록' : '') });
+      if (ex.length) cf.items.push({ h: '주문 안 한 상품 ' + ex.length + '개도 재고에 넣어요' + (nw ? ' (새 상품 ' + nw + '개 등록)' : '') });
+      if (rows.length || diff.length) cf.note = '잘못 넣었으면 입고내역에서 ⏪ 되돌리기';
+      if (!(await ryConfirm(cf))) return;
       try {   /* 1020 MJ '주문 안 했는데 들어온 상품도 재고로' — 명세서 수량을 그 상품의 입고 기록(추정 재고)에 남김 */
         INVS.forEach(function (r) { if (!r.fid || r.wrongStore) return; var live = {}; (cachedInboundItems || []).forEach(function (it) { live[it.rowNumber] = 1; });
           var nm = (r.lines || []).filter(function (l) { return !(l.row && live[l.row]) && !l.doneName && !l.exOff && (l.catName || l.newItem); }).map(function (l) { return { n: l.newItem ? (l.clean || l.name) : l.catName, q: l.appQty != null ? l.appQty : l.qty, iv: l.name }; });
@@ -14155,6 +14171,27 @@ video {
     // 요청 직후 1차 검토 목록에 즉시 추가 (서버 응답을 기다리지 않음, 새로고침해도 유지)
     // 화면 아래 잠깐 뜨는 알림 (확인 버튼 없이 사라짐)
     let _toastTimer = null;
+    /* 1029 MJ '입고확인 누르면 알림창이 너무 안 예뻐 — 우리 앱 스타일로' — 브라우저 기본 confirm 대신 앱 카드 확인창 (Promise → true/false)
+       o = 글자 또는 { title, items: [{ t: 'bad'|'warn'|'', h: 굵은 줄, d: 설명(줄바꿈 가능) }], note, ok, cancel } · Enter = 확인 · Esc·뒤로가기·바깥 = 취소 */
+    function ryConfirm(o) {
+      if (typeof o === 'string') o = { title: o.split('\n')[0], items: o.split('\n').slice(1).filter(Boolean).map(function (x) { return { h: x }; }) };
+      return new Promise(function (res) {
+        var old = document.getElementById('ryCf'); if (old) { old._res && old._res(false); old.remove(); }
+        var d = document.createElement('div'); d.id = 'ryCf'; d.className = 'ry-cf'; d.setAttribute('role', 'alertdialog'); d.setAttribute('aria-modal', 'true'); d.setAttribute('aria-labelledby', 'ryCfT');
+        var row = function (x) { return '<div class="ry-cf-i' + (x.t ? ' ' + x.t : '') + '"><b>' + escapeHtml(x.h || '') + '</b>' + (x.d ? '<p>' + escapeHtml(x.d) + '</p>' : '') + '</div>'; };
+        d.innerHTML = '<div class="ry-cf-dim"></div><div class="ry-cf-card" role="document"><b class="ry-cf-t" id="ryCfT">' + escapeHtml(o.title || '확인') + '</b>'
+          + ((o.items || []).length ? '<div class="ry-cf-l">' + o.items.map(row).join('') + '</div>' : '') + (o.note ? '<p class="ry-cf-n">' + escapeHtml(o.note) + '</p>' : '')
+          + '<div class="ry-cf-b"><button type="button" class="no" id="ryCfNo">' + escapeHtml(o.cancel || '취소') + '</button><button type="button" class="ok' + (o.danger ? ' danger' : '') + '" id="ryCfOk">' + escapeHtml(o.ok || '확인') + '</button></div></div>';
+        var done = function (v) { if (d._done) return; d._done = 1; document.removeEventListener('keydown', key, true); d.classList.remove('on'); setTimeout(function () { d.remove(); try { rySync(); } catch (e) {} }, 160); res(v); };
+        var key = function (e) { if (!document.body.contains(d)) return; if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); done(false); } else if (e.key === 'Enter' && !e.isComposing && !e.repeat) { e.preventDefault(); e.stopPropagation(); done(document.activeElement && document.activeElement.id === 'ryCfNo' ? false : true); } };
+        d._res = done; document.addEventListener('keydown', key, true);
+        d.querySelector('.ry-cf-dim').onclick = function () { done(false); };
+        d.querySelector('#ryCfNo').onclick = function () { done(false); };
+        d.querySelector('#ryCfOk').onclick = function () { done(true); };
+        document.body.appendChild(d); void d.offsetWidth; d.classList.add('on');
+        setTimeout(function () { try { d.querySelector('#ryCfOk').focus({ preventScroll: true }); } catch (e) {} try { rySync(); } catch (e) {} }, 30);
+      });
+    }
     function showToast(msg, ms) {
       let el = document.getElementById('appToast');
       if (!el) { el = document.createElement('div'); el.id = 'appToast'; document.body.appendChild(el); }
@@ -18462,6 +18499,29 @@ html:not(#q):not(#w):not(#e) body:not(#r) .edu-srcjump{display:inline;padding:0;
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-draft-a .edu-btn:disabled{opacity:1;background:#FFFAEB;color:#93370D;border-color:#FDE68A}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-form textarea#ef_claim,html:not(#q):not(#w):not(#e) body:not(#r) .edu-form textarea#ef_caution,html:not(#q):not(#w):not(#e) body:not(#r) .edu-form textarea#ef_usage{min-height:120px}
 #appToast{word-break:keep-all}
+/* 1029 MJ '밑에 나오는 알림이 검정 테두리 — 우리 앱 스타일로': 흰 카드 · 얇은 테두리 · 앞에 초록 점 */
+html:not(#q):not(#w):not(#e):not(#t) body:not(#r):not(#s) #appToast{background:#fff!important;color:#1d1d1f!important;border:1px solid var(--ry-line,#e5e5ea)!important;border-radius:16px!important;padding:12px 18px!important;font-size:14.5px!important;font-weight:600!important;line-height:1.45;box-shadow:0 10px 30px rgba(0,0,0,.12),0 2px 6px rgba(0,0,0,.06)!important;max-width:min(92vw,520px);text-align:left;-webkit-backdrop-filter:none;backdrop-filter:none}
+/* 앱 확인창 (ryConfirm) */
+.ry-cf{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .16s ease}
+.ry-cf.on{opacity:1}
+.ry-cf-dim{position:absolute;inset:0;background:rgba(0,0,0,.36)}
+.ry-cf-card{position:relative;width:min(420px,100%);max-height:calc(100vh - 40px);overflow:auto;background:#fff;border-radius:22px;padding:22px 20px 16px;box-shadow:0 24px 60px rgba(0,0,0,.22);transform:translateY(8px) scale(.98);transition:transform .16s ease}
+.ry-cf.on .ry-cf-card{transform:none}
+@media (prefers-reduced-motion:reduce){.ry-cf,.ry-cf-card{transition:none}}
+.ry-cf-t{display:block;font-size:19px;font-weight:600;color:#1d1d1f;letter-spacing:-.02em;margin:0 2px 12px}
+.ry-cf-l{display:grid;gap:8px}
+.ry-cf-i{padding:11px 13px;border-radius:14px;background:#f5f5f7}
+.ry-cf-i b{display:block;font-size:14.5px;font-weight:600;color:#1d1d1f;line-height:1.4}
+.ry-cf-i p{margin:4px 0 0;font-size:13.5px;color:#424245;line-height:1.55;white-space:pre-line;font-variant-numeric:tabular-nums}
+.ry-cf-i.bad{background:var(--ry-bad-soft,#fef3f2)}.ry-cf-i.bad b{color:var(--ry-bad,#b42318)}
+.ry-cf-i.warn{background:var(--ry-warn-soft,#fffaeb)}.ry-cf-i.warn b{color:var(--ry-warn,#b54708)}
+.ry-cf-n{margin:10px 2px 0;font-size:12.5px;color:#6e6e73}
+.ry-cf-b{display:grid;grid-template-columns:1fr 1.4fr;gap:8px;margin-top:16px}
+html body:not(#_):not(#_) .ry-cf-b button{min-height:50px;border-radius:14px!important;font-size:16px!important;font-weight:600!important;border:0!important;cursor:pointer}
+html body:not(#_):not(#_) .ry-cf-b .no{background:#f2f2f7!important;color:#1d1d1f!important}
+html body:not(#_):not(#_) .ry-cf-b .ok{background:var(--ry-brand,#0066cc)!important;color:#fff!important}
+html body:not(#_):not(#_) .ry-cf-b button:focus:not(:focus-visible){outline:none!important;box-shadow:none!important}
+html body:not(#_):not(#_) .ry-cf-b .ok.danger{background:var(--ry-bad,#b42318)!important}
 @media(min-width:720px){ html:not(#q):not(#w):not(#e) body:not(#r) .edu-repf .edu-draft-a{grid-template-columns:1fr 1fr} html:not(#q):not(#w):not(#e) body:not(#r) .edu-draft-a{grid-template-columns:2fr 1fr 1fr} html:not(#q):not(#w):not(#e) body:not(#r) .edu-draft-a .edu-btn.pri{grid-column:auto} html:not(#q):not(#w):not(#e) body:not(#r) .edu-draft-a .edu-btn.one{grid-column:auto} html:not(#q):not(#w):not(#e) body:not(#r) .edu-draft-a .edu-btn.one:only-child{grid-column:1/-1} html:not(#q):not(#w):not(#e) body:not(#r) .edu-draft-a .edu-btn.one+.edu-btn.one{grid-column:span 2} }
 html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-srcjump{display:inline;min-height:0!important;height:auto;padding:0!important;margin:0;line-height:inherit;vertical-align:baseline;border-radius:0!important}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-claim dt{color:#155EEF}
