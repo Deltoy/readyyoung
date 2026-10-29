@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvt05sbk">
+  <meta name="ry-build" content="mvt1pou9">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1603,6 +1603,140 @@ html body:not(#_):not(#_) .st-opt.dis{color:var(--ry-bad)!important}
 .ry-tools .ry-set-entry{background:var(--ry-brand-soft)!important;border-color:#B8C9E6!important;color:var(--ry-brand)!important;font-weight:800!important}
 #teDim{z-index:72}#teSheet{z-index:73}
 .sp-head button[hidden]{display:none}
+/* 1029 대시보드 v2 (#dshPage) — 세트 화면(#setPage)과 같은 전체 화면 · 앱 테마(400/600 · 그림자 없음 · var(--ry-brand)) 에 맞춤 · 검수 3팀 반영 */
+#dshPage{position:fixed;inset:0;z-index:60;background:var(--ry-canvas);display:none;flex-direction:column}
+#dshPage.on{display:flex}
+#dshPage .sp-head{padding-left:max(12px,calc((100% - 1180px)/2));padding-right:max(12px,calc((100% - 1180px)/2))}
+#dshPage .sp-head b small{display:block;font-size:12px;font-weight:400;color:var(--ry-ink-3)}
+#dshPage .sp-head>button:last-child{justify-self:end}
+#dshBody{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:12px 12px max(28px,env(safe-area-inset-bottom))}
+.dsh-wrap{display:grid;gap:12px;max-width:1180px;margin:0 auto}
+.dsh-card{background:var(--ry-surface);border:1px solid var(--ry-line);border-radius:20px;padding:16px;min-width:0}
+.dsh-card h3{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:0 0 12px;font-size:17px;font-weight:600;color:var(--ry-ink)}
+.dsh-card h3 small{font-size:12.5px;font-weight:400;color:var(--ry-ink-3)}
+html body:not(#_):not(#_) .dsh-seg{display:flex;gap:2px;padding:2px;background:#e8e8ed;border-radius:11px;overflow-x:auto;scrollbar-width:none}
+.dsh-seg::-webkit-scrollbar{display:none}
+html body:not(#_):not(#_) .dsh-seg button{flex:1 0 auto;min-height:44px;padding:0 12px;border:0!important;border-radius:9px!important;background:transparent!important;color:#424245!important;font-size:14px!important;font-weight:400!important;white-space:nowrap;cursor:pointer}
+html body:not(#_):not(#_) .dsh-seg button.on{background:#fff!important;color:#1d1d1f!important;font-weight:600!important}
+html body:not(#_):not(#_) .dsh-seg button:disabled{color:#aeaeb2!important;cursor:not-allowed}
+@media (max-width:640px){html body:not(#_):not(#_) .dsh-seg.s5{display:grid;grid-template-columns:repeat(6,minmax(0,1fr))}html body:not(#_):not(#_) .dsh-seg.s5 button{grid-column:span 2}html body:not(#_):not(#_) .dsh-seg.s5 button:nth-child(n+4){grid-column:span 3}}
+/* 오늘의 미션 */
+.dsh-ms-h{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:10px}
+.dsh-ms-h h3{margin:0 0 2px}.dsh-ms-h p{margin:0;font-size:13px;color:var(--ry-ink-3)}
+.dsh-ms-p{display:flex;align-items:center;gap:10px;min-width:140px}
+.dsh-ms-p b{font-size:22px;font-weight:600;color:var(--ry-ink);font-variant-numeric:tabular-nums}.dsh-ms-p b small{font-size:14px;font-weight:400;color:var(--ry-ink-3)}
+.dsh-ms-p span{flex:1;height:8px;border-radius:4px;background:#e8e8ed;overflow:hidden;min-width:80px}.dsh-ms-p i{display:block;height:100%;border-radius:4px;background:var(--ry-ok)}
+.dsh-ms-l{list-style:none;margin:0;padding:0;border:1px solid var(--ry-line);border-radius:16px;overflow:hidden}
+.dsh-ms-l>li{display:grid;grid-template-columns:52px minmax(0,1fr);border-top:1px solid var(--ry-line);background:#fff}
+.dsh-ms-l>li:first-child{border-top:0}
+.dsh-ms-l .ck{display:flex;align-items:center;justify-content:center;min-height:56px;border:0;background:transparent;cursor:pointer}
+.dsh-ms-l .ck em{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--ry-line-2);font-style:normal;font-size:13px;color:var(--ry-ink-2);font-variant-numeric:tabular-nums}
+.dsh-ms-l .ck svg{width:28px;height:28px;padding:5px;border-radius:50%;background:var(--ry-ok);color:#fff}
+.dsh-ms-l .ck:disabled{cursor:default}
+.dsh-ms-l .hd{display:grid;grid-template-columns:minmax(0,auto) auto 1fr;align-items:center;column-gap:8px;min-height:56px;padding:8px 14px 8px 0;border:0;background:transparent;text-align:left;cursor:pointer;min-width:0}
+.dsh-ms-l .hd b{font-size:15px;font-weight:600;color:var(--ry-ink);white-space:nowrap}
+.dsh-ms-l .hd i{font-style:normal;font-size:13px;font-weight:600;color:var(--ry-brand);background:color-mix(in srgb,var(--ry-brand) 9%,#fff);border-radius:999px;padding:2px 8px;white-space:nowrap}
+.dsh-ms-l .hd span{font-size:13px;color:var(--ry-ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
+@media (max-width:640px){.dsh-ms-l .hd{grid-template-columns:minmax(0,1fr) auto}.dsh-ms-l .hd span{grid-column:1/-1;text-align:left;white-space:normal}}
+.dsh-ms-l>li.done .hd b{color:var(--ry-ink-3);font-weight:400}.dsh-ms-l>li.done .hd i{color:var(--ry-ink-3);background:#f5f5f7}.dsh-ms-l>li.done .hd span{color:var(--ry-ok)}
+.dsh-ms-l>li.warn .hd span{color:var(--ry-warn)}
+.dsh-ms-l>li.open{background:color-mix(in srgb,var(--ry-brand) 4%,#fff)}
+.dsh-ms-l .bd{grid-column:2;padding:0 14px 14px 0}
+.dsh-ms-l .bd p{margin:0 0 6px;font-size:13.5px;color:var(--ry-ink-2)}
+html body:not(#_):not(#_) .dsh-ms-l .bd ol{margin:0 0 12px;padding-left:22px;font-size:14px;line-height:1.7;color:var(--ry-ink);list-style:decimal!important}
+html body:not(#_):not(#_) .dsh-ms-l .bd ol li{display:list-item!important}
+.dsh-ms-l .ac{display:flex;flex-wrap:wrap;gap:8px}
+.dsh-ms-ok{margin:10px 2px 0;font-size:14px;font-weight:600;color:var(--ry-ok)}
+/* 기간 */
+.dsh-range{display:grid;gap:8px}
+@media (min-width:1024px){.dsh-range{grid-template-columns:460px minmax(0,1fr);align-items:center;column-gap:16px}.dsh-range .dsh-dates{grid-column:1/-1}}
+.dsh-dates{display:flex;align-items:center;gap:8px}
+.dsh-dates input{flex:1;min-width:0;max-width:220px;min-height:44px;border:1px solid var(--ry-line);border-radius:12px;padding:0 10px;font-size:16px;font-weight:400;color:var(--ry-ink);background:#fff}
+.dsh-when{margin:0 2px;font-size:13.5px;color:var(--ry-ink-2)}
+/* 판매 숫자 · 그래프 */
+.dsh-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px}
+@media (max-width:520px){.dsh-kpis{grid-template-columns:1fr 1fr}.dsh-kpis .dsh-kpi:first-child{grid-column:1/-1}}
+html body:not(#_):not(#_) .dsh-kpi{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;padding:12px 14px;border:1.5px solid transparent!important;border-radius:14px!important;background:#f5f5f7!important;text-align:left;cursor:pointer;color:var(--ry-ink)}
+html body:not(#_):not(#_) .dsh-kpi.on{border-color:var(--ry-brand)!important;background:#fff!important}
+.dsh-kpi small{font-size:13px;font-weight:400;color:var(--ry-ink-3)}
+.dsh-kpi b{font-size:26px;font-weight:600;letter-spacing:-.022em;font-variant-numeric:tabular-nums}
+@media (min-width:1024px){.dsh-kpi b{font-size:28px}}
+.dsh-kpi span{font-size:13px;font-weight:400;color:var(--ry-ink-2)}
+#dshPage i{font-style:normal}
+#dshPage i.up{color:var(--ry-ok);font-weight:600}#dshPage i.dn{color:var(--ry-bad);font-weight:600}
+#dshPage i.nw{font-size:11.5px;font-weight:600;color:var(--ry-brand);background:color-mix(in srgb,var(--ry-brand) 10%,#fff);border-radius:6px;padding:1px 6px}
+.dsh-note{margin:8px 2px 0;font-size:12.5px;color:var(--ry-ink-3);line-height:1.5}.dsh-note.warn{color:var(--ry-warn)}
+.dsh-charts{display:grid;gap:16px;margin-top:14px}
+@media (min-width:1024px){.dsh-charts{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:28px;align-items:start}}
+.dsh-c1,.dsh-c2{min-width:0}
+.dsh-chead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 12px;margin-bottom:8px}
+.dsh-chead b{font-size:14.5px;font-weight:600;color:var(--ry-ink)}.dsh-chead span{font-size:12.5px;color:var(--ry-ink-3)}
+.dsh-bars{position:relative;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));align-items:end;height:150px;padding-bottom:18px}
+.dsh-bars.sm{height:84px}
+html body:not(#_):not(#_) .dsh-bar{position:relative;height:100%;display:flex;align-items:flex-end;justify-content:center;padding:0;border:0!important;background:transparent!important;min-width:0;cursor:pointer;transform:none!important}
+.dsh-bar span{display:block;width:72%;max-width:28px;min-height:2px;border-radius:5px 5px 2px 2px;background:color-mix(in srgb,var(--ry-brand) 62%,#fff)}
+.dsh-bars[style*="gap:0"] .dsh-bar span,.dsh-bars[style*="gap:1px"] .dsh-bar span{width:100%;border-radius:1px}
+.dsh-bar.top span,.dsh-bar.pk span{background:var(--ry-brand)}
+.dsh-bar.miss span{background:repeating-linear-gradient(135deg,#e5e5ea 0 4px,transparent 4px 8px);border:1px dashed #d2d2d7}
+.dsh-bar em{position:absolute;left:50%;bottom:-18px;transform:translateX(-50%);font-style:normal;font-size:11px;color:var(--ry-ink-3);white-space:nowrap}
+.dsh-avg{position:absolute;left:0;right:0;bottom:calc(18px + (100% - 18px) * var(--p));border-top:1px dashed var(--ry-line-2);pointer-events:none;z-index:1}
+.dsh-wk p{margin:0 0 8px;font-size:14px;color:var(--ry-ink-2)}.dsh-wk p b{color:var(--ry-ink);font-weight:600}
+.dsh-wk>div{display:grid;grid-template-columns:20px minmax(0,1fr) 76px;align-items:center;gap:8px;font-size:13px;margin-top:4px}
+.dsh-wk>div b{font-weight:400;color:var(--ry-ink-2)}.dsh-wk>div span{height:10px;border-radius:5px;background:#f5f5f7;overflow:hidden}
+.dsh-wk>div span i{display:block;height:100%;border-radius:5px;background:color-mix(in srgb,var(--ry-brand) 40%,#fff)}
+.dsh-wk>div.top span i{background:var(--ry-brand)}.dsh-wk>div.top b,.dsh-wk>div.top em{color:var(--ry-ink);font-weight:600}
+.dsh-wk>div em{font-style:normal;text-align:right;font-variant-numeric:tabular-nums;color:var(--ry-ink-2)}
+/* 판매 순위 */
+.dsh-cats{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;margin-bottom:10px}
+.dsh-cats::-webkit-scrollbar{display:none}.dsh-cats.wait{font-size:13px;color:var(--ry-ink-3);min-height:44px;align-items:center}
+html body:not(#_):not(#_) .dsh-cats button{position:relative;overflow:hidden;flex:0 0 auto;display:flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border:1px solid var(--ry-line)!important;border-radius:999px!important;background:#fff!important;cursor:pointer;white-space:nowrap}
+.dsh-cats b{font-size:14px;font-weight:400;color:var(--ry-ink)}.dsh-cats i{font-size:13px;font-weight:600;color:var(--ry-ink-3)}
+.dsh-cats button span{position:absolute;left:0;bottom:0;height:3px;background:var(--ry-brand);opacity:.45}
+html body:not(#_):not(#_) .dsh-cats button.on{border:2px solid var(--ry-brand)!important;padding:0 13px}
+.dsh-cats button.on b{font-weight:600}
+.dsh-ctl{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,260px);gap:8px;margin-bottom:10px}
+@media (max-width:640px){.dsh-ctl{grid-template-columns:1fr}}
+.dsh-ctl input{min-height:44px;border:1px solid var(--ry-line);border-radius:999px;padding:0 16px;font-size:16px;background:#fff;color:var(--ry-ink);min-width:0}
+.dsh-list{border:1px solid var(--ry-line);border-radius:16px;overflow:hidden}
+.dsh-th,.dsh-rh{display:grid;grid-template-columns:28px 40px minmax(0,1fr) 78px 92px 56px 104px;align-items:center;gap:10px}
+.dsh-list.adm .dsh-th,.dsh-list.adm .dsh-rh{grid-template-columns:28px 40px minmax(0,1fr) 78px 92px 56px 84px 84px 104px}
+.dsh-th{padding:8px 12px;background:#f5f5f7;font-size:12px;color:var(--ry-ink-3)}
+.dsh-th span:first-child{grid-column:1/4;padding-left:78px}.dsh-th span:not(:first-child){text-align:right}.dsh-th span:last-child{text-align:left}
+.dsh-row+.dsh-row,.dsh-th+.dsh-row{border-top:1px solid var(--ry-line)}
+html body:not(#_):not(#_) .dsh-rh{width:100%;min-height:60px;padding:8px 12px;border:0!important;border-radius:0!important;background:#fff!important;text-align:left;cursor:pointer;transform:none!important}
+html body:not(#_):not(#_) .dsh-rh:active{background:#f5f5f7!important}
+html body:not(#_):not(#_) .dsh-row.on .dsh-rh{background:color-mix(in srgb,var(--ry-brand) 5%,#fff)!important}
+.dsh-rh>em{font-style:normal;font-size:13px;color:var(--ry-ink-3);text-align:center;font-variant-numeric:tabular-nums}
+.dsh-rh .ph{width:40px;height:40px;border-radius:10px;overflow:hidden;background:#f5f5f7}.dsh-rh .ph img{width:100%;height:100%;object-fit:cover}
+.dsh-rh .tx{min-width:0}.dsh-rh .tx b{display:block;font-size:14.5px;font-weight:600;color:var(--ry-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dsh-rh .tx small{display:block;font-size:12px;color:var(--ry-ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dsh-rh .stm{display:none}
+.dsh-rh .c{text-align:right;font-variant-numeric:tabular-nums;font-size:13.5px;color:var(--ry-ink-2);white-space:nowrap}
+.dsh-rh .c.q b{font-size:16px;font-weight:600;color:var(--ry-ink)}.dsh-rh .c.q b small{font-size:11.5px;font-weight:400;color:var(--ry-ink-3);margin-left:1px}
+.dsh-rh .c.stc{text-align:left}
+#dshPage i.st{display:inline-block;font-size:12px;font-weight:600;border-radius:6px;padding:2px 7px;white-space:nowrap}
+#dshPage i.st.hot{color:var(--ry-bad);background:var(--ry-bad-soft)}#dshPage i.st.go{color:var(--ry-ink-2);background:#f5f5f7}#dshPage i.st.bad{color:var(--ry-warn);background:var(--ry-warn-soft)}
+@media (max-width:1023px){
+  .dsh-th{display:none}
+  .dsh-rh,.dsh-list.adm .dsh-rh{grid-template-columns:24px 40px minmax(0,1fr) auto;grid-template-rows:auto auto;row-gap:2px}
+  .dsh-rh>em,.dsh-rh .ph,.dsh-rh .tx{grid-row:1/3}
+  .dsh-rh .c.q{grid-column:4;grid-row:1}.dsh-rh .c.dl{grid-column:4;grid-row:2;font-size:12.5px}
+  .dsh-rh .c.av,.dsh-rh .c.s,.dsh-rh .c.p,.dsh-rh .c.stc{display:none}
+  .dsh-rh .stm{display:block;margin-top:3px}
+}
+.dsh-rd{padding:10px 14px 14px;background:color-mix(in srgb,var(--ry-brand) 5%,#fff)}
+@media (min-width:1024px){.dsh-rd{display:grid;grid-template-columns:minmax(0,1fr) 320px;column-gap:24px;align-items:center}}
+.dsh-rx p{margin:8px 0 10px;font-size:13.5px;line-height:1.55;color:var(--ry-ink-2)}.dsh-rx p b{color:var(--ry-ink);font-weight:600}
+html body:not(#_):not(#_) .dsh-act{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border:0!important;border-radius:999px!important;background:var(--ry-brand)!important;color:#fff!important;font-size:14px!important;font-weight:600!important;cursor:pointer}
+.dsh-act svg{width:16px;height:16px}
+html body:not(#_):not(#_) .dsh-ghost{min-height:44px;padding:0 16px;border:1px solid var(--ry-line)!important;border-radius:999px!important;background:#fff!important;color:var(--ry-ink)!important;font-size:14px!important;font-weight:400!important;cursor:pointer}
+html body:not(#_):not(#_) .dsh-more{width:100%;min-height:48px;margin-top:8px;border:1px solid var(--ry-line)!important;border-radius:12px!important;background:#fff!important;color:var(--ry-brand)!important;font-size:14px!important;font-weight:600!important;cursor:pointer}
+.dsh-empty{margin:0;padding:24px;text-align:center;font-size:14px;color:var(--ry-ink-3)}
+.dsh-err{margin:0 0 10px;font-size:14px;font-weight:600;color:var(--ry-bad)}
+.dsh-sk{height:92px;border-radius:14px;background:linear-gradient(90deg,#f5f5f7,#fff,#f5f5f7);background-size:200% 100%;animation:dshSk 1.2s linear infinite}
+.dsh-sk.s2{height:150px;margin-top:10px}
+@keyframes dshSk{to{background-position:-200% 0}}
+@media (prefers-reduced-motion:reduce){.dsh-sk{animation:none}}
 #setPage{position:fixed;inset:0;z-index:60;background:var(--ry-canvas);display:none;flex-direction:column}
 #setPage.on{display:flex}
 body.sp-open{overflow:hidden}
@@ -8846,6 +8980,7 @@ video {
       var sv = document.getElementById('searchResultView'); if (sv && !sv.classList.contains('hidden')) L.push('search');   /* 검색 결과 · 놓친 주문 */
       var sp = document.getElementById('setPage');
       if (sp && sp.classList.contains('on')) { L.push('setpage'); if (typeof SP !== 'undefined' && SP.view === 'detail') L.push('setdetail'); }
+      var dp = document.getElementById('dshPage'); if (dp && dp.classList.contains('on')) L.push('dsh');   /* 1029 대시보드 */
       if (ryShown('ryLaunch')) L.push('launch');
       if (ryShown('mbReader')) { L.push('mb'); if (typeof MB !== 'undefined' && MB.view === 'archive' && MB.cur) L.push('mb'); }
       if (ryShown('scrDim')) L.push('scr');
@@ -8894,6 +9029,7 @@ video {
         else if (top === 'mb') mbBack();
         else if (top === 'launch') ryLaunchClose();
         else if (top === 'setdetail' || top === 'setpage') spBack();
+        else if (top === 'dsh') dshClose();
         else if (top === 'search') clearGlobalSearch();
         else if (top === 'tab') { RY_NAV.tabs = [RY_NAV.tabs[0]]; RY_NAV._sw(RY_NAV.tabs[0]); window.scrollTo(0, 0); }
       } catch (e) {}
@@ -13444,6 +13580,7 @@ video {
           if (!r || !r.ok || !Array.isArray(r.items)) return;
           RY_CAT = { v: String(r.v), t: Date.now(), items: r.items };
           ryCatSave();
+          try { if (typeof dshSoft === 'function') dshSoft(); } catch (eDs) {}   /* 1029 열린 대시보드에 사진·분류 */
           try { var _rd = document.getElementById('eduReader'); if (_rd && !_rd.hidden && typeof eduHubDraw === 'function') eduHubDraw(); if (typeof locIsOpen === 'function' && locIsOpen()) locDrawList(); } catch (eR) {}   /* 1009 목록이 오면 자료실 증상 칸 · 창고 위치 화면도 바로 (2초 기다리지 않게) */
           var q =(document.getElementById('globalSearchInput') || {}).value;
           if (q && q.trim() && !document.getElementById('searchResultView').classList.contains('hidden')) executeServerSearch(q.trim());
@@ -14612,7 +14749,7 @@ video {
         .getReorderForecast();
     }
     function rfGroups() { var g = (RF.data && RF.data.groups) || {}; return { now: g.now || [], week: g.week || [], soon: g.soon || [], stale: g.stale || [], insufficient: g.insufficient || [] }; }
-    function rfRenderAll() { rfRenderBadge(); rfRenderBanner(); if (currentTab === 'reorder') rfRender(); }
+    function rfRenderAll() { rfRenderBadge(); rfRenderBanner(); if (currentTab === 'reorder') rfRender(); try { if (typeof dshSoft === 'function') dshSoft(); } catch (eDs) {} }
     function rfRenderBadge() {
       var b = document.getElementById('tabReorderBadge'), btn = document.getElementById('tabBtnReorder');
       if (!b) return;
@@ -16563,6 +16700,7 @@ video {
       .concat([{ k: 'sets', g: 1, ic: RYI.gift, n: '세트 상품 · 박스 재고', v: '세트 구성 · 아크릴박스', kw: '세트 박스 재고 아크릴 용도' }])
       .concat(isAdmin ? [{ k: 'pfauto', g: 1, ic: RYI.sparkles, n: '사진 자동 채우기', v: '문준 전용', kw: '사진 인터넷 자동' }] : [])
       .concat([
+        ...(dshAllowed() ? [(function () { var left = 0; try { left = dshMsList().filter(function (m) { return !m.done; }).length; } catch (e) {} return { k: 'dash', g: 2, ic: RYI.bars, n: '오늘의 미션 · 대시보드', v: left ? '미션 ' + left + '개 남음' : '오늘 미션 끝 · 판매 순위', cnt: left, act: '미션 ' + left + '개 남음 · 위에서부터 하나씩', pri: 0, kw: '대시보드 미션 루틴 할일 판매 순위 매출 순이익 날짜 기간 현황 한눈에' }; })()] : []),
         { k: 'lead', g: 2, ic: RYI.timer, n: '입고 소요일', v: LT.data && LT.data.etaAccuracy ? '예상일 적중 ' + Math.round(Number(LT.data.etaAccuracy.withinPct) || 0) + '%' : '거래처·요일별', kw: '리드타임 발주 입고 걸린 날 거래처' },
         { k: 'rejstats', g: 2, ic: RYI.ban, n: '반려 분석', v: k.rejstats + tlTopRej(), kw: '재고 있음 반려 과재고 반려율' },
         { k: 'ranking', g: 2, ic: RYI.trophy, n: '발주왕', v: k.ranking, kw: '순위 랭킹 직원 성공' },
@@ -16633,9 +16771,305 @@ video {
       document.getElementById('ryLaunchDim').classList.remove('on');
       var tbm2 = document.getElementById('tabBtnMore'); if (tbm2) tbm2.setAttribute('aria-expanded', 'false');
     }
+    /* ══ 1029 MJ 대시보드 v2 — '보면 내가 뭘 해야 할지 판단 · 하루 루틴처럼 미션을 하나하나 체크 · 누가 와서 해도' (지금은 문준만)
+       ① 오늘의 미션: 앱에 있는 숫자(탭 목록·재주문 예측·놓친 주문·박스 재고·판매)로 매일 만듦 · 0건이면 저절로 끝 · 손 체크는 서버(getMissions·setMission)
+       ② 판매: 서버 getSalesDash = 매일 아침 POS 에서 들어오는 날짜별 판매(_하루판매_) · 앞 기간과 비교 (어제는 지난주 같은 요일)
+       ③ 판매 순위: 상품마다 주문 상태(지금 주문·1차 검토·최종 발주·입고 대기) → 보고 바로 판단 · 검수 3팀(디자인·쓸모·QA) 반영 ══ */
+    var DSH = { preset: 15, from: '', to: '', data: null, loading: false, err: '', sort: 'q', metric: 'q', cat: '', q: '', open: '', more: 30, links: null, pm: null, pmN: 0, ms: null, msOpen: '', missed: null, pick: -1 };
+    var DSH_USERS = ['문준'];   // 1029 MJ '일단 나만' (서버 MS_USERS_ 와 같이)
+    function dshAllowed() { return DSH_USERS.indexOf(currentSelectedMember || '') !== -1; }
+    function dshYmd(ms) { return new Date(ms + 9 * 3600e3).toISOString().slice(0, 10); }
+    function dshToday() { return dshYmd(Date.now()); }
+    function dshMd(d) { return d ? (+d.slice(5, 7)) + '/' + (+d.slice(8, 10)) : ''; }
+    function dshWd(d) { return '일월화수목금토'.charAt(new Date(d + 'T00:00:00Z').getUTCDay()); }
+    function dshN(n) { return Math.round(+n || 0).toLocaleString('ko-KR'); }
+    function dshWon(n) { n = +n || 0; var a = Math.abs(n); return (n < 0 ? '−' : '') + (a >= 1e8 ? (Math.round(a / 1e6) / 100) + '억' : a >= 1e4 ? dshN(a / 1e4) + '만' : dshN(a)) + '원'; }
+    function dshVal(x, m) { return m === 's' ? dshWon(x) : m === 'p' ? dshWon(x) : dshN(x) + '개'; }
+    function dshDays(a, b) { return Math.round((Date.parse(b + 'T00:00:00Z') - Date.parse(a + 'T00:00:00Z')) / 864e5) + 1; }
+    function dshRange(p) { return { from: dshYmd(Date.now() - p * 864e5), to: dshYmd(Date.now() - 864e5) }; }
+    function dshIsOpen() { var pg = document.getElementById('dshPage'); return !!(pg && pg.classList.contains('on')); }
+    function dshOpen() {
+      if (!dshAllowed()) { showToast('대시보드는 문준님만 볼 수 있어요', 1800); return; }
+      var pg = document.getElementById('dshPage'); pg.classList.add('on'); pg.setAttribute('aria-hidden', 'false'); document.body.classList.add('sp-open');
+      DSH.back = document.activeElement;
+      if (!DSH.from) { var r = dshRange(DSH.preset); DSH.from = r.from; DSH.to = r.to; }
+      if (DSH.who !== currentSelectedMember) { DSH.who = currentSelectedMember; DSH.data = null; DSH.key = ''; DSH.ms = null; }   // 검수: 이름을 바꾸면 이전 사람 숫자를 바로 지움
+      if (typeof RY_CAT === 'undefined' || !RY_CAT || !RY_CAT.items || !RY_CAT.items.length) { try { ryCatLoad(false); } catch (e) {} }
+      try { if (typeof RF !== 'undefined' && !RF.data) rfLoad(false); } catch (e) {}
+      try { if (typeof SP !== 'undefined' && (!SP.box || Date.now() - (SP.boxAt || 0) > 10 * 60000)) bxLoad(); } catch (e) {}
+      if (!DSH.links) dshLinksLoad();
+      dshMsLoad(); dshRender(); dshLoad();
+      try { rySync(); } catch (e) {}
+    }
+    function dshClose(then) {
+      var pg = document.getElementById('dshPage'); if (!pg.classList.contains('on')) { if (then) then(); return; }
+      pg.classList.remove('on'); pg.setAttribute('aria-hidden', 'true'); document.body.classList.remove('sp-open');
+      try { if (DSH.back && DSH.back.focus) DSH.back.focus({ preventScroll: true }); } catch (e) {}
+      /* 검수: 뒤로가기 기록을 먼저 되감은 뒤 다음 화면을 연다 (안 그러면 되감기가 막 연 검색을 닫음) — 자료실 eduCloseThen 과 같은 방식 */
+      var fn = typeof then === 'function' ? then : null, N = typeof RY_NAV !== 'undefined' ? RY_NAV : null;
+      if (!fn) { try { rySync(); } catch (e) {} return; }
+      if (!N || !N.ok || N.pushed <= ryLayers().length) { fn(); return; }
+      var done = 0, go = function () { if (done++) return; removeEventListener('popstate', go); setTimeout(fn, 0); };
+      addEventListener('popstate', go); rySync(); setTimeout(go, 800);
+    }
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && dshIsOpen() && !document.querySelector('.ava-sheet.on')) dshClose(); });
+    function dshLinksLoad() { if (google.script.run.getSales15Info) google.script.run.withSuccessHandler(function (r) { DSH.links = (r && r.links) || {}; DSH.s15to = (r && r.to) || ''; DSH.pm = null; dshSoft(); }).getSales15Info(); }
+    function dshRefresh() { DSH.data = null; DSH.key = ''; DSH.links = null; DSH.pm = null; DSH.missedAt = 0; dshLinksLoad(); dshMsLoad(); dshLoad(); }
+    function dshLoad() {
+      var shift = DSH.preset === 1 ? 7 : 0, key = DSH.from + '|' + DSH.to + '|' + shift + '|' + currentSelectedMember;
+      if (DSH.data && DSH.key === key) return;
+      DSH.loading = true; DSH.err = ''; DSH.key = key; DSH.data = null; dshRender();   // 검수: 이전 사람·기간 숫자는 바로 지움
+      google.script.run.withSuccessHandler(function (r) {
+        if (DSH.key !== key) return;
+        DSH.loading = false;
+        if (!r || !r.success) { DSH.err = (r && r.message) || '판매 기록을 못 불러왔어요'; } else { DSH.data = r; DSH.open = ''; DSH.more = 30; DSH.pick = -1; }
+        dshRender();
+      }).withFailureHandler(function (e) { if (DSH.key !== key) return; DSH.loading = false; DSH.err = '판매 기록을 못 불러왔어요 · ' + (e && e.message || ''); dshRender(); })
+        .getSalesDash(currentSelectedMember, DSH.from, DSH.to, shift);
+    }
+    function dshPreset(p) { DSH.preset = p; var r = dshRange(p); DSH.from = r.from; DSH.to = r.to; DSH.cat = ''; dshLoad(); }
+    function dshCustom() {
+      var a = (document.getElementById('dshFrom') || {}).value, b = (document.getElementById('dshTo') || {}).value;
+      if (!a || !b) return; if (a > b) { var t = a; a = b; b = t; }
+      if (dshDays(a, b) > 150) { a = dshYmd(Date.parse(b + 'T00:00:00+09:00') - 149 * 864e5); showToast('150일까지 볼 수 있어서 ' + dshMd(a) + '부터로 맞췄어요', 2600); }
+      if (a === DSH.from && b === DSH.to) return;
+      DSH.preset = 0; DSH.from = a; DSH.to = b; DSH.cat = ''; dshLoad();
+    }
+    /* POS 이름 → 앱 상품: 매일 15일 판매를 맞출 때와 똑같은 짝짓기(s15Match) · 한 번 맞춘 이름은 기억 (검수: 기간 바꿀 때마다 1초 멈춤) */
+    function dshPmReady() { var items = (typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) || []; if (!DSH.data || !DSH.links || !items.length) return false; if (!DSH.pm || DSH.pmN !== items.length) return false; return DSH.data.items.every(function (it) { return it.n in DSH.pm; }); }
+    function dshPmRun() {
+      var items = (typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) || []; if (!items.length || !DSH.data || !DSH.links) return;
+      if (!DSH.pm || DSH.pmN !== items.length) { DSH.pm = {}; DSH.pmAll = {}; DSH.pmN = items.length; }
+      DSH.data.items.forEach(function (it) { DSH.pmAll[it.n] = it.q; });
+      var byRow = {}, pm = {}; items.forEach(function (x) { byRow[x.rowNumber] = x; });
+      try {
+        s15Match(Object.keys(DSH.pmAll).map(function (n) { var x = s15Prep(n); x.n = n; x.q = DSH.pmAll[n]; return x; }), DSH.links).forEach(function (g) {
+          if (g.st !== 'auto' || !g.x || g.x.zero || pm[g.x.n]) return;
+          var it = null; (g.rows || []).some(function (r) { return (it = byRow[r]); }); pm[g.x.n] = it || { name: g.name, rowNumber: g.rows && g.rows[0], category: '' };
+        });
+      } catch (e) {}
+      Object.keys(DSH.pmAll).forEach(function (n) { DSH.pm[n] = pm[n] || null; });
+    }
+    function dshApp(posName) { return (DSH.pm && DSH.pm[posName]) || null; }
+    function dshCatOf(it) { var a = dshApp(it.n); return a ? (a.category ? catTop(a.category) : '분류 없음') : '앱에 연결 안 됨'; }
+    /* 주문 상태: 앱 줄 번호로 지금 어느 단계인지 · 재주문 예측(지금·이번 주) */
+    function dshStateMap() {
+      var m = {}, put = function (L, k, f) { (L || []).forEach(function (x) { if (x && x.rowNumber && !m[x.rowNumber]) m[x.rowNumber] = f ? f(x) : { k: k }; }); };
+      put(cachedReviewItems, 'rv'); put(cachedOrderItems, 'od');
+      put(cachedInboundItems, 'in', function (x) { return { k: 'in', d: daysSince(effOrderDate(x)) }; });
+      try { if (RF.data) { var g = rfGroups(); put(g.now, 'now'); put(g.week, 'wk'); } } catch (e) {}
+      return m;
+    }
+    function dshState(it, SM) { var a = dshApp(it.n); return a && a.rowNumber ? SM[a.rowNumber] || null : null; }
+    function dshStateHtml(s) {
+      if (!s) return '';
+      var t = { rv: ['1차 검토', 'go'], od: ['최종 발주', 'go'], in: ['입고 대기' + (s.d != null ? ' ' + s.d + '일' : ''), s.d >= 7 ? 'bad' : 'go'], now: ['지금 주문', 'hot'], wk: ['이번 주 주문', 'hot'] }[s.k];
+      return t ? '<i class="st ' + t[1] + '">' + t[0] + '</i>' : '';
+    }
+    /* 비교를 믿을 수 있나: 앞 기간 기록 날짜가 이번 기간의 80% 이상일 때만 (검수: 30일이면 앞 기간 기록 2일뿐) */
+    function dshHas() { return DSH.data ? DSH.data.daily.filter(function (x) { return x.has; }).length : 0; }
+    function dshCmpOk() { var d = DSH.data; return !!(d && d.prev && d.prev.days && dshHas() && d.prev.days >= dshHas() * .8); }
+    function dshScale() { var d = DSH.data; return dshCmpOk() ? dshHas() / d.prev.days : 0; }
+    function dshPrevName() { var d = DSH.data; if (!d) return '앞 기간'; return DSH.preset === 1 ? '지난주 같은 요일(' + dshMd(d.pFrom) + ')' : '지난 ' + d.days.length + '일(' + dshMd(d.pFrom) + '~' + dshMd(d.pTo) + ')'; }
+    function dshKpis() {
+      var d = DSH.data, has = d.daily.filter(function (x) { return x.has; });
+      if (!has.length) return '<p class="dsh-empty">' + dshMd(d.to) + ' 판매는 아직 안 들어왔어요 · 매일 아침 8시 10분에 들어와요' + (d.last ? ' · 마지막 기록 ' + dshMd(d.last) : '') + '</p>';
+      var n = has.length, tot = { q: 0, s: 0, p: 0 }; has.forEach(function (x) { tot.q += x.q; tot.s += x.s || 0; tot.p += x.p || 0; });
+      var pv = d.prev || {}, ok = dshCmpOk(), cmp = function (k) { if (!ok || !pv[k]) return ''; var pct = Math.round(((tot[k] / n) / (pv[k] / pv.days) - 1) * 100); return '<i class="' + (pct > 0 ? 'up' : pct < 0 ? 'dn' : '') + '">' + (pct > 0 ? '▲ ' : pct < 0 ? '▼ ' : '') + Math.abs(pct) + '%</i>'; };
+      var K = [['q', '판매 수량', dshN(tot.q) + '개', '하루 ' + dshN(tot.q / n) + '개']];
+      if (d.adm) K.push(['s', '매출', dshWon(tot.s), '하루 ' + dshWon(tot.s / n)], ['p', '순이익', dshWon(tot.p), tot.s ? '이익률 ' + Math.round(tot.p / tot.s * 100) + '%' : '']);
+      return '<div class="dsh-kpis">' + K.map(function (x) { var c = cmp(x[0]); return '<button type="button" class="dsh-kpi' + (DSH.metric === x[0] ? ' on' : '') + '" aria-pressed="' + (DSH.metric === x[0]) + '" onclick="DSH.metric = \'' + x[0] + '\'; DSH.pick = -1; dshRender()"><small>' + x[1] + '</small><b>' + x[2] + '</b><span>' + x[3] + '</span>' + (c ? '<span class="cmp">' + c + '</span>' : '') + '</button>'; }).join('') + '</div>'
+        + (ok ? '<p class="dsh-note">▲▼ = ' + dshPrevName() + ' 하루 평균보다</p>' : '<p class="dsh-note warn">' + (pv.days ? '앞 기간 기록이 ' + pv.days + '일뿐이라 비교는 빼고 보여 줘요' : '앞 기간 판매 기록이 없어 비교는 빼고 보여 줘요') + ' · 기록은 ' + dshMd(d.first) + '부터 있어요</p>');
+    }
+    function dshBars() {
+      var d = DSH.data, mk = d.adm ? DSH.metric : 'q', vals = d.daily.map(function (x) { return x.has ? (+x[mk] || 0) : null; }), hv = vals.filter(function (v) { return v != null; });
+      if (!hv.length) return '';
+      var max = Math.max.apply(null, hv.concat([1])), avg = hv.reduce(function (s, v) { return s + v; }, 0) / hv.length, N = d.daily.length, gap = N > 60 ? 0 : N > 31 ? 1 : 3;
+      var bw = (DSH.chartW || 360), step = Math.max(1, Math.ceil(N * 44 / Math.max(160, bw))), top = vals.indexOf(Math.max.apply(null, hv));
+      var pk = DSH.pick >= 0 && DSH.pick < N ? DSH.pick : -1, px = pk >= 0 ? d.daily[pk] : null;
+      var h = '<div class="dsh-chead"><b>' + (px ? dshMd(px.d) + '(' + dshWd(px.d) + ') ' + (px.has ? dshVal(vals[pk], mk) : '기록 없음') : '날짜별 ' + (mk === 's' ? '매출' : mk === 'p' ? '순이익' : '판매 수량')) + '</b><span>평균 ' + dshVal(avg, mk) + ' · 가장 많은 날 ' + dshMd(d.daily[top].d) + '(' + dshWd(d.daily[top].d) + ')</span></div>';
+      h += '<div class="dsh-bars" id="dshBarsBox" style="--n:' + N + ';gap:' + gap + 'px" role="group" aria-label="날짜별 막대 — 눌러서 숫자 보기">'
+        + '<i class="dsh-avg" style="--p:' + (avg / max).toFixed(3) + '"></i>';
+      d.daily.forEach(function (x, i) {
+        var v = vals[i], t = dshMd(x.d) + '(' + dshWd(x.d) + ') ' + (v == null ? '기록 없음' : dshVal(v, mk));
+        h += '<button type="button" class="dsh-bar' + (v == null ? ' miss' : '') + (i === top ? ' top' : '') + (i === pk ? ' pk' : '') + '" aria-label="' + t + '" title="' + t + '" onclick="DSH.pick = DSH.pick === ' + i + ' ? -1 : ' + i + '; dshRender()"><span style="height:' + (v == null ? 100 : Math.max(2, Math.round(v / max * 100))) + '%"></span>'
+          + '<em>' + (i % step === 0 || i === N - 1 ? dshMd(x.d) : '') + '</em></button>';
+      });
+      h += '</div>';
+      var miss = d.daily.filter(function (x) { return !x.has; }).length;
+      return h + (miss ? '<p class="dsh-note">빗금 친 날 ' + miss + '일은 판매 기록이 없어요 (어제 판매는 아침 8시 10분에 들어와요)</p>' : '');
+    }
+    function dshWeek() {
+      var d = DSH.data, mk = d.adm ? DSH.metric : 'q'; if (d.daily.length < 7) return '';
+      var wk = {}, wc = {}; d.daily.forEach(function (x) { if (!x.has) return; var w = dshWd(x.d); wk[w] = (wk[w] || 0) + (+x[mk] || 0); wc[w] = (wc[w] || 0) + 1; });
+      var ws = '월화수목금토일'.split('').filter(function (w) { return wc[w]; }); if (ws.length < 5) return '';
+      var av = {}; ws.forEach(function (w) { av[w] = wk[w] / wc[w]; });
+      var mx = ws.reduce(function (a, w) { return av[w] > av[a] ? w : a; }, ws[0]), wd = ws.filter(function (w) { return '월화수목금'.indexOf(w) !== -1; }), wdAvg = wd.reduce(function (s, w) { return s + av[w]; }, 0) / (wd.length || 1);
+      var pct = wdAvg ? Math.round((av[mx] / wdAvg - 1) * 100) : 0, vmax = av[mx] || 1;
+      return '<div class="dsh-wk"><p><b>' + mx + '요일</b>' + (pct > 0 && '월화수목금'.indexOf(mx) === -1 ? '이 평일보다 <b>' + pct + '%</b> 더 팔려요' : '이 가장 많이 팔려요') + '</p>'
+        + ws.map(function (w) { return '<div class="' + (w === mx ? 'top' : '') + '"><b>' + w + '</b><span><i style="width:' + Math.round(av[w] / vmax * 100) + '%"></i></span><em>' + dshVal(av[w], mk) + '</em></div>'; }).join('')
+        + (d.daily.length < 28 ? '<p class="dsh-note">요일별은 4주 넘게 고르면 더 믿을 만해요</p>' : '') + '</div>';
+    }
+    /* ── 오늘의 미션 ── */
+    function dshMsList() {
+      var d = DSH.data, y = dshYmd(Date.now() - 864e5), rg = null; try { rg = RF.data ? rfGroups() : null; } catch (e) {}
+      var oldOrd = (cachedOrderItems || []).filter(function (x) { var a = daysSince(x.orderDate); return a != null && a >= 3; }).length;
+      var late = (cachedInboundItems || []).filter(function (x) { var a = daysSince(effOrderDate(x)); return a != null && a >= 7 && !delayReasonOf(x); }).length;
+      var boxDone = (function () { try { if (!SP.box) return null; var l = bxLastAt(); return !!l && l.slice(0, 10) === bxToday(); } catch (e) { return null; } })();
+      var yIn = DSH.s15to ? DSH.s15to >= y : null;
+      var M = [
+        { id: 'sales', t: '어제 판매 확인', n: yIn === false ? '아직' : null, auto: false, warn: yIn === false,
+          why: yIn === false ? '어제 판매가 아직 안 들어왔어요 (매일 아침 8시 10분 자동) — 9시가 지나도 없으면 알려 주세요' : '어제 무엇이 잘 팔렸고, 무엇이 갑자기 줄었는지',
+          how: ['아래 [어제]를 눌러요 (지난주 같은 요일과 비교돼요)', '판매 순위 위쪽과 ▲·▼가 큰 상품을 봐요', "'지금 주문' 표시가 붙은 잘 팔리는 상품은 오늘 주문해요"], go: "dshPreset(1); dshScroll('dshSales')", gol: '어제 판매 보기' },
+        { id: 'review', t: '1차 검토 처리', n: (cachedReviewItems || []).length, auto: true,
+          why: '직원이 요청한 주문 — 오늘 안에 승인하거나 돌려보내요',
+          how: ['검토대기를 열어요', '15일 판매 · 추정 재고 · 1박스 개수를 보고 수량을 고쳐요', '엔터(또는 [발주 승인]) → 약사님께 · 아직 있으면 [재고있음]'], go: "dshGo('review')", gol: '검토대기 열기' },
+        { id: 'reorder', t: '지금 주문할 상품', n: rg ? rg.now.length : null, auto: true,
+          why: '평소 입고 주기로 보면 재고가 떨어질 때가 된 상품',
+          how: ['재주문 예측을 열어요', '수량을 확인하고 엔터(= 바로 요청)', '선반에 아직 넉넉하면 넘어가요'], go: "dshGo('reorder')", gol: '재주문 예측 열기' },
+        { id: 'missed', t: '놓친 주문 확인', n: DSH.missed, auto: true,
+          why: '잘 팔리는데 오래 안 시킨 상품 — 품절 위험',
+          how: ['놓친 주문을 열어요', '선반에 있으면 [재고 있음]', '없으면 수량을 넣고 엔터(= 주문 요청)'], go: "dshGo('missed', 1)", gol: '놓친 주문 열기' },
+        { id: 'order', t: '최종 발주 3일 넘은 것', n: oldOrd, auto: true,
+          why: '약사님 주문을 기다린 지 3일이 넘은 상품',
+          how: ['최종 발주를 열어요', '약사님께 주문했는지 물어요', '주문했으면 [주문 완료], 안 시킬 거면 [재고있음]'], go: "dshGo('order')", gol: '최종 발주 열기' },
+        { id: 'late', t: '입고 7일 넘은 것', n: late, auto: true,
+          why: '주문했는데 일주일이 넘도록 안 온 상품',
+          how: ['지연 목록을 열어요', '공급사(경로 번호)에 연락해 확인해요', '늦는 이유를 적거나, 품절이면 [품절 취소]'], go: "dshGo('delayed')", gol: '지연 목록 열기' },
+        { id: 'stock', t: '재고 확인 요청', n: (cachedStockCheckItems || []).length, auto: true,
+          why: "'재고있음'으로 돌려보낸 상품 — 정말 있는지 선반 확인",
+          how: ['재고 확인을 열어요', '선반에 실제로 있는지 봐요', '없으면 다시 주문 요청'], go: "dshGo('stockCheck')", gol: '재고 확인 열기' },
+        { id: 'box', t: '박스 재고 적기', n: boxDone == null ? null : boxDone ? 0 : '아직', auto: true,
+          why: '아크릴 박스가 떨어지지 않게 — 오전 세트 담당이 매일 적어요',
+          how: ['세트 상품 → 박스 재고', '번호마다 남은 개수를 적어요', '[저장] → 🔴면 1박스가 자동으로 주문돼요'], go: "dshClose(function () { bxOpenTab(); })", gol: '박스 재고 열기' },
+        { id: 'drop', t: '안 팔린 상품 보기', n: d ? d.items.filter(function (x) { return !x.q && x.pq >= 5; }).length : null, auto: true,
+          why: '앞 기간엔 팔렸는데 이번엔 0개 — 품절이거나 진열에서 빠졌을 수 있어요',
+          how: ['아래 판매 순위에서 [많이 줄어든]', '0개인 상품이 선반에 있는지 · 가격표 · 진열 위치를 봐요', '없으면 주문, 쌓였으면 창고 정리 후보로'], go: "DSH.sort = 'dn'; DSH.cat = ''; dshRender(); dshScroll('dshRank')", gol: '줄어든 상품 보기' }
+      ];
+      var C = (DSH.ms && DSH.ms.date === dshToday() && DSH.ms.checks) || {};
+      M.forEach(function (m) { var c = C[m.id]; m.hand = !!c; m.by = c ? (c.by || '') + ' ' + (c.at || '') : ''; m.done = m.hand || (m.auto && m.n === 0); });
+      return M;
+    }
+    function dshMsLoad() {
+      if (!google.script.run.getMissions || !dshAllowed()) return;
+      google.script.run.withSuccessHandler(function (r) { if (r && r.success) { DSH.ms = { date: r.date, checks: r.checks || {} }; dshSoft(); } }).getMissions(currentSelectedMember, dshToday());
+      if (DSH.missedAt && Date.now() - DSH.missedAt < 10 * 60000) return;
+      if (google.script.run.getMissedOrders) google.script.run.withSuccessHandler(function (r) { DSH.missedAt = Date.now(); DSH.missed = r && r.items ? r.items.length : 0; dshSoft(); }).getMissedOrders((typeof MO !== 'undefined' && MO.min) || 10);
+    }
+    function dshMsToggle(id) {
+      var day = dshToday(); DSH.ms = DSH.ms && DSH.ms.date === day ? DSH.ms : { date: day, checks: {} };
+      var on = !DSH.ms.checks[id], old = DSH.ms.checks[id], back = function (m) { if (old) DSH.ms.checks[id] = old; else delete DSH.ms.checks[id]; dshRender(); showToast(m || '체크가 저장되지 않았어요', 2400); };
+      if (on) DSH.ms.checks[id] = { by: currentSelectedMember, at: new Date(Date.now() + 9 * 3600e3).toISOString().slice(11, 16) }; else delete DSH.ms.checks[id];
+      if (on) { var L = dshMsList(), nx = L.filter(function (m) { return !m.done; })[0]; DSH.msOpen = nx ? nx.id : ''; }   // 다음 미션을 펼침
+      dshRender();   // 바로 체크된 것처럼 (저장은 뒤에서 · 안 되면 되돌림)
+      google.script.run.withSuccessHandler(function (r) { if (!r || !r.success) back(r && r.message); }).withFailureHandler(function () { back(); }).setMission(currentSelectedMember, day, id, on);
+    }
+    function dshScroll(id) { setTimeout(function () { var b = document.getElementById('dshBody'), el = document.getElementById(id); if (b && el) b.scrollTo({ top: Math.max(0, el.offsetTop - 8), behavior: 'smooth' }); }, 30); }
+    function dshGo(k, tool) { dshClose(function () { if (tool) ryLaunchGo(k); else { switchTab(k); var v = document.getElementById(k + 'View'); if (v) window.scrollTo({ top: Math.max(0, v.getBoundingClientRect().top + window.scrollY - 12), behavior: 'smooth' }); } }); }
+    function dshMsHtml() {
+      var M = dshMsList(), done = M.filter(function (m) { return m.done; }).length, pct = Math.round(done / M.length * 100), next = M.filter(function (m) { return !m.done; })[0];
+      var openId = DSH.msOpen === '-' ? '' : DSH.msOpen || (next ? next.id : '');
+      var h = '<section class="dsh-card dsh-ms" id="dshMs"><div class="dsh-ms-h"><div><h3>오늘의 미션</h3><p>' + dshMd(dshToday()) + '(' + dshWd(dshToday()) + ') · 위에서부터 하나씩 · 0건이 되면 저절로 끝나요</p></div>'
+        + '<div class="dsh-ms-p" role="progressbar" aria-valuemin="0" aria-valuemax="' + M.length + '" aria-valuenow="' + done + '" aria-label="오늘의 미션 ' + done + '/' + M.length + '"><b>' + done + '<small>/' + M.length + '</small></b><span><i style="width:' + pct + '%"></i></span></div></div>';
+      h += '<ol class="dsh-ms-l">' + M.map(function (m, i) {
+        var open = openId === m.id, cnt = m.n == null ? (m.auto ? '…' : '') : typeof m.n === 'number' ? m.n + '건' : m.n;
+        return '<li class="' + (m.done ? 'done' : '') + (open ? ' open' : '') + (m.warn && !m.done ? ' warn' : '') + '">'
+          + '<button type="button" class="ck" aria-pressed="' + m.done + '" aria-label="' + escapeHtml(m.t) + (m.done ? ' — 끝남' : ' — 다 했으면 체크') + '" onclick="dshMsToggle(\'' + m.id + '\')"' + (m.done && !m.hand ? ' disabled' : '') + '>' + (m.done ? RYI.check : '<em>' + (i + 1) + '</em>') + '</button>'
+          + '<button type="button" class="hd" aria-expanded="' + open + '" onclick="DSH.msOpen = ' + (open ? "'-'" : "'" + m.id + "'") + '; dshRender()"><b>' + m.t + '</b>' + (cnt ? '<i>' + cnt + '</i>' : '') + '<span>' + (m.done ? (m.hand ? '✓ ' + escapeHtml(m.by) + ' 체크' : '✓ 0건 · 저절로 끝') : escapeHtml(m.why)) + '</span></button>'
+          + (open ? '<div class="bd">' + (m.done ? '<p>' + escapeHtml(m.why) + '</p>' : '') + '<ol>' + m.how.map(function (s) { return '<li>' + escapeHtml(s) + '</li>'; }).join('') + '</ol>'
+            + '<div class="ac"><button type="button" class="dsh-act" onclick="' + m.go + '">' + escapeHtml(m.gol) + RYI.chevright + '</button>'
+            + (m.done && !m.hand ? '' : '<button type="button" class="dsh-ghost" onclick="dshMsToggle(\'' + m.id + '\')">' + (m.hand ? '체크 풀기' : '다 했어요') + '</button>') + '</div></div>' : '')
+          + '</li>';
+      }).join('') + '</ol>';
+      return h + (done === M.length ? '<p class="dsh-ms-ok">오늘 미션을 모두 끝냈어요 👏</p>' : '') + '</section>';
+    }
+    /* ── 판매 순위 ── */
+    function dshRowsData() {
+      var d = DSH.data, sc = dshScale(), ok = dshCmpOk(), q = DSH.q.replace(/\s+/g, '').toLowerCase(), SM = dshStateMap(), mk = d.adm ? DSH.metric : 'q';
+      var L = d.items.map(function (it) { return { it: it, c: dshCatOf(it), dl: ok ? it.q - it.pq * sc : null, st: dshState(it, SM) }; });
+      var F = L.filter(function (x) { return (!DSH.cat || x.c === DSH.cat) && (!q || (x.it.n + ' ' + (x.it.m || '')).replace(/\s+/g, '').toLowerCase().indexOf(q) !== -1); });
+      if (DSH.sort === 'up') F = F.filter(function (x) { return x.dl != null && x.it.q >= 5 && x.dl > 0; }).sort(function (a, b) { return b.dl - a.dl; });
+      else if (DSH.sort === 'dn') F = F.filter(function (x) { return x.dl != null && x.it.pq * sc >= 5 && x.dl < 0; }).sort(function (a, b) { return a.dl - b.dl; });
+      else if (DSH.sort === 'new') F = F.filter(function (x) { return ok && !x.it.pq && x.it.q > 0; }).sort(function (a, b) { return b.it.q - a.it.q; });
+      else if (DSH.sort === 'ord') F = F.filter(function (x) { return x.st && (x.st.k === 'now' || x.st.k === 'wk') && x.it.q > 0; }).sort(function (a, b) { return (a.st.k === 'now' ? 0 : 1) - (b.st.k === 'now' ? 0 : 1) || b.it.q - a.it.q; });
+      else F = F.filter(function (x) { return x.it.q > 0; }).sort(function (a, b) { return (b.it[mk] || 0) - (a.it[mk] || 0); });
+      return { L: L, F: F };
+    }
+    function dshCatsHtml(L) {
+      if (!dshPmReady()) return '<div class="dsh-cats wait">분류 붙이는 중…</div>';
+      var cats = {}, tot = 0; L.forEach(function (x) { if (!x.it.q) return; cats[x.c] = (cats[x.c] || 0) + x.it.q; tot += x.it.q; });
+      var cl = Object.keys(cats).sort(function (a, b) { return (a === '앱에 연결 안 됨') - (b === '앱에 연결 안 됨') || cats[b] - cats[a]; });
+      if (DSH.cat && cl.indexOf(DSH.cat) === -1) DSH.cat = '';
+      return '<div class="dsh-cats" role="group" aria-label="분류로 거르기"><button type="button" class="' + (!DSH.cat ? 'on' : '') + '" aria-pressed="' + !DSH.cat + '" onclick="DSH.cat = \'\'; DSH.more = 30; dshListOnly()"><b>전체</b></button>'
+        + cl.map(function (c) { var pct = Math.round(cats[c] / (tot || 1) * 100); return '<button type="button" class="' + (DSH.cat === c ? 'on' : '') + '" aria-pressed="' + (DSH.cat === c) + '" data-c="' + escapeHtml(c) + '" onclick="DSH.cat = this.dataset.c; DSH.more = 30; dshListOnly()"><b>' + escapeHtml(c) + '</b><i>' + pct + '%</i><span style="width:' + pct + '%"></span></button>'; }).join('') + '</div>';
+    }
+    function dshList() {
+      var d = DSH.data, R = dshRowsData(), ok = dshCmpOk();
+      var sorts = [['q', '많이 팔린'], ['ord', '주문할 것'], ['up', '많이 오른'], ['dn', '많이 줄어든'], ['new', '처음 팔린']];
+      var h = '<div id="dshCatsBox">' + dshCatsHtml(R.L) + '</div>';
+      h += '<div class="dsh-ctl"><div class="dsh-seg s5" role="group" aria-label="순위 보기">' + sorts.map(function (s) { var dis = !ok && (s[0] === 'up' || s[0] === 'dn' || s[0] === 'new'); return '<button type="button" class="' + (DSH.sort === s[0] ? 'on' : '') + '" aria-pressed="' + (DSH.sort === s[0]) + '"' + (dis ? ' disabled title="앞 기간 기록이 모자라 비교할 수 없어요"' : '') + ' onclick="DSH.sort = \'' + s[0] + '\'; DSH.more = 30; DSH.open = \'\'; dshListOnly()">' + s[1] + '</button>'; }).join('') + '</div>'
+        + '<input type="search" id="dshQ" placeholder="상품 · 제조사 찾기" value="' + escapeHtml(DSH.q) + '" oninput="DSH.q = this.value; DSH.more = 30; dshListOnly()" autocomplete="off" aria-label="순위에서 상품 찾기"></div>';
+      return h + '<div id="dshListBody">' + dshRows(R.F) + '</div>';
+    }
+    function dshRows(F) {
+      var d = DSH.data, mk = d.adm ? DSH.metric : 'q', n = dshHas() || 1, ok = dshCmpOk();
+      if (!d.items.length) return '<p class="dsh-empty">이 기간 판매 기록이 아직 없어요.</p>';
+      if (!F.length) return '<p class="dsh-empty">' + (DSH.sort === 'ord' ? '판매 순위 안에 지금 주문할 상품이 없어요 👍' : (DSH.q || DSH.cat) ? '맞는 상품이 없어요.' : '해당하는 상품이 없어요.') + '</p>';
+      var head = '<div class="dsh-th" aria-hidden="true"><span>상품</span><span>판매</span><span>' + (ok ? '앞 기간보다' : '') + '</span><span>하루</span>' + (d.adm ? '<span>매출</span><span>순이익</span>' : '') + '<span>상태</span></div>';
+      var rows = F.slice(0, DSH.more).map(function (x, i) {
+        var it = x.it, a = dshApp(it.n), dl = x.dl, img = a && a.imgUrl ? '<img src="' + escapeHtml(a.imgUrl) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : '';
+        var dlH = dl == null ? '' : !it.pq ? '<i class="nw">처음</i>' : Math.round(dl) === 0 ? '<i>비슷</i>' : '<i class="' + (dl > 0 ? 'up' : 'dn') + '">' + (dl > 0 ? '+' : '−') + dshN(Math.abs(dl)) + '개</i>';
+        var on = DSH.open === it.n, maker = /미등록/.test(it.m || '') ? '' : it.m, sub = [maker, x.c].filter(Boolean).join(' · ');
+        var r = '<div class="dsh-row' + (on ? ' on' : '') + '"><button type="button" class="dsh-rh" data-n="' + escapeHtml(it.n) + '" onclick="DSH.open = DSH.open === this.dataset.n ? \'\' : this.dataset.n; dshListOnly()" aria-expanded="' + on + '">'
+          + '<em>' + (i + 1) + '</em><span class="ph">' + img + '</span><span class="tx"><b>' + escapeHtml(it.n) + '</b><small>' + escapeHtml(sub) + '</small>' + '<span class="stm">' + dshStateHtml(x.st) + '</span></span>'
+          + '<span class="c q"><b>' + dshN(it.q) + '<small>개</small></b></span><span class="c dl">' + dlH + '</span><span class="c av">' + (Math.round(it.q / n * 10) / 10) + '</span>'
+          + (d.adm ? '<span class="c s">' + dshWon(it.s) + '</span><span class="c p">' + dshWon(it.p) + '</span>' : '') + '<span class="c stc">' + dshStateHtml(x.st) + '</span></button>';
+        if (on) {
+          var dd = it.d || [], mx = Math.max.apply(null, dd.concat([1])), N = dd.length, gap = N > 60 ? 0 : N > 31 ? 1 : 2, s = x.st;
+          var act = s && (s.k === 'rv' || s.k === 'od' || s.k === 'in') ? ['진행 중인 주문 보기', "dshGo('" + { rv: 'review', od: 'order', in: 'inbound' }[s.k] + "')"] : a ? ['찾아서 주문 요청', 'q'] : ['앱에서 검색', 'q'];
+          r += '<div class="dsh-rd">' + (N ? '<div class="dsh-bars sm" style="--n:' + N + ';gap:' + gap + 'px">' + dd.map(function (v, j) { var x2 = d.daily[j], miss = x2 && !x2.has; return '<div class="dsh-bar' + (miss ? ' miss' : '') + '" title="' + dshMd(d.days[j]) + ' ' + v + '개"><span style="height:' + (miss ? 100 : Math.max(2, Math.round(v / mx * 100))) + '%"></span><em>' + (j === 0 || j === N - 1 ? dshMd(d.days[j]) : '') + '</em></div>'; }).join('') + '</div>' : '')
+            + '<div class="dsh-rx"><p>하루 평균 <b>' + (Math.round(it.q / n * 10) / 10) + '개</b> · ' + (ok ? dshPrevName() + ' ' + dshN(it.pq) + '개' : '비교 기록 모자람') + (d.adm ? ' · 매출 ' + dshWon(it.s) + ' · 순이익 ' + dshWon(it.p) : '') + (a ? '' : ' · 앱 상품과 아직 연결 안 됨') + '</p>'
+            + '<button type="button" class="dsh-act" data-q="' + escapeHtml(a ? String(a.name).split('\n')[0] : it.n) + '" onclick="' + (act[1] === 'q' ? "var q = this.dataset.q; dshClose(function () { ntGoItem(q); })" : act[1]) + '">' + RYI.search + act[0] + '</button></div></div>';
+        }
+        return r + '</div>';
+      }).join('');
+      return '<div class="dsh-list' + (d.adm ? ' adm' : '') + '">' + head + rows + '</div>' + (F.length > DSH.more ? '<button type="button" class="dsh-more" onclick="DSH.more += 30; dshListOnly()">더 보기 · ' + (F.length - DSH.more) + '개 남음</button>' : '');
+    }
+    function dshListOnly() {   /* 검색칸은 그대로 두고 분류·보기·목록만 (한글 조합이 안 깨지게) */
+      var sec = document.getElementById('dshRank'), b = document.getElementById('dshListBody'); if (!sec || !b || !DSH.data) return dshRender();
+      var tmp = document.createElement('div'); tmp.innerHTML = dshList();
+      b.innerHTML = tmp.querySelector('#dshListBody').innerHTML;
+      document.getElementById('dshCatsBox').innerHTML = tmp.querySelector('#dshCatsBox').innerHTML;
+      sec.querySelector('.dsh-seg').innerHTML = tmp.querySelector('.dsh-seg').innerHTML;
+    }
+    /* 뒤에서 온 자료(링크·미션·놓친 주문·상품 목록·재주문 예측)는 입력칸을 건드리지 않게 */
+    function dshSoft() { if (!dshIsOpen()) return; var a = document.activeElement; if (a && (a.id === 'dshQ' || a.id === 'dshFrom' || a.id === 'dshTo')) { var m = document.getElementById('dshMs'); if (m) m.outerHTML = dshMsHtml(); dshListOnly(); return; } dshRender(); }
+    function dshRender() {
+      var body = document.getElementById('dshBody'); if (!body || !dshIsOpen()) return;
+      var d = DSH.data, y = dshYmd(Date.now() - 864e5), lo = dshYmd(Date.now() - 150 * 864e5), foc = document.activeElement && document.activeElement.id, sel = null;
+      try { if (foc === 'dshQ') sel = [document.activeElement.selectionStart, document.activeElement.selectionEnd]; } catch (e) {}
+      if (d && DSH.links && !dshPmReady() && !DSH.pmT && typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items && RY_CAT.items.length) DSH.pmT = setTimeout(function () { DSH.pmT = 0; if (!dshIsOpen()) return; dshPmRun(); dshSoft(); }, 60);
+      var presets = [[1, '어제'], [7, '7일'], [15, '15일'], [30, '30일']];
+      var range = '<div class="dsh-range"><div class="dsh-seg" role="group" aria-label="기간">' + presets.map(function (p) { return '<button type="button" class="' + (DSH.preset === p[0] ? 'on' : '') + '" aria-pressed="' + (DSH.preset === p[0]) + '" onclick="dshPreset(' + p[0] + ')">' + p[1] + '</button>'; }).join('')
+        + '<button type="button" class="' + (DSH.preset === 0 ? 'on' : '') + '" aria-pressed="' + (DSH.preset === 0) + '" onclick="DSH.preset = 0; dshRender()">직접</button></div>'
+        + (DSH.preset === 0 ? '<div class="dsh-dates"><input type="date" id="dshFrom" value="' + DSH.from + '" min="' + lo + '" max="' + y + '" aria-label="시작 날짜" onchange="dshCustom()"><span>~</span><input type="date" id="dshTo" value="' + DSH.to + '" min="' + lo + '" max="' + y + '" aria-label="끝 날짜" onchange="dshCustom()"></div>' : '')
+        + '<p class="dsh-when">' + dshMd(DSH.from) + '(' + dshWd(DSH.from) + ')' + (DSH.from !== DSH.to ? ' ~ ' + dshMd(DSH.to) + '(' + dshWd(DSH.to) + ') · ' + dshDays(DSH.from, DSH.to) + '일' : '') + (d && dshCmpOk() ? ' · ' + dshPrevName() + '보다' : '') + '</p></div>';
+      var sales = DSH.loading && !d ? '<section class="dsh-card" id="dshSales"><div class="dsh-sk"></div><div class="dsh-sk s2"></div></section>'
+        : DSH.err ? '<section class="dsh-card" id="dshSales"><p class="dsh-err">' + escapeHtml(DSH.err) + '</p><button type="button" class="dsh-more" onclick="DSH.key = \'\'; dshLoad()">다시 불러오기</button></section>'
+        : d ? '<section class="dsh-card" id="dshSales"><h3>판매</h3>' + dshKpis() + '<div class="dsh-charts"><div class="dsh-c1">' + dshBars() + '</div><div class="dsh-c2">' + dshWeek() + '</div></div></section>' : '';
+      var rank = d ? '<section class="dsh-card" id="dshRank"><h3>판매 순위 <small>' + dshN(d.items.filter(function (x) { return x.q > 0; }).length) + '개 상품 · 눌러서 날짜별 보기</small></h3>' + dshList() + '</section>' : '';
+      var y0 = body.scrollTop;
+      body.innerHTML = '<div class="dsh-wrap">' + dshMsHtml() + range + sales + rank + '</div>';
+      body.scrollTop = y0;
+      var cb = document.querySelector('#dshSales .dsh-c1'); if (cb && cb.clientWidth && Math.abs((DSH.chartW || 0) - cb.clientWidth) > 40) { DSH.chartW = cb.clientWidth; return dshRender(); }   // 날짜 글자 간격은 실제 그래프 폭으로
+      if (foc) { var f = document.getElementById(foc); if (f && f.focus) { try { f.focus({ preventScroll: true }); if (sel) f.setSelectionRange(sel[0], sel[1]); } catch (e) {} } }
+      var t = document.getElementById('dshTitleSub'); if (t) t.textContent = d && d.last ? dshMd(d.last) + '까지 · 매일 아침 8시 반영' : '';
+    }
+    window.addEventListener('resize', function () { if (!dshIsOpen()) return; clearTimeout(DSH.rzT); DSH.rzT = setTimeout(function () { DSH.chartW = 0; dshRender(); }, 200); });
     function ryLaunchGo(k) {
       tlPushRecent(k); TL_Q = '';
       ryLaunchClose();
+      if (k === 'dash') { dshOpen(); return; }
       if (k === 'stale') { openStale(); return; }
       if (k === 'setduty') { sdOpenWeek(); return; }
       if (k === 'notices') { ntOpen(); return; }
@@ -16752,6 +17186,14 @@ video {
 </div>
 
 <!-- ═══ 세트 · 용도 전용 화면 (0920) ═══ -->
+<div id="dshPage" class="sp" role="dialog" aria-modal="true" aria-label="대시보드" aria-hidden="true">
+  <header class="sp-head">
+    <button type="button" class="sp-back" onclick="dshClose()">✕ 닫기</button>
+    <b>대시보드<small id="dshTitleSub"></small></b>
+    <button type="button" onclick="dshRefresh()" aria-label="판매 · 미션 다시 불러오기">새로고침</button>
+  </header>
+  <main id="dshBody"></main>
+</div>
 <div id="setPage" class="sp" role="dialog" aria-label="세트 상품과 용도별 상품" aria-hidden="true">
   <header class="sp-head">
     <button type="button" class="sp-back" id="spBackBtn" onclick="spBack()">✕ 닫기</button>
