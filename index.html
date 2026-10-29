@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvt1pou9">
+  <meta name="ry-build" content="mvt1x9im">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1714,6 +1714,7 @@ html body:not(#_):not(#_) .dsh-row.on .dsh-rh{background:color-mix(in srgb,var(-
 .dsh-rh .c{text-align:right;font-variant-numeric:tabular-nums;font-size:13.5px;color:var(--ry-ink-2);white-space:nowrap}
 .dsh-rh .c.q b{font-size:16px;font-weight:600;color:var(--ry-ink)}.dsh-rh .c.q b small{font-size:11.5px;font-weight:400;color:var(--ry-ink-3);margin-left:1px}
 .dsh-rh .c.stc{text-align:left}
+#dshPage i.nc{font-size:11.5px;color:var(--ry-ink-3)}
 #dshPage i.st{display:inline-block;font-size:12px;font-weight:600;border-radius:6px;padding:2px 7px;white-space:nowrap}
 #dshPage i.st.hot{color:var(--ry-bad);background:var(--ry-bad-soft)}#dshPage i.st.go{color:var(--ry-ink-2);background:#f5f5f7}#dshPage i.st.bad{color:var(--ry-warn);background:var(--ry-warn-soft)}
 @media (max-width:1023px){
@@ -16877,7 +16878,8 @@ video {
       var n = has.length, tot = { q: 0, s: 0, p: 0 }; has.forEach(function (x) { tot.q += x.q; tot.s += x.s || 0; tot.p += x.p || 0; });
       var pv = d.prev || {}, ok = dshCmpOk(), cmp = function (k) { if (!ok || !pv[k]) return ''; var pct = Math.round(((tot[k] / n) / (pv[k] / pv.days) - 1) * 100); return '<i class="' + (pct > 0 ? 'up' : pct < 0 ? 'dn' : '') + '">' + (pct > 0 ? '▲ ' : pct < 0 ? '▼ ' : '') + Math.abs(pct) + '%</i>'; };
       var K = [['q', '판매 수량', dshN(tot.q) + '개', '하루 ' + dshN(tot.q / n) + '개']];
-      if (d.adm) K.push(['s', '매출', dshWon(tot.s), '하루 ' + dshWon(tot.s / n)], ['p', '순이익', dshWon(tot.p), tot.s ? '이익률 ' + Math.round(tot.p / tot.s * 100) + '%' : '']);
+      var nc = 0, ncS = 0, vS = 0, vP = 0; if (d.adm) d.items.forEach(function (x) { if (!x.s) return; if (x.p >= x.s) { nc++; ncS += x.s; } else { vS += x.s; vP += x.p; } });   /* 1029 POS 에 사입가가 없으면 순이익 = 매출로 와서 부풀려짐 → 빼고 계산 */
+      if (d.adm) K.push(['s', '매출', dshWon(tot.s), '하루 ' + dshWon(tot.s / n)], ['p', '순이익', dshWon(vP), vS ? '이익률 ' + Math.round(vP / vS * 100) + '%' + (nc ? ' · 사입가 없는 ' + nc + '개 뺌' : '') : '']);
       return '<div class="dsh-kpis">' + K.map(function (x) { var c = cmp(x[0]); return '<button type="button" class="dsh-kpi' + (DSH.metric === x[0] ? ' on' : '') + '" aria-pressed="' + (DSH.metric === x[0]) + '" onclick="DSH.metric = \'' + x[0] + '\'; DSH.pick = -1; dshRender()"><small>' + x[1] + '</small><b>' + x[2] + '</b><span>' + x[3] + '</span>' + (c ? '<span class="cmp">' + c + '</span>' : '') + '</button>'; }).join('') + '</div>'
         + (ok ? '<p class="dsh-note">▲▼ = ' + dshPrevName() + ' 하루 평균보다</p>' : '<p class="dsh-note warn">' + (pv.days ? '앞 기간 기록이 ' + pv.days + '일뿐이라 비교는 빼고 보여 줘요' : '앞 기간 판매 기록이 없어 비교는 빼고 보여 줘요') + ' · 기록은 ' + dshMd(d.first) + '부터 있어요</p>');
     }
@@ -16929,7 +16931,7 @@ video {
           how: ['재주문 예측을 열어요', '수량을 확인하고 엔터(= 바로 요청)', '선반에 아직 넉넉하면 넘어가요'], go: "dshGo('reorder')", gol: '재주문 예측 열기' },
         { id: 'missed', t: '놓친 주문 확인', n: DSH.missed, auto: true,
           why: '잘 팔리는데 오래 안 시킨 상품 — 품절 위험',
-          how: ['놓친 주문을 열어요', '선반에 있으면 [재고 있음]', '없으면 수량을 넣고 엔터(= 주문 요청)'], go: "dshGo('missed', 1)", gol: '놓친 주문 열기' },
+          how: ['놓친 주문을 열어요 (잘 팔리는 순이라 위에서 10~20개만 봐도 돼요)', '선반에 있으면 [재고 있음]', '없으면 수량을 넣고 엔터(= 주문 요청)'], go: "dshGo('missed', 1)", gol: '놓친 주문 열기' },
         { id: 'order', t: '최종 발주 3일 넘은 것', n: oldOrd, auto: true,
           why: '약사님 주문을 기다린 지 3일이 넘은 상품',
           how: ['최종 발주를 열어요', '약사님께 주문했는지 물어요', '주문했으면 [주문 완료], 안 시킬 거면 [재고있음]'], go: "dshGo('order')", gol: '최종 발주 열기' },
@@ -17023,12 +17025,12 @@ video {
         var r = '<div class="dsh-row' + (on ? ' on' : '') + '"><button type="button" class="dsh-rh" data-n="' + escapeHtml(it.n) + '" onclick="DSH.open = DSH.open === this.dataset.n ? \'\' : this.dataset.n; dshListOnly()" aria-expanded="' + on + '">'
           + '<em>' + (i + 1) + '</em><span class="ph">' + img + '</span><span class="tx"><b>' + escapeHtml(it.n) + '</b><small>' + escapeHtml(sub) + '</small>' + '<span class="stm">' + dshStateHtml(x.st) + '</span></span>'
           + '<span class="c q"><b>' + dshN(it.q) + '<small>개</small></b></span><span class="c dl">' + dlH + '</span><span class="c av">' + (Math.round(it.q / n * 10) / 10) + '</span>'
-          + (d.adm ? '<span class="c s">' + dshWon(it.s) + '</span><span class="c p">' + dshWon(it.p) + '</span>' : '') + '<span class="c stc">' + dshStateHtml(x.st) + '</span></button>';
+          + (d.adm ? '<span class="c s">' + dshWon(it.s) + '</span><span class="c p">' + (it.s && it.p >= it.s ? '<i class="nc">사입가 없음</i>' : dshWon(it.p)) + '</span>' : '') + '<span class="c stc">' + dshStateHtml(x.st) + '</span></button>';
         if (on) {
           var dd = it.d || [], mx = Math.max.apply(null, dd.concat([1])), N = dd.length, gap = N > 60 ? 0 : N > 31 ? 1 : 2, s = x.st;
           var act = s && (s.k === 'rv' || s.k === 'od' || s.k === 'in') ? ['진행 중인 주문 보기', "dshGo('" + { rv: 'review', od: 'order', in: 'inbound' }[s.k] + "')"] : a ? ['찾아서 주문 요청', 'q'] : ['앱에서 검색', 'q'];
           r += '<div class="dsh-rd">' + (N ? '<div class="dsh-bars sm" style="--n:' + N + ';gap:' + gap + 'px">' + dd.map(function (v, j) { var x2 = d.daily[j], miss = x2 && !x2.has; return '<div class="dsh-bar' + (miss ? ' miss' : '') + '" title="' + dshMd(d.days[j]) + ' ' + v + '개"><span style="height:' + (miss ? 100 : Math.max(2, Math.round(v / mx * 100))) + '%"></span><em>' + (j === 0 || j === N - 1 ? dshMd(d.days[j]) : '') + '</em></div>'; }).join('') + '</div>' : '')
-            + '<div class="dsh-rx"><p>하루 평균 <b>' + (Math.round(it.q / n * 10) / 10) + '개</b> · ' + (ok ? dshPrevName() + ' ' + dshN(it.pq) + '개' : '비교 기록 모자람') + (d.adm ? ' · 매출 ' + dshWon(it.s) + ' · 순이익 ' + dshWon(it.p) : '') + (a ? '' : ' · 앱 상품과 아직 연결 안 됨') + '</p>'
+            + '<div class="dsh-rx"><p>하루 평균 <b>' + (Math.round(it.q / n * 10) / 10) + '개</b> · ' + (ok ? dshPrevName() + ' ' + dshN(it.pq) + '개' : '비교 기록 모자람') + (d.adm ? ' · 매출 ' + dshWon(it.s) + ' · 순이익 ' + (it.s && it.p >= it.s ? '사입가 없음' : dshWon(it.p)) : '') + (a ? '' : ' · 앱 상품과 아직 연결 안 됨') + '</p>'
             + '<button type="button" class="dsh-act" data-q="' + escapeHtml(a ? String(a.name).split('\n')[0] : it.n) + '" onclick="' + (act[1] === 'q' ? "var q = this.dataset.q; dshClose(function () { ntGoItem(q); })" : act[1]) + '">' + RYI.search + act[0] + '</button></div></div>';
         }
         return r + '</div>';
