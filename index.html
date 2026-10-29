@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvs35s5p">
+  <meta name="ry-build" content="mvsyv5hl">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -10909,7 +10909,7 @@ video {
       let qtyInputHtml = `
         <div class="ry25-qtybox">
           <input type="number" id="qty-${item.rowNumber}" value="${numTargetQty}"
-                 onblur="saveModifiedQtyAndUnit(${item.rowNumber}, this)"
+                 onblur="saveModifiedQtyAndUnit(${item.rowNumber}, this)"${type === 'review' ? ` onkeydown="rvQtyEnter(event, ${item.rowNumber}, this)" title="수량 고치고 엔터 = 발주 승인"` : ''}
                  class="w-16 py-1.5 text-center font-black text-base text-blue-700 bg-white border-2 border-blue-400 rounded-xl shadow-sm focus:outline-blue-600">
           <button type="button" id="unit-btn-${item.rowNumber}" onclick="toggleUnit(${item.rowNumber})"
                   class="px-2 py-1 text-xs font-black rounded-lg border shadow-sm transition ${currentUnit === '박스' ? 'bg-indigo-600 text-white' : 'bg-blue-50 text-blue-700 border-blue-300'}">
@@ -11266,6 +11266,14 @@ video {
         .updateSales15(rowNumber, raw);
     }
 
+    /* 1029 MJ '요청 수량 고치고 엔터 = 발주 승인' (PC 검토대기 칸만 · 폰 키보드 엔터는 그대로) — blur 가 수량 저장, 그다음 승인 */
+    function rvQtyEnter(e, rowNumber, el) {
+      if (e.key !== 'Enter' || e.isComposing || e.repeat) return;
+      e.preventDefault();
+      var n = parseInt(String(el.value).trim(), 10);
+      el.blur();
+      if (Number.isFinite(n) && n > 0 && n <= 99999) approveOrder(rowNumber);
+    }
     function saveModifiedQtyAndUnit(rowNumber, srcEl) {
       const pcInput = document.getElementById('qty-' + rowNumber);
       const mInput  = document.getElementById('m-qty-' + rowNumber);
