@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvt9qhr6">
+  <meta name="ry-build" content="mvt9z4st">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1605,6 +1605,18 @@ html body:not(#_):not(#_) .st-opt.dis{color:var(--ry-bad)!important}
 .ry-tools .ry-set-entry{background:var(--ry-brand-soft)!important;border-color:#B8C9E6!important;color:var(--ry-brand)!important;font-weight:800!important}
 #teDim{z-index:72}#teSheet{z-index:73}
 .sp-head button[hidden]{display:none}
+/* 1029 MJ '박스당 개입수가 안 들어간 상품 리스트 → 하나씩 넣기' (#buDim) */
+.bu-top{max-width:900px;margin:0 auto;padding:10px 16px 4px}.bu-top p{margin:0 0 8px;font-size:13px;color:#6b7280;line-height:1.5}
+.bu-top input{width:100%;min-height:44px;border:1px solid #e5e7eb;border-radius:12px;padding:0 12px;font-size:15px;background:#fff;box-sizing:border-box}
+#buList{max-width:900px;margin:0 auto;padding:0 12px 24px}
+.bu-row{display:flex;align-items:center;gap:12px;background:#fff;border-radius:14px;padding:10px 12px;margin-top:8px;transition:opacity .18s,transform .18s}
+.bu-row.gone{opacity:0;transform:translateX(12px)}
+.bu-ph{width:44px;height:44px;flex:0 0 44px;border-radius:10px;overflow:hidden;background:#f2f4f7}.bu-ph img{width:100%;height:100%;object-fit:contain}
+.bu-tx{flex:1;min-width:0}.bu-tx b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bu-tx small{color:#6b7280;font-size:12.5px}
+.bu-in{display:flex;align-items:center;gap:4px;flex:0 0 auto;font-size:14px;font-weight:700;color:#475467}
+.bu-in input{width:76px;min-height:44px;border:1px solid #d0d5dd;border-radius:12px;padding:0 10px;font-size:16px;font-weight:800;text-align:right;background:#fff}
+.bu-in input:focus{outline:2px solid #155EEF;outline-offset:0;border-color:#155EEF}
+.bu-more{padding:12px;color:#6b7280;text-align:center;font-size:13px}
 /* 1029 대시보드 v2 (#dshPage) — 세트 화면(#setPage)과 같은 전체 화면 · 앱 테마(400/600 · 그림자 없음 · var(--ry-brand)) 에 맞춤 · 검수 3팀 반영 */
 #dshPage{position:fixed;inset:0;z-index:60;background:var(--ry-canvas);display:none;flex-direction:column}
 #dshPage.on{display:flex}
@@ -8992,6 +9004,7 @@ video {
       if (ryShown('mbReader')) { L.push('mb'); if (typeof MB !== 'undefined' && MB.view === 'archive' && MB.cur) L.push('mb'); }
       if (ryShown('scrDim')) L.push('scr');
       if (ryShown('nophDim')) L.push('noph');
+      if (ryShown('buDim')) L.push('bu');
       var _ld = document.getElementById('locDim'); if (_ld && _ld.classList.contains('on')) L.push('loc');   /* 1009 창고 위치 넣기 */
       if (ryShown('eduReader')) { var n = typeof EDU !== 'undefined' && EDU.stack ? Math.max(1, EDU.stack.length) + (typeof eduHubF === 'function' ? +eduHubF() || 0 : 0) : 1; while (n--) L.push('edu'); }   /* 자료실 → 카드 → … */
       if (document.getElementById('invDim')) L.push('inv');   /* 1023 MJ '입고하기에서 뒤로가기 누르면 앱이 닫혀' → 창만 닫고 홈으로 */
@@ -9031,6 +9044,7 @@ video {
         else if (top === 'eduing') eduIngSheetClose();
         else if (top === 'edu') eduBack();
         else if (top === 'noph') nophClose();
+        else if (top === 'bu') buClose();
         else if (top === 'loc') locClose();
         else if (top === 'scr') scrClose();
         else if (top === 'mb') mbBack();
@@ -16778,6 +16792,7 @@ video {
         { k: 'stale', g: 1, ic: RYI.package, n: '창고 정리', v: stN ? '후보 ' + stN + '개' : '오래 안 시킨 것', cnt: stN, act: '오래 안 시킨 상품', pri: 4, kw: '재고 정리 할인 반품 폐기 소진 판매종료' },
         { k: 'loc', g: 1, ic: typeof LOC_I !== 'undefined' ? LOC_I.pin : RYI.package, n: '창고 위치 넣기', v: typeof LOC !== 'undefined' && Object.keys(LOC.map).length ? Object.keys(LOC.map).length + '개 넣음 · 구역-선반-칸' : '구역-선반-칸 (예: A-03-2)', kw: '창고 위치 선반 구역 칸 자리 진열 로케이션 찾기' },
         { k: 'noph', g: 1, ic: RYI.camera, n: '사진 없는 상품', v: '찍어 넣기', kw: '사진 촬영 카메라 이미지' },
+        (function () { var c = 0; try { c = buItems().length; } catch (e) {} return { k: 'bunit', g: 1, ic: RYI.package, n: '1박스 개수 채우기', v: c ? c + '개 비어 있음 · 잘 팔리는 순' : '1박스 개수 다 채움', kw: '박스 입수 개입수 입수량 1박스 개수 채우기 박스당' }; })(),
         { k: 'dups', g: 1, ic: RYI.copy, n: '중복 정리', v: '이름 겹치는 상품', kw: '중복 합치기 두 줄' },
         { k: 'catbrowse', g: 1, ic: RYI.folder, n: '카테고리 고치기', v: '분류 없음·기타', kw: '카테고리 분류 어린이 기타 섹터' }
       ]).concat(scr && !scr.hidden ? [{ k: 'scr', g: 1, ic: RYI.layers, n: '하위 섹터 확인', v: scrN ? scrN + '개' : '확인', cnt: scrN, act: '분류가 애매한 상품', pri: 5, kw: '하위 섹터 분류 확인필요' }] : [])
@@ -17168,6 +17183,7 @@ video {
       if (k === 'catbrowse') { openCatBrowse(); return; }
       if (k === 'dups') { openDuplicates(); return; }
       if (k === 'noph') { nophOpen(); return; }
+      if (k === 'bunit') { buOpen(); return; }
       if (k === 'loc') { locOpen(); return; }
       if (k === 'scr') { scrOpen(); return; }
       if (k === 'pfauto') { pfaOpen(); return; }
@@ -17948,6 +17964,11 @@ setTimeout(locSortBtnSync, 0);
   <div style="padding:8px 16px;color:#6b7280;font-size:13px">📷 를 누르면 카메라가 열리고, 찍으면 바로 저장돼요. 저장된 상품은 목록에서 사라져요.</div>
   <div id="nophList" style="padding:0 12px 24px"></div>
 </div>
+<div id="buDim" hidden role="dialog" aria-modal="true" aria-label="1박스 개수 채우기" style="display:none;position:fixed;inset:0;z-index:9000;background:var(--ry-bg,#f5f6f8);overflow:auto;-webkit-overflow-scrolling:touch">
+  <div style="position:sticky;top:0;background:#fff;border-bottom:1px solid #e5e7eb;padding:12px 16px;display:flex;align-items:center;gap:10px;z-index:1"><b style="font-size:17px;flex:1">1박스 개수 채우기 <span id="buCnt" style="color:#6b7280;font-weight:600;font-size:14px"></span></b><button type="button" onclick="buClose()" style="min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #e5e7eb;background:#fff;font-weight:700">닫기</button></div>
+  <div class="bu-top"><p>많이 팔리는 순서예요. 1박스에 든 개수를 적고 <b>엔터</b>(폰은 ‘다음’) → 저장하고 다음 칸으로 가요. 모르면 비워 두고 넘어가요.</p><input id="buQ" type="search" placeholder="상품 이름으로 찾기" aria-label="상품 이름으로 찾기" oninput="buRender()"></div>
+  <div id="buList"></div>
+</div>
 <div id="scrDim" hidden role="dialog" aria-modal="true" aria-label="하위 섹터 확인 필요" style="display:none;position:fixed;inset:0;z-index:9000;background:var(--ry-bg,#f5f6f8);overflow:auto;-webkit-overflow-scrolling:touch">
   <div style="position:sticky;top:0;background:#fff;border-bottom:1px solid #e5e7eb;padding:12px 16px;display:flex;align-items:center;gap:10px;z-index:1"><b style="font-size:17px;flex:1">하위 섹터 확인 필요 <span id="scrHeadCnt" style="color:#6b7280;font-weight:600;font-size:14px"></span></b><button type="button" onclick="scrClose()" style="min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #e5e7eb;background:#fff;font-weight:700">닫기</button></div>
   <div style="padding:8px 16px;color:#6b7280;font-size:13px">자동 분류가 자신 없던 상품이에요. 맞는 하위 섹터를 한 번 누르면 바로 저장돼요.</div>
@@ -18080,6 +18101,43 @@ function moOpen(min) {
   }).withFailureHandler(function () { fallback(); }).getMissedOrders(MO.min, currentSelectedMember || '');
 }
 function nophOpen() { var d = document.getElementById('nophDim'); d.hidden = false; d.style.display = 'block'; document.documentElement.classList.add('mb-lock'); if (typeof ryCatLoad === 'function') ryCatLoad(false); nophRender(); }
+/* 1029 MJ '박스당 개입수가 안 들어가 있는 제품 리스트 → 하나씩 넣어 줘야겠어' — 최근 60일에 팔렸거나 주문한 상품 중 1박스 개수 빈 것 · 15일 판매 많은 순
+   엔터 = 저장(뒤에서) + 다음 칸 · 저장되면 목록에서 빠짐 · 안 되면 되돌리고 알림 */
+var BU = { done: {}, n: 0, dirty: false };
+function buItems() {
+  var seen = {}, out = [], recent = function (x) { if ((s15Num(x.sales15) || 0) > 0) return true; return [x.inboundDate, x.orderDate].some(function (d) { var a = daysSince(d); return a != null && a >= 0 && a <= 60; }); };
+  boxItems_().concat(cachedInboundItems || []).forEach(function (x) { if (!x || !x.rowNumber || x.isLog || seen[x.rowNumber]) return; seen[x.rowNumber] = 1; if (/\d/.test(String(x.boxUnit == null ? '' : x.boxUnit)) || BU.done[x.rowNumber] || /\(합침\)/.test(x.name || '')) return; if (recent(x)) out.push(x); });
+  return out.sort(function (a, b) { return (s15Num(b.sales15) || 0) - (s15Num(a.sales15) || 0); });
+}
+function buOpen() { var d = document.getElementById('buDim'); d.hidden = false; d.style.display = 'block'; document.documentElement.classList.add('mb-lock'); if (typeof ryCatLoad === 'function') ryCatLoad(false); buRender(); }
+function buClose() { var d = document.getElementById('buDim'); d.hidden = true; d.style.display = 'none'; document.documentElement.classList.remove('mb-lock'); if (BU.dirty) { BU.dirty = false; try { persistSnapshot(); renderAllViews(); } catch (e) {} } }
+function buCntTxt(n) { var c = document.getElementById('buCnt'); if (c) c.textContent = n + '개 남음' + (BU.n ? ' · 이번에 ' + BU.n + '개 넣음' : ''); }
+function buRender() {
+  var el = document.getElementById('buList'); if (!el) return;
+  var q = String((document.getElementById('buQ') || {}).value || '').replace(/\s+/g, '').toLowerCase(), all = buItems(), items = q ? all.filter(function (x) { return String(x.name || '').replace(/\s+/g, '').toLowerCase().indexOf(q) !== -1; }) : all;
+  buCntTxt(all.length);
+  if (!items.length) { el.innerHTML = '<div class="bu-more">' + (q ? '찾는 상품이 없어요' : (RY_CAT && RY_CAT.items ? '다 채웠어요 👍' : '상품 목록을 불러오는 중이에요…')) + '</div>'; return; }
+  el.innerHTML = items.slice(0, 200).map(function (x) {
+    var nm = String(x.name || '').split('\n')[0];
+    return '<div class="bu-row" data-row="' + x.rowNumber + '"><span class="bu-ph">' + (x.imgUrl ? '<img src="' + escapeHtml(x.imgUrl) + '" alt="" referrerpolicy="no-referrer" loading="lazy" data-row="' + x.rowNumber + '" onerror="imgFallback(this)">' : '') + '</span>'
+      + '<span class="bu-tx"><b>' + escapeHtml(nm) + '</b><small>' + escapeHtml([catLabel(x.category || ''), '15일 ' + s15Txt(x.sales15) + '개'].filter(Boolean).join(' · ')) + '</small></span>'
+      + '<label class="bu-in"><input type="text" inputmode="numeric" enterkeyhint="next" autocomplete="off" id="bu-' + x.rowNumber + '" aria-label="' + escapeHtml(nm) + ' 1박스 개수" placeholder="개수" onkeydown="if(event.key===\'Enter\'){event.preventDefault();buSave(' + x.rowNumber + ',this,1)}" onblur="buSave(' + x.rowNumber + ',this)">개</label></div>';
+  }).join('') + (items.length > 200 ? '<div class="bu-more">…외 ' + (items.length - 200) + '개 · 위 칸을 채우면 다음 상품이 올라와요 (이름으로 찾아도 돼요)</div>' : '');
+}
+function buSave(row, inp, next) {
+  var r = inp.closest('.bu-row'), nx = r && r.nextElementSibling, ni = nx && nx.querySelector && nx.querySelector('input');
+  var raw = String(inp.value || '').trim();
+  if (next) { if (ni) ni.focus(); else inp.blur(); }   // 비워도 다음 칸으로
+  if (!raw || BU.done[row]) return;
+  var n = parseInt(raw.replace(/[^0-9]/g, ''), 10);
+  if (!(n >= 1 && n <= 99999)) { inp.value = ''; showToast('개수를 숫자로 적어 주세요'); return; }
+  BU.done[row] = n; BU.n++; BU.dirty = true;
+  boxItems_().concat(cachedInboundItems || []).forEach(function (it) { if (it.rowNumber === row) it.boxUnit = String(n); });
+  if (r) { r.classList.add('gone'); setTimeout(function () { if (r.parentNode) r.parentNode.removeChild(r); }, 200); }
+  buCntTxt(buItems().length); showToast('✓ 1박스 ' + n + '개', 1400);
+  var undo = function (m) { delete BU.done[row]; BU.n = Math.max(0, BU.n - 1); boxItems_().concat(cachedInboundItems || []).forEach(function (it) { if (it.rowNumber === row && String(it.boxUnit) === String(n)) it.boxUnit = ''; }); showToast('1박스 개수 저장 안 됨 · ' + (m || '다시 적어 주세요'), 3500); if (!document.getElementById('buDim').hidden && !(document.activeElement && document.activeElement.closest && document.activeElement.closest('#buList'))) buRender(); };
+  google.script.run.withSuccessHandler(function (res) { if (!res || res.success === false) undo(res && res.message); }).withFailureHandler(function (e) { undo(e && e.message); }).updateBoxRef(row, String(n));
+}
 function nophClose() { var d = document.getElementById('nophDim'); d.hidden = true; d.style.display = 'none'; document.documentElement.classList.remove('mb-lock'); }
 function nophRender() {
   var items = nophItems(), el = document.getElementById('nophList'); document.getElementById('nophCnt').textContent = items.length ? items.length + '개' : '';
