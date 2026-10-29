@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvt8nlal">
+  <meta name="ry-build" content="mvt9blv8">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4802,6 +4802,9 @@ video {
 }
 .w-11 {
   width: 2.75rem;
+}
+.w-12 {
+  width: 3rem;
 }
 .w-14 {
   width: 3.5rem;
@@ -12919,8 +12922,9 @@ video {
       allItems.forEach(item => {
         const tr = document.createElement('tr');
         tr.className = "hover:bg-amber-50/50 bg-white";
+        const img = (cls) => item.imgUrl ? `<img src="${escapeHtml(item.imgUrl)}" referrerpolicy="no-referrer" data-row="${item.rowNumber}" class="${cls} object-contain rounded-md border border-slate-200 bg-white shadow-sm" loading="lazy" onerror="imgFallback(this)">` : photoPlaceholderHtml(item.rowNumber, cls);   // 1029 MJ '여기서는 왜 사진이 안 보여' — 💊 고정이었음
         tr.innerHTML = `
-          <td class="p-2.5 text-center">💊</td>
+          <td class="p-2.5 text-center">${img('w-11 h-11 mx-auto')}</td>
           <td class="p-3 font-bold text-slate-900 text-sm">${escapeHtml(item.name)} ${endedBadge(item)}</td>
           <td class="p-3 text-center font-black">${item.targetQty}${item.unit || '개'}</td>
           <td class="p-3 text-center text-xs font-semibold">${item.sales15}</td>
@@ -12930,10 +12934,13 @@ video {
         if (tbody) tbody.appendChild(tr);
 
         const card = document.createElement('div');
-        card.className = "p-3 bg-white rounded-2xl border border-amber-200 space-y-1";
+        card.className = "p-3 bg-white rounded-2xl border border-amber-200 flex items-center gap-3";
         card.innerHTML = `
+          <div class="flex-shrink-0">${img('w-12 h-12')}</div>
+          <div class="min-w-0 space-y-1">
           <div class="font-bold text-slate-900 text-sm">${escapeHtml(item.name)} ${endedBadge(item)}</div>
           <div class="text-xs text-slate-500">요청수량: <b>${item.targetQty}${item.unit || '개'}</b> | 15일판매: ${item.sales15}</div>
+          </div>
         `;
         if (cards) cards.appendChild(card);
       });
