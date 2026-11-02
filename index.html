@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvyp5mzv">
+  <meta name="ry-build" content="mvyuk3c0">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -16833,7 +16833,7 @@ video {
       .concat([{ k: 'sets', g: 1, ic: RYI.gift, n: '세트 상품 · 박스 재고', v: '세트 구성 · 아크릴박스', kw: '세트 박스 재고 아크릴 용도' }])
       .concat(isAdmin ? [{ k: 'pfauto', g: 1, ic: RYI.sparkles, n: '사진 자동 채우기', v: '문준 전용', kw: '사진 인터넷 자동' }] : [])
       .concat([
-        ...(dshAllowed() ? [(function () { var left = 0; try { left = dshMsList().filter(function (m) { return !m.done; }).length; } catch (e) {} return { k: 'dash', g: 2, ic: RYI.bars, n: '오늘의 미션 · 대시보드', v: left ? '미션 ' + left + '개 남음' : '오늘 미션 끝 · 판매 순위', cnt: left, act: '미션 ' + left + '개 남음 · 위에서부터 하나씩', pri: 0, kw: '대시보드 미션 루틴 할일 판매 순위 매출 순이익 날짜 기간 현황 한눈에' }; })()] : []),
+        ...(dshAllowed() ? [(function () { var left = 0; try { left = dshMsList().filter(function (m) { return !m.done; }).length; } catch (e) {} return { k: 'dash', g: 2, ic: RYI.bars, n: '오늘의 미션 · 대시보드', v: left ? '미션 ' + left + '개 남음' : '오늘 미션 끝 · 판매 순위', cnt: left, act: '미션 ' + left + '개 남음 · 위에서부터 하나씩', pri: 0, kw: '대시보드 미션 루틴 할일 판매 순위 날짜 기간 현황 한눈에' }; })()] : []),
         { k: 'lead', g: 2, ic: RYI.timer, n: '입고 소요일', v: LT.data && LT.data.etaAccuracy ? '예상일 적중 ' + Math.round(Number(LT.data.etaAccuracy.withinPct) || 0) + '%' : '거래처·요일별', kw: '리드타임 발주 입고 걸린 날 거래처' },
         { k: 'rejstats', g: 2, ic: RYI.ban, n: '반려 분석', v: k.rejstats + tlTopRej(), kw: '재고 있음 반려 과재고 반려율' },
         { k: 'ranking', g: 2, ic: RYI.trophy, n: '발주왕', v: k.ranking, kw: '순위 랭킹 직원 성공' },
@@ -16955,7 +16955,7 @@ video {
       google.script.run.withSuccessHandler(function (r) {
         if (DSH.key !== key) return;
         DSH.loading = false;
-        if (!r || !r.success) { DSH.err = (r && r.message) || '판매 기록을 못 불러왔어요'; } else { DSH.data = r; DSH.open = ''; DSH.more = 30; DSH.pick = -1; }
+        if (!r || !r.success) { DSH.err = (r && r.message) || '판매 기록을 못 불러왔어요'; } else { r.adm = false; DSH.data = r; DSH.open = ''; DSH.more = 30; DSH.pick = -1; }   /* 1102 MJ '매출·순이익은 내가 안 봐' → 판매 수량만 */
         dshRender();
       }).withFailureHandler(function (e) { if (DSH.key !== key) return; DSH.loading = false; DSH.err = '판매 기록을 못 불러왔어요 · ' + (e && e.message || ''); dshRender(); })
         .getSalesDash(currentSelectedMember, DSH.from, DSH.to, shift);
