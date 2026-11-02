@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvyuk3c0">
+  <meta name="ry-build" content="mvyy3uk9">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -11062,6 +11062,12 @@ video {
         .undoInboundComplete(rowNumber);
     }
 
+    /* 1102 MJ '1차 검토도 최종발주도 언제 이쪽으로 넘어왔는지 시간을 (입고확인처럼)' — 서버 stageStamp_ 가 그 칸에서 처음 본 시각(분) · 기록 시작 전부터 있던 상품은 안 보임 */
+    function stageAtChip(item, type) {
+      if (!(item.stageAt > 0) || (type !== 'review' && type !== 'order')) return '';
+      var d = new Date(item.stageAt * 60000 + 9 * 3600000), p = function (n) { return (n < 10 ? '0' : '') + n; };
+      return ' <span class="ry-el ry-stg" title="이 칸으로 넘어온 시각">' + (d.getUTCMonth() + 1) + '/' + d.getUTCDate() + ' ' + p(d.getUTCHours()) + ':' + p(d.getUTCMinutes()) + ' 넘어옴</span>';
+    }
     function createItemTableRow(item, type) {
       const tr = document.createElement('tr');
       tr.id = 'row-' + item.rowNumber;
@@ -11117,7 +11123,7 @@ video {
         <td class="p-3 max-w-[260px]">
           <div class="font-bold text-slate-900 text-sm leading-relaxed break-keep">${escapeHtml(item.name)} ${endedBadge(item)}</div>
           ${mrSlot(item, type)}
-          ${reqBadge}
+          ${reqBadge}${stageAtChip(item, type)}
         </td>
         <td class="p-3 text-center bg-blue-50/40">${qtyInputHtml}${type === 'review' || type === 'order' ? boxRefHtml(item, false) : ''}</td>
         <td class="p-3 text-center font-bold text-xs text-slate-600 whitespace-nowrap ry25-s15" style="min-width:90px">${s15Cell(item, type, false)}</td>
@@ -11174,7 +11180,7 @@ video {
             <div class="ry-oc-meta">${s15Cell(item, type, true)}
               ${type === 'review' || type === 'order' ? `<span class="ry-stat box" title="1박스에 몇 개가 들어있는지">${boxRefHtml(item, true)}</span>` : boxChipHtml(item)}</div>
             <div class="ry-oc-tags">
-              ${reqBadge}
+              ${reqBadge}${stageAtChip(item, type)}
               ${catChip(item)}
               <button type="button" data-row="${item.rowNumber}" data-name="${escapeHtml(item.name)}" onclick="event.stopPropagation(); openNote(+this.dataset.row, this.dataset.name)" class="ry-note${item.note ? '' : ' empty'}${String(item.note || '').indexOf('소진 후 판매종료') !== -1 ? ' disc' : ''}">${item.note ? RYI.bulb + escapeHtml(item.note) + '<span class="ry-note-pen" aria-hidden="true">' + RYI.pen + '</span>' : RYI.pen + '수정'}</button>
             </div>
@@ -11246,7 +11252,7 @@ video {
         const itemIdx = cachedReviewItems.findIndex(it => it.rowNumber === rowNumber);
         if (itemIdx !== -1) {
           const item = cachedReviewItems.splice(itemIdx, 1)[0];
-          cachedOrderItems.unshift(item);
+          item.stageAt = Math.round(Date.now() / 60000); cachedOrderItems.unshift(item);
           renderAllViews();
           persistSnapshot();
         }
@@ -11555,7 +11561,7 @@ video {
       cachedOrderItems = cachedOrderItems.filter(it => it.rowNumber !== rowNumber);
       if (src) {
         const clean = String(src.note || '').replace(/품절\s*\([^)]*\)/g, '').replace(/품절/g, '').replace(/\s{2,}/g, ' ').trim();
-        cachedOrderItems.unshift(Object.assign({}, src, { note: clean, requester: currentSelectedMember, isCheckRequested: false }));   // 1021 MJ: 바로 최종 발주
+        cachedOrderItems.unshift(Object.assign({}, src, { note: clean, requester: currentSelectedMember, isCheckRequested: false, stageAt: Math.round(Date.now() / 60000) }));   // 1021 MJ: 바로 최종 발주
       }
       renderAllViews();
       persistSnapshot();
@@ -14308,7 +14314,7 @@ video {
       cachedReviewItems.unshift({
         rowNumber: rowNumber, name: src.name, imgUrl: src.imgUrl || '', targetQty: String(n), unit: unit || '개',
         boxUnit: src.boxUnit || '', note: baseNote, category: src.category || '', uses: src.uses || [],   /* 1008 바로 보여 주는 줄에도 분류 (빠져서 '분류 없음'으로 승인·발주 탭까지 따라갔음) */
-        sales15: src.sales15 || '-', requester: currentSelectedMember, isCheckRequested: false, checkRequester: ''
+        sales15: src.sales15 || '-', requester: currentSelectedMember, isCheckRequested: false, checkRequester: '', stageAt: Math.round(Date.now() / 60000)
       });
       renderAllViews();
       persistSnapshot();
