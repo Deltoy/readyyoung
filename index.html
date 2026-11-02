@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvymqs1o">
+  <meta name="ry-build" content="mvymzybo">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -15687,6 +15687,7 @@ video {
     }
     function s15Open() {
       if (currentSelectedMember !== PF_ADMIN) { showToast('15일 판매량 엑셀은 ' + PF_ADMIN + ' 프로필에서만 쓸 수 있어요'); return; }
+      try { if (RY_CAT) RY_CAT.t = 0; ryCatLoad(true); } catch (eCat) {}   /* 1102 옛 상품 목록(행 삭제 전 줄 번호)으로 맞추지 않게 열 때 새로 받기 */
       document.getElementById('s15Dim').classList.add('on');
       document.getElementById('s15Sheet').classList.add('on');
       s15Render();
