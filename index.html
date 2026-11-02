@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvyy3uk9">
+  <meta name="ry-build" content="mvyy7gww">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -6183,7 +6183,7 @@ video {
               <th class="p-3 text-center w-14">사진</th>
               <th class="p-3 min-w-[200px]">승인 완료 상품명 / 요청자</th>
               <th class="p-3 text-center bg-blue-100/50 text-blue-900 w-44">발주 수량 / 단위</th>
-              <th class="p-3 text-center w-28">15일 판매 ▼</th>
+              <th class="p-3 text-center w-28">15일 판매</th>
               <th class="p-3 text-center w-24">특이사항</th>
               <th class="p-3 text-center w-36">재고 취소</th>
             </tr>
@@ -6903,26 +6903,27 @@ video {
       (RY_IVL && RY_IVL[k] || []).filter(function (x) { var d = stkDay(x.d); return x.q > 0 && d != null && d > baseD && !(iv && x === iv); }).sort(function (a, b) { return stkDay(a.d) - stkDay(b.d); })
         .forEach(function (x) { var d = stkDay(x.d), q = boxQ(x.q); est = Math.max(0, est - stkSold(k, daily, t, d, use)) + q; t = d; if (how.indexOf('명세서로 들어온 것만') < 0 || x !== first) how += ' + ' + x.d.slice(5) + ' 명세서로 ' + q + '개'; });
       est = est - stkSold(k, daily, t, now, use);
-      est = Math.max(0, Math.round(est));
-      return { est: est, left: daily > 0 ? Math.floor(est / daily) : null, daily: daily, how: how, k: k, act: use.n, sure: !!(cnt && (inbD == null || cntD >= inbD)) || !!iv };   // sure = 센 개수·명세서 수량 기준 (주문 수량만이면 그 전에 남아 있던 재고를 몰라 적게 나올 수 있음)
+      est = Math.round(est);   // 1102 MJ '재고보다 더 팔렸으면 마이너스로도 (얼마나 더 나갔는지)' — 끝 값만 0 아래로 (입고 사이 계산은 그대로 0에서 다시)
+      return { est: est, left: daily > 0 ? Math.floor(Math.max(0, est) / daily) : null, daily: daily, how: how, k: k, act: use.n, sure: !!(cnt && (inbD == null || cntD >= inbD)) || !!iv };   // sure = 센 개수·명세서 수량 기준 (주문 수량만이면 그 전에 남아 있던 재고를 몰라 적게 나올 수 있음)
     }
     /* 1023 MJ '84개 입고됐다는데 추정 재고가 왜 달라' — 입고내역 줄(그날 입고만 보고 계산)과 상품 목록(전체 기록)이 다른 숫자를 냈음 → 어디서든 같은 상품 = 같은 숫자 (상품 목록 기준) */
     var _stkCM = null, _stkCMs = null;
     function stkCatItem(it) { var a = RY_CAT && RY_CAT.items; if (!a || !it) return it; if (_stkCMs !== a) { _stkCMs = a; _stkCM = {}; a.forEach(function (x) { _stkCM[x.name] = x; }); } return _stkCM[it.name] || it; }
+    function stkN(n) { return n < 0 ? '−' + (-n) : String(n); }
     function stockBadge(item) {
       if (!item || !item.name) return '';
       if ((cachedInboundItems || []).indexOf(item) !== -1) return '';   // 1020 MJ: 입고대기에선 안 보임 (검색·검토 단계에서 봄)
       var s = stkOf(stkCatItem(item));
       if (!s) return RY_SC ? ' <button type="button" class="ry-stk none" data-n="' + escapeHtml(item.name) + '" onclick="event.stopPropagation(); stkCount(this)" title="창고 여분을 세어서 넣어요 (매장 진열분은 빼고)">📦 추정 재고 · 입력</button>' : '';   // 1020 MJ: 기록이 없어도 칸은 보이게 — 손으로 넣을 수 있게
-      var cls = s.sure && s.est === 0 ? 'red' : '';   // 1020 MJ: 예상 날짜는 빼고 '추정 재고 N개'만, 눈에 띄게
-      var txt = !s.sure && s.est === 0 ? '📦 추정 재고 확인 필요' : '📦 추정 재고 <b>' + s.est + '</b>개';
+      var cls = s.est < 0 || (s.sure && s.est === 0) ? 'red' : '';   // 1020 MJ: 예상 날짜는 빼고 '추정 재고 N개'만, 눈에 띄게
+      var txt = !s.sure && s.est === 0 ? '📦 추정 재고 확인 필요' : '📦 추정 재고 <b>' + stkN(s.est) + '</b>개' + (!s.sure && s.est < 0 ? ' · 확인 필요' : '');
       return ' <button type="button" class="ry-stk ' + cls + '" data-n="' + escapeHtml(item.name) + '" onclick="event.stopPropagation(); stkShow(this)" title="추정 재고">' + txt + '</button>';
     }
     function stkShow(btn) {
       var nm = btn.dataset.n, it = (RY_CAT && RY_CAT.items || []).filter(function (x) { return x.name === nm; })[0] || { name: nm }, s = stkOf(it); if (!s) return;
       var old = document.getElementById('prPop'); if (old) old.remove();
       var d = document.createElement('div'); d.id = 'prPop';
-      d.innerHTML = '<div><span>추정 재고 (창고 여분)</span><b>약 ' + s.est + '개</b></div><div><span>하루 판매</span><b>' + (Math.round(s.daily * 10) / 10) + '개</b></div>' + ''
+      d.innerHTML = '<div><span>추정 재고 (창고 여분)</span><b>약 ' + stkN(s.est) + '개' + (s.est < 0 ? ' (재고보다 더 팔림)' : '') + '</b></div><div><span>하루 판매</span><b>' + (Math.round(s.daily * 10) / 10) + '개</b></div>' + ''
         + '<small>' + escapeHtml(s.how) + (s.act ? ' − 그 뒤 판매 (하루 판매 엑셀 ' + s.act + '일은 실제 수 · 나머지 날은 15일 판매 ÷ 15)' : ' − 그 뒤 판매 (15일 판매 ÷ 15 × 지난 날)') + ' · 반품·파손은 안 빠져요' + (s.sure ? '' : '<br><b style="color:#FEC84B">입고 전에 남아 있던 재고는 몰라서 실제보다 적게 나올 수 있어요. 한 번 세어서 고치면 정확해져요.</b>') + '</small>'
         + '<button type="button" class="stk-cnt" onclick="stkCount(this)" data-n="' + escapeHtml(nm) + '">✍️ 창고 여분 세서 고치기</button>';
       document.body.appendChild(d);
@@ -8371,7 +8372,7 @@ video {
       var rows = (SP.box && SP.box.rows) || [], bad = rows.filter(function (r) { return r.status === 'red' || r.status === 'yellow'; }).length, n = document.getElementById('spBoxN');
       if (n) n.textContent = bad ? bad : '';
       if (!SP.box) { el.innerHTML = '<div class="sp-msg"><span class="ry-info-spin"></span>불러오는 중…</div>'; return; }
-      el.innerHTML = '<h3>박스별 상태</h3><p class="bx-last">🟢 넉넉 · 🟡 영업일 10일치 이하 (5번은 600개 아래) · 🔴 영업일 5일치 이하 · ⚪ 쓰는 세트 없음<br>🟡 · 🔴가 되면 그 번호가 약사 발주에 자동으로 올라가요 (5번은 1박스) · 1박스 개수를 알면 ‘한 달 + 도착 3일’치 박스 수만큼 (' + (SP.box.week ? '하루 사용 = 판매 엑셀 ' + s15Md(SP.box.week.from) + '~' + s15Md(SP.box.week.to) + ' 세트 판매 ÷ ' + SP.box.week.days + '일' : '한 달 사용 = 세트 15일 판매 × 2') + ')</p><p class="bx-sort">↓ 한 달 사용량 많은 순으로 정렬했어요</p>'
+      el.innerHTML = '<h3>박스별 상태</h3><p class="bx-last">🟢 넉넉 · 🟡 영업일 10일치 이하 (5번은 750개 아래) · 🔴 영업일 5일치 이하 · ⚪ 쓰는 세트 없음<br>🟡 · 🔴가 되면 그 번호가 약사 발주에 자동으로 올라가요 (5번은 1박스) · 1박스 개수를 알면 ‘한 달 + 도착 3일’치 박스 수만큼 (' + (SP.box.week ? '하루 사용 = 판매 엑셀 ' + s15Md(SP.box.week.from) + '~' + s15Md(SP.box.week.to) + ' 세트 판매 ÷ ' + SP.box.week.days + '일' : '한 달 사용 = 세트 15일 판매 × 2') + ')</p><p class="bx-sort">↓ 한 달 사용량 많은 순으로 정렬했어요</p>'
         + (function () {   /* 1019 MJ: 많이 쓰는 박스 순 · 사용량 모르는 박스·무지박스는 아래에 접어 두기 (무지라도 🟡·🔴면 위에) */
           var TH = '<table class="sp-bp-t"><thead><tr><th>박스</th><th>상태</th><th>남은 개수</th><th>한 달 사용 ▼</th><th>쓰는 세트</th></tr></thead><tbody>', bad = function (r) { return r.status === 'red' || r.status === 'yellow'; };
           var muji = rows.filter(function (r) { return /^무지/.test(r.box) && !bad(r); }), rest = rows.filter(function (r) { return muji.indexOf(r) < 0; });
@@ -8389,7 +8390,7 @@ video {
         var L10 = Math.min(90, Math.round(((SP.box && SP.box.cal10) || 10) / 30 * 1000) / 10);   /* 1019 점선 = 영업일 10일 (달력으로 12~14일) */
         var act = function (r) { return (r.sets || []).length ? ' data-b="' + escapeHtml(r.box) + '" onclick="bxSetPop(this.dataset.b)"' : ''; };
         /* 1019 MJ: 실제로 보니 시안 ④ — 박스를 옆으로 눕힌 통(안에 남은 개수) + 오른쪽 큰 '며칠' · 한 목록 */
-        return '<div class="bxv-key"><span class="k1"><i></i>통 = 남은 재고 (30일치면 가득)</span><span class="k2"><i></i>점선 = 발주선 (영업일 10일 · 5번은 600개) · 통이 점선 왼쪽까지 줄면 자동 발주</span><span class="k3"><b>8일</b> = 이만큼 버텨요 · 아래 작은 글씨 = 그중 영업일(월~금)</span></div><div class="bxv-rest">' + arr.map(function (r) {
+        return '<div class="bxv-key"><span class="k1"><i></i>통 = 남은 재고 (30일치면 가득)</span><span class="k2"><i></i>점선 = 발주선 (영업일 10일 · 5번은 750개) · 통이 점선 왼쪽까지 줄면 자동 발주</span><span class="k3"><b>8일</b> = 이만큼 버텨요 · 아래 작은 글씨 = 그중 영업일(월~금)</span></div><div class="bxv-rest">' + arr.map(function (r) {
             return '<button type="button" class="bxv-h"' + act(r) + '><span class="bxv-hb"><span class="bxv-ht"><b>' + escapeHtml(bxName(r.box)) + '</b>' + ((r.sets || []).length ? '<span class="bxv-sc">세트 ' + r.sets.length + '개 ›</span>' : '') + (r.perBox ? '<span class="bxv-pb">1박스 ≈ ' + r.perBox.toLocaleString() + '개</span>' : '') + fl(r) + '</span>'
               + '<span class="bxv-tube"><i style="width:' + P(r) + '%;background:' + col(r) + '"></i>' + (nu(r) ? '' : '<s style="left:' + (r.warnCal ? Math.min(90, Math.round(r.warnCal / 30 * 1000) / 10) : L10) + '%"></s>') + '<span class="bxv-tx"><b>' + (r.left != null ? r.left.toLocaleString() + '개' : '–') + '</b><em>한 달 ' + (r.month || 0).toLocaleString() + '</em></span></span></span>'
               + (nu(r) ? '<span class="bxv-hd" style="color:#667085">–<small>아직 판매 없음</small></span></button>' : '<span class="bxv-hd" style="color:' + col(r) + '">' + dT(r.days) + '일<small>' + (r.bdays != null && r.days <= 60 ? '영업일 ' + r.bdays + '일' : '버팀') + '</small></span></button>'); }).join('') + '</div>'
@@ -10601,7 +10602,7 @@ video {
         if (orderEmpty) orderEmpty.classList.add('hidden');
         if (readyTableCont) readyTableCont.classList.remove('hidden');
         const s15 = v => { const n = parseFloat(String(v == null ? '' : v).replace(/[^0-9.]/g, '')); return Number.isFinite(n) ? n : -1; };
-        pureOrderItems.sort((a, b) => s15(b.sales15) - s15(a.sales15));   // 15일 판매 많은(잘 나가는) 상품이 위로
+        pureOrderItems.sort((a, b) => (a.stageAt || 0) - (b.stageAt || 0) || s15(b.sales15) - s15(a.sales15));   // 1102 MJ '최종발주도 넘어간 시간대로 정렬' — 입고 확인처럼 오래 기다린 상품이 위로 · 시각 기록 전 상품이 맨 위, 같으면 15일 판매 많은 순
         pureOrderItems.forEach(item => {
           if (readyTbody) readyTbody.appendChild(createItemTableRow(item, 'order'));
           if (readyCards) readyCards.appendChild(createItemMobileCard(item, 'order'));
