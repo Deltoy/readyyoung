@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvymzybo">
+  <meta name="ry-build" content="mvyp5mzv">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -2764,6 +2764,11 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pc:hover{border-color:#dde1e7}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pc.is-go{cursor:pointer}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pc.is-req{border-color:#cfe0ff}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pc.is-req::before{content:"";position:absolute;left:0;top:16px;bottom:16px;width:4px;border-radius:0 4px 4px 0;background:var(--z-pri)}
+/* 1102 MJ '취급안함 제품은 칸 색을 다르게, 눈에 띄게' — 검색 결과 카드·PC 표 */
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pc.is-hid{background:#FFF1F3!important;border-color:#FDA4AF!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pc.is-hid::before{content:"";position:absolute;left:0;top:16px;bottom:16px;width:4px;border-radius:0 4px 4px 0;background:#E11D48}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pc.is-hid .ry-end.ry-hid,html body:not(#_):not(#_) tr.ry-hidrow .ry-end.ry-hid{background:#FFE4E8!important;color:#BE123C!important;font-weight:800}
+tr.ry-hidrow>td{background:#FFF1F3}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pc-img{position:relative;width:64px;height:64px;grid-row:1 / span 2;align-self:start}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pc-img img,html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pc-img>div,html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pc-img>button{width:64px!important;height:64px!important;border-radius:12px!important;object-fit:contain;border:1px solid var(--z-line)!important;background:#fafbfc!important;padding:4px;box-sizing:border-box}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-pc-img>button[data-photo-row]{padding:0!important;border-style:dashed!important;color:var(--z-mute)!important;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:3px}
@@ -14111,7 +14116,7 @@ video {
           : photoPlaceholderHtml(item.rowNumber, 'w-16 h-16 rounded-xl flex-shrink-0');
 
         const tr = document.createElement('tr');
-        tr.className = "hover:bg-slate-50 transition" + (isEnded(item) ? ' ry-endrow' : ''); tr.setAttribute('data-r', item.rowNumber);   /* 1002 다시 그릴 때 보던 줄 기준점 */
+        tr.className = "hover:bg-slate-50 transition" + (isEnded(item) ? ' ry-endrow' : '') + (isHiddenItem(item) ? ' ry-hidrow' : ''); tr.setAttribute('data-r', item.rowNumber);   /* 1002 다시 그릴 때 보던 줄 기준점 */
         tr.innerHTML = `
           <td class="p-2.5 text-center">${pcImgHtml}</td>
           <td class="p-3 font-bold text-slate-900 text-sm leading-relaxed">${escapeHtml(item.name)} ${endedBadge(item)} ${typeof eduChip === 'function' ? eduChip(item.name) : ''} ${qinBtn(item)}${mrSlot(item, 'search')}</td>
@@ -14140,7 +14145,7 @@ video {
 
         const card = document.createElement('div');
         const canAct = item.status === 'IDLE' || item.status === 'DONE';
-        card.className = 'ry25-pc' + (item.justRequested ? ' is-req' : '') + (canAct ? '' : ' is-go') + (isEnded(item) ? ' ry-endrow' : ''); card.setAttribute('data-r', item.rowNumber);
+        card.className = 'ry25-pc' + (item.justRequested ? ' is-req' : '') + (canAct ? '' : ' is-go') + (isEnded(item) ? ' ry-endrow' : '') + (isHiddenItem(item) ? ' is-hid' : ''); card.setAttribute('data-r', item.rowNumber);
         const qtyVal = escapeHtml(String(item.targetQty || '1').replace(/[^0-9]/g, '') || '1');
         const boxTxt = String(item.boxUnit == null ? '' : item.boxUnit).trim();
         card.innerHTML = `
