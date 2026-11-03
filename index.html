@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw0g0s7n">
+  <meta name="ry-build" content="mw0g9tj4">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -7798,11 +7798,22 @@ video {
           + (!live && last !== yd && yd >= c.from && yd <= c.to && !scHas(yd) ? '<p class="sc-note">어제 ' + scMd(yd) + ' 판매는 아직 안 들어왔어요</p>' : '')
           + tiles(function (k) { return scV(last, k); }, function (k) { return scGoal(c, last, k); }, function (k, v, g, done) { return v == null ? '기록 전' : done ? '🎉 하루 목표 달성' + (v > g ? ' · +' + (v - g) : '') : '목표까지 ' + (g - v) + '개' + (live ? ' 남았어요' : ' 모자랐어요'); }) + '</section>';
       }
-      /* ② 주차 목표 · 이번 주 목표가 아직 없으면 지난주 결과도 */
-      var wks = w && !over ? (!w.goal && wShow > 0 && c.weeks[wShow - 1].goal ? [wShow - 1, wShow] : [wShow]) : [];
-      wks.forEach(function (wx) { var w = c.weeks[wx], wShow = wx;
+      /* 1103 MJ '1차 몇 개 했는지도 · 지금까지 토탈 몇 개 팔았는지도' → ① 뒤에 지금까지 합계, ② 이번 주 목표 + 끝난 주는 'N주차 결과'로 계속 */
+      if (!before && c.weeks.length) {
+        var allD = days.filter(function (d) { return d <= t; });
+        h += '<section class="sc-card"><h3>지금까지 합계 <span>' + scMd(c.from) + ' ~ ' + scMd(over ? c.to : t) + ' · ' + allD.length + '일</span></h3>';
+        SC_SETS.forEach(function (s) {
+          var sum = allD.reduce(function (a, d) { return a + (scV(d, s.k) || 0); }, 0), GT = c.weeks.reduce(function (a, x) { return a + ((x.goal && x.goal[s.k]) || 0); }, 0), nd = allD.filter(function (d) { return scV(d, s.k) != null; }).length;
+          h += '<div class="sc-wk" style="--sc:' + s.c + '"><div class="sc-wk-t"><b>' + escapeHtml(s.label) + '</b><span><b>' + sum + '</b>' + (GT ? ' / ' + GT + '개' : '개') + '</span></div>'
+            + (GT ? '<div class="sc-bar"><i style="width:' + Math.min(100, sum / GT * 100).toFixed(1) + '%"></i></div>' : '')
+            + '<div class="sc-wk-s">' + (GT ? c.weeks.filter(function (x) { return x.goal && x.goal[s.k]; }).length + '주 목표 합계 기준 · ' : '') + '하루 평균 ' + (nd ? Math.round(sum / nd * 10) / 10 : 0) + '개</div></div>';
+        });
+        h += '</section>';
+      }
+      var wks = w ? c.weeks.map(function (x, i) { return i; }).filter(function (i) { return (i === wShow && !over) || (i <= wShow && c.weeks[i].goal && c.weeks[i].to < t); }).sort(function (x, y) { return (y === wShow && !over) - (x === wShow && !over) || y - x; }) : [];
+      wks.forEach(function (wx) { var w = c.weeks[wx], done = w.to < t, wShow = wx;
         var wd = scDays({ from: w.from, to: w.to }), left = w.to < t ? 0 : wd.filter(function (d) { return d >= t || !scHas(d); }).length;   // 아직 안 넣은 지난날도 '남은 날' · 끝난 주는 결과만
-        h += '<section class="sc-card"><h3>' + (wShow + 1) + '주차 목표 <span>' + scMd(w.from) + ' ~ ' + scMd(w.to) + '</span></h3>';
+        h += '<section class="sc-card"><h3>' + (wShow + 1) + (done ? '주차 결과' : '주차 목표') + ' <span>' + scMd(w.from) + ' ~ ' + scMd(w.to) + '</span></h3>';
         if (!w.goal) h += '<p class="sc-note">' + (wShow + 1) + '주차 목표는 ' + scMd(w.from) + ' 공지 후 올라와요 · 그 전엔 하루 ' + gtxt(w.from) + ' 그대로</p>';
         SC_SETS.forEach(function (s) {
           var G = w.goal && w.goal[s.k]; if (!G) return;
