@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw0cwpzq">
+  <meta name="ry-build" content="mw0fjnb5">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -17058,7 +17058,7 @@ video {
     function dshPmRun() {
       var items = (typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) || []; if (!items.length || !DSH.data || !DSH.links) return;
       if (!DSH.pm || DSH.pmN !== items.length) { DSH.pm = {}; DSH.pmAll = {}; DSH.pmN = items.length; }
-      DSH.data.items.forEach(function (it) { DSH.pmAll[it.n] = it.q; });
+      DSH.pmSet = DSH.pmSet || {}; DSH.data.items.forEach(function (it) { DSH.pmAll[it.n] = it.q; if (it.set) DSH.pmSet[it.n] = it.set; });   // 1103 세트도 앱에 연결 (서버가 세트 이름으로 찾아 줌)
       var byRow = {}, pm = {}; items.forEach(function (x) { byRow[x.rowNumber] = x; });
       try {
         s15Match(Object.keys(DSH.pmAll).map(function (n) { var x = s15Prep(n); x.n = n; x.q = DSH.pmAll[n]; return x; }), DSH.links).forEach(function (g) {
@@ -17066,6 +17066,7 @@ video {
           var it = null; (g.rows || []).some(function (r) { return (it = byRow[r]); }); pm[g.x.n] = it || { name: g.name, rowNumber: g.rows && g.rows[0], category: '' };
         });
       } catch (e) {}
+      Object.keys(DSH.pmSet).forEach(function (n) { var s = DSH.pmSet[n]; if (!pm[n]) pm[n] = { name: s.n, category: '세트', imgUrl: s.img, setId: s.id }; });
       Object.keys(DSH.pmAll).forEach(function (n) { DSH.pm[n] = pm[n] || null; });
     }
     function dshApp(posName) { return (DSH.pm && DSH.pm[posName]) || null; }
@@ -17245,7 +17246,7 @@ video {
           + (d.adm ? '<span class="c s">' + dshWon(it.s) + '</span><span class="c p">' + (it.s && it.p >= it.s ? '<i class="nc">사입가 없음</i>' : dshWon(it.p)) + '</span>' : '') + '<span class="c stc">' + dshStateHtml(x.st) + '</span></button>';
         if (on) {
           var dd = it.d || [], mx = Math.max.apply(null, dd.concat([1])), N = dd.length, gap = N > 60 ? 0 : N > 31 ? 1 : 2, s = x.st;
-          var act = s && (s.k === 'rv' || s.k === 'od' || s.k === 'in') ? ['진행 중인 주문 보기', "dshGo('" + { rv: 'review', od: 'order', in: 'inbound' }[s.k] + "')"] : a ? ['찾아서 주문 요청', 'q'] : ['앱에서 검색', 'q'];
+          var act = s && (s.k === 'rv' || s.k === 'od' || s.k === 'in') ? ['진행 중인 주문 보기', "dshGo('" + { rv: 'review', od: 'order', in: 'inbound' }[s.k] + "')"] : a && a.setId ? ['세트 보기', "dshClose(function () { openSetPage({ setId: '" + String(a.setId).replace(/[^\w-]/g, '') + "' }); })"] : a ? ['찾아서 주문 요청', 'q'] : ['앱에서 검색', 'q'];
           r += '<div class="dsh-rd">' + (N ? '<div class="dsh-bars sm" style="--n:' + N + ';gap:' + gap + 'px">' + dd.map(function (v, j) { var x2 = d.daily[j], miss = x2 && !x2.has; return '<div class="dsh-bar' + (miss ? ' miss' : '') + '" title="' + dshMd(d.days[j]) + ' ' + v + '개"><span style="height:' + (miss ? 100 : Math.max(2, Math.round(v / mx * 100))) + '%"></span><em>' + (j === 0 || j === N - 1 ? dshMd(d.days[j]) : '') + '</em></div>'; }).join('') + '</div>' : '')
             + '<div class="dsh-rx"><p>하루 평균 <b>' + (Math.round(it.q / n * 10) / 10) + '개</b> · ' + (ok ? dshPrevName() + ' ' + dshN(it.pq) + '개' : '비교 기록 모자람') + (d.adm ? ' · 매출 ' + dshWon(it.s) + ' · 순이익 ' + (it.s && it.p >= it.s ? '사입가 없음' : dshWon(it.p)) : '') + (a ? '' : ' · 앱 상품과 아직 연결 안 됨') + '</p>'
             + '<button type="button" class="dsh-act" data-q="' + escapeHtml(a ? String(a.name).split('\n')[0] : it.n) + '" onclick="' + (act[1] === 'q' ? "var q = this.dataset.q; dshClose(function () { ntGoItem(q); })" : act[1]) + '">' + RYI.search + act[0] + '</button></div></div>';
