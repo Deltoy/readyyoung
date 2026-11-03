@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw0fqe5k">
+  <meta name="ry-build" content="mw0g0s7n">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -6836,7 +6836,8 @@ video {
     /* ===== 판매종료 표시 ===== */
     var END_TAG = '판매종료';
     function isEnded(item) { return !!(item && String(item.note || '').indexOf(END_TAG) !== -1); }
-    function ryNoRc(s) { return String(s == null ? '' : s).replace(/〔품절 재확인[^〕]*〕/g, ' ').replace(/\s{2,}/g, ' ').trim(); }   // 0929 품절 재확인 안내 토막은 품절 판정에서 뺀다
+    function ryWasSo(s) { s = String(s || ''); if (!/품절/.test(ryNoRc(s))) return s; var d = new Date(), c = ryNoRc(s).replace(/품절\s*\([^)]*\)/g, '').replace(/품절/g, '').replace(/\s{2,}/g, ' ').trim(), tag = '〔품절이었음 ' + (d.getMonth() + 1) + '/' + d.getDate() + '〕'; return c ? tag + ' ' + c : tag; }   // 1103 서버 soToWas_ 와 같은 규칙
+    function ryNoRc(s) { return String(s == null ? '' : s).replace(/〔품절 재확인[^〕]*〕|〔품절이었음[^〕]*〕/g, ' ').replace(/\s{2,}/g, ' ').trim(); }   // 0929 품절 재확인 안내 토막은 품절 판정에서 뺀다
     function endedBadge(item) { return (typeof evBadge === 'function' ? evBadge(item) : '') + (typeof locBadge === 'function' ? locBadge(item) : '') + (isHiddenItem(item) ? '<span class="ry-end ry-hid">' + RYI.octx + '취급안함</span>' : '') + (isEnded(item) ? '<span class="ry-end">' + RYI.octx + '판매종료</span>' : '') + (String(item && item.note || '').indexOf('〔품절 재확인') !== -1 ? '<span class="ry-rc" title="품절이 풀렸는지 확인 후 주문해 주세요"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/></svg>품절 30일 · 다시 확인해 주세요</span>' : '') + infoBtn(item) + priceBtn(item) + invDocBtn(item) + stockBadge(item); }
 
     /* 1020 MJ '모든 상품에 사입가와 판매가 · 나만 · 이름 옆 달러 표시를 누르면': 문준일 때만 서버에서 받아 메모리에만 (폰에 저장 안 함) */
@@ -7495,7 +7496,7 @@ video {
     }
     function stLists() {
       var d = ST.data, todo = [], doing = [], disc = [];
-      var so = {}; try { ((typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) || []).forEach(function (x) { if (x.status === 'SOLDOUT' || /품절/.test(String(x.note || '').replace(/재확인[^·]*/g, ''))) so[x.rowNumber] = 1; }); } catch (eS) {}   /* 1001 품절 상태는 창고 정리에서 제외(옛 서버 대비 화면에서도) */
+      var so = {}; try { ((typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) || []).forEach(function (x) { if (x.status === 'SOLDOUT' || /품절/.test(ryNoRc(x.note))) so[x.rowNumber] = 1; }); } catch (eS) {}   /* 1001 품절 상태는 창고 정리에서 제외(옛 서버 대비 화면에서도) */
       d.items.forEach(function (it) { if (it.status === '처리 중') doing.push(it); else if (!it.status && so[it.row]) return; else if (it.discontinued) disc.push(it); else todo.push(it); });   /* 1001 사용자: 소진 후 판매종료 표시된 상품은 이미 정리된 것 → 결정 전에 안 보이고 판매종료 탭에만 */
       var s15v = function (x) { return x.sales15 == null ? 1e9 : x.sales15; };   // 1001 기록 없음끼리는 15일 판매 적은 순(0개 먼저)
       todo.sort(function (a, b) { return (b.discontinued - a.discontinued) || ((b.days < 0 ? -1 : b.days) - (a.days < 0 ? -1 : a.days)) || (a.days < 0 && b.days < 0 ? s15v(a) - s15v(b) : 0); });
@@ -11622,7 +11623,7 @@ video {
       cachedReviewItems = cachedReviewItems.filter(it => it.rowNumber !== rowNumber);
       cachedOrderItems = cachedOrderItems.filter(it => it.rowNumber !== rowNumber);
       if (src) {
-        const clean = String(src.note || '').replace(/품절\s*\([^)]*\)/g, '').replace(/품절/g, '').replace(/\s{2,}/g, ' ').trim();
+        const clean = ryWasSo(src.note);   // 1103 〔품절이었음〕 태그
         cachedOrderItems.unshift(Object.assign({}, src, { note: clean, requester: currentSelectedMember, isCheckRequested: false, stageAt: Math.round(Date.now() / 60000) }));   // 1021 MJ: 바로 최종 발주
       }
       renderAllViews();
@@ -14389,7 +14390,7 @@ video {
     function optimisticAddToReview(rowNumber, src, n, unit) {
       if (!src || cachedReviewItems.some(it => it.rowNumber === rowNumber)) return;
       /* 0928 요청자는 요청자 배지로만 보여 줌 — 특이사항에 '[요청자:이름]' 을 붙이지 않는다 (붙이면 메모 고칠 때 시트에 저장돼 계속 나옴) */
-      const baseNote = ryNoRc(String(src.note || '').replace(/\[요청자:[^\]]*\]/g, '').replace(/\[검수요청[^\]]*\]/g, '').replace(/\[발주승인\]/g, '')).replace(/품절\s*\([^)]*\)/g, '').replace(/품절/g, '').replace(/\s{2,}/g, ' ').trim();   // 1103 주문 요청 = 품절 표시 지움(서버와 같음) → 바로 1차 검토에 보임
+      const baseNote = ryWasSo(String(src.note || '').replace(/\[요청자:[^\]]*\]/g, '').replace(/\[검수요청[^\]]*\]/g, '').replace(/\[발주승인\]/g, '').trim());   // 1103 주문 요청 = 품절 글자 지우고 〔품절이었음〕 (서버 soToWas_ 와 같음) → 바로 1차 검토에 보임
       cachedReviewItems.unshift({
         rowNumber: rowNumber, name: src.name, imgUrl: src.imgUrl || '', targetQty: String(n), unit: unit || '개',
         boxUnit: src.boxUnit || '', note: baseNote, category: src.category || '', uses: src.uses || [],   /* 1008 바로 보여 주는 줄에도 분류 (빠져서 '분류 없음'으로 승인·발주 탭까지 따라갔음) */
@@ -14417,10 +14418,10 @@ video {
       markSearchResultRequested(rowNumber, n);   // 검색 중이면 검색 결과 유지
       ry25TrackRequest(rowNumber, (src && src.name) || ry25NameOf(rowNumber), n);   /* 0925: 하단 요약 바 */
       showToast('✓ ' + currentSelectedMember + ' 님 재주문 요청 (1차 검토)');
-      const undo = function (msg) { inFlight.delete(key); if (hist) hist.isLog = false; ryReqUndo(rowNumber, snap); alert(msg); };
+      const undo = function (msg, soft) { inFlight.delete(key); if (hist) hist.isLog = false; ryReqUndo(rowNumber, snap); if (soft) showToast(msg, 4500); else alert(msg); };
       google.script.run
         .withSuccessHandler(function(res) {
-          if (res && res.success === false) { undo('재주문이 저장되지 않았어요: ' + (res.error || res.message || '')); return; }
+          if (res && res.success === false) { if (res.already) { undo(res.message, true); loadAllData(true, true, true); } else undo('재주문이 저장되지 않았어요: ' + (res.error || res.message || '')); return; }   // 1103 이미 주문 중 = 에러 말고 안내
           inFlight.delete(key);
           loadAllData(true, true, true);
         })
@@ -14569,7 +14570,7 @@ video {
       google.script.run
         .withSuccessHandler(function(res) {
           inFlight.delete(key);
-          if (res && res.success === false) { ryReqUndo(rowNumber, snap); alert('주문 요청이 저장되지 않았어요: ' + (res.message || '')); return; }
+          if (res && res.success === false) { ryReqUndo(rowNumber, snap); if (res.already) { showToast(res.message, 4500); loadAllData(true, true, true); } else alert('주문 요청이 저장되지 않았어요: ' + (res.message || '')); return; }   // 1103 이미 주문 중 = 안내
           loadAllData(true, true, true);
         })
         .withFailureHandler(function(err) {
@@ -15098,7 +15099,7 @@ video {
       google.script.run
         .withSuccessHandler(function (res) {
           inFlight.delete(key);
-          if (res && res.success === false) { undo(); alert('주문 요청이 저장되지 않았어요: ' + (res.message || '')); return; }
+          if (res && res.success === false) { undo(); if (res.already) { showToast(res.message, 4500); loadAllData(true, true, true); } else alert('주문 요청이 저장되지 않았어요: ' + (res.message || '')); return; }
           loadAllData(true, true, true);
         })
         .withFailureHandler(function (err) {
