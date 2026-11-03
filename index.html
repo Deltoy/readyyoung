@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw0j067h">
+  <meta name="ry-build" content="mw0j6g70">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4056,7 +4056,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .tab-head .th-title{font-size:clamp(17
 </style>
 <style>
 /* 1006 검색 결과가 짧을 때(2~3건) 아래 내용이 줄면 브라우저가 화면을 위로 당기던 것: 검색 화면은 최소 한 화면 높이 */
-html:not(#q):not(#w):not(#e) body:not(#r) #searchResultView:not(.hidden){min-height:100vh}
+/* 1103 MJ '밑으로 스크롤하면 계속 내려가네 · 보이는 곳까지만' → 한 화면 높이는 검색칸에 글자 치는 동안만 (끝나면 내용 끝에서 멈춤) */
+html:not(#q):not(#w):not(#e) body:not(#r).ry-typing #searchResultView:not(.hidden){min-height:100vh}
 /* 1002 세트 담당 이달 횟수 */
 html:not(#q):not(#w):not(#e) body:not(#r) .sdc-p .sdc-c{flex:none;margin-left:auto;padding-left:3px;font-size:10px;font-weight:700;font-style:normal;line-height:14px;font-variant-numeric:tabular-nums;opacity:.75}
 html:not(#q):not(#w):not(#e) body:not(#r) .sdc-lg .sdc-c{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;padding:0 4px;border-radius:8px;font-size:11px;font-weight:700;background:#F2F4F7;color:#374151}
@@ -14397,6 +14398,8 @@ video {
        다시 부를 때는 이미 확인한 질문은 바로 통과(연달아 두 번 묻는 곳도 그대로). prompt 는 var v = ryAskV(msg, def, again); if (v == null) return; */
     var RY_OK = {};
     /* 글 → 창: '[상품명]' 으로 시작하면 질문 줄이 제목·상품명은 그 아래 · 나머지는 안내 한 줄 */
+    document.addEventListener('focusin', function (e) { if (e.target && e.target.id === 'globalSearchInput') document.body.classList.add('ry-typing'); });   // 1103 검색 중에만 한 화면 높이
+    document.addEventListener('focusout', function (e) { if (e.target && e.target.id === 'globalSearchInput') setTimeout(function () { if (document.activeElement && document.activeElement.id === 'globalSearchInput') return; document.body.classList.remove('ry-typing'); }, 300); });
     function ryMsgParts(msg) { var L = String(msg == null ? '' : msg).replace(/\r/g, '').split('\n'), h = (L.shift() || '').trim(), sub = ''; if (/^\[[^\]]+\]/.test(h) && L.some(function (x) { return x.trim(); })) { var m = h.match(/^\[([^\]]+)\]\s*(.*)$/); sub = m[1]; h = m[2]; while (!h && L.length) h = (L.shift() || '').trim(); } return { h: h, sub: sub, rest: L.map(function (x) { return x.trim(); }).filter(Boolean).join(' ') }; }
     function ryAskOpt(msg, o) { var p = ryMsgParts(msg); return Object.assign({ title: p.h || '확인', sub: p.sub || undefined, note: p.rest || undefined }, o || {}); }
     function ryAsk(msg, again, o) {
