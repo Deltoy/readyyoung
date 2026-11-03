@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw0j6g70">
+  <meta name="ry-build" content="mw0jgilx">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -218,7 +218,7 @@
     #dropdownItemsList::-webkit-scrollbar { width: 6px; }
     #dropdownItemsList::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
     #dropdownItemsList .ry-ava.s { width: 28px; height: 28px; font-size: 16px; border-radius: 9999px; }
-    #avaPhotoNow .ry-ava.photo img { cursor: zoom-in; }   /* 1103 MJ '이름 고르는 곳에도 프로필 사진' */
+    #avaPhotoNow .ry-ava.photo img, #dropdownItemsList .ry-ava.photo img { cursor: zoom-in; }   /* 1103 MJ 이름 목록 사진 = 누르면 크게 (이름 고르기는 이름 글자) */   /* 1103 MJ '이름 고르는 곳에도 프로필 사진' */
     #loading { transition: color .2s ease; }
     #loading button { color: inherit; }
     #tabMenuBar { box-shadow: 0 1px 3px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04); }
@@ -17803,7 +17803,7 @@ video {
   (function () {
     var b = document.getElementById('myAvaBtn');
     if (b) b.addEventListener('click', function (e) { e.stopPropagation(); openAvaPicker(); });
-    document.addEventListener('click', function (e) { var im = e.target.closest && e.target.closest('.ry-reqb .ry-ava.photo img, .ry-in-who .ry-ava.photo img, #avaPhotoNow .ry-ava.photo img'); if (!im) return; e.preventDefault(); e.stopPropagation(); eduZoomOpen(im.src.replace(/=s\d+$/, '=s1000'), 1); }, true);   /* 1018 요청자 사진 크게 보기 · 1103 MJ 캐릭터 창 지금 사진도 */
+    document.addEventListener('click', function (e) { var im = e.target.closest && e.target.closest('.ry-reqb .ry-ava.photo img, .ry-in-who .ry-ava.photo img, #avaPhotoNow .ry-ava.photo img, #dropdownItemsList .ry-ava.photo img'); if (!im) return; e.preventDefault(); e.stopPropagation(); eduZoomOpen(im.src.replace(/=s\d+$/, '=s1000'), 1); }, true);   /* 1018 요청자 사진 크게 보기 · 1103 MJ 캐릭터 창 지금 사진도 */
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeAvaPicker(); closeNewProduct(); closeNote(); closeDuplicates(); } });
   })();
 </script>
