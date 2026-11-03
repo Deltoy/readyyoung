@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw0jgilx">
+  <meta name="ry-build" content="mw0jr1g3">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -7202,7 +7202,7 @@ video {
     function ryOdSub(row) {
       var sv = function (p) { return '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>'; };
       return '<button type="button" class="ry-od-b so" onclick="cancelSoldOut(' + row + ')">' + sv('<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/>') + '품절</button>'
-        + '<button type="button" class="ry-od-b ds" onclick="orderDiscontinue(' + row + ')">' + sv('<path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10z"/><path d="M8 12h8"/>') + '소진 후 판매종료</button>'
+        + '<button type="button" class="ry-od-b ds" onclick="orderDiscontinue(' + row + ')">' + sv('<path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10z"/><path d="M8 12h8"/>') + '판매종료</button>'   /* 1103 MJ '그냥 판매종료만' (하는 일은 그대로 = 소진 후 판매종료) */
         + '<button type="button" class="ry-od-b rj" onclick="rejectOrder(' + row + ')">재고있음</button>';
     }
     function orderDiscontinue(row) { NOTE_ROW = row; discontinueAndCancel(); }
