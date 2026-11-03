@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw0i68ct">
+  <meta name="ry-build" content="mw0j067h">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -7197,6 +7197,14 @@ video {
         .withFailureHandler(function (er) { back('카테고리가 추가되지 않았어요: ' + (er && er.message || '')); })
         .addCategory(name);
     }
+    /* 1103 MJ '최종 발주에서 품절 버튼 → 품절로 빠지고, 소진 후 판매종료 버튼 → 소진 후 판매종료, 재고있음은 작게 (1차 검토에서 재고는 거의 확인돼서)' */
+    function ryOdSub(row) {
+      var sv = function (p) { return '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>'; };
+      return '<button type="button" class="ry-od-b so" onclick="cancelSoldOut(' + row + ')">' + sv('<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/>') + '품절</button>'
+        + '<button type="button" class="ry-od-b ds" onclick="orderDiscontinue(' + row + ')">' + sv('<path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10z"/><path d="M8 12h8"/>') + '소진 후 판매종료</button>'
+        + '<button type="button" class="ry-od-b rj" onclick="rejectOrder(' + row + ')">재고있음</button>';
+    }
+    function orderDiscontinue(row) { NOTE_ROW = row; discontinueAndCancel(); }
     /* 0924: 관리약사 메모를 보고 한 번에 '소진 후 판매종료' + 재고있음(발주 취소) */
     function discontinueAndCancel() {
       var row = NOTE_ROW, item = findItemByRow(row);
@@ -11183,9 +11191,9 @@ video {
       } else {
         actionButtons = type === 'soldout' ? `
           <button type="button" onclick="reorderSoldOut(${item.rowNumber})" class="ry25-approve ry-so-re">재주문 요청</button>` : ryCanConfirmOrder() ? `
-          <div class="ry25-act">
-            <button type="button" onclick="confirmOrderPlaced(${item.rowNumber})" class="ry25-approve">주문 완료</button>
-            <button type="button" onclick="rejectOrder(${item.rowNumber})" class="ry25-reject">재고있음</button>
+          <div class="ry-od">
+            <div class="ry25-act"><button type="button" onclick="confirmOrderPlaced(${item.rowNumber})" class="ry25-approve">주문 완료</button></div>
+            <div class="ry-od-sub">${ryOdSub(item.rowNumber)}</div>
           </div>` : `
           <button onclick="rejectOrder(${item.rowNumber})" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-black transition whitespace-nowrap">
             <span class="em">❌ </span>재고있음 (취소)
@@ -11236,9 +11244,9 @@ video {
       } else {
         actionButtons = type === 'soldout' ? `
           <button type="button" onclick="reorderSoldOut(${item.rowNumber})" class="ry25-approve ry-so-re">재주문 요청</button>` : ryCanConfirmOrder() ? `
-          <div class="ry25-act m">
-            <button type="button" onclick="rejectOrder(${item.rowNumber})" class="ry25-reject">재고있음</button>
-            <button type="button" onclick="confirmOrderPlaced(${item.rowNumber})" class="ry25-approve">주문 완료</button>
+          <div class="ry-od">
+            <div class="ry25-act"><button type="button" onclick="confirmOrderPlaced(${item.rowNumber})" class="ry25-approve">주문 완료</button></div>
+            <div class="ry-od-sub">${ryOdSub(item.rowNumber)}</div>
           </div>` : `
           <button onclick="rejectOrder(${item.rowNumber})" class="w-full py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-black transition whitespace-nowrap shadow-sm">
             <span class="em">❌ </span>재고있음 (발주 취소)
@@ -12989,7 +12997,7 @@ video {
       if (!checkMemberSelectedOrAlert()) return;
       const key = 'soldout-' + rowNumber;
       if (inFlight.has(key)) return;
-      const target = cachedInboundItems.find(it => it.rowNumber === rowNumber);
+      const target = cachedInboundItems.find(it => it.rowNumber === rowNumber) || (cachedOrderItems || []).find(it => it.rowNumber === rowNumber);   // 1103 최종 발주 카드의 [품절]도
       const nm = target ? String(target.name || '') : '';
       if (!ok0) { ryConfirm({ title: '공급사 품절인가요?', items: [{ h: nm.split('\n')[0].slice(0, 28), d: '특이사항에 \'품절\'이 적히고 🚫 품절 탭으로 가요' }], ok: '품절 처리', danger: true }).then(function (y) { if (y) cancelSoldOut(rowNumber, true); }); return; }   // 1029 앱 확인창
       inFlight.add(key);
@@ -13005,6 +13013,11 @@ video {
         moved.isCheckRequested = false;
         moved.checkRequester = '';
         cachedOrderItems = [moved].concat((cachedOrderItems || []).filter(it => it.rowNumber !== rowNumber));
+        renderAllViews();
+        persistSnapshot();
+      } else if (target) {   // 1103 최종 발주에 있던 것 → 특이사항에 품절 → 화면이 품절 탭으로 옮김
+        const d = new Date(), mark = '품절(' + (d.getMonth() + 1) + '/' + d.getDate() + ' 공급사 미출고)', mn = ryNoRc(target.note);
+        target.note = /품절/.test(mn) ? mn : (mark + (mn ? ' ' + mn : ''));
         renderAllViews();
         persistSnapshot();
       }
@@ -18838,6 +18851,14 @@ html:not(#q):not(#w):not(#e):not(#t) body:not(#r):not(#s) #appToast{background:#
 .ry-cf-ic.warn{background:#FFFAEB;color:#DC6803}.ry-cf-ic.bad{background:#FEF3F2;color:#D92D20}
 .ry-cf-t{display:block;font-size:18px;font-weight:700;color:#101828;letter-spacing:-.02em;line-height:1.3}
 .ry-cf-s{display:block;font-size:13px;color:#667085;margin-top:2px}
+.ry-od{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%}
+.ry-od-sub{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+html:not(#q):not(#w):not(#e):not(#t) body:not(#r) .ry-od-b{display:inline-flex!important;align-items:center;gap:4px;height:34px!important;min-height:0!important;padding:0 12px!important;border-radius:999px!important;border:1px solid #EAECF0!important;background:#fff!important;color:#475467!important;font-size:13px!important;font-weight:700!important;white-space:nowrap;cursor:pointer;box-shadow:none!important;width:auto!important}
+html:not(#q):not(#w):not(#e):not(#t) body:not(#r) .ry-od-b.so{color:#B42318!important;border-color:#FECDCA!important;background:#FEF3F2!important}html:not(#q):not(#w):not(#e):not(#t) body:not(#r) .ry-od-b.ds{color:#B54708!important;border-color:#FEDF89!important;background:#FFFAEB!important}html:not(#q):not(#w):not(#e):not(#t) body:not(#r) .ry-od-b.rj{height:30px!important;padding:0 10px!important;font-size:12px!important;color:#667085!important}
+html:not(#q):not(#w):not(#e):not(#t) body:not(#r) .ry-od-b{min-width:0!important;flex:0 0 auto!important;max-width:100%}html:not(#q):not(#w):not(#e):not(#t) body:not(#r) .ry-od>.ry25-act{width:100%}html:not(#q):not(#w):not(#e):not(#t) body:not(#r) .ry-od .ry25-approve{min-width:150px}
+@media (max-width:720px){html:not(#q):not(#w):not(#e):not(#t) body:not(#r) .ry-od .ry25-approve{width:100%!important}}
+html:not(#q):not(#w):not(#e):not(#t) body:not(#r) .pc-only-table .ry-od-sub{flex-direction:column;align-items:stretch}html:not(#q):not(#w):not(#e):not(#t) body:not(#r) .pc-only-table .ry-od-b{justify-content:center}
+.ry-od-b:active{transform:scale(.97)}
 /* 1103 입력 창 · 진행 카드 · 알림 카드 (물류앱 스타일 = 흰 카드 · #155EEF · 16px) */
 .ry-cf-in{display:block;width:100%;box-sizing:border-box;margin:14px 0 4px;padding:12px 14px;border:1.5px solid #D0D5DD;border-radius:12px;font:600 16px/1.4 inherit;color:#101828;background:#fff;outline:none;resize:none}
 .ry-cf-in:focus{border-color:#155EEF;box-shadow:0 0 0 4px rgba(21,94,239,.14)}
