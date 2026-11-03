@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw07xvz1">
+  <meta name="ry-build" content="mw084f4h">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -7107,6 +7107,7 @@ video {
                           rejectedItemsAll());
       return all.filter(function (x) { return x.rowNumber === rowNumber; })[0];
     }
+    var NOTE_BOX0 = '', NOTE_MR0 = null;
     function openNote(rowNumber, name) {
       /* 1001 행 번호가 밀린 카드에서 눌러도 엉뚱한 상품이 안 열리게: 누른 카드의 이름과 같은 항목을 우선, 없으면 이름으로 찾아 그 행을 쓴다 */
       var nm = String(name || '').replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, '&').trim(), item = null;
@@ -7125,6 +7126,17 @@ video {
       noteNewCatShow(false);
       document.getElementById('noteText').value = item.note || '';
       try { document.getElementById('noteLoc').value = locOf(item); } catch (eLoc) {}
+      /* 1103 MJ '상품 수정에서도 유통경로·한 박스 몇 개 들었는지 적게' — 1박스 입수(모두) · 제조사·유통경로(발주 담당자만, MR 캐시 없으면 서버에서 받아 채움) */
+      NOTE_BOX0 = String(item.boxUnit == null ? '' : item.boxUnit).trim(); document.getElementById('noteBox').value = NOTE_BOX0;
+      var _mrOn = mrCanSee(); document.getElementById('noteMrRow').style.display = _mrOn ? '' : 'none';
+      var _mk = document.getElementById('noteMaker'), _rt = document.getElementById('noteRoute'), _r0 = rowNumber;
+      NOTE_MR0 = MR.map[rowNumber] ? { maker: String(MR.map[rowNumber].maker || ''), route: String(MR.map[rowNumber].route || '') } : null;
+      _mk.value = NOTE_MR0 ? NOTE_MR0.maker : ''; _rt.value = NOTE_MR0 ? NOTE_MR0.route : '';
+      if (_mrOn && !NOTE_MR0) google.script.run.withSuccessHandler(function (res) {
+        if (NOTE_ROW !== _r0 || !res || !res.ok) return; var d = (res.items || {})[_r0] || { maker: '', route: '' };
+        MR.map[_r0] = d; NOTE_MR0 = { maker: String(d.maker || ''), route: String(d.route || '') };
+        if (!_mk.value) _mk.value = NOTE_MR0.maker; if (!_rt.value) _rt.value = NOTE_MR0.route;
+      }).withFailureHandler(function () {}).getMakerRoute([_r0], currentSelectedMember);
       var err = document.getElementById('noteErr'); err.textContent = ''; err.classList.remove('on');
       document.getElementById('noteDim').classList.add('on');
       document.getElementById('noteSheet').classList.add('on');
@@ -7243,6 +7255,12 @@ video {
       var locOld = typeof locOf === 'function' ? locOf(item) : '', locNew = typeof locNorm === 'function' ? locNorm(document.getElementById('noteLoc').value) : locOld;
       if (locNew === null) { err.textContent = '창고 위치는 A-03-2 처럼 (구역 A~H · 선반 01~99 · 칸 1~9)'; err.classList.add('on'); return; }
       var locList = newName !== item.name && (locOld || locNew) ? [{ name: item.name, row: NOTE_ROW, loc: '' }, { name: newName, row: NOTE_ROW, loc: locNew }] : locNew !== locOld ? [{ name: item.name, row: NOTE_ROW, loc: locNew }] : [];
+      /* 1103 1박스 입수 · 제조사·유통경로는 원래 저장 함수로 따로 (바뀐 것만) */
+      var boxNew = document.getElementById('noteBox').value.trim();
+      if (boxNew !== NOTE_BOX0 && boxNew !== '' && !boxNew.replace(/[^0-9]/g, '')) { err.textContent = '1박스 입수는 숫자로 적어 주세요 (예: 10 또는 10개입)'; err.classList.add('on'); return; }
+      if (boxNew !== NOTE_BOX0) saveBoxRef(NOTE_ROW, { value: boxNew });
+      if (mrCanSee()) { var mk = document.getElementById('noteMaker').value.trim().slice(0, 40), rt = document.getElementById('noteRoute').value.trim().slice(0, 300), m0 = NOTE_MR0 || { maker: '', route: '' };
+        if (mk !== m0.maker || rt !== m0.route) mrSave(NOTE_ROW, { maker: { value: mk }, route: { value: rt } }); }
       var btn = document.getElementById('noteSave');
       btn.disabled = true; btn.textContent = '저장 중…';
       var newCat = document.getElementById('noteCat').value;
@@ -11482,7 +11500,7 @@ video {
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Enter' || e.isComposing || e.repeat || e.shiftKey || e.altKey || e.ctrlKey || e.metaKey) return;
       var el = e.target, id = (el && el.id) || '';
-      if (!/^(noteName|noteLoc|noteText)$/.test(id)) return;
+      if (!/^(noteName|noteLoc|noteText|noteBox|noteMaker|noteRoute)$/.test(id)) return;
       if (id === 'noteText' && window.matchMedia && matchMedia('(pointer: coarse)').matches) return;
       var sh = document.getElementById('noteSheet'), b = document.getElementById('noteSave');
       if (!sh || !sh.classList.contains('on') || !b || b.disabled || !b.offsetParent) return;
@@ -17312,6 +17330,11 @@ video {
   <div class="ava-head"><b>상품 수정</b><button type="button" onclick="closeNote()">닫기</button></div>
   <div class="np-field"><label>상품명</label><input type="text" id="noteName" placeholder="상품명" enterkeyhint="done"></div>
   <div class="np-field"><label for="noteLoc">창고 위치</label><input type="text" id="noteLoc" placeholder="예: A-03-2" enterkeyhint="done" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" onblur="var v = locNorm(this.value); if (v) this.value = v;"><div class="np-loc-h">구역 A~H · 선반 01~99 · 칸 위에서 1~9 — a3-2 처럼 쳐도 돼요 · 비우면 지워요</div></div>
+  <div class="np-field"><label for="noteBox">1박스 입수 (선택)</label><input type="text" id="noteBox" maxlength="20" placeholder="예: 10개입" autocomplete="off" enterkeyhint="done"></div>
+  <div class="np-row" id="noteMrRow" style="display:none">
+    <div class="np-field"><label for="noteMaker">제조사</label><input type="text" id="noteMaker" maxlength="40" placeholder="예: 종근당건강" autocomplete="off" enterkeyhint="done"></div>
+    <div class="np-field"><label for="noteRoute">유통경로</label><input type="text" id="noteRoute" maxlength="300" placeholder="예: 백제약품 · 쿠팡 링크 · 전화" autocomplete="off" enterkeyhint="done"></div>
+  </div>
   <div class="np-field"><label for="noteCat">카테고리</label><div class="cat-2"><select id="noteCat" onchange="noteCatChange()"></select><select id="noteSub" aria-label="하위 섹터" style="display:none"></select></div>
     <div class="cb-add note-newcat" id="noteNewCatRow" hidden>
       <input type="text" id="noteNewCat" maxlength="12" placeholder="새 카테고리 이름 (예: 비품)" autocomplete="off" aria-label="새 카테고리 이름" onkeydown="if(event.key==='Enter'&&!event.isComposing){event.preventDefault();addNoteCat();}">
