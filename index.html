@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mvyzhgws">
+  <meta name="ry-build" content="mvzzo4v2">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9452,6 +9452,8 @@ video {
       document.getElementById('npUnit').value = '개';
       document.getElementById('npNote').value = '';
       document.getElementById('npSales15').value = '';
+      document.getElementById('npMaker').value = ''; document.getElementById('npRoute').value = '';
+      document.getElementById('npMrRow').style.display = mrCanSee() ? '' : 'none';   /* 1103 MJ '제조·유통경로까지 한 번에' — 경로를 보는 사람만 */
       var _ncs = document.getElementById('npCat');
       _ncs.innerHTML = '<option value="">자동 분류</option>' + CATEGORY_LIST.map(function (c) { return '<option>' + escapeHtml(c) + '</option>'; }).join('');
       document.getElementById('npRequest').checked = true;
@@ -9485,7 +9487,7 @@ video {
       if (!currentSelectedMember) { err.textContent = '먼저 위에서 이름을 선택해주세요.'; err.classList.add('on'); return; }
       var btn = document.getElementById('npSave');
       /* 1002 빠르게: 누르면 바로 창을 닫고 뒤에서 등록. 실패하면 적은 내용 그대로 창을 다시 연다 */
-      var ids = ['npName', 'npBox', 'npQty', 'npUnit', 'npNote', 'npSales15', 'npCat', 'npSub'], snap = {}; ids.forEach(function (k) { var el = document.getElementById(k); if (el) snap[k] = el.value; });
+      var ids = ['npName', 'npBox', 'npQty', 'npUnit', 'npNote', 'npSales15', 'npCat', 'npSub', 'npMaker', 'npRoute'], snap = {}; ids.forEach(function (k) { var el = document.getElementById(k); if (el) snap[k] = el.value; });
       snap.req = document.getElementById('npRequest').checked; snap.photo = NP_PHOTO || '';
       var cat0 = catJoin(document.getElementById('npCat').value, document.getElementById('npSub').value);
       if (!cat0 && NP_AI.name === name && NP_AI.cat) cat0 = NP_AI.cat;
@@ -9519,6 +9521,8 @@ video {
           qty: parseInt(document.getElementById('npQty').value, 10) || 1,
           unit: document.getElementById('npUnit').value,
           note: document.getElementById('npNote').value.trim(),
+          maker: mrCanSee() ? document.getElementById('npMaker').value.trim() : '',
+          route: mrCanSee() ? document.getElementById('npRoute').value.trim() : '',
           sales15: document.getElementById('npSales15').value.trim(),
           category: cat0,
           photo: snap.photo,
@@ -17545,6 +17549,10 @@ video {
   <div class="np-row">
     <div class="np-field"><label>카테고리</label><div class="cat-2"><select id="npCat" onchange="fillSubSel(document.getElementById('npSub'), this.value, '')"><option value="">자동 분류</option></select><select id="npSub" aria-label="하위 섹터" style="display:none"></select></div></div>
     <div class="np-field"><label>특이사항 (선택)</label><input type="text" id="npNote" placeholder="예: 공급사 직거래"></div>
+  </div>
+  <div class="np-row" id="npMrRow" style="display:none">
+    <div class="np-field"><label>제조사 (선택)</label><input type="text" id="npMaker" placeholder="예: 종근당건강"></div>
+    <div class="np-field"><label>유통경로 (선택)</label><input type="text" id="npRoute" placeholder="예: 백제약품 · 쿠팡 링크 · 전화"></div>
   </div>
   <div class="np-field"><label>사진 (선택)</label>
     <div style="display:flex;align-items:center;gap:8px">
