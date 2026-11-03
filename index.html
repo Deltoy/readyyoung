@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw08a4nr">
+  <meta name="ry-build" content="mw08e9yl">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9882,18 +9882,18 @@ video {
       var R = 13, C = 2 * Math.PI * R, off = C * (1 - pct / 100), col = done ? '#12B76A' : '#155EEF';
       document.querySelectorAll('[data-photo-row="' + row + '"]').forEach(function (b) {
         b.disabled = true;
-        b.innerHTML = '<svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="' + R + '" fill="none" stroke="#E4E7EC" stroke-width="4"/>'
+        b.innerHTML = '<svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true" style="flex:0 0 34px;display:block"><circle cx="17" cy="17" r="' + R + '" fill="none" stroke="#E4E7EC" stroke-width="4"/>'
           + '<circle cx="17" cy="17" r="' + R + '" fill="none" stroke="' + col + '" stroke-width="4" stroke-linecap="round" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + off.toFixed(1) + '" transform="rotate(-90 17 17)"/>'
           + '<text x="17" y="21" text-anchor="middle" font-size="10" font-weight="800" fill="' + col + '">' + (done ? '✓' : Math.round(pct) + '%') + '</text></svg>'
-          + '<span class="text-[8px] font-bold mt-0.5" style="color:' + col + '">' + sub + '</span>';
+          + '<span style="display:block;font-size:9px;line-height:1.1;font-weight:700;white-space:nowrap;margin-top:2px;color:' + col + '">' + sub + '</span>';
       });
     }
     function phProgStop(row) { if (PH_TICK[row]) { clearInterval(PH_TICK[row].iv); delete PH_TICK[row]; } }
-    function phProgWait(row, n) { phProgStop(row); var draw = function () { phGauge(row, 0, '대기 ' + n + '번째'); }; PH_TICK[row] = { iv: setInterval(draw, 400) }; draw(); }
+    function phProgWait(row, n) { phProgStop(row); var draw = function () { phGauge(row, 0, '대기 ' + n); }; PH_TICK[row] = { iv: setInterval(draw, 400) }; draw(); }
     function phProgStart(row) {
       phProgStop(row); var t0 = Date.now();
       var draw = function () { var el = Date.now() - t0, pct = Math.min(95, 100 * el / PH_EST), left = Math.ceil((PH_EST - el) / 1000);
-        phGauge(row, pct, left > 0 ? '약 ' + left + '초' : '거의 다 됐어요'); };
+        phGauge(row, pct, left > 0 ? left + '초 남음' : '거의 끝'); };
       PH_TICK[row] = { t0: t0, iv: setInterval(draw, 250) }; draw();
     }
     function phProgDone(row, ok) {
