@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw08e9yl">
+  <meta name="ry-build" content="mw0cwpzq">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -12585,7 +12585,7 @@ video {
       var ci = (RY_CAT && RY_CAT.items || []).filter(function (x) { return x.rowNumber === row; })[0], bu = ci ? parseInt(ci.boxUnit, 10) || 0 : 0;
       INB1.add.push({ row: row, name: name, qty: 0, bu: bu > 1 ? bu : 0, t: Date.now() }); inb1Save(); inb1S0(); inb1Rows(INB1.add.length - 1);
     }
-    function invOpen() {   // 1020 MJ '사진첩만 나오고 카메라가 안 나와' → 먼저 고르게
+    function invOpen() { try { dutyGate(null); } catch (eDg0) {}   /* 1103 열 때 미리 근무 확인 → 입고확인 누를 때 안 기다림 */   // 1020 MJ '사진첩만 나오고 카메라가 안 나와' → 먼저 고르게
       if (!checkMemberSelectedOrAlert()) return;
       if (!INV_AL) google.script.run.withSuccessHandler(function (r) { INV_AL = (r && r.map) || {}; }).withFailureHandler(function () { INV_AL = {}; }).getInvoiceAliases();
       INVS = []; INV_Q = []; INB1.on = true; INB1.s = ''; INB1.pad = 0; INB1.vh0 = 0; inb1Load(); return invRender();   // 1023 [📦 입고하기] 한 화면 (아래 옛 첫 화면은 안 씀)
@@ -12883,8 +12883,17 @@ video {
     }
     function invCount(busy) { var b = document.getElementById('invGo'); if (!b) return; var n = invPicked().length, x = invExtras().reduce(function (a, g) { return a + g.ex.length; }, 0) + inb1Picked().length + inb1Adds().length; b.disabled = busy || INV_BUSY || (!n && !x); var nb = document.getElementById('inb1N'); if (nb) nb.textContent = (INB1.nList || 0) + '개 중 ' + inb1Picked().length + '개 체크 · 온 것만 체크해요'; b.textContent = busy || INV_BUSY ? '읽는 중…' : n + x ? (n + x) + '개 입고확인' : '입고할 상품을 체크해 주세요'; }   // 1022 MJ '알림이 아니라 입고확인 버튼으로'
     function invPlanS(r) { return !!r && !r.wrongStore && /플랜에스/.test(String(r.receiver || '').replace(/\s+/g, '')); }   // 1021 MJ: 자회사 플랜에스의원 앞 명세서 — 막지 말고 한 번 더 확인만
-    function invDo() { if (checkMemberSelectedOrAlert()) dutyGate(invDo_); }   // 1023 근무 중인 사람만
-    async function invDo_() {
+    function invDo() {   // 1023 근무 중인 사람만
+      if (!checkMemberSelectedOrAlert()) return; var me = currentSelectedMember || '';
+      if (DUTY_OK[me] && Date.now() - DUTY_OK[me] < 300000) return invDo_();
+      /* 1103 MJ '명세서 입고완료 누르면 몇 초 기다려야 확인창' — 근무 확인(서버 2~6초)을 기다리지 않고 확인창부터 띄우고, [입고확인]을 누른 뒤 결과를 봄 */
+      var dp = new Promise(function (res) {
+        if (typeof google === 'undefined' || !google.script || typeof google.script.run.inboundDutyCheck !== 'function') return res(true);
+        google.script.run.withSuccessHandler(function (r) { if (r && r.success === false && r.message) res(false); else { DUTY_OK[me] = Date.now(); res(true); } }).withFailureHandler(function () { res(true); }).inboundDutyCheck(me);
+      });
+      invDo_(dp);
+    }
+    async function invDo_(dp) {
       var rows = invPicked(), gs = invExtras(), ex = gs.reduce(function (a, g) { return a.concat(g.ex); }, []), nw = ex.filter(function (x) { return x.newItem; }).length;
       var bRows = inb1Picked().filter(function (r) { return rows.indexOf(r) < 0; }), adds = inb1Adds();   // 1023 명세서 없이 온 주문 · 주문 안 한 것
       var oqOf = function (r) { var it = (cachedInboundItems || []).filter(function (x) { return x.rowNumber === r; })[0]; return it ? parseInt(it.targetQty, 10) || 0 : 0; }, nmOf = function (r) { var it = (cachedInboundItems || []).filter(function (x) { return x.rowNumber === r; })[0]; return it ? String(it.name).split('\n')[0] : ''; }, unOf = function (r) { var it = (cachedInboundItems || []).filter(function (x) { return x.rowNumber === r; })[0]; return it && it.unit || '개'; };
@@ -12907,7 +12916,9 @@ video {
       if (adds.length) cf.items.push({ h: '주문 안 한 상품 ' + adds.length + '개', d: adds.map(function (a) { return (a.isNew ? '🆕 ' : '') + a.name.slice(0, 18) + '  ' + a.qty + '개'; }).join('\n') + (adds.some(function (a) { return a.isNew; }) ? '\n🆕 = 새 상품으로 등록' : '') });
       if (ex.length) cf.items.push({ h: '주문 안 한 상품 ' + ex.length + '개도 재고에 넣어요' + (nw ? ' (새 상품 ' + nw + '개 등록)' : '') });
       if (rows.length || diff.length) cf.note = '잘못 넣었으면 입고내역에서 ⏪ 되돌리기';
+      cf.icon = 'box'; cf.sub = (currentSelectedMember || '') + ' 님 이름으로 입고돼요';
       if (!(await ryConfirm(cf))) return;
+      if (dp) { var _dt = setTimeout(function () { showToast('근무 시간 확인 중이에요…', 2500); }, 300); var _ok = await dp; clearTimeout(_dt); if (!_ok) { dutyGate(function () {}); return; } }   /* 근무 아님 → 원래 안내(관리자에게 요청) */
       try {   /* 1020 MJ '주문 안 했는데 들어온 상품도 재고로' — 명세서 수량을 그 상품의 입고 기록(추정 재고)에 남김 */
         INVS.forEach(function (r) { if (!r.fid || r.wrongStore) return; var live = {}; (cachedInboundItems || []).forEach(function (it) { live[it.rowNumber] = 1; });
           var nm = (r.lines || []).filter(function (l) { return !(l.row && live[l.row]) && !l.doneName && !l.exOff && (l.catName || l.newItem); }).map(function (l) { return { n: l.newItem ? (l.clean || l.name) : l.catName, q: l.appQty != null ? l.appQty : l.qty, iv: l.name }; });
@@ -14310,9 +14321,15 @@ video {
       return new Promise(function (res) {
         var old = document.getElementById('ryCf'); if (old) { old._res && old._res(false); old.remove(); }
         var d = document.createElement('div'); d.id = 'ryCf'; d.className = 'ry-cf'; d.setAttribute('role', 'alertdialog'); d.setAttribute('aria-modal', 'true'); d.setAttribute('aria-labelledby', 'ryCfT');
-        var row = function (x) { return '<div class="ry-cf-i' + (x.t ? ' ' + x.t : '') + '">' + (x.h ? '<b>' + escapeHtml(x.h) + '</b>' : '') + (x.d ? '<p>' + escapeHtml(x.d) + '</p>' : '') + '</div>'; };
-        d.innerHTML = '<div class="ry-cf-dim"></div><div class="ry-cf-card" role="document"><b class="ry-cf-t" id="ryCfT">' + escapeHtml(o.title || '확인') + '</b>'
-          + ((o.items || []).length ? '<div class="ry-cf-l">' + o.items.map(row).join('') + '</div>' : '') + (o.note ? '<p class="ry-cf-n">' + escapeHtml(o.note) + '</p>' : '')
+        /* 1103 MJ '확인창도 우리 물류앱에 맞게 디자인' — 머리 아이콘(상자·경고·정보) + 부제 + 항목마다 아이콘 · 폰은 아래에서 올라오는 시트 */
+        var SV = function (p) { return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>'; };
+        var IC = { box: SV('<path d="M16 16h6"/><path d="M19 13v6"/><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/><path d="m7.5 4.27 9 5.15"/><path d="M3.29 7 12 12l8.71-5"/><path d="M12 22V12"/>'),
+          warn: SV('<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>'),
+          info: SV('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>'), ok: SV('<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>') };
+        var hic = o.icon || (o.danger ? 'warn' : ((o.items || []).some(function (x) { return x.t === 'bad'; }) ? 'warn' : 'info')), hcl = o.danger || hic === 'warn' ? ((o.items || []).some(function (x) { return x.t === 'bad'; }) || o.danger ? ' bad' : ' warn') : '';
+        var row = function (x) { return '<div class="ry-cf-i' + (x.t ? ' ' + x.t : '') + '"><span class="ii">' + (x.t ? IC.warn : IC.ok) + '</span><div>' + (x.h ? '<b>' + escapeHtml(x.h) + '</b>' : '') + (x.d ? '<p>' + escapeHtml(x.d) + '</p>' : '') + '</div></div>'; };
+        d.innerHTML = '<div class="ry-cf-dim"></div><div class="ry-cf-card" role="document"><div class="ry-cf-h"><span class="ry-cf-ic' + hcl + '">' + IC[hic] + '</span><div><b class="ry-cf-t" id="ryCfT">' + escapeHtml(o.title || '확인') + '</b>' + (o.sub ? '<span class="ry-cf-s">' + escapeHtml(o.sub) + '</span>' : '') + '</div></div>'
+          + ((o.items || []).length ? '<div class="ry-cf-l">' + o.items.map(row).join('') + '</div>' : '') + (o.note ? '<p class="ry-cf-n">' + IC.info + escapeHtml(o.note) + '</p>' : '')
           + '<div class="ry-cf-b' + (o.alert ? ' one' : '') + '">' + (o.alert ? '' : '<button type="button" class="no" id="ryCfNo">' + escapeHtml(o.cancel || '취소') + '</button>') + '<button type="button" class="ok' + (o.danger ? ' danger' : '') + '" id="ryCfOk">' + escapeHtml(o.ok || '확인') + '</button></div></div>';
         var done = function (v) { if (d._done) return; d._done = 1; document.removeEventListener('keydown', key, true); d.classList.remove('on'); setTimeout(function () { d.remove(); try { rySync(); } catch (e) {} }, 160); res(v); };
         var key = function (e) { if (!document.body.contains(d)) return; if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); done(false); } else if (e.key === 'Enter' && !e.isComposing && !e.repeat) { e.preventDefault(); e.stopPropagation(); done(document.activeElement && document.activeElement.id === 'ryCfNo' ? false : true); } };
@@ -18703,27 +18720,35 @@ html:not(#q):not(#w):not(#e) body:not(#r) .edu-form textarea#ef_claim,html:not(#
 /* 1029 MJ '밑에 나오는 알림이 검정 테두리 — 우리 앱 스타일로': 흰 카드 · 얇은 테두리 · 앞에 초록 점 */
 html:not(#q):not(#w):not(#e):not(#t) body:not(#r):not(#s) #appToast{background:#fff!important;color:#1d1d1f!important;border:1px solid var(--ry-line,#e5e5ea)!important;border-radius:16px!important;padding:12px 18px!important;font-size:14.5px!important;font-weight:600!important;line-height:1.45;box-shadow:0 10px 30px rgba(0,0,0,.12),0 2px 6px rgba(0,0,0,.06)!important;max-width:min(92vw,520px);text-align:left;-webkit-backdrop-filter:none;backdrop-filter:none}
 /* 앱 확인창 (ryConfirm) */
-.ry-cf{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .16s ease}
+.ry-cf{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .18s ease}
 .ry-cf.on{opacity:1}
-.ry-cf-dim{position:absolute;inset:0;background:rgba(0,0,0,.36)}
-.ry-cf-card{position:relative;width:min(420px,100%);max-height:calc(100vh - 40px);overflow:auto;background:#fff;border-radius:22px;padding:22px 20px 16px;box-shadow:0 24px 60px rgba(0,0,0,.22);transform:translateY(8px) scale(.98);transition:transform .16s ease}
+.ry-cf-dim{position:absolute;inset:0;background:rgba(16,24,40,.45)}
+.ry-cf-card{position:relative;width:min(440px,100%);max-height:calc(100vh - 40px);overflow:auto;background:#fff;border-radius:20px;padding:22px 20px 16px;box-shadow:0 24px 48px -12px rgba(16,24,40,.28),0 0 0 1px rgba(16,24,40,.06);transform:translateY(10px) scale(.98);transition:transform .2s cubic-bezier(.2,.8,.2,1)}
 .ry-cf.on .ry-cf-card{transform:none}
-@media (prefers-reduced-motion:reduce){.ry-cf,.ry-cf-card{transition:none}}
-.ry-cf-t{display:block;font-size:19px;font-weight:600;color:#1d1d1f;letter-spacing:-.02em;margin:0 2px 12px}
+.ry-cf-h{display:flex;align-items:center;gap:12px;margin:0 2px 14px}
+.ry-cf-ic{flex:0 0 44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:#EFF4FF;color:#155EEF}
+.ry-cf-ic svg{width:22px;height:22px}
+.ry-cf-ic.warn{background:#FFFAEB;color:#DC6803}.ry-cf-ic.bad{background:#FEF3F2;color:#D92D20}
+.ry-cf-t{display:block;font-size:18px;font-weight:700;color:#101828;letter-spacing:-.02em;line-height:1.3}
+.ry-cf-s{display:block;font-size:13px;color:#667085;margin-top:2px}
 .ry-cf-l{display:grid;gap:8px}
-.ry-cf-i{padding:11px 13px;border-radius:14px;background:#f5f5f7}
-.ry-cf-i b{display:block;font-size:14.5px;font-weight:600;color:#1d1d1f;line-height:1.4}
-.ry-cf-i p{margin:4px 0 0;font-size:13.5px;color:#424245;line-height:1.55;white-space:pre-line;font-variant-numeric:tabular-nums}
-.ry-cf-i.bad{background:var(--ry-bad-soft,#fef3f2)}.ry-cf-i.bad b{color:var(--ry-bad,#b42318)}
-.ry-cf-i.warn{background:var(--ry-warn-soft,#fffaeb)}.ry-cf-i.warn b{color:var(--ry-warn,#b54708)}
-.ry-cf-n{margin:10px 2px 0;font-size:12.5px;color:#6e6e73}
-.ry-cf-b{display:grid;grid-template-columns:1fr 1.4fr;gap:8px;margin-top:16px}
-html body:not(#_):not(#_) .ry-cf-b button{min-height:50px;border-radius:14px!important;font-size:16px!important;font-weight:600!important;border:0!important;cursor:pointer}
-html body:not(#_):not(#_) .ry-cf-b .no{background:#f2f2f7!important;color:#1d1d1f!important}
-html body:not(#_):not(#_) .ry-cf-b .ok{background:var(--ry-brand,#0066cc)!important;color:#fff!important}
+.ry-cf-i{display:grid;grid-template-columns:20px 1fr;gap:10px;padding:12px 14px;border-radius:14px;background:#F9FAFB;border:1px solid #EAECF0}
+.ry-cf-i .ii{color:#12B76A;line-height:0;margin-top:1px}.ry-cf-i .ii svg{width:18px;height:18px}
+.ry-cf-i b{display:block;font-size:14.5px;font-weight:600;color:#101828;line-height:1.45}
+.ry-cf-i p{margin:4px 0 0;font-size:13.5px;color:#475467;line-height:1.55;white-space:pre-line;font-variant-numeric:tabular-nums}
+.ry-cf-i.bad{background:#FEF3F2;border-color:#FECDCA}.ry-cf-i.bad .ii,.ry-cf-i.bad b{color:#B42318}
+.ry-cf-i.warn{background:#FFFAEB;border-color:#FEDF89}.ry-cf-i.warn .ii,.ry-cf-i.warn b{color:#B54708}
+.ry-cf-n{display:flex;gap:6px;align-items:center;margin:12px 2px 0;font-size:12.5px;color:#667085}.ry-cf-n svg{width:15px;height:15px;flex:0 0 15px}
+.ry-cf-b{display:grid;grid-template-columns:1fr 1.5fr;gap:10px;margin-top:18px}
+html body:not(#_):not(#_) .ry-cf-b button{min-height:52px;border-radius:14px!important;font-size:16px!important;font-weight:700!important;cursor:pointer}
+html body:not(#_):not(#_) .ry-cf-b .no{background:#fff!important;color:#344054!important;border:1px solid #D0D5DD!important}
+html body:not(#_):not(#_) .ry-cf-b .ok{background:#155EEF!important;color:#fff!important;border:0!important;box-shadow:0 4px 12px rgba(21,94,239,.28)}
+html body:not(#_):not(#_) .ry-cf-b .ok.danger{background:#D92D20!important;box-shadow:0 4px 12px rgba(217,45,32,.25)}
 html body:not(#_):not(#_) .ry-cf-b button:focus:not(:focus-visible){outline:none!important;box-shadow:none!important}
-html body:not(#_):not(#_) .ry-cf-b .ok.danger{background:var(--ry-bad,#b42318)!important}
+html body:not(#_):not(#_) .ry-cf-b button:focus-visible{outline:3px solid #B2CCFF!important;outline-offset:2px}
 .ry-cf-b.one{grid-template-columns:1fr}
+@media (max-width:600px){.ry-cf{align-items:flex-end;padding:0}.ry-cf-card{width:100%;max-height:88vh;border-radius:22px 22px 0 0;padding:20px 18px calc(16px + env(safe-area-inset-bottom));transform:translateY(28px)}.ry-cf-card::before{content:'';display:block;width:40px;height:4px;border-radius:2px;background:#D0D5DD;margin:-6px auto 14px}}
+@media (prefers-reduced-motion:reduce){.ry-cf,.ry-cf-card{transition:none}}
 @media(min-width:720px){ html:not(#q):not(#w):not(#e) body:not(#r) .edu-repf .edu-draft-a{grid-template-columns:1fr 1fr} html:not(#q):not(#w):not(#e) body:not(#r) .edu-draft-a{grid-template-columns:2fr 1fr 1fr} html:not(#q):not(#w):not(#e) body:not(#r) .edu-draft-a .edu-btn.pri{grid-column:auto} html:not(#q):not(#w):not(#e) body:not(#r) .edu-draft-a .edu-btn.one{grid-column:auto} html:not(#q):not(#w):not(#e) body:not(#r) .edu-draft-a .edu-btn.one:only-child{grid-column:1/-1} html:not(#q):not(#w):not(#e) body:not(#r) .edu-draft-a .edu-btn.one+.edu-btn.one{grid-column:span 2} }
 html:not(#q):not(#w):not(#e) body:not(#r) #eduReader .edu-srcjump{display:inline;min-height:0!important;height:auto;padding:0!important;margin:0;line-height:inherit;vertical-align:baseline;border-radius:0!important}
 html:not(#q):not(#w):not(#e) body:not(#r) .edu-claim dt{color:#155EEF}
