@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw3o203g">
+  <meta name="ry-build" content="mw3okgoi">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -14213,14 +14213,19 @@ video {
       var it = (cachedInboundItems || []).find(function (x) { return x.rowNumber === item.rowNumber; }) || item, o = inbOrd(it), od = String(it.orderDate || '').trim();
       return '주문 ' + (o.q || '?') + o.u + (od && od !== '-' ? ' · 발주 ' + escapeHtml((od.match(/(\d{1,2})\D+(\d{1,2})\D*$/) || [0, '', '']).slice(1).filter(Boolean).join('/') || od) : '') + (it.requester ? ' · ' + escapeHtml(String(it.requester).trim()) : '');
     }
+    function rySrQtyHtml(item) {   /* 1106 MJ '입고완료 누를 때 수량도 고칠 수 있어야' — 입고 대기 탭 수량 칸(inbQtyHtml)과 같은 INB_GOT 를 씀 (id 만 sr- 로) */
+      var it = (cachedInboundItems || []).find(function (x) { return x.rowNumber === item.rowNumber; }); if (!it) return '';
+      return inbQtyHtml(it, false).replace('id="in-qty-', 'id="sr-in-qty-');
+    }
     function rySrInbHtml(item, kind) {
       var r = item.rowNumber;
-      if (kind === 'pc') return '<div class="ry-srinb pc" onclick="event.stopPropagation()"><span class="ry-srinb-i">' + rySrInbInfo(item) + '</span><button type="button" class="ry-srinb-b" onclick="rySrInbound(' + r + ')">' + RYI.check + '입고 완료</button><span class="ry-go text-[11px] text-blue-600 font-black" style="cursor:pointer">이동 →</span></div>';
-      return '<div class="ry25-pc-act ry-srinb" onclick="event.stopPropagation()"><span class="ry-srinb-i">' + rySrInbInfo(item) + '</span><button type="button" class="ry25-go ry-srinb-b" onclick="rySrInbound(' + r + ')">' + RYI.check + '입고 완료</button><span class="ry25-link" role="button" style="cursor:pointer" onclick="goToItem(' + r + ', \'INBOUND\')">입고 대기에서 보기' + RYI.chevright + '</span></div>';
+      if (kind === 'pc') return '<div class="ry-srinb pc" onclick="event.stopPropagation()"><span class="ry-srinb-i">' + rySrInbInfo(item) + '</span>' + rySrQtyHtml(item) + '<button type="button" class="ry-srinb-b" onclick="rySrInbound(' + r + ')">' + RYI.check + '입고 완료</button><span class="ry-go text-[11px] text-blue-600 font-black" style="cursor:pointer">이동 →</span></div>';
+      return '<div class="ry25-pc-act ry-srinb" onclick="event.stopPropagation()"><span class="ry-srinb-i">' + rySrInbInfo(item) + '</span>' + rySrQtyHtml(item) + '<button type="button" class="ry25-go ry-srinb-b" onclick="rySrInbound(' + r + ')">' + RYI.check + '입고 완료</button><span class="ry25-link" role="button" style="cursor:pointer" onclick="goToItem(' + r + ', \'INBOUND\')">입고 대기에서 보기' + RYI.chevright + '</span></div>';
     }
     function rySrInbound(row) {
       if (!checkMemberSelectedOrAlert()) return;
       if (!(cachedInboundItems || []).some(function (x) { return x.rowNumber === row; })) { showToast('입고 대기 목록을 새로 받는 중이에요 · 잠시 뒤 다시 눌러 주세요', 2600); try { loadAllData(true, true, true); } catch (e) {} return; }
+      var qi = document.getElementById('sr-in-qty-' + row); if (qi) { var qn = Math.round(Number(qi.value)); if (qn > 0 && qn < 100000) inbGotSet(row, qn); }
       completeInbound(row);
       /* 1105 MJ '입고완료 눌렀는데 왜 안 바뀌어?' — 입고는 됐는데 검색 카드만 그대로였음 → 입고 대기 목록에서 빠지면 그 카드를 입고완료로 다시 그림 (취소하면 1분 뒤 그만 봄) */
       var t0 = Date.now(), iv = setInterval(function () {
