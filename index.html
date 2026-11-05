@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw3nqbbq">
+  <meta name="ry-build" content="mw3o203g">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -14222,6 +14222,13 @@ video {
       if (!checkMemberSelectedOrAlert()) return;
       if (!(cachedInboundItems || []).some(function (x) { return x.rowNumber === row; })) { showToast('입고 대기 목록을 새로 받는 중이에요 · 잠시 뒤 다시 눌러 주세요', 2600); try { loadAllData(true, true, true); } catch (e) {} return; }
       completeInbound(row);
+      /* 1105 MJ '입고완료 눌렀는데 왜 안 바뀌어?' — 입고는 됐는데 검색 카드만 그대로였음 → 입고 대기 목록에서 빠지면 그 카드를 입고완료로 다시 그림 (취소하면 1분 뒤 그만 봄) */
+      var t0 = Date.now(), iv = setInterval(function () {
+        if ((cachedInboundItems || []).some(function (x) { return x.rowNumber === row; })) { if (Date.now() - t0 > 60000) clearInterval(iv); return; }
+        clearInterval(iv);
+        (lastSearchResults || []).forEach(function (x) { if (x.rowNumber === row) { x.status = 'DONE'; x.statusLabel = '입고완료'; x.inboundDate = cachedTodayStr || x.inboundDate; x.justRequested = false; } });
+        RY_SR_FULL = ''; try { renderSearchResults(lastSearchResults || []); } catch (e) {}
+      }, 400);
     }
     function renderSearchResults(items) {
       var full = ryFullSigSR(items);
