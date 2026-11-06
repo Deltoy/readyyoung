@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw4b5bsy">
+  <meta name="ry-build" content="mw4bnxck">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1263,7 +1263,7 @@ html body:not(#_):not(#_) .ry-qe.chg .ry-qe-n{color:#B54708!important;border-col
   border-radius:999px!important;border:1px solid #B8C9E6;background:#F2F6FD;color:var(--ry-brand);font-size:13px;font-weight:700;line-height:1;cursor:pointer;flex:none}
 .ry-info::after{content:'';position:absolute;inset:-10px}
 .ry-pr{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;min-height:24px;padding:0;border-radius:999px;border:0;background:#ECFDF3;color:#067647;vertical-align:middle;position:relative;margin-left:2px}
-.ry-pr svg{width:14px;height:14px}.ry-stk{display:inline-flex;align-items:center;gap:3px;min-height:28px;padding:0 11px;border-radius:999px;border:1.5px solid #B2CCFF;background:#EEF4FF;color:#155EEF;font-size:12.5px;font-weight:800;vertical-align:middle;margin-left:4px;position:relative;white-space:nowrap}.ry-stk b{font-size:14px;font-weight:900}.ry-stk::after{content:'';position:absolute;inset:-8px}.ry-stk.red{background:#FEF3F2;color:#B42318;border-color:#FDA29B}.ry-stk.none{background:#fff;color:#667085;border-style:dashed;border-color:#D0D5DD}#prPop .stk-cnt{margin-top:8px;width:100%;min-height:40px;border-radius:10px;border:0;background:#155EEF;color:#fff;font-weight:800;font-size:13px}.ry-ivd{background:#EFF4FF;font-size:12px}.ry-pr::after{content:'';position:absolute;inset:-10px}
+.ry-pr svg{width:14px;height:14px}.ry-stk{display:inline-flex;align-items:center;gap:3px;min-height:28px;padding:0 11px;border-radius:999px;border:1.5px solid #B2CCFF;background:#EEF4FF;color:#155EEF;font-size:12.5px;font-weight:800;vertical-align:middle;margin-left:4px;position:relative;white-space:nowrap}.ry-stk b{font-size:14px;font-weight:900}.ry-stk::after{content:'';position:absolute;inset:-8px}.ry-stk.red{background:#FEF3F2;color:#B42318;border-color:#FDA29B}.ry-stk.none{background:#fff;color:#667085;border-style:dashed;border-color:#D0D5DD}#prPop .stk-in{display:flex;gap:6px;margin-top:8px}#prPop .stk-in input{flex:1;min-width:0;min-height:44px;border-radius:10px;border:1.5px solid #475467;background:#fff;color:#101828;font-size:17px;font-weight:800;padding:0 12px}#prPop .stk-in .stk-cnt{margin-top:0;width:auto;min-width:72px;min-height:44px}#prPop .stk-cnt{margin-top:8px;width:100%;min-height:40px;border-radius:10px;border:0;background:#155EEF;color:#fff;font-weight:800;font-size:13px}.ry-ivd{background:#EFF4FF;font-size:12px}.ry-pr::after{content:'';position:absolute;inset:-10px}
 .rl-vid{display:block;width:100%;max-height:72vh;margin:10px 0 14px;border-radius:18px;background:#0B1220;object-fit:contain}
 #prPop{position:fixed;z-index:9995;background:#101828;color:#fff;border-radius:14px;padding:10px 14px;box-shadow:0 10px 30px rgba(16,24,40,.25);font-size:13px;min-width:180px}
 #prPop div{display:flex;justify-content:space-between;gap:16px;line-height:1.7}#prPop span{color:#98A2B3}#prPop b{font-weight:800}
@@ -6933,7 +6933,7 @@ video {
       var d = document.createElement('div'); d.id = 'prPop';
       d.innerHTML = '<div><span>추정 재고 (창고 여분)</span><b>약 ' + stkN(s.est) + '개' + (s.est < 0 ? ' (재고보다 더 팔림)' : '') + '</b></div><div><span>하루 판매</span><b>' + (Math.round(s.daily * 10) / 10) + '개</b></div>' + ''
         + '<small>' + escapeHtml(s.how) + (s.act ? ' − 그 뒤 판매 (하루 판매 엑셀 ' + s.act + '일은 실제 수 · 나머지 날은 15일 판매 ÷ 15)' : ' − 그 뒤 판매 (15일 판매 ÷ 15 × 지난 날)') + ' · 반품·파손은 안 빠져요' + (s.sure ? '' : '<br><b style="color:#FEC84B">입고 전에 남아 있던 재고는 몰라서 실제보다 적게 나올 수 있어요. 한 번 세어서 고치면 정확해져요.</b>') + '</small>'
-        + '<button type="button" class="stk-cnt" onclick="stkCount(this)" data-n="' + escapeHtml(nm) + '">✍️ 창고 여분 세서 고치기</button>';
+        + '<div class="stk-in"><input type="number" inputmode="numeric" min="0" placeholder="창고 여분 개수" aria-label="창고 여분 개수 (매장 진열분은 빼고)" onkeydown="if (event.key === \'Enter\') this.nextElementSibling.click()"><button type="button" class="stk-cnt" onclick="stkSaveIn(this)" data-n="' + escapeHtml(nm) + '">저장</button></div>';   // 1106 MJ '밑에 바로 수량 넣을 수 있는 칸'
       document.body.appendChild(d);
       var r = btn.getBoundingClientRect(), w = d.offsetWidth, x = Math.max(8, Math.min(window.innerWidth - w - 8, r.left + r.width / 2 - w / 2)), y = r.bottom + 8;
       if (y + d.offsetHeight > window.innerHeight - 8) y = r.top - d.offsetHeight - 8;
@@ -6943,6 +6943,10 @@ video {
     function stkCount(btn) {
       if (!checkMemberSelectedOrAlert()) return;
       var nm = btn.dataset.n, v = ryAskV('[' + String(nm).split('\n')[0] + ']\n지금 창고에 남은 여분 개수를 적어 주세요 (매장 진열분은 빼고)', '', function () { stkCount(btn); }, { num: true }); if (v == null) return;   // 1103 앱 확인창
+      stkSaveN(nm, v);
+    }
+    function stkSaveIn(btn) { if (!checkMemberSelectedOrAlert()) return; var v = btn.previousElementSibling.value; if (String(v).trim() === '') { btn.previousElementSibling.focus(); return; } stkSaveN(btn.dataset.n, v); }
+    function stkSaveN(nm, v) {
       var n = parseInt(String(v).replace(/[^0-9]/g, ''), 10); if (!(n >= 0)) { alert('숫자로 적어 주세요'); return; }
       var pop = document.getElementById('prPop'); if (pop) pop.remove();
       RY_SC = RY_SC || {}; RY_SC[ryPrKey(nm)] = { d: sdLocalDate(new Date()).replace(/-/g, '.'), n: n, by: currentSelectedMember }; try { renderAllViews(); } catch (e) {}
