@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw4b1kzu">
+  <meta name="ry-build" content="mw4b5bsy">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -11516,7 +11516,7 @@ video {
       try { window.scrollTo({ top: (sView || document.body).getBoundingClientRect().top + scrollY - 90, behavior: 'smooth' }); } catch (e) {}
     }
     /* 아침 자동(~/bin/posset/daily.js 가 판매량 저장 뒤 page.evaluate 로 부름) — 결과 목록을 돌려줌 */
-    async function rySurgeAuto(dry) {   // dry = 올리지 않고 무엇을 올릴지만
+    async function rySurgeAuto(dry, negMax) {   // dry = 올리지 않고 무엇을 올릴지만 · negMax = 마이너스 한도(기본 10, 1106 MJ '일단 다 올려줘' 때 999)
       if (!RY_DS) { await new Promise(function (res) { stkOf((RY_CAT && RY_CAT.items || [])[0]); var t0 = Date.now(), iv = setInterval(function () { if (RY_DS || Date.now() - t0 > 60000) { clearInterval(iv); res(); } }, 500); }); }
       if (!RY_DS) return { ok: false, message: '하루 판매 기록을 못 받음' };
       var flow = {}; [].concat(cachedReviewItems || [], cachedOrderItems || [], cachedInboundItems || []).forEach(function (x) { flow[x.rowNumber] = 1; flow['n:' + ryPrKey(x.name)] = 1; });
@@ -11537,7 +11537,7 @@ video {
         else skip.push(it.name + ' (요청 실패: ' + String(r && (r.message || r.error) || '').slice(0, 40) + ')');
       }
       /* 1106 MJ '추정 재고가 마이너스로 가는 제품도 1차 검수로 — 내가 시킨 수량보다 더 나갔다는 뜻이니 실제 재고 확인하고 대응' → 마이너스(주문 흐름 밖) 중 '며칠치 넘게 모자란지'가 큰 순으로 하루 NEG_MAX 개 · 같은 상품 7일에 한 번 */
-      var NEG_MAX = 10, neg = [], negDone = [];
+      var NEG_MAX = negMax || 10, neg = [], negDone = [];
       ((RY_CAT && RY_CAT.items) || []).forEach(function (it) {
         if (/\(합침\)|판매종료|취급안함/.test(String(it.name || '') + String(it.note || ''))) return;
         if (it.status !== 'IDLE' && it.status !== 'DONE') return;
