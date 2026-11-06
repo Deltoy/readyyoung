@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw4kwvi4">
+  <meta name="ry-build" content="mw4lx6jm">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -16984,15 +16984,17 @@ video {
     function ntRenderLatest() {
       var b = document.getElementById('ntLatest');
       if (!b) return;
-      var l = NT.latest;
+      var l = NT.latest, RV = /^🎉 구글 리뷰 칭찬/, yd = new Date(Date.now() + 9 * 3600000 - 864e5).toISOString().slice(0, 10);
+      /* 1106 MJ '구글 리뷰 칭찬은 나온 날부터 다음 날까지만' — 그보다 오래된 칭찬 공지는 줄에서 빼고, 그 전 보통 공지(3일 안)가 있으면 그걸로 */
+      if (l && RV.test(l.title) && String(l.date) < yd) { var d3 = new Date(Date.now() + 9 * 3600000 - 2 * 864e5).toISOString().slice(0, 10); l = (NT.recent || []).filter(function (n) { return !RV.test(n.title) && String(n.date) >= d3; })[0] || null; }
       b.hidden = !l || (typeof EV !== 'undefined' && (EV.barIds || []).indexOf(l.id) !== -1);   /* 1016 진행 중 이벤트 줄과 같은 공지면 한 번만 */
-      var RV = /^🎉 구글 리뷰 칭찬/, rv = !!l && RV.test(l.title);   /* 1106 MJ '이 줄에 구글리뷰 칭찬글 등장 이런 식으로 · 누르면 바로 확인' — 칭찬 공지면 반짝이는 특별 줄, 누르면 그 카드로 */
+      var rv = !!l && RV.test(l.title);   /* 1106 MJ '이 줄에 구글리뷰 칭찬글 등장 이런 식으로 · 누르면 바로 확인' — 칭찬 공지면 반짝이는 특별 줄, 누르면 그 카드로 */
       b.classList.toggle('rv', rv);
       if (!l || !rv) { clearInterval(NT.rvT); NT.rvT = 0; NT.rvSig = ''; }
       if (!l) return;
       if (!rv) { b.onclick = function () { ntOpen(); }; document.getElementById('ntLatestT').innerHTML = '<span class="nt-tag t-' + (NT_TAGS.indexOf(l.tag) + 1) + '">' + escapeHtml(l.tag) + '</span><b>' + escapeHtml(l.title) + '</b><span class="nt-date">' + escapeHtml(ntMD(l.date)) + '</span>'; return; }
-      /* 1106 MJ '글이 여러 개면 전광판처럼 하나씩 바뀌게' — 최근 7일 칭찬 공지를 4초마다 위로 넘김 */
-      var wk = new Date(Date.now() + 9 * 3600000 - 7 * 864e5).toISOString().slice(0, 10), L = [l].concat((NT.recent || []).filter(function (n) { return n.id !== l.id && RV.test(n.title) && String(n.date) >= wk; }));
+      /* 1106 MJ '글이 여러 개면 전광판처럼 하나씩 바뀌게' — 오늘·어제 칭찬 공지를 4초마다 위로 넘김 */
+      var L = [l].concat((NT.recent || []).filter(function (n) { return n.id !== l.id && RV.test(n.title) && String(n.date) >= yd; }));   // 오늘·어제 칭찬만 돌림
       var sig = L.map(function (n) { return n.id; }).join(','); if (NT.rvT && NT.rvSig === sig) return;   // 다른 화면 갱신 때마다 처음으로 돌아가지 않게 (같은 목록이면 그대로 돌림)
       clearInterval(NT.rvT); NT.rvSig = sig; var i = 0;
       var show = function () { var n = L[i % L.length]; b.onclick = function () { ntShowCard(n.id); }; document.getElementById('ntLatestT').innerHTML = '<span class="nt-rv-k">⭐ 구글 리뷰 칭찬글 등장!</span><b class="nt-rv-roll">' + escapeHtml(n.title.replace(/^🎉 구글 리뷰 칭찬\s*·?\s*/, '')) + '</b>' + (L.length > 1 ? '<span class="nt-date">' + (i % L.length + 1) + '/' + L.length + '</span>' : '<span class="nt-date">' + escapeHtml(ntMD(n.date)) + '</span>'); };
