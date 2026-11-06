@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw4poi19">
+  <meta name="ry-build" content="mw4rvnzr">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -10158,6 +10158,11 @@ video {
       // 상품 사진(referrerpolicy="no-referrer")을 누르면 확대
       document.addEventListener('click', function(e) {
         const t = e.target;
+        /* 1106 MJ '발주왕 순위에서도 프로필 사진 누르면 크게' — 순위 화면의 직원 사진만 (이름 고르기 등 다른 곳은 그대로) */
+        if (t && t.tagName === 'IMG' && t.classList.contains('ry-ava-img') && t.closest('#rankingView') && /^https?:/.test(t.src || '')) {
+          e.preventDefault(); e.stopPropagation();
+          openImagePreview(t.src.replace(/=s\d+$/, '=s1200'), null, [], 0); return;
+        }
         if (t && t.tagName === 'IMG' && t.getAttribute('referrerpolicy') === 'no-referrer' && !t.hasAttribute('data-no-preview') && /^https?:/.test(t.src || '')) {
           e.preventDefault();
           e.stopPropagation();
