@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw3okgoi">
+  <meta name="ry-build" content="mw4b1kzu">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -2661,6 +2661,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry25-wx-note{margin-left:auto;font-si
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-search{position:sticky;top:8px;z-index:40;outline:8px solid #F6F7F9;display:flex;align-items:center;background:#fff;border:1px solid var(--z-line2);border-radius:16px;height:60px;box-sizing:border-box;transition:box-shadow .18s ease,border-color .18s ease}
 /* 1105 MJ '스크롤 내려도 맨 위 검색창이 계속 보이게' — .ry25-search 고정(top 8px · 둘레 8px 바탕색으로 덮기) → 메인 화면의 다른 고정 줄은 그 아래(76px)에 붙게 */
 html:not(#q):not(#w):not(#e) body:not(#r) #ryMain .m-stick,html:not(#q):not(#w):not(#e) body:not(#r) #ryMain .hist-date-head,html:not(#q):not(#w):not(#e) body:not(#r) #ryMain .pc-only-table thead th{top:76px!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-surge{display:inline-flex;align-items:center;gap:2px;margin-left:4px;padding:2px 8px;border-radius:999px;background:#FEF3F2;color:#B42318;border:1px solid #FECDCA;font-size:12px;font-weight:800;white-space:nowrap;vertical-align:middle}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry-surge-q{color:#B42318!important;border-color:#FECDCA!important;background:#FEF3F2!important}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry-srinb{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry-srinb.pc{justify-content:center}
 html:not(#q):not(#w):not(#e) body:not(#r) .ry-srinb-i{font-size:12px;font-weight:700;color:#475467;font-variant-numeric:tabular-nums}
@@ -5982,6 +5984,7 @@ video {
         <button type="button" id="newProductBtn" onclick="openNewProduct()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>새 상품 등록</button>
         <button type="button" class="ry-ghost ry-quick" onclick="rlOpen()" title="일하면서 알아야 할 규칙 (주제별)">숙지사항<i id="rlDot" class="rl-btn-n" hidden></i></button>
         <button type="button" class="ry-ghost ry-quick" onclick="invOpen()" title="명세서 · 명세서 없이 온 주문 · 주문 안 한 상품을 한 화면에서 한 번에 입고">📦 입고하기</button>
+        <button type="button" class="ry-ghost ry-quick ry-surge-q" id="surgeQuick" onclick="rySurgeOpen()" title="최근 3일 판매가 평소의 2배 넘게 뛴 상품 (매일 아침 POS 판매량 기준)" hidden>🔥 급상승<i id="surgeQuickN"></i></button>
         <button type="button" class="ry-ghost ry-quick" onclick="openSetPage(); spShow('sets')" title="세트 상품 · 박스 재고 · 오늘 만든 세트 기록">🎁 세트 상품<i id="bxDot" class="bx-today" hidden>박스 아직</i></button>
         <button type="button" class="ry-ghost ry-quick" id="scQuick" onclick="scOpen()" title="세트 판매 2주 집중 (10/26~11/8) · 날마다 목표 달성" hidden>🎯 2주 집중<i id="scQuickN"></i></button>
         <button type="button" class="ry-ghost ry-quick" onclick="window.open('https://pallang-0258.github.io/seongsu/viewer.html', '_blank', 'noopener')" title="근무표를 새 창으로 열기">근무표</button>
@@ -6842,7 +6845,7 @@ video {
     function isEnded(item) { return !!(item && String(item.note || '').indexOf(END_TAG) !== -1); }
     function ryWasSo(s) { s = String(s || ''); if (!/품절/.test(ryNoRc(s))) return s; var d = new Date(), c = ryNoRc(s).replace(/품절\s*\([^)]*\)/g, '').replace(/품절/g, '').replace(/\s{2,}/g, ' ').trim(), tag = '〔품절이었음 ' + (d.getMonth() + 1) + '/' + d.getDate() + '〕'; return c ? tag + ' ' + c : tag; }   // 1103 서버 soToWas_ 와 같은 규칙
     function ryNoRc(s) { return String(s == null ? '' : s).replace(/〔품절 재확인[^〕]*〕|〔품절이었음[^〕]*〕/g, ' ').replace(/\s{2,}/g, ' ').trim(); }   // 0929 품절 재확인 안내 토막은 품절 판정에서 뺀다
-    function endedBadge(item) { return (typeof evBadge === 'function' ? evBadge(item) : '') + (typeof locBadge === 'function' ? locBadge(item) : '') + (isHiddenItem(item) ? '<span class="ry-end ry-hid">' + RYI.octx + '취급안함</span>' : '') + (isEnded(item) ? '<span class="ry-end">' + RYI.octx + '판매종료</span>' : '') + (String(item && item.note || '').indexOf('〔품절 재확인') !== -1 ? '<span class="ry-rc" title="품절이 풀렸는지 확인 후 주문해 주세요"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/></svg>품절 30일 · 다시 확인해 주세요</span>' : '') + infoBtn(item) + priceBtn(item) + invDocBtn(item) + stockBadge(item); }
+    function endedBadge(item) { return (typeof rySurgeBadge === 'function' ? rySurgeBadge(item) : '') + (typeof evBadge === 'function' ? evBadge(item) : '') + (typeof locBadge === 'function' ? locBadge(item) : '') + (isHiddenItem(item) ? '<span class="ry-end ry-hid">' + RYI.octx + '취급안함</span>' : '') + (isEnded(item) ? '<span class="ry-end">' + RYI.octx + '판매종료</span>' : '') + (String(item && item.note || '').indexOf('〔품절 재확인') !== -1 ? '<span class="ry-rc" title="품절이 풀렸는지 확인 후 주문해 주세요"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/></svg>품절 30일 · 다시 확인해 주세요</span>' : '') + infoBtn(item) + priceBtn(item) + invDocBtn(item) + stockBadge(item); }
 
     /* 1020 MJ '모든 상품에 사입가와 판매가 · 나만 · 이름 옆 달러 표시를 누르면': 문준일 때만 서버에서 받아 메모리에만 (폰에 저장 안 함) */
     var RY_PR = null, _prLoading = false;
@@ -11478,6 +11481,83 @@ video {
     function s15TierSync(inp) { var p = inp.closest('.s15p, .ry-stat.s15'); if (p) p.className = p.className.replace(/\bs15-(na|z|t\d)\b/, s15Tier(inp.value)); }
     // 1차 검토: 15일 판매 숫자 편집 (PC: sales15-행, 폰: m-sales15-행). 칸을 벗어나면 저장
     var S30 = false;   /* 1027 MJ '15일 판매를 누르면 30일 판매량, 다시 누르면 15일' — 한 번 누르면 모든 카드가 같이 바뀜 · 새로고침하면 15일 */
+    /* ═══ 1106 MJ '갑자기 많이 나가는 상품을 빨리 알아서 주문해 두게' + '상품 옆에 급상승 표시' + '추정 재고가 너무 빨리 소진되면 자동으로 1차 검토로'
+       하루 판매 기록(RY_DS = 추정 재고와 같은 자료, 매일 아침 POS) — 최근 3일 하루 평균 ≥ 그 전 2주 평균 × 2 + 최근 3일 6개 이상 = 🔥 급상승
+       자동 1차 검토(rySurgeAuto, 아침 POS 자동 반영 끝에 부름) = 급상승 + 추정 재고가 최근 속도로 7일 안에 바닥 + 주문 흐름에 없음 + 7일 안에 자동으로 올린 적 없음 ═══ */
+    var SURGE = { ratio: 2, min3: 6, leftDays: 7, cover: 7, maxBase: 3 };   // 1106 MJ '이미 많이 나가는 건 내가 조율 — 많이 안 팔리다가 갑자기 팔리는 것만' → 평소 하루 3개 이하였던 상품만
+    function rySurgeOf(it) {
+      var D = RY_DS; if (!D || !D.list || !D.list.length || !it || !it.name) return null;
+      var qk = D.q[ryPrKey(it.name)]; if (!qk) return null;
+      var end = D.list[D.list.length - 1], r = 0, b = 0, nb = 0;
+      D.list.forEach(function (x) { var v = qk[x] || 0; if (x > end - 3) r += v; else if (x > end - 17) { b += v; nb++; } });
+      if (nb < 5 || r < SURGE.min3) return null;
+      var ra = r / 3, ba = b / nb; if (ba > SURGE.maxBase || !(ra >= SURGE.ratio * Math.max(ba, 0.2))) return null;
+      var st = stkOf(it), left = st && ra > 0 ? Math.floor(Math.max(0, st.est) / ra) : null;
+      return { r3: r, ra: ra, ba: ba, x: ba > 0 ? ra / ba : null, est: st ? st.est : null, left: left };
+    }
+    function rySurgeTxt(g) { return '최근 3일 하루 ' + (Math.round(g.ra * 10) / 10) + '개 (평소 ' + (Math.round(g.ba * 10) / 10) + '개' + (g.x ? ', ' + (Math.round(g.x * 10) / 10) + '배' : '') + ')' + (g.left != null ? ' · 추정 재고 약 ' + g.left + '일분' : ''); }
+    function rySurgeBadge(it) { var g = rySurgeOf(it); return g ? '<span class="ry-surge" title="' + escapeHtml(rySurgeTxt(g)) + '">🔥 급상승</span>' : ''; }
+    function rySurgeList() {
+      var items = (RY_CAT && RY_CAT.items) || [], out = [];
+      items.forEach(function (it) { if (/\(합침\)|판매종료|취급안함/.test(String(it.name || '') + String(it.note || ''))) return; var g = rySurgeOf(it); if (g) out.push({ it: it, g: g }); });
+      return out.sort(function (a, b) { return (a.g.left == null ? 999 : a.g.left) - (b.g.left == null ? 999 : b.g.left) || b.g.ra - a.g.ra; });
+    }
+    setInterval(function () { try { rySurgeQuick(); } catch (e) {} }, 15000);
+    function rySurgeQuick() { var b = document.getElementById('surgeQuick'), n = document.getElementById('surgeQuickN'); if (!b || !RY_DS) return; var L = rySurgeList(); b.hidden = !L.length; if (n) n.textContent = L.length ? ' ' + L.length : ''; }
+    function rySurgeOpen() {
+      if (!RY_CAT || !RY_CAT.items || !RY_DS) { showToast('판매 기록을 받는 중이에요 — 잠시 뒤 다시 눌러 주세요', 2600); try { stkOf((RY_CAT && RY_CAT.items || [])[0]); } catch (e) {} return; }
+      ['reviewView', 'orderView', 'soldOutView', 'inboundView', 'delayedView', 'historyView', 'stockCheckView', 'rankingView', 'reorderView', 'leadView', 'rejAView', 'noticeView'].forEach(function (v) { var el = document.getElementById(v); if (el) el.classList.add('hidden'); });
+      var sView = document.getElementById('searchResultView'); if (sView) sView.classList.remove('hidden');
+      var sumT = document.getElementById('searchSummaryText'); if (sumT) sumT.classList.remove('hidden');
+      var SL = { REVIEW: '1차검토', ORDER: '발주대기', INBOUND: '입고대기', DONE: '입고완료', SOLDOUT: '품절', IDLE: '미주문' };
+      var L = rySurgeList(), mapped = L.map(function (x) { return Object.assign({}, x.it, { statusLabel: SL[x.it.status] || '미주문', statusColor: 'bg-rose-100 text-rose-700' }); });
+      latestSearchRequestId++; lastSearchResults = mapped; RY_SR_FULL = ''; renderSearchResults(mapped);
+      var rc = document.getElementById('searchResultCount'); if (rc) rc.innerHTML = '<span style="font-weight:800">🔥 급상승 ' + L.length + '개</span> <span style="color:#6b7280">· 평소엔 잘 안 나가다가(하루 3개 이하) 최근 3일 판매가 2배 넘게 뛴 상품 · 재고가 빨리 떨어질 순 · 이름 옆 🔥에 손가락을 대면 숫자가 보여요</span>';
+      try { window.scrollTo({ top: (sView || document.body).getBoundingClientRect().top + scrollY - 90, behavior: 'smooth' }); } catch (e) {}
+    }
+    /* 아침 자동(~/bin/posset/daily.js 가 판매량 저장 뒤 page.evaluate 로 부름) — 결과 목록을 돌려줌 */
+    async function rySurgeAuto(dry) {   // dry = 올리지 않고 무엇을 올릴지만
+      if (!RY_DS) { await new Promise(function (res) { stkOf((RY_CAT && RY_CAT.items || [])[0]); var t0 = Date.now(), iv = setInterval(function () { if (RY_DS || Date.now() - t0 > 60000) { clearInterval(iv); res(); } }, 500); }); }
+      if (!RY_DS) return { ok: false, message: '하루 판매 기록을 못 받음' };
+      var flow = {}; [].concat(cachedReviewItems || [], cachedOrderItems || [], cachedInboundItems || []).forEach(function (x) { flow[x.rowNumber] = 1; flow['n:' + ryPrKey(x.name)] = 1; });
+      var seen = {}; try { seen = JSON.parse(localStorage.getItem('ry_surge_auto') || '{}'); } catch (e) {}
+      var now = Date.now(), done = [], skip = [];
+      Object.keys(seen).forEach(function (k) { if (now - seen[k] > 30 * 864e5) delete seen[k]; });
+      var L = rySurgeList();
+      for (var i = 0; i < L.length; i++) {
+        var it = L[i].it, g = L[i].g, k = ryPrKey(it.name);
+        if (g.left == null || g.left >= SURGE.leftDays) { skip.push(it.name + ' (재고 ' + (g.left == null ? '?' : g.left + '일분') + ')'); continue; }
+        if (flow[it.rowNumber] || flow['n:' + k] || (it.status !== 'IDLE' && it.status !== 'DONE')) { skip.push(it.name + ' (이미 주문 흐름)'); continue; }
+        if (seen[k] && now - seen[k] < 7 * 864e5) { skip.push(it.name + ' (7일 안에 자동으로 올렸음)'); continue; }
+        var need = Math.max(1, Math.ceil(g.ra * SURGE.cover - Math.max(0, g.est || 0))), bu = parseFloat(it.boxUnit) || 0, unit = '개', qty = need;
+        if (it.unit === '박스' && bu > 1) { unit = '박스'; qty = Math.max(1, Math.ceil(need / bu)); }
+        if (dry) { done.push({ name: String(it.name).split('\n')[0], qty: qty, unit: unit, why: rySurgeTxt(g), dry: true }); continue; }
+        var r = await new Promise(function (res) { google.script.run.withSuccessHandler(res).withFailureHandler(function (e) { res({ success: false, message: String(e && e.message || e) }); }).requestOrderFromDashboard(it.rowNumber, qty, unit, '급상승', String(it.name).split('\n')[0]); });
+        if (r && r.success !== false) { seen[k] = now; done.push({ name: String(it.name).split('\n')[0], qty: qty, unit: unit, why: rySurgeTxt(g) }); }
+        else skip.push(it.name + ' (요청 실패: ' + String(r && (r.message || r.error) || '').slice(0, 40) + ')');
+      }
+      /* 1106 MJ '추정 재고가 마이너스로 가는 제품도 1차 검수로 — 내가 시킨 수량보다 더 나갔다는 뜻이니 실제 재고 확인하고 대응' → 마이너스(주문 흐름 밖) 중 '며칠치 넘게 모자란지'가 큰 순으로 하루 NEG_MAX 개 · 같은 상품 7일에 한 번 */
+      var NEG_MAX = 10, neg = [], negDone = [];
+      ((RY_CAT && RY_CAT.items) || []).forEach(function (it) {
+        if (/\(합침\)|판매종료|취급안함/.test(String(it.name || '') + String(it.note || ''))) return;
+        if (it.status !== 'IDLE' && it.status !== 'DONE') return;
+        var k = ryPrKey(it.name); if (flow[it.rowNumber] || flow['n:' + k] || (seen['neg:' + k] && now - seen['neg:' + k] < 7 * 864e5) || (seen[k] && now - seen[k] < 864e5)) return;
+        var st = stkOf(it); if (!st || !(st.est < 0)) return;
+        var daily = st.daily || 0; neg.push({ it: it, st: st, over: daily > 0 ? -st.est / daily : -st.est });
+      });
+      neg.sort(function (a, b) { return b.over - a.over; });
+      for (var j = 0; j < neg.length && negDone.length < NEG_MAX; j++) {
+        var it2 = neg[j].it, st2 = neg[j].st, k2 = ryPrKey(it2.name), bu2 = parseFloat(it2.boxUnit) || 0, unit2 = '개', qty2 = Math.max(1, Math.ceil((st2.daily || 0) * 7));
+        if (it2.unit === '박스' && bu2 > 1) { unit2 = '박스'; qty2 = Math.max(1, Math.ceil(qty2 / bu2)); }
+        var why2 = '추정 재고 ' + st2.est + '개 (시킨 수량보다 약 ' + (-st2.est) + '개 더 나감) · 실제 재고 확인 필요';
+        if (dry) { negDone.push({ name: String(it2.name).split('\n')[0], qty: qty2, unit: unit2, why: why2, dry: true }); continue; }
+        var r2 = await new Promise(function (res) { google.script.run.withSuccessHandler(res).withFailureHandler(function (e) { res({ success: false, message: String(e && e.message || e) }); }).requestOrderFromDashboard(it2.rowNumber, qty2, unit2, '재고마이너스', String(it2.name).split('\n')[0]); });
+        if (r2 && r2.success !== false) { seen['neg:' + k2] = now; negDone.push({ name: String(it2.name).split('\n')[0], qty: qty2, unit: unit2, why: why2 }); }
+      }
+      try { localStorage.setItem('ry_surge_auto', JSON.stringify(seen)); } catch (e) {}
+      try { loadAllData(true, true, true); } catch (e) {}
+      return { ok: true, total: L.length, done: done, skip: skip.slice(0, 20), negTotal: neg.length, negDone: negDone };
+    }
     function s30Of(it) {   // 하루 판매 기록(RY_DS, 추정 재고와 같은 자료) 마지막 날 포함 최근 30일 합 · {v, n: 기록 있는 날 수} · 아직 못 불러왔으면 null
       var D = RY_DS; if (!D || !D.list.length) { if (!RY_SC) stkOf(it); return null; }
       var end = D.list[D.list.length - 1], qk = D.q[ryPrKey(it.name)] || {}, s = 0, n = 0;
