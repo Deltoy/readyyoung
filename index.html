@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw4cfmes">
+  <meta name="ry-build" content="mw4clvnn">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -5994,12 +5994,10 @@ video {
         <div class="ry-more">
           <div class="ry-more-menu" id="toolMoreMenu" role="menu" hidden>
             <button type="button" role="menuitem" onclick="closeToolMore(); openCatBrowse()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>카테고리별 보기<small>분류가 비었거나 기타인 상품 고치기</small></button>
-            <button type="button" role="menuitem" onclick="closeToolMore(); openDuplicates()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>중복 정리<small>이름이 겹치는 상품 찾기</small></button>
             <button type="button" role="menuitem" onclick="closeToolMore(); ntOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>공지 보관함<small>카톡 공지 모아보기 · 증정품 변경 한눈에</small></button>
             <button type="button" role="menuitem" onclick="closeToolMore(); mbOpenArchive()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>뷰티 브리핑 모아보기<small>날짜별 목록 · 첫 화면 카드는 10시~23시엔 숨김</small></button>
             <button type="button" role="menuitem" onclick="closeToolMore(); moOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/><circle cx="19" cy="9" r="2"/></svg>놓친 주문 찾기<small>15일 판매 많은데 미주문·입고 안 한 상품</small></button>
             <button type="button" role="menuitem" onclick="closeToolMore(); nophOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>사진 없는 상품 찍기<small>사진 없는 상품만 모아 카메라로 바로 넣기</small></button>
-            <button type="button" role="menuitem" id="pfAutoEntry" hidden onclick="closeToolMore(); pfaOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6"/><circle cx="9" cy="9" r="2"/><path d="m3 17 4-4 3 3"/><circle cx="17.5" cy="17.5" r="3.5"/><path d="m22 22-1.9-1.9"/></svg>사진 자동 채우기<small>사진 없는 상품을 인터넷 사진으로 (문준 전용)</small></button>
             <button type="button" role="menuitem" id="scrEntry" hidden onclick="closeToolMore(); scrOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>하위 섹터 확인 필요<span id="scrCnt" class="scr-cnt" hidden></span><small>자동 분류가 자신 없던 상품의 하위 섹터 정하기</small></button>
             <button type="button" role="menuitem" id="s15Entry" hidden onclick="closeToolMore(); s15Open()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M8 13h2"/><path d="M14 13h2"/><path d="M8 17h2"/><path d="M14 17h2"/></svg>15일 판매량 엑셀<small>판매량 통계 엑셀로 한 번에</small></button>
             <button type="button" role="menuitem" onclick="closeToolMore(); openStale()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="m7.5 4.27 9 5.15"/></svg>창고 정리<small>한 달 넘게 주문 안 한 상품 정리</small></button>
@@ -6572,7 +6570,7 @@ video {
         </div>
       </section>
 
-      <section class="ry25-kcard" id="chCard">
+      <section class="ry25-kcard" id="chCard" hidden style="display:none">
         <div class="ry25-khead">
           <h3><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/></svg>캐릭터별 판매</h3>
           <span class="ry25-kmeta">15일 판매량 엑셀 기준</span>
@@ -13677,7 +13675,7 @@ video {
     function renderMonthlyRankingView() {
       renderCategoryStats();
       renderProductRanking();
-      try { srLoad(false); chRender(); msLoad(false); trLoad(false); } catch (eSr) {}   /* 1002 · 1003 계절별 판매 */
+      try { srLoad(false); msLoad(false); trLoad(false); } catch (eSr) {}   /* 1002 · 1003 계절별 판매 */
       const data = cachedMonthlyRanking || { monthLabel: '이번달', rankingList: [] };
       const labelEl = document.getElementById('rankingMonthLabel');
       if (labelEl) labelEl.innerText = data.monthLabel;
@@ -17122,10 +17120,8 @@ video {
         ['상품 정리', [
           ['sets', RYI.package, '세트 상품 · 박스 재고', '세트 목록 · 아크릴박스', '세트 구성과 아크릴박스 재고'],
           ['catbrowse', RYI.package, '카테고리별 보기', '어린이 전체 · 분류 고치기', "분류가 비었거나 '기타'인 상품 바로잡기"],
-          ['dups', RYI.searchcheck, '중복 정리', '이름 겹치는 상품', '같은 상품이 두 줄이면 하나로'],
           ['noph', RYI.clipboard, '사진 없는 상품 찍기', '카메라로 바로', '사진 없는 상품만 모아 찍어 넣기']]
-          .concat(scr && !scr.hidden ? [['scr', RYI.searchcheck, '하위 섹터 확인 필요', (scrN ? scrN + '개' : '확인'), '자동 분류가 자신 없던 상품의 하위 섹터 정하기']] : [])
-          .concat(isAdmin ? [['pfauto', RYI.clipboard, '사진 자동 채우기', '문준 전용', '사진 없는 상품을 인터넷 사진으로']] : [])]];
+          .concat(scr && !scr.hidden ? [['scr', RYI.searchcheck, '하위 섹터 확인 필요', (scrN ? scrN + '개' : '확인'), '자동 분류가 자신 없던 상품의 하위 섹터 정하기']] : [])]];   // 1106 MJ '사진 자동 채우기 · 중복 정리 · 1박스 개수 채우기 없애줘' (도구에서만 뺌, 코드는 남김)
     }
     /* 1002 도구 패널 2차 — 물류관리자 대시보드 (검수 3종 반영)
        ① 이번 주 숫자(입고·소요일·지연·반려) ② 지금 할 일(숫자 있는 것만) ③ 최근 ④ 4묶음(주문·상품·숫자·우리 팀), 할 일에 올라간 도구는 묶음에서 뺌
@@ -17164,19 +17160,15 @@ video {
         { k: 'stale', g: 1, ic: RYI.package, n: '창고 정리', v: stN ? '후보 ' + stN + '개' : '오래 안 시킨 것', cnt: stN, act: '오래 안 시킨 상품', pri: 4, kw: '재고 정리 할인 반품 폐기 소진 판매종료' },
         { k: 'loc', g: 1, ic: typeof LOC_I !== 'undefined' ? LOC_I.pin : RYI.package, n: '창고 위치 넣기', v: typeof LOC !== 'undefined' && Object.keys(LOC.map).length ? Object.keys(LOC.map).length + '개 넣음 · 구역-선반-칸' : '구역-선반-칸 (예: A-03-2)', kw: '창고 위치 선반 구역 칸 자리 진열 로케이션 찾기' },
         { k: 'noph', g: 1, ic: RYI.camera, n: '사진 없는 상품', v: '찍어 넣기', kw: '사진 촬영 카메라 이미지' },
-        (function () { var c = 0; try { c = buItems().length; } catch (e) {} return { k: 'bunit', g: 1, ic: RYI.package, n: '1박스 개수 채우기', v: c ? c + '개 비어 있음 · 잘 팔리는 순' : '1박스 개수 다 채움', kw: '박스 입수 개입수 입수량 1박스 개수 채우기 박스당' }; })(),
-        { k: 'dups', g: 1, ic: RYI.copy, n: '중복 정리', v: '이름 겹치는 상품', kw: '중복 합치기 두 줄' },
         { k: 'catbrowse', g: 1, ic: RYI.folder, n: '카테고리 고치기', v: '분류 없음·기타', kw: '카테고리 분류 어린이 기타 섹터' }
       ]).concat(scr && !scr.hidden ? [{ k: 'scr', g: 1, ic: RYI.layers, n: '하위 섹터 확인', v: scrN ? scrN + '개' : '확인', cnt: scrN, act: '분류가 애매한 상품', pri: 5, kw: '하위 섹터 분류 확인필요' }] : [])
       .concat([{ k: 'sets', g: 1, ic: RYI.gift, n: '세트 상품 · 박스 재고', v: '세트 구성 · 아크릴박스', kw: '세트 박스 재고 아크릴 용도' }])
-      .concat(isAdmin ? [{ k: 'pfauto', g: 1, ic: RYI.sparkles, n: '사진 자동 채우기', v: '문준 전용', kw: '사진 인터넷 자동' }] : [])
       .concat([
         ...(dshAllowed() ? [(function () { var left = 0; try { left = dshMsList().filter(function (m) { return !m.done; }).length; } catch (e) {} return { k: 'dash', g: 2, ic: RYI.bars, n: '오늘의 미션 · 대시보드', v: left ? '미션 ' + left + '개 남음' : '오늘 미션 끝 · 판매 순위', cnt: left, act: '미션 ' + left + '개 남음 · 위에서부터 하나씩', pri: 0, kw: '대시보드 미션 루틴 할일 판매 순위 날짜 기간 현황 한눈에' }; })()] : []),
         { k: 'lead', g: 2, ic: RYI.timer, n: '입고 소요일', v: LT.data && LT.data.etaAccuracy ? '예상일 적중 ' + Math.round(Number(LT.data.etaAccuracy.withinPct) || 0) + '%' : '거래처·요일별', kw: '리드타임 발주 입고 걸린 날 거래처' },
         { k: 'rejstats', g: 2, ic: RYI.ban, n: '반려 분석', v: k.rejstats + tlTopRej(), kw: '재고 있음 반려 과재고 반려율' },
         { k: 'ranking', g: 2, ic: RYI.trophy, n: '발주왕', v: k.ranking, kw: '순위 랭킹 직원 성공' },
         { k: 'srcard', g: 2, ic: RYI.search, n: '자주 찾는 상품', v: '검색 순위 · 결과 없음', kw: '검색 순위 수요 결과없음 새상품' },
-        { k: 'chcard', g: 2, ic: RYI.star, n: '캐릭터별 판매', v: '산리오·포켓몬…', kw: '캐릭터 산리오 포켓몬 브랜드 판매' },
         { k: 'trcard', g: 2, ic: RYI.bars, n: '판매 추이', v: '늘어난 · 줄어든 · 많이 팔린', kw: '추이 그래프 트렌드 증가 감소 인기 판매량 기록' },
         { k: 'mscard', g: 2, ic: RYI.cal, n: '계절별 판매', v: MS.data && MS.data.ok ? MS.data.months.length + '/12개월 올림' : '월별 엑셀로 계절 배수', kw: '계절 시즌 성수기 여름 겨울 봄 가을 월별 판매 발주량' },
         { k: 'notices', g: 3, ic: NT_ICON.mega, n: '공지 보관함', v: '카톡 공지 · 증정품', kw: '카톡 공지 증정품 변경' },
