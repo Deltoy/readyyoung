@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw4kv5qv">
+  <meta name="ry-build" content="mw4kwvi4">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -3830,6 +3830,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .nt-latest.rv .nt-latest-l{display:non
 @keyframes ntRvShine{0%,55%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 @keyframes ntRvPop{0%,100%{transform:scale(1)}8%{transform:scale(1.08)}16%{transform:scale(1)}}
 @media (prefers-reduced-motion:reduce){html:not(#q):not(#w):not(#e) body:not(#r) .nt-latest.rv::after,.nt-rv-k{animation:none}}
+.nt-rv-roll{animation:ntRvRoll .45s ease-out}@keyframes ntRvRoll{from{transform:translateY(70%);opacity:0}to{transform:none;opacity:1}}@media (prefers-reduced-motion:reduce){.nt-rv-roll{animation:none}}
 .nt-gmap{display:inline-flex;align-items:center;margin-top:6px;padding:8px 14px;border-radius:10px;background:#EFF4FF;color:#155EEF!important;font-weight:800;text-decoration:none}
 .nt-card.nt-flash{box-shadow:0 0 0 3px #FCD34D!important;transition:box-shadow .3s}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-latest-ic{width:32px;height:32px;border-radius:10px;background:#EFF4FF;color:#155EEF;display:grid;place-items:center;flex:none}
@@ -16985,10 +16986,17 @@ video {
       if (!b) return;
       var l = NT.latest;
       b.hidden = !l || (typeof EV !== 'undefined' && (EV.barIds || []).indexOf(l.id) !== -1);   /* 1016 진행 중 이벤트 줄과 같은 공지면 한 번만 */
-      var rv = !!l && /^🎉 구글 리뷰 칭찬/.test(l.title);   /* 1106 MJ '이 줄에 구글리뷰 칭찬글 등장 이런 식으로 · 누르면 바로 확인' — 칭찬 공지면 반짝이는 특별 줄, 누르면 그 카드로 */
-      b.classList.toggle('rv', rv); b.onclick = rv ? function () { ntShowCard(l.id); } : function () { ntOpen(); };
-      if (l) document.getElementById('ntLatestT').innerHTML = rv ? '<span class="nt-rv-k">⭐ 구글 리뷰 칭찬글 등장!</span><b>' + escapeHtml(l.title.replace(/^🎉 구글 리뷰 칭찬\s*·?\s*/, '')) + '</b><span class="nt-date">' + escapeHtml(ntMD(l.date)) + '</span>'
-        : '<span class="nt-tag t-' + (NT_TAGS.indexOf(l.tag) + 1) + '">' + escapeHtml(l.tag) + '</span><b>' + escapeHtml(l.title) + '</b><span class="nt-date">' + escapeHtml(ntMD(l.date)) + '</span>';
+      var RV = /^🎉 구글 리뷰 칭찬/, rv = !!l && RV.test(l.title);   /* 1106 MJ '이 줄에 구글리뷰 칭찬글 등장 이런 식으로 · 누르면 바로 확인' — 칭찬 공지면 반짝이는 특별 줄, 누르면 그 카드로 */
+      b.classList.toggle('rv', rv);
+      if (!l || !rv) { clearInterval(NT.rvT); NT.rvT = 0; NT.rvSig = ''; }
+      if (!l) return;
+      if (!rv) { b.onclick = function () { ntOpen(); }; document.getElementById('ntLatestT').innerHTML = '<span class="nt-tag t-' + (NT_TAGS.indexOf(l.tag) + 1) + '">' + escapeHtml(l.tag) + '</span><b>' + escapeHtml(l.title) + '</b><span class="nt-date">' + escapeHtml(ntMD(l.date)) + '</span>'; return; }
+      /* 1106 MJ '글이 여러 개면 전광판처럼 하나씩 바뀌게' — 최근 7일 칭찬 공지를 4초마다 위로 넘김 */
+      var wk = new Date(Date.now() + 9 * 3600000 - 7 * 864e5).toISOString().slice(0, 10), L = [l].concat((NT.recent || []).filter(function (n) { return n.id !== l.id && RV.test(n.title) && String(n.date) >= wk; }));
+      var sig = L.map(function (n) { return n.id; }).join(','); if (NT.rvT && NT.rvSig === sig) return;   // 다른 화면 갱신 때마다 처음으로 돌아가지 않게 (같은 목록이면 그대로 돌림)
+      clearInterval(NT.rvT); NT.rvSig = sig; var i = 0;
+      var show = function () { var n = L[i % L.length]; b.onclick = function () { ntShowCard(n.id); }; document.getElementById('ntLatestT').innerHTML = '<span class="nt-rv-k">⭐ 구글 리뷰 칭찬글 등장!</span><b class="nt-rv-roll">' + escapeHtml(n.title.replace(/^🎉 구글 리뷰 칭찬\s*·?\s*/, '')) + '</b>' + (L.length > 1 ? '<span class="nt-date">' + (i % L.length + 1) + '/' + L.length + '</span>' : '<span class="nt-date">' + escapeHtml(ntMD(n.date)) + '</span>'); };
+      show(); NT.rvT = L.length > 1 ? setInterval(function () { if (document.visibilityState === 'visible') { i++; show(); } }, 4000) : -1;
     }
     function ntShowCard(id) { NT.tag = ''; ntOpen(); setTimeout(function () { var el = document.querySelector('.nt-card[data-nt="' + id + '"]'); if (el) { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); el.classList.add('nt-flash'); setTimeout(function () { el.classList.remove('nt-flash'); }, 1600); } }, 900); }
     /* 구글 지도 리뷰 주소만 버튼으로 (다른 주소는 그대로 글자) */
