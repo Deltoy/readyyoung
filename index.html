@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw5pdjsd">
+  <meta name="ry-build" content="mw5y22ps">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -2598,7 +2598,7 @@ html body:not(#_):not(#_) .ry-delay.has{border:0!important;background:var(--ry-w
   html body .m-stick::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c);flex:none}
   html body .m-stick:has(+ .mobile-only-card:empty){display:none}
 }
-.ry-sv{display:inline-flex;align-items:center;gap:4px;margin-left:6px;padding:2px 8px 2px 4px;border:0;border-radius:999px;background:#F2F4F7;color:#344054;font-size:12px;font-weight:700;vertical-align:middle;white-space:nowrap;cursor:pointer;font-family:inherit}.ry-sv>svg{width:16px;height:16px;flex:none}.ry-sv .dots{display:inline-flex;gap:2px}.ry-sv .dots i{width:6px;height:6px;border-radius:50%;background:#D0D5DD}.ry-sv .dots i.on{background:#03C75A}.ry-sv b.up{color:#D92D20}.ry-sv b.dn{color:#667085}.ry-sv b.eq{color:#667085;font-weight:600}.ry-sv svg.bars{width:23px;height:14px;color:#D92D20;margin-left:2px}.ry-sv.hot{background:#FEF3F2;box-shadow:inset 0 0 0 1px #FECDCA}</style>
+.ry-sv.ry-sv{display:inline-flex!important;align-items:center;gap:4px;flex:none!important;width:auto!important;margin:0 0 0 4px!important;height:26px!important;min-height:0!important;padding:0 10px 0 4px!important;border:0!important;border-radius:999px!important;background:#F2F4F7!important;color:#344054!important;font-size:12px!important;font-weight:600!important;line-height:1;box-shadow:none!important;vertical-align:middle;white-space:nowrap;cursor:pointer;font-family:inherit;position:relative}.ry-sv.ry-sv::after{content:'';position:absolute;inset:-8px}.ry-sv>svg{width:18px;height:18px;flex:none;border-radius:50%;background:#fff;padding:2px;box-sizing:border-box}.ry-sv .dots{display:inline-flex;gap:2px;margin-left:1px}.ry-sv .dots i{width:5px;height:5px;border-radius:50%;background:#D0D5DD}.ry-sv .dots i.on{background:#03C75A}.ry-sv b{font-weight:800}.ry-sv b.up{color:#D92D20}.ry-sv b.dn{color:#667085}.ry-sv b.eq{color:#667085;font-weight:600}.ry-sv svg.bars{width:20px;height:12px;color:#D92D20;margin-left:2px;background:none;border-radius:0;padding:0}.ry-sv.ry-sv.hot{background:#FEF3F2!important;color:#B42318!important}</style>
 <style id="ry25-design">
 /* ═══════════ 0925 디자인 시스템 — 밝은 머리 · 파이프라인 · 카드 (맨 마지막에 둬서 이전 규칙을 덮는다) ═══════════
    토큰: 바탕 #f6f7f9 · 카드 흰색 18px · 주색 #1a6aff · 먹 #111827 · Pretendard · 자간 -0.01em */
@@ -6935,7 +6935,7 @@ video {
     /* 1107 MJ '상품이 구글·네이버에서 얼마나 검색되는지 · 네이버는 네이버 로고, 구글은 구글 로고' — 맥 수집기(~/bin/searchvol) 매일 07:45 → getSearchVol
        네이버 = 최근 30일 검색수 + 데이터랩 최근 7일÷그전 28일 · 구글 = 전 세계 영어 검색어(구글 자동완성에서 고른 실제 검색어) 트렌드 같은 비율. 1.3배↑ 빨강 */
     var RY_SV = null, _svLoading = false;
-    var SV_N = '<svg viewBox="0 0 20 20" aria-hidden="true"><rect width="20" height="20" rx="4" fill="#03C75A"/><path d="M5.5 5h3.2l3 4.6V5h2.8v10h-3.2l-3-4.6V15H5.5z" fill="#fff"/></svg>';
+    var SV_N = '<svg viewBox="0 0 20 20" aria-hidden="true" style="background:#03C75A;padding:0"><path d="M6.3 6h2.8l2.6 4V6h2.4v8h-2.8l-2.6-4v4H6.3z" fill="#fff"/></svg>';
     var SV_G = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#4285F4" d="M45.1 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h11.8c-.5 2.8-2.1 5.1-4.4 6.7v5.5h7.1c4.2-3.8 6.6-9.5 6.6-16.2z"/><path fill="#34A853" d="M24 46c5.9 0 10.9-2 14.5-5.3l-7.1-5.5c-2 1.3-4.5 2.1-7.4 2.1-5.7 0-10.5-3.8-12.2-9H4.5v5.7C8.1 41.1 15.5 46 24 46z"/><path fill="#FBBC05" d="M11.8 28.3c-.4-1.3-.7-2.8-.7-4.3s.3-3 .7-4.3V14H4.5C3 17 2 20.4 2 24s1 7 2.5 10l7.3-5.7z"/><path fill="#EA4335" d="M24 10.7c3.2 0 6.1 1.1 8.4 3.3l6.3-6.3C34.9 4.2 29.9 2 24 2 15.5 2 8.1 6.9 4.5 14l7.3 5.7c1.7-5.2 6.5-9 12.2-9z"/></svg>';
     function svNum(n) { return n >= 10000 ? (Math.round(n / 1000) / 10) + '만' : n >= 1000 ? n.toLocaleString() : String(n); }
     var _svRank = null, _svRankSrc = null;
