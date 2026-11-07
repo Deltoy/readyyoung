@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw63xiv6">
+  <meta name="ry-build" content="mw679u19">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -6947,6 +6947,7 @@ video {
     }
     function svBars(w) { if (!w || !w.length) return ''; var h = ''; w.forEach(function (v, i) { var y = Math.max(2, Math.round(v / 100 * 12)); h += '<rect x="' + (i * 4) + '" y="' + (14 - y) + '" width="3" height="' + y + '" rx="1" fill="' + (i === w.length - 1 ? 'currentColor' : '#98A2B3') + '"/>'; }); return '<svg class="bars" viewBox="0 0 23 14" aria-hidden="true">' + h + '</svg>'; }
     function svTrend(r) { return r == null ? null : r >= 1.3 ? { t: '늘어남', c: 'up', i: '📈' } : r <= 0.7 ? { t: '줄어듦', c: 'dn', i: '📉' } : { t: '비슷', c: 'eq', i: '➖' }; }
+    function svGLevel(g) { return g >= 50 ? 5 : g >= 15 ? 4 : g >= 5 ? 3 : g >= 1 ? 2 : g > 0 ? 1 : 0; }   /* 구글 = 외국인 K-뷰티 대표 'cosrx' 검색의 몇 % */
     function svBadge(item) {
       if (!item || !item.name) return '';
       if ((cachedInboundItems || []).indexOf(item) !== -1) return '';
@@ -6958,7 +6959,8 @@ video {
         for (var d = 1; d <= 5; d++) dots += '<i' + (d <= lv ? ' class="on"' : '') + '></i>';
         h += '<button type="button" class="ry-sv' + (tr && tr.c === 'up' ? ' hot' : '') + '" onclick="event.stopPropagation(); svExplain(this, \'n\')" data-n="' + escapeHtml(item.name) + '">' + SV_N + '<span class="dots">' + dots + '</span>' + (lv >= 4 ? '많이 찾음' : lv === 3 ? '보통' : '적게 찾음') + (tr ? ' <b class="' + tr.c + '">' + tr.i + ' ' + tr.t + '</b>' : '') + svBars(o.nw) + '</button>';
       }
-      if (o.gt) { var tg = svTrend(o.gr); h += '<button type="button" class="ry-sv' + (tg && tg.c === 'up' ? ' hot' : '') + '" onclick="event.stopPropagation(); svExplain(this, \'g\')" data-n="' + escapeHtml(item.name) + '">' + SV_G + '외국인 검색' + (tg ? ' <b class="' + tg.c + '">' + tg.i + ' ' + tg.t + '</b>' : '') + '</button>'; }
+      if (o.gt && o.gv != null) { var tg = svTrend(o.gr), gl = svGLevel(o.gv), gd = ''; for (var e = 1; e <= 5; e++) gd += '<i' + (e <= gl ? ' class="on"' : '') + '></i>';   /* 1107 MJ '구글 검색량 많은지 적은지' — cosrx 대비 % → 점 5개 + 말 */
+        h += '<button type="button" class="ry-sv' + (tg && tg.c === 'up' ? ' hot' : '') + '" onclick="event.stopPropagation(); svExplain(this, \'g\')" data-n="' + escapeHtml(item.name) + '">' + SV_G + '<span class="dots">' + gd + '</span>' + ['거의 없음', '아주 적게', '적게 찾음', '보통', '많이 찾음', '아주 많이'][gl] + (tg ? ' <b class="' + tg.c + '">' + tg.i + ' ' + tg.t + '</b>' : '') + '</button>'; }
       return h;
     }
     function svExplain(btn, k) {
@@ -6966,7 +6968,7 @@ video {
       var t;
       if (k === 'n') { var lv = svLevel(o.nv), pct = ['', '하위권', '중간 아래', '중간', '상위 25%', '상위 10%'][lv], tr = svTrend(o.nr);
         t = '네이버에서 \'' + o.nt + '\' 을(를) 한 달에 약 ' + Number(o.nv).toLocaleString() + '번 검색해요 · 우리 상품 중 ' + pct + (tr ? ' · 요즘 ' + (tr.c === 'up' ? '늘어나는 중 (' + o.nr + '배)' : tr.c === 'dn' ? '줄어드는 중' : '비슷해요') : '') + (o.nw ? ' · 막대 = 최근 6주' : ''); }
-      else { var tg = svTrend(o.gr); t = '구글에서 외국인이 \'' + o.gt + '\' (으)로 찾아요' + (tg ? ' · 요즘 ' + (tg.c === 'up' ? '늘어나는 중 (' + o.gr + '배)' : tg.c === 'dn' ? '줄어드는 중' : '비슷해요') : ' · 흐름은 며칠 안에 채워져요'); }
+      else { var tg = svTrend(o.gr); t = '구글(전 세계)에서 \'' + o.gt + '\' 검색 = ' + (o.gv > 0 ? '코스알엑스(외국인이 많이 찾는 K-뷰티)의 약 ' + o.gv + '%' : '거의 없음 (코스알엑스 대비 0.1% 미만)') + (tg ? ' · 요즘 ' + (tg.c === 'up' ? '늘어나는 중 (' + o.gr + '배)' : tg.c === 'dn' ? '줄어드는 중' : '비슷해요') : ''); }
       showToast(t, 5000);
     }
     function stockBadge(item) {
