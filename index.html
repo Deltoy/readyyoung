@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw5ofqpk">
+  <meta name="ry-build" content="mw5pdjsd">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -2598,7 +2598,7 @@ html body:not(#_):not(#_) .ry-delay.has{border:0!important;background:var(--ry-w
   html body .m-stick::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c);flex:none}
   html body .m-stick:has(+ .mobile-only-card:empty){display:none}
 }
-.ry-sv{display:inline-flex;align-items:center;gap:4px;margin-left:6px;padding:2px 8px 2px 4px;border-radius:999px;background:#F2F4F7;color:#344054;font-size:12px;font-weight:700;vertical-align:middle;white-space:nowrap}.ry-sv svg{width:16px;height:16px;flex:none}.ry-sv b.up{color:#D92D20}.ry-sv b.dn{color:#667085}.ry-sv.hot{background:#FEF3F2;box-shadow:inset 0 0 0 1px #FECDCA}</style>
+.ry-sv{display:inline-flex;align-items:center;gap:4px;margin-left:6px;padding:2px 8px 2px 4px;border:0;border-radius:999px;background:#F2F4F7;color:#344054;font-size:12px;font-weight:700;vertical-align:middle;white-space:nowrap;cursor:pointer;font-family:inherit}.ry-sv>svg{width:16px;height:16px;flex:none}.ry-sv .dots{display:inline-flex;gap:2px}.ry-sv .dots i{width:6px;height:6px;border-radius:50%;background:#D0D5DD}.ry-sv .dots i.on{background:#03C75A}.ry-sv b.up{color:#D92D20}.ry-sv b.dn{color:#667085}.ry-sv b.eq{color:#667085;font-weight:600}.ry-sv svg.bars{width:23px;height:14px;color:#D92D20;margin-left:2px}.ry-sv.hot{background:#FEF3F2;box-shadow:inset 0 0 0 1px #FECDCA}</style>
 <style id="ry25-design">
 /* ═══════════ 0925 디자인 시스템 — 밝은 머리 · 파이프라인 · 카드 (맨 마지막에 둬서 이전 규칙을 덮는다) ═══════════
    토큰: 바탕 #f6f7f9 · 카드 흰색 18px · 주색 #1a6aff · 먹 #111827 · Pretendard · 자간 -0.01em */
@@ -6938,15 +6938,36 @@ video {
     var SV_N = '<svg viewBox="0 0 20 20" aria-hidden="true"><rect width="20" height="20" rx="4" fill="#03C75A"/><path d="M5.5 5h3.2l3 4.6V5h2.8v10h-3.2l-3-4.6V15H5.5z" fill="#fff"/></svg>';
     var SV_G = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#4285F4" d="M45.1 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h11.8c-.5 2.8-2.1 5.1-4.4 6.7v5.5h7.1c4.2-3.8 6.6-9.5 6.6-16.2z"/><path fill="#34A853" d="M24 46c5.9 0 10.9-2 14.5-5.3l-7.1-5.5c-2 1.3-4.5 2.1-7.4 2.1-5.7 0-10.5-3.8-12.2-9H4.5v5.7C8.1 41.1 15.5 46 24 46z"/><path fill="#FBBC05" d="M11.8 28.3c-.4-1.3-.7-2.8-.7-4.3s.3-3 .7-4.3V14H4.5C3 17 2 20.4 2 24s1 7 2.5 10l7.3-5.7z"/><path fill="#EA4335" d="M24 10.7c3.2 0 6.1 1.1 8.4 3.3l6.3-6.3C34.9 4.2 29.9 2 24 2 15.5 2 8.1 6.9 4.5 14l7.3 5.7c1.7-5.2 6.5-9 12.2-9z"/></svg>';
     function svNum(n) { return n >= 10000 ? (Math.round(n / 1000) / 10) + '만' : n >= 1000 ? n.toLocaleString() : String(n); }
+    var _svRank = null, _svRankSrc = null;
+    function svLevel(nv) {   /* 우리 상품끼리 월 검색수 순위 → 1~5 (상위 10%=5, 25%=4, 50%=3, 75%=2) */
+      if (nv == null || !RY_SV) return 0;
+      if (_svRankSrc !== RY_SV) { _svRankSrc = RY_SV; _svRank = Object.keys(RY_SV).map(function (k) { return RY_SV[k].nv; }).filter(function (v) { return v != null; }).sort(function (a, b) { return b - a; }); }
+      var n = _svRank.length, pos = 0; while (pos < n && _svRank[pos] > nv) pos++; var p = n ? pos / n : 1;
+      return p < 0.1 ? 5 : p < 0.25 ? 4 : p < 0.5 ? 3 : p < 0.75 ? 2 : 1;
+    }
+    function svBars(w) { if (!w || !w.length) return ''; var h = ''; w.forEach(function (v, i) { var y = Math.max(2, Math.round(v / 100 * 12)); h += '<rect x="' + (i * 4) + '" y="' + (14 - y) + '" width="3" height="' + y + '" rx="1" fill="' + (i === w.length - 1 ? 'currentColor' : '#98A2B3') + '"/>'; }); return '<svg class="bars" viewBox="0 0 23 14" aria-hidden="true">' + h + '</svg>'; }
+    function svTrend(r) { return r == null ? null : r >= 1.3 ? { t: '늘어남', c: 'up', i: '📈' } : r <= 0.7 ? { t: '줄어듦', c: 'dn', i: '📉' } : { t: '비슷', c: 'eq', i: '➖' }; }
     function svBadge(item) {
       if (!item || !item.name) return '';
       if ((cachedInboundItems || []).indexOf(item) !== -1) return '';
       if (!RY_SV) { if (!_svLoading && typeof google !== 'undefined' && google.script) { _svLoading = true; google.script.run.withSuccessHandler(function (r) { _svLoading = false; RY_SV = (r && r.items) || {}; try { renderAllViews(); } catch (e) {} }).withFailureHandler(function () { _svLoading = false; RY_SV = {}; }).getSearchVol(); } return ''; }
       var o = RY_SV[item.name]; if (!o) return '';
-      var up = function (r) { return r == null ? '' : r >= 1.3 ? ' <b class="up">↑' + r + '배</b>' : r <= 0.7 ? ' <b class="dn">↓' + r + '배</b>' : ''; }, h = '';
-      if (o.nv != null || o.nr != null) h += '<span class="ry-sv' + ((o.nr || 0) >= 1.3 ? ' hot' : '') + '" title="네이버 \'' + escapeHtml(o.nt || '') + '\' 최근 30일 검색수' + (o.nr != null ? ' · 최근 7일이 그전 4주 평균의 ' + o.nr + '배' : '') + '">' + SV_N + (o.nv != null ? '월 ' + svNum(o.nv) : '') + up(o.nr) + '</span>';
-      if (o.gt) h += '<span class="ry-sv' + ((o.gr || 0) >= 1.3 ? ' hot' : '') + '" title="구글(전 세계) \'' + escapeHtml(o.gt) + '\'' + (o.gr != null ? ' · 최근 7일이 그전 4주 평균의 ' + o.gr + '배' : ' · 흐름은 며칠 안에 채워져요') + '">' + SV_G + (o.gr != null ? (up(o.gr) || ' 보통') : ' 영어 검색') + '</span>';
+      var h = '', nm = escapeHtml(item.name).replace(/'/g, '&#39;');
+      if (o.nv != null) {
+        var lv = svLevel(o.nv), tr = svTrend(o.nr), dots = '';
+        for (var d = 1; d <= 5; d++) dots += '<i' + (d <= lv ? ' class="on"' : '') + '></i>';
+        h += '<button type="button" class="ry-sv' + (tr && tr.c === 'up' ? ' hot' : '') + '" onclick="event.stopPropagation(); svExplain(this, \'n\')" data-n="' + escapeHtml(item.name) + '">' + SV_N + '<span class="dots">' + dots + '</span>' + (lv >= 4 ? '많이 찾음' : lv === 3 ? '보통' : '적게 찾음') + (tr ? ' <b class="' + tr.c + '">' + tr.i + ' ' + tr.t + '</b>' : '') + svBars(o.nw) + '</button>';
+      }
+      if (o.gt) { var tg = svTrend(o.gr); h += '<button type="button" class="ry-sv' + (tg && tg.c === 'up' ? ' hot' : '') + '" onclick="event.stopPropagation(); svExplain(this, \'g\')" data-n="' + escapeHtml(item.name) + '">' + SV_G + '외국인 검색' + (tg ? ' <b class="' + tg.c + '">' + tg.i + ' ' + tg.t + '</b>' : '') + '</button>'; }
       return h;
+    }
+    function svExplain(btn, k) {
+      var o = RY_SV && RY_SV[btn.dataset.n]; if (!o) return;
+      var t;
+      if (k === 'n') { var lv = svLevel(o.nv), pct = ['', '하위권', '중간 아래', '중간', '상위 25%', '상위 10%'][lv], tr = svTrend(o.nr);
+        t = '네이버에서 \'' + o.nt + '\' 을(를) 한 달에 약 ' + Number(o.nv).toLocaleString() + '번 검색해요 · 우리 상품 중 ' + pct + (tr ? ' · 요즘 ' + (tr.c === 'up' ? '늘어나는 중 (' + o.nr + '배)' : tr.c === 'dn' ? '줄어드는 중' : '비슷해요') : '') + (o.nw ? ' · 막대 = 최근 6주' : ''); }
+      else { var tg = svTrend(o.gr); t = '구글에서 외국인이 \'' + o.gt + '\' (으)로 찾아요' + (tg ? ' · 요즘 ' + (tg.c === 'up' ? '늘어나는 중 (' + o.gr + '배)' : tg.c === 'dn' ? '줄어드는 중' : '비슷해요') : ' · 흐름은 며칠 안에 채워져요'); }
+      showToast(t, 5000);
     }
     function stockBadge(item) {
       if (!item || !item.name) return '';
