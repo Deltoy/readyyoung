@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw61t23l">
+  <meta name="ry-build" content="mw622azt">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -3826,7 +3826,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .nt-latest[hidden]{display:none!import
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-latest.rv{background:linear-gradient(100deg,#FFF8E1,#FFFBEB 40%,#FEF3C7)!important;border-color:#FCD34D!important;position:relative;overflow:hidden}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-latest.rv::after{content:'';position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.75) 50%,transparent 70%);transform:translateX(-100%);animation:ntRvShine 3.2s ease-in-out infinite;pointer-events:none}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-latest.rv .nt-latest-ic{background:#FDE68A;color:#B45309}
-html:not(#q):not(#w):not(#e) body:not(#r) .nt-latest.rv .nt-latest-l{display:none}
+html:not(#q):not(#w):not(#e) body:not(#r) .nt-latest.rv .nt-latest-l{display:none}.nt-latest.rv .nt-latest-t{flex-direction:column;align-items:stretch;gap:4px}.nt-rv-row{display:flex;align-items:center;gap:8px;min-width:0}.nt-rv-row .nt-date{margin-left:auto;flex:none}.nt-rv-row b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.nt-rv-line{display:block;font-size:13px;line-height:1.35;color:#92400E;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}.nt-latest.rv{min-height:64px!important;padding:10px 12px!important}
 .nt-rv-k{flex:none;font-size:12.5px;font-weight:800;color:#B45309;background:#fff;border:1px solid #FCD34D;border-radius:999px;padding:3px 10px;white-space:nowrap;animation:ntRvPop 2.4s ease-in-out infinite}
 @keyframes ntRvShine{0%,55%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 @keyframes ntRvPop{0%,100%{transform:scale(1)}8%{transform:scale(1.08)}16%{transform:scale(1)}}
@@ -17048,22 +17048,22 @@ video {
     }
     function ntSetMonth(m) { NT.month = m || ''; ntLoad(); }
     function ntRenderLatest() {
+      /* 1107 MJ '여기는 칭찬 공지만 · 다른 공지는 위 [공지]에서 · 어떤 칭찬인지 간단히 · 한 개씩' — 이 줄은 오늘·어제 구글 리뷰 칭찬 공지만 돌림 (없으면 숨김) */
       var b = document.getElementById('ntLatest');
       if (!b) return;
-      var l = NT.latest, RV = /^🎉 구글 리뷰 칭찬/, yd = new Date(Date.now() + 9 * 3600000 - 864e5).toISOString().slice(0, 10);
-      /* 1106 MJ '구글 리뷰 칭찬은 나온 날부터 다음 날까지만' — 그보다 오래된 칭찬 공지는 줄에서 빼고, 그 전 보통 공지(3일 안)가 있으면 그걸로 */
-      if (l && RV.test(l.title) && String(l.date) < yd) { l = (NT.recent || []).filter(function (n) { return !RV.test(n.title) && String(n.date) >= yd; })[0] || null;   /* 1106 보통 공지도 오늘·어제만 */ }
-      b.hidden = !l || (typeof EV !== 'undefined' && (EV.barIds || []).indexOf(l.id) !== -1);   /* 1016 진행 중 이벤트 줄과 같은 공지면 한 번만 */
-      var rv = !!l && RV.test(l.title);   /* 1106 MJ '이 줄에 구글리뷰 칭찬글 등장 이런 식으로 · 누르면 바로 확인' — 칭찬 공지면 반짝이는 특별 줄, 누르면 그 카드로 */
-      b.classList.toggle('rv', rv);
-      if (!l || !rv) { clearInterval(NT.rvT); NT.rvT = 0; NT.rvSig = ''; }
-      if (!l) return;
-      if (!rv) { b.onclick = function () { ntOpen(); }; document.getElementById('ntLatestT').innerHTML = '<span class="nt-tag t-' + (NT_TAGS.indexOf(l.tag) + 1) + '">' + escapeHtml(l.tag) + '</span><b>' + escapeHtml(l.title) + '</b><span class="nt-date">' + escapeHtml(ntMD(l.date)) + '</span>'; return; }
-      /* 1106 MJ '글이 여러 개면 전광판처럼 하나씩 바뀌게' — 오늘·어제 칭찬 공지를 4초마다 위로 넘김 */
-      var L = [l].concat((NT.recent || []).filter(function (n) { return n.id !== l.id && RV.test(n.title) && String(n.date) >= yd; }));   // 오늘·어제 칭찬만 돌림
-      var sig = L.map(function (n) { return n.id; }).join(','); if (NT.rvT && NT.rvSig === sig) return;   // 다른 화면 갱신 때마다 처음으로 돌아가지 않게 (같은 목록이면 그대로 돌림)
+      var RV = /^🎉 구글 리뷰 칭찬/, yd = new Date(Date.now() + 9 * 3600000 - 864e5).toISOString().slice(0, 10), seen = {};
+      var L = [NT.latest].concat(NT.recent || []).filter(function (n) { if (!n || seen[n.id] || !RV.test(n.title) || String(n.date) < yd) return false; seen[n.id] = 1; return true; });
+      b.hidden = !L.length; b.classList.toggle('rv', !!L.length);
+      if (!L.length) { clearInterval(NT.rvT); NT.rvT = 0; NT.rvSig = ''; return; }
+      var sig = L.map(function (n) { return n.id; }).join(','); if (NT.rvT && NT.rvSig === sig) return;   // 같은 목록이면 돌리던 것 그대로
       clearInterval(NT.rvT); NT.rvSig = sig; var i = 0;
-      var show = function () { var n = L[i % L.length]; b.onclick = function () { ntShowCard(n.id); }; document.getElementById('ntLatestT').innerHTML = '<span class="nt-rv-k">⭐ 구글 리뷰 칭찬글 등장!</span><b class="nt-rv-roll">' + escapeHtml(n.title.replace(/^🎉 구글 리뷰 칭찬\s*·?\s*/, '')) + (function () { var it = ((NT.data && NT.data.items) || []).filter(function (x) { return x.id === n.id; })[0], m = it && String(it.body || '').match(/— "([^"]{3,})"/); return m ? ' <small class="nt-rv-q">“' + escapeHtml(m[1].slice(0, 40)) + (m[1].length > 40 ? '…' : '') + '”</small>' : ''; })() + '</b>' + (L.length > 1 ? '<span class="nt-date">' + (i % L.length + 1) + '/' + L.length + '</span>' : '<span class="nt-date">' + escapeHtml(ntMD(n.date)) + '</span>'); };
+      var gist = function (n) {   /* 본문 '칭찬: …' 줄 → 없으면 첫 따옴표 속 말 */
+        var it = ((NT.data && NT.data.items) || []).filter(function (x) { return x.id === n.id; })[0], body = String((it && it.body) || n.body || '');
+        var m = body.match(/^칭찬:\s*(.+)$/m) || body.match(/^🇰🇷\s*(.+)$/m) || body.match(/— "([^"]{3,})"/) || body.match(/"([^"]{6,})"/);
+        return m ? m[1].trim() : '';
+      };
+      var show = function () { var n = L[i % L.length], g = gist(n); b.onclick = function () { ntShowCard(n.id); };
+        document.getElementById('ntLatestT').innerHTML = '<span class="nt-rv-row"><span class="nt-rv-k">⭐ 구글 리뷰 칭찬글 등장!</span><b class="nt-rv-roll">' + escapeHtml(n.title.replace(/^🎉 구글 리뷰 칭찬\s*·?\s*/, '')) + '</b><span class="nt-date">' + (L.length > 1 ? (i % L.length + 1) + '/' + L.length : escapeHtml(ntMD(n.date))) + '</span></span>' + (g ? '<span class="nt-rv-line">“' + escapeHtml(g) + '”</span>' : ''); };   /* 1107 MJ '밑에 한 줄 더 써도 돼' — 1줄: 칩·이름·순서 / 2줄: 어떤 칭찬인지 */
       show(); NT.rvT = L.length > 1 ? setInterval(function () { if (document.visibilityState === 'visible') { i++; show(); } }, 4000) : -1;
     }
     function ntShowCard(id) { NT.tag = ''; ntOpen(); setTimeout(function () { var el = document.querySelector('.nt-card[data-nt="' + id + '"]'); if (el) { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); el.classList.add('nt-flash'); setTimeout(function () { el.classList.remove('nt-flash'); }, 1600); } }, 900); }
