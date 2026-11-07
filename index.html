@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw622azt">
+  <meta name="ry-build" content="mw625mhv">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -17058,6 +17058,7 @@ video {
       var sig = L.map(function (n) { return n.id; }).join(','); if (NT.rvT && NT.rvSig === sig) return;   // 같은 목록이면 돌리던 것 그대로
       clearInterval(NT.rvT); NT.rvSig = sig; var i = 0;
       var gist = function (n) {   /* 본문 '칭찬: …' 줄 → 없으면 첫 따옴표 속 말 */
+        if (n.g) return n.g;   /* 서버가 붙여 줌 (ntGist_) */
         var it = ((NT.data && NT.data.items) || []).filter(function (x) { return x.id === n.id; })[0], body = String((it && it.body) || n.body || '');
         var m = body.match(/^칭찬:\s*(.+)$/m) || body.match(/^🇰🇷\s*(.+)$/m) || body.match(/— "([^"]{3,})"/) || body.match(/"([^"]{6,})"/);
         return m ? m[1].trim() : '';
