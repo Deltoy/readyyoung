@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw4rvnzr">
+  <meta name="ry-build" content="mw5nuhyv">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -11542,6 +11542,9 @@ video {
     async function rySurgeAuto(dry, negMax) {   // dry = 올리지 않고 무엇을 올릴지만 · negMax = 마이너스 한도(1106 MJ '마이너스는 다 올려줘 · 물건 안 떨어지게가 1순위' → 기본 한도 없음)
       if (!RY_DS) { await new Promise(function (res) { stkOf((RY_CAT && RY_CAT.items || [])[0]); var t0 = Date.now(), iv = setInterval(function () { if (RY_DS || Date.now() - t0 > 60000) { clearInterval(iv); res(); } }, 500); }); }
       if (!RY_DS) return { ok: false, message: '하루 판매 기록을 못 받음' };
+      /* 1107 MJ '리쥬올 립세럼 왜 재고부족' — 아침 자동(헤드리스)엔 명세서 입고(RY_IVL)가 안 불려 와서 명세서로만 들어온 입고가 빠진 채 추정 재고가 낮게 나왔음 → 먼저 받아 옴 */
+      if (!RY_IVL && typeof google !== 'undefined' && google.script) { await new Promise(function (res) { var t = setTimeout(res, 60000); google.script.run.withSuccessHandler(function (r) { if (r && r.success) RY_IVL = r.map || {}; clearTimeout(t); res(); }).withFailureHandler(function () { clearTimeout(t); res(); }).getInvoiceLinks(currentSelectedMember); }); }
+      if (!RY_IVL) return { ok: false, message: '명세서 입고 기록을 못 받음' };
       var flow = {}; [].concat(cachedReviewItems || [], cachedOrderItems || [], cachedInboundItems || []).forEach(function (x) { flow[x.rowNumber] = 1; flow['n:' + ryPrKey(x.name)] = 1; });
       var seen = {}; try { seen = JSON.parse(localStorage.getItem('ry_surge_auto') || '{}'); } catch (e) {}
       var now = Date.now(), done = [], skip = [];
