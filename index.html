@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw679u19">
+  <meta name="ry-build" content="mw67nsy0">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -14357,7 +14357,8 @@ video {
     /* ═══ 1021 MJ '주문요청도 안 하고 명세서도 없는 입고' — 검색 결과 [📦 바로 입고]: 수량 + 이유 (+ 사진 선택) → 서버 quickInbound
        입고내역 '주문없이입고 · 명세서 없음·이유' · 추정 재고에 더함 · 문준 카톡 · row 0 = 앱에 없는 상품(새로 등록) ═══ */
     var QIN = null, QIN_WHY0 = ['샘플·증정', '본사 직배송', '다른 지점에서'], QIN_WHY = QIN_WHY0.slice(), QIN_EXTRA = null;   // 1021 MJ: 모름 → 기타(직접 적기) · 기타에 자주 적힌 이유는 버튼으로
-    function qinBtn(item) { return item && item.rowNumber && item.status !== 'INBOUND' ? '<button type="button" class="ry-qin" onclick="event.stopPropagation(); qinOpen(' + item.rowNumber + ')" title="주문도 명세서도 없이 들어온 상품 입고">📦 바로 입고</button>' : ''; }
+    function qinBtn(item) { return '';   /* 1107 MJ '입고하기 하나로 다 되는데 바로 입고 필요할까?' → 상품 카드 버튼 숨김 (입고하기 ③ 주문 안 한 것과 같은 길) */
+      return item && item.rowNumber && item.status !== 'INBOUND' ? '<button type="button" class="ry-qin" onclick="event.stopPropagation(); qinOpen(' + item.rowNumber + ')" title="주문도 명세서도 없이 들어온 상품 입고">📦 바로 입고</button>' : ''; }
     function qinOpen(row) {
       if (!checkMemberSelectedOrAlert()) return;
       var it = row ? (lastSearchResults || []).filter(function (x) { return x.rowNumber === row; })[0] : null;
