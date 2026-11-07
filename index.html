@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw627z4w">
+  <meta name="ry-build" content="mw62njem">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -14316,8 +14316,12 @@ video {
     });
     ['wheel', 'touchmove'].forEach(function (ev) { window.addEventListener(ev, ryBlurSearchKeep, { capture: true, passive: true }); });
     function ryFloor() { var f = document.getElementById('ryFloor'); if (!f) { f = document.createElement('div'); f.id = 'ryFloor'; f.setAttribute('aria-hidden', 'true'); f.style.cssText = 'position:absolute;left:0;width:1px;height:1px;pointer-events:none;visibility:hidden'; document.documentElement.appendChild(f); } f.style.display = ''; f.style.top = Math.max(0, Math.ceil(window.scrollY + ryVhMax()) - 1) + 'px'; }
-    function ryFloorRelease() { if (window.ryAllowScroll) ryAllowScroll(); var f = document.getElementById('ryFloor'); if (f) f.style.display = 'none'; requestAnimationFrame(ryFloor); }
-    window.addEventListener('scroll', ryFloor, { passive: true }); window.addEventListener('resize', ryFloor);
+    function ryFloorRelease() { if (window.ryAllowScroll) ryAllowScroll(); var f = document.getElementById('ryFloor'); if (f) f.style.display = 'none'; }
+    /* 1107 MJ '밑으로 스크롤하면 계속 내려가' — 받침이 스크롤마다 따라 내려가서, 목록이 짧아지면(탭 바꿈·동기화로 다시 그림) 아래가 빈 화면으로 남았음
+       → 받침은 '누르는 순간'에만 지금 화면 아래 끝에 깔고(누른 뒤 밀림 막기 그대로), 사용자가 직접 굴리면 치워서 실제 내용 끝까지만 내려가게 */
+    ['pointerdown', 'touchstart'].forEach(function (ev) { document.addEventListener(ev, ryFloor, { capture: true, passive: true }); });
+    ['wheel', 'touchmove'].forEach(function (ev) { window.addEventListener(ev, function () { var f = document.getElementById('ryFloor'); if (f && f.style.display !== 'none') f.style.display = 'none'; }, { capture: true, passive: true }); });
+    window.addEventListener('keydown', function (e) { if (/^(PageUp|PageDown|End|ArrowDown| )$/.test(e.key) && !/^(INPUT|TEXTAREA|SELECT)$/.test((e.target || {}).tagName || '')) { var f = document.getElementById('ryFloor'); if (f) f.style.display = 'none'; } });
     function ryHoldHeight() { ryFloor(); return function () {}; }
     /* 1007d 누른 자리 고정: 받침으로도 남은 '이유 모를' 밀림(늘 y=180 으로 감)까지 막는다. 누른 뒤 1.5초 안에 사용자가 굴리거나 끌지 않았는데
        화면이 움직여 누른 것이 40px 넘게 자리를 옮기면, 누른 것이 원래 있던 자리로 되돌린다. 코드가 일부러 옮기는 것(scrollTo·scrollIntoView·뒤로 가기·탭 이동)은 그대로 둔다 */
