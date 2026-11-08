@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw7kou0m">
+  <meta name="ry-build" content="mw8h0dwx">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -177,6 +177,17 @@
   }
   window.ryInstallOffer = offer;
   window.addEventListener('load', function () { setTimeout(offer, 1500); });
+})();
+(function () {
+  /* 1109 화면 정돈(unslop.js) — 문준 화면에만. 끄기 ?unslop=0 · 다시 켜기 ?unslop=1 (기기에 기억) */
+  try {
+    var q = new URLSearchParams(location.search), u = q.get('unslop');
+    if (u === '0' || u === '1') localStorage.setItem('ry_unslop', u);
+    var me = q.get('me') || localStorage.getItem('s_selected_member') || '';
+    if (me !== '문준' || localStorage.getItem('ry_unslop') === '0') return;
+    var go = function () { var s = document.createElement('script'); s.src = 'unslop.js?v=1109'; document.body.appendChild(s); };
+    if (document.readyState === 'complete') go(); else window.addEventListener('load', go);
+  } catch (e) {}
 })();
 </script>
   <base target="_top">

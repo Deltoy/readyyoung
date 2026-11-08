@@ -173,3 +173,14 @@
   window.ryInstallOffer = offer;
   window.addEventListener('load', function () { setTimeout(offer, 1500); });
 })();
+(function () {
+  /* 1109 화면 정돈(unslop.js) — 문준 화면에만. 끄기 ?unslop=0 · 다시 켜기 ?unslop=1 (기기에 기억) */
+  try {
+    var q = new URLSearchParams(location.search), u = q.get('unslop');
+    if (u === '0' || u === '1') localStorage.setItem('ry_unslop', u);
+    var me = q.get('me') || localStorage.getItem('s_selected_member') || '';
+    if (me !== '문준' || localStorage.getItem('ry_unslop') === '0') return;
+    var go = function () { var s = document.createElement('script'); s.src = 'unslop.js?v=1109'; document.body.appendChild(s); };
+    if (document.readyState === 'complete') go(); else window.addEventListener('load', go);
+  } catch (e) {}
+})();
