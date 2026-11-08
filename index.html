@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw67nsy0">
+  <meta name="ry-build" content="mw7kou0m">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4308,6 +4308,13 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 .sc-bar{position:relative;height:14px;border-radius:999px;background:var(--ry-sunken);margin:6px 0 5px;overflow:hidden}
 .sc-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:var(--sc);transition:width .8s var(--ry-ease)}
 .sc-wk-s{font-size:13px;color:var(--ry-ink-2);font-weight:600}.sc-wk-s b{color:var(--ry-ink)}
+/* 1108 2주 합계 목표 달성 축하 · 화이팅 멘트 */
+.sc-card.sc-tot-win{border:2px solid #FDB022;background:linear-gradient(180deg,#FFFAEB,#fff 65%)}.sc-card.sc-tot-win h3{color:#B54708}
+.sc-wk.win{position:relative}
+.sc-tot-badge{display:inline-block;margin:2px 0 4px;padding:4px 10px;border-radius:999px;background:#FEF0C7;color:#93370D;font-size:13px;font-weight:800;animation:scTotPop .6s cubic-bezier(.2,1.4,.4,1) both}.sc-tot-badge b{color:#B54708}
+@keyframes scTotPop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+.sc-cheer{margin-top:12px;padding:12px 14px;border-radius:14px;background:#F4F3FF;color:#3E1C96;font-size:13.5px;font-weight:600;line-height:1.55}.sc-cheer b{color:#5925DC}
+@media(prefers-reduced-motion:reduce){.sc-tot-badge{animation:none}}
 .sc-charts{display:grid;gap:16px}
 .sc-cht{display:flex;justify-content:space-between;font-size:13.5px;font-weight:800;margin-bottom:2px}.sc-cht span{color:#B54708;font-size:12.5px}
 .sc-ch{width:100%;height:auto;display:block;overflow:visible}
@@ -7874,14 +7881,27 @@ video {
       var tot = '';   // 1104 MJ '여기서 뭘 봐야 하는지 모르겠어 — 이번 주는 다르게' → 순서: 이번 주(강조) → 지금까지 합계 → 지난 주 결과(흐리게)
       if (!before && c.weeks.length) {
         var allD = days.filter(function (d) { return d <= t; });
-        tot += '<section class="sc-card sc-dim"><h3>지금까지 합계 <span>' + scMd(c.from) + ' ~ ' + scMd(over ? c.to : t) + ' · ' + allD.length + '일</span></h3>';
-        SC_SETS.forEach(function (s) {
+        /* 1108 MJ '2주 목표 달성했으면 효과 줘서 달성 축하 · 스마트셋은 미달이지만 토탈이 커버할 만큼 팔았으니 화이팅 멘트' */
+        var TS = SC_SETS.map(function (s) {
           var sum = allD.reduce(function (a, d) { return a + (scV(d, s.k) || 0); }, 0), GT = c.weeks.reduce(function (a, x) { return a + ((x.goal && x.goal[s.k]) || 0); }, 0), nd = allD.filter(function (d) { return scV(d, s.k) != null; }).length;
-          tot += '<div class="sc-wk" style="--sc:' + s.c + '"><div class="sc-wk-t"><b>' + escapeHtml(s.label) + '</b><span><b>' + sum + '</b>' + (GT ? ' / ' + GT + '개' : '개') + '</span></div>'
-            + (GT ? '<div class="sc-bar"><i style="width:' + Math.min(100, sum / GT * 100).toFixed(1) + '%"></i></div>' : '')
-            + '<div class="sc-wk-s">' + (GT ? c.weeks.filter(function (x) { return x.goal && x.goal[s.k]; }).length + '주 목표 합계 기준 · ' : '') + '하루 평균 ' + (nd ? Math.round(sum / nd * 10) / 10 : 0) + '개</div></div>';
+          return { s: s, sum: sum, GT: GT, nd: nd, win: GT > 0 && sum >= GT };
         });
+        var nWin = TS.filter(function (x) { return x.win; }).length;
+        tot += '<section class="sc-card sc-dim' + (nWin ? ' sc-tot-win' : '') + '"><h3>' + (nWin === TS.length ? '🏆 2주 목표 모두 달성!' : '지금까지 합계') + ' <span>' + scMd(c.from) + ' ~ ' + scMd(over ? c.to : t) + ' · ' + allD.length + '일</span></h3>';
+        TS.forEach(function (x) { var s = x.s, sum = x.sum, GT = x.GT;
+          tot += '<div class="sc-wk' + (x.win ? ' win' : '') + '" id="scTot-' + s.k + '" style="--sc:' + s.c + '"><div class="sc-wk-t"><b>' + escapeHtml(s.label) + '</b><span><b>' + sum + '</b>' + (GT ? ' / ' + GT + '개' : '개') + '</span></div>'
+            + (GT ? '<div class="sc-bar"><i style="width:' + Math.min(100, sum / GT * 100).toFixed(1) + '%"></i></div>' : '')
+            + (x.win ? '<div class="sc-tot-badge">🎉 2주 목표 달성!' + (sum > GT ? ' <b>+' + (sum - GT) + '개</b> 더 팔았어요' : '') + '</div>' : '')
+            + '<div class="sc-wk-s">' + (GT ? c.weeks.filter(function (w) { return w.goal && w.goal[s.k]; }).length + '주 목표 합계 기준 · ' : '') + '하루 평균 ' + (x.nd ? Math.round(sum / x.nd * 10) / 10 : 0) + '개</div></div>';
+        });
+        var W1 = TS.filter(function (x) { return x.win; }), L1 = TS.filter(function (x) { return x.GT > 0 && !x.win; });
+        if (W1.length && L1.length) {
+          var aS = TS.reduce(function (a, x) { return a + x.sum; }, 0), aG = TS.reduce(function (a, x) { return a + x.GT; }, 0), w0 = W1[0], l0 = L1[0];
+          tot += '<div class="sc-cheer">💪 <b>' + escapeHtml(l0.s.label) + '</b>는 ' + (l0.GT - l0.sum) + '개 모자라지만, <b>' + escapeHtml(w0.s.label) + '</b>가 목표보다 <b>+' + (w0.sum - w0.GT) + '개</b> 더 팔려서 힘을 보탰어요.'
+            + '<br>두 세트 합치면 <b>' + aS + ' / ' + aG + '개 (' + Math.round(aS / aG * 100) + '%)</b> — ' + (over ? '2주 동안 정말 수고 많았어요! 👏' : '마지막까지 화이팅! 🔥') + '</div>';
+        }
         tot += '</section>';
+        SC.totWin = W1.map(function (x) { return x.s.k; }); SC.totKey = c.from + '~' + c.to;
       }
       var wks = w ? c.weeks.map(function (x, i) { return i; }).filter(function (i) { return (i === wShow && !over) || (i <= wShow && c.weeks[i].goal && c.weeks[i].to < t); }).sort(function (x, y) { return (y === wShow && !over) - (x === wShow && !over) || y - x; }) : [];
       wks.forEach(function (wx) { var w = c.weeks[wx], done = w.to < t, wShow = wx;
@@ -7980,9 +8000,11 @@ video {
         setTimeout(function () { SC_SETS.forEach(function (s) { if (scOk(SC.data.cfg, last, s.k)) scParty(s.k); }); }, rm ? 0 : 900);
       }
       SC_SETS.forEach(function (s) { SC.prev[s.k] = last ? scV(last, s.k) || 0 : 0; });
+      if (SC.totWin && SC.totWin.length) { var tk = ''; try { tk = localStorage.getItem('ry_sc_totparty') || ''; } catch (e) {}   // 1108 2주 합계 목표 달성 꽃가루 (기간마다 한 번)
+        if (tk !== SC.totKey) { try { localStorage.setItem('ry_sc_totparty', SC.totKey); } catch (e) {} setTimeout(function () { SC.totWin.forEach(function (k) { scParty(k, document.getElementById('scTot-' + k)); }); }, rm ? 0 : 1200); } }
     }
-    function scParty(k) {   /* 🎉 링 위로 종이 꽃가루 한 번 */
-      var tile = document.getElementById('scT-' + k); if (!tile || scRm()) return;
+    function scParty(k, el) {   /* 🎉 링 위로 종이 꽃가루 한 번 (1108 el = 2주 합계 줄에도) */
+      var tile = el || document.getElementById('scT-' + k); if (!tile || scRm()) return;
       var box = document.createElement('div'), cs = ['#F79009', '#0E9384', '#6938EF', '#0054B7', '#F04438', '#FDB022'];
       box.className = 'sc-conf';
       for (var i = 0; i < 22; i++) { var p = document.createElement('i'), a = Math.PI * 2 * i / 22 + Math.random() * .4, r = 70 + Math.random() * 60; p.style.cssText = '--x:' + Math.round(Math.cos(a) * r) + 'px;--y:' + Math.round(Math.sin(a) * r - 30) + 'px;--r:' + Math.round(Math.random() * 540 - 270) + 'deg;background:' + cs[i % cs.length] + ';animation-delay:' + Math.round(Math.random() * 80) + 'ms'; box.appendChild(p); }
