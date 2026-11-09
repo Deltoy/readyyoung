@@ -233,6 +233,10 @@ body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 .day li.cx .nm,.day li.cx .q{text-decoration:line-through;color:#98A2B3}.tg.cxd{background:#FEE4E2;color:#B42318}
 .cxb{flex:none;margin-left:8px;min-height:36px;padding:0 12px;border:1px solid #FDA29B;border-radius:10px;background:#fff;color:#B42318;font-size:14px;font-weight:700}
+#sync{position:fixed;left:0;right:0;top:0;z-index:30;height:0;pointer-events:none}
+#sync i{position:absolute;left:0;top:0;height:3px;width:0;background:#155EEF;transition:width .2s}
+#sync span{position:absolute;right:12px;top:calc(6px + env(safe-area-inset-top));padding:3px 10px;border-radius:999px;background:rgba(16,24,40,.78);color:#fff;font-size:13px;font-weight:700;opacity:0;transition:opacity .2s}
+#sync.on span{opacity:1}#sync:not(.on) i{opacity:0;transition:opacity .4s,width .2s}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -246,6 +250,7 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
 <main id="app"><div class="sk sk-hero"></div><div class="sk sk-card"></div><div class="sk sk-card"></div></main>
 <footer class="foot"><img src="ry-icon-192.png" alt="" width="18" height="18">성수레디영약국 · 만든 사람 <b>조문준</b></footer>
 <div id="fix"></div>
+<div id="sync" aria-live="polite"><i></i><span></span></div>
 <div id="toast" role="status" aria-live="polite"></div>
 <div id="undo" role="status" aria-live="polite"></div>
 <input type="file" id="cam" accept="image/*" capture="environment" class="sr" tabindex="-1" aria-hidden="true">
@@ -320,6 +325,20 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
         throw new Error('인터넷이 잠깐 끊겼어요. 잠시 뒤 다시 눌러 주세요.');
       });
   }
+  /* 1109 MJ '동기화를 퍼센트로 언제 완료되는지 · 전체 물류앱도 똑같이' — 지난번 걸린 시간 평균으로 진행률 추정 (맨 위 얇은 막대 + 글자) */
+  var SY = { t0: 0, iv: null };
+  function syAvg() { try { return Math.max(1500, Math.min(30000, +localStorage.getItem('bw_sync_ms') || 5000)); } catch (e) { return 5000; } }
+  function syncStart() {
+    if (SY.t0) return; SY.t0 = Date.now(); var el = document.getElementById('sync'); el.className = 'on';
+    SY.iv = setInterval(function () { var e = Date.now() - SY.t0, a = syAvg(), p = Math.min(95, Math.round(100 * (1 - Math.exp(-1.6 * e / a)) / (1 - Math.exp(-1.6))));
+      el.querySelector('i').style.width = p + '%'; el.querySelector('span').textContent = '불러오는 중 ' + p + '%' + (e < a ? ' · 약 ' + Math.max(1, Math.round((a - e) / 1000)) + '초' : ''); }, 200);
+  }
+  function syncEnd(ok) {
+    if (!SY.t0) return; clearInterval(SY.iv); var d = Date.now() - SY.t0; SY.t0 = 0;
+    if (ok) try { localStorage.setItem('bw_sync_ms', String(Math.round(syAvg() * 0.6 + d * 0.4))); } catch (e) {}
+    var el = document.getElementById('sync'); el.querySelector('i').style.width = '100%'; el.querySelector('span').textContent = ok ? '최신 상태예요 100%' : '못 불러왔어요';
+    setTimeout(function () { el.className = ''; el.querySelector('i').style.width = '0'; }, ok ? 900 : 2500);
+  }
   var toastT = 0;
   function toast(msg, kind) {
     var el = document.getElementById('toast'); el.textContent = msg; el.className = (kind || '') + ' on';
@@ -356,9 +375,9 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
 
   function load(quiet) {
     if (!TOK && !ADM) { gate('링크를 다시 열어 주세요', '약국에서 받은 링크로 열어야 주문 목록이 보여요.'); return; }
-    var rb = document.getElementById('reload'); rb.classList.add('spin');
+    var rb = document.getElementById('reload'); rb.classList.add('spin'); syncStart();
     return call('bwList', []).then(function (r) {
-      rb.classList.remove('spin');
+      rb.classList.remove('spin'); syncEnd(!!(r && r.ok));
       if (authStop(r)) return;
       if (!r || !r.ok) { if (!quiet) toast((r && (r.msg || r.__err)) || '목록을 못 불러왔어요', 'bad'); if (!loadedAt) app.innerHTML = '<div class="gate"><p>목록을 못 불러왔어요 · 오른쪽 위 새로고침을 눌러 주세요</p></div>'; return; }
       if (AUTH === 'pending') toast('승인됐어요', 'ok');
@@ -375,7 +394,7 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
       if (VIEW === 'list' || VIEW === 'ledger') render();
       if (VIEW === 'ledger' && !LED.data) ledLoad();
       qResume();
-    }).catch(function (e) { rb.classList.remove('spin'); if (!quiet) toast(e.message, 'bad'); if (!loadedAt && AUTH !== 'pending') app.innerHTML = '<div class="gate"><p>' + esc(e.message) + '</p></div>'; });
+    }).catch(function (e) { rb.classList.remove('spin'); syncEnd(false); if (!quiet) toast(e.message, 'bad'); if (!loadedAt && AUTH !== 'pending') app.innerHTML = '<div class="gate"><p>' + esc(e.message) + '</p></div>'; });
   }
 
   function thumb(img) { return '<span class="thumb">' + IC.box + (img ? '<img src="' + esc(img) + '" alt="" referrerpolicy="no-referrer" loading="lazy" onerror="this.remove()">' : '') + '</span>'; }
@@ -572,9 +591,9 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
       + (top && t.n > 1 ? '<p class="one">가장 많이 넣은 상품 · <b>' + esc(top.name) + '</b> ' + top.qty.toLocaleString() + top.unit + '</p>' : '') + '</section>';
     if (!D.rows.length) return h + '<div class="empty"><h2>이 기간에 입고한 게 없어요</h2></div>';
     var days = [], cur = null;
-    D.rows.forEach(function (x) { if (!cur || cur.d !== x.date) days.push(cur = { d: x.date, L: [], n: 0, b: 0 }); cur.L.push(x); if (x.unit === '박스') cur.b += x.qty; else cur.n += x.qty; });
+    D.rows.forEach(function (x) { if (!cur || cur.d !== x.date) days.push(cur = { d: x.date, L: [], n: 0, b: 0, k: 0 }); cur.L.push(x); if (x.cx) return; cur.k++; if (x.unit === '박스') cur.b += x.qty; else cur.n += x.qty; });   /* 1109 취소된 줄은 날짜 합계에서 빼기 */
     h += days.map(function (g) {
-      return '<section class="day"><h3>' + esc(dayText(g.d)) + '<span>' + g.L.length + '건 · ' + qtyText(g.n, g.b) + '</span></h3><ul>' + g.L.map(function (x) {
+      return '<section class="day"><h3>' + esc(dayText(g.d)) + '<span>' + g.k + '건 · ' + qtyText(g.n, g.b) + '</span></h3><ul>' + g.L.map(function (x) {
         var tg = x.kind === '새 상품' ? '<span class="tg new2">새 상품</span>' : x.kind === '주문없이' ? '<span class="tg">주문 없이</span>' : '';
         if (x.cx) tg = '<span class="tg cxd">취소됨</span>';
         return '<li' + (x.cx ? ' class="cx"' : '') + '><span class="nm">' + tg + esc(x.name) + '</span>' + (x.photo ? '<span class="cm" title="사진 있음">' + IC.cam + '</span>' : '') + '<span class="q">' + x.qty.toLocaleString() + x.unit + '</span>'

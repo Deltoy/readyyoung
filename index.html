@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw8u1ob4">
+  <meta name="ry-build" content="mw8u8jx6">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -2707,6 +2707,7 @@ html body:not(#_):not(#_) .ry-delay.has{border:0!important;background:var(--ry-w
 /* 1109 MJ '전체 물류앱에서도 (길게 누르면 뜨는 크롬 탭하여 검색) 안 보이게' → 글자 선택 끔 · 입력칸·메모칸은 그대로 */
 body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 input,textarea,select,[contenteditable="true"]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+#loading.sync-pill{background-image:linear-gradient(90deg,rgba(21,94,239,.16) var(--syncp,0%),transparent var(--syncp,0%))!important;transition:background-image .2s}   /* 1109 동기화 진행 막대 */
 </style>
 <style id="ry25-design">
 /* ═══════════ 0925 디자인 시스템 — 밝은 머리 · 파이프라인 · 카드 (맨 마지막에 둬서 이전 규칙을 덮는다) ═══════════
@@ -7001,18 +7002,29 @@ video {
     }
 
     // 동기화 상태 표시: 'syncing' | 'done' | 'error' | 'idle'
+    /* 1109 MJ '동기화를 퍼센트로 언제 완료되는지' — 지난 동기화 걸린 시간(평균)으로 진행률 추정: '동기화 중 42% · 약 8초' + 알약 안 막대 */
+    var _syncP = { t0: 0, iv: null };
+    function _syncAvg() { try { return Math.max(3000, Math.min(60000, +localStorage.getItem('ry_sync_ms') || 15000)); } catch (e) { return 15000; } }
+    function _syncTick() {
+      var pill = document.getElementById('loading'), text = document.getElementById('syncText'); if (!pill || !_syncP.t0) return;
+      var el = Date.now() - _syncP.t0, avg = _syncAvg(), p = Math.min(95, Math.round(100 * (1 - Math.exp(-1.6 * el / avg)) / (1 - Math.exp(-1.6)))), left = Math.max(1, Math.round((avg - el) / 1000));
+      pill.style.setProperty('--syncp', p + '%');
+      if (text) text.textContent = '동기화 중 ' + p + '%' + (el < avg ? ' · 약 ' + left + '초' : ' · 거의 다 됐어요');
+    }
     function setSyncState(state, label) {
       const pill = document.getElementById('loading');
       const icon = document.getElementById('syncIcon');
       const text = document.getElementById('syncText');
       if (!pill) return;
+      if (state === 'syncing') { if (!_syncP.t0) _syncP.t0 = Date.now(); if (!_syncP.iv) _syncP.iv = setInterval(_syncTick, 250); }
+      else { if (_syncP.iv) { clearInterval(_syncP.iv); _syncP.iv = null; } if (state === 'done' && _syncP.t0) { var d = Date.now() - _syncP.t0; try { localStorage.setItem('ry_sync_ms', String(Math.round(_syncAvg() * 0.6 + d * 0.4))); } catch (e) {} } _syncP.t0 = 0; pill.style.setProperty('--syncp', state === 'done' ? '100%' : '0%'); }
       if (_syncDoneTimer) { clearTimeout(_syncDoneTimer); _syncDoneTimer = null; }
       if (state === 'done') { _syncRetryN = 0; if (_syncRetryTimer) { clearTimeout(_syncRetryTimer); _syncRetryTimer = null; } }
       if (state === 'error' && !_syncRetryTimer) { var wait = [5, 15, 45][_syncRetryN] || 120; _syncRetryN++; _syncRetryTimer = setTimeout(function () { _syncRetryTimer = null; if (navigator.onLine === false) { setSyncState('error'); return; } try { loadAllData(true, false, true); } catch (e) {} }, wait * 1000); }
       pill.setAttribute('data-state', state);
       if (state === 'syncing') {
         if (icon) icon.textContent = '↻';
-        if (text) text.textContent = label || '동기화 중…';
+        if (text) text.textContent = label || '동기화 중 0%';
         pill.title = '서버에서 최신 목록을 가져오는 중입니다';
       } else if (state === 'done') {
         _lastSyncAt = nowHM();
