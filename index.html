@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw8nzt1o">
+  <meta name="ry-build" content="mw8p3owl">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1175,6 +1175,16 @@ html body:not(#_):not(#_) .ry-qe.chg .ry-qe-n{color:#B54708!important;border-col
   :is(#inboundCardContainer,#delayedCardContainer) .ry-inrow img[data-row],:is(#inboundCardContainer,#delayedCardContainer) .ry-inrow button[data-photo-row]{width:60px!important;height:60px!important}
 }
 @media(max-width:380px){:is(#inboundCardContainer,#delayedCardContainer)>div.ry-inrow{grid-template-columns:minmax(0,1fr) 66px 100px}}
+/* 1109 입고 대기 · 부외품 묶음 (사장님이 bw.html 에서 직접 입고) — 맨 아래 접힌 회색 칸 */
+.ry-bwh{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 12px;margin-top:8px;background:#F5F6F8;border:1px dashed #D0D5DD;border-radius:16px}
+.ry-bwh-tr td{padding:8px 10px!important;background:#fff}
+.ry-bwh-tg{flex:1 1 240px;display:flex;align-items:center;gap:10px;min-height:44px;text-align:left;color:#344054;background:none;border:0;padding:0;cursor:pointer}
+.ry-bwh-tg b{display:block;font-size:14px;font-weight:700;color:#101828}
+.ry-bwh-tg small{display:block;font-size:12px;font-weight:500;color:#667085;margin-top:2px}
+.ry-bwh-n{flex:none;padding:2px 8px;border-radius:999px;background:#fff;border:1px solid #EAECF0;font-size:12px;font-weight:700;color:#475467}
+.ry-bwh-chev{flex:none;margin-left:auto;font-size:12px;font-weight:600;color:#155EEF}
+.ry-bwh-adm{display:flex;gap:6px}
+.ry-bwh-adm button{min-height:36px;padding:0 12px;border-radius:10px;border:1px solid #D0D5DD;background:#fff;font-size:12px;font-weight:600;color:#344054;cursor:pointer}
 
 /* ═══ 16. 최종 발주 '재고있음(발주 취소)' — 칸 한가운데에 두고 버튼답게 (0920) ═══ */
 #readyCardContainer>div>button:nth-child(3){align-self:center!important;justify-self:stretch;
@@ -7075,7 +7085,8 @@ video {
       if ((cachedHistoryItems || []).indexOf(item) === -1) return '';   // 1020 MJ: 📄 명세서는 입고내역에서만 (최종 발주·검색 등에선 안 보임)
       if (!RY_IVL) { if (!_ivlLoading && typeof google !== 'undefined' && google.script) { _ivlLoading = true; google.script.run.withSuccessHandler(function (r) { _ivlLoading = false; if (r && r.success) { RY_IVL = r.map || {}; try { renderAllViews(); } catch (e) {} } }).withFailureHandler(function () { _ivlLoading = false; }).getInvoiceLinks(currentSelectedMember); } return ''; }
       var L = (RY_IVL[ryPrKey(item.name)] || []).filter(function (x) { return x.f !== 'none'; }); if (!L.length) return '';   // 1021 사진 없는 바로 입고는 📄 없음
-      return ' <button type="button" class="ry-pr ry-ivd" data-k="' + escapeHtml(ryPrKey(item.name)) + '" onclick="event.stopPropagation(); invDocShow(this)" aria-label="명세서 사진 보기" title="명세서 사진">📄</button>';
+      var bwP = item.inboundManager === '부외품 사장님';   /* 1109 사장님이 찍은 진열 사진 */
+      return ' <button type="button" class="ry-pr ry-ivd" data-k="' + escapeHtml(ryPrKey(item.name)) + '" onclick="event.stopPropagation(); invDocShow(this)" aria-label="' + (bwP ? '사장님 진열 사진 보기' : '명세서 사진 보기') + '" title="' + (bwP ? '사장님 진열 사진' : '명세서 사진') + '">' + (bwP ? '📷' : '📄') + '</button>';
     }
     function invDocShow(btn) {   /* 1024 MJ '명세서 볼 때 계정 선택 안 나오게' — 드라이브 앱으로 넘기지 않고 앱 안 사진 보기(두 손가락 확대) · 여러 장이면 좌우로 (최근 순) */
       var L = RY_IVL && (RY_IVL[btn.dataset.k] || []).filter(function (x) { return x.f !== 'none'; }); if (!L || !L.length) return;
@@ -7142,6 +7153,7 @@ video {
     function svTrend(r) { return r == null ? null : r >= 1.3 ? { t: '늘어남', c: 'up', i: '📈' } : r <= 0.7 ? { t: '줄어듦', c: 'dn', i: '📉' } : { t: '비슷', c: 'eq', i: '➖' }; }
     function svGLevel(g) { return g >= 50 ? 5 : g >= 15 ? 4 : g >= 5 ? 3 : g >= 1 ? 2 : g > 0 ? 1 : 0; }   /* 구글 = 외국인 K-뷰티 대표 'cosrx' 검색의 몇 % */
     function svBadge(item) {
+      return '';   /* 1109 MJ '쓸모없는 건 빼 · 앱이 무거워져' — 검색량과 우리 판매 상관 −0.01 → 알약·검색량 자료 받기 끔 (코드는 보관) */
       if (!item || !item.name) return '';
       if ((cachedInboundItems || []).indexOf(item) !== -1) return '';
       if (!RY_SV) { if (!_svLoading && typeof google !== 'undefined' && google.script) { _svLoading = true; google.script.run.withSuccessHandler(function (r) { _svLoading = false; RY_SV = (r && r.items) || {}; try { renderAllViews(); } catch (e) {} }).withFailureHandler(function () { _svLoading = false; RY_SV = {}; }).getSearchVol(); } return ''; }
@@ -12173,7 +12185,7 @@ video {
         if (r4 && r4.success !== false) { seen['srch:' + k4] = now; srchDone.push({ name: String(it4.name).split('\n')[0], qty: qty4, unit: unit4, why: why4 }); }
       }
       /* 1107 MJ '검색량이 많아지면 대비' — 네이버(데이터랩)·구글(트렌드) 최근 7일이 그전 4주의 1.5배 이상 · 추정 재고 14일분 미만(모르면 제외) · 주문 흐름 밖 · 같은 상품 7일에 한 번 · 수량 = 지난 주문(없으면 2주치) */
-      var svUp = [], svDone = [], SVD = await new Promise(function (res) { try { google.script.run.withSuccessHandler(res).withFailureHandler(function () { res(null); }).getSearchVol(); } catch (e) { res(null); } });
+      var svUp = [], svDone = [], SVD = null;   /* 1109 검색급증 끔 (검색량 수집기도 끔) */
       srchDone.forEach(function (d) { got[d.name] = 1; });
       if (SVD && SVD.items) { RY_SV = SVD.items; ((RY_CAT && RY_CAT.items) || []).forEach(function (it) {
         var o = SVD.items[it.name]; if (!o || !((o.nr || 0) >= 1.5 || (o.gr || 0) >= 1.5)) return;
@@ -12632,6 +12644,27 @@ video {
         .saveDelayReason(item.rowNumber, item.name, text, currentSelectedMember || '');
     }
 
+    /* 1109 MJ '부외품은 사장님이 직접 가져와서 진열 — 사장님이 직접 입고완료 · 우리 입고 대기에서도 부외품은 따로' → 서버 it.bw(제조사 D열 '부외품') 줄은 맨 아래 접힌 묶음 · 직원도 펼쳐서 입고 가능 · 문준은 사장님 링크(bw.html) 복사·바꾸기 */
+    var BW_OPEN = false;
+    function bwHeadHtml(n) {
+      var adm = currentSelectedMember === '문준' ? '<span class="ry-bwh-adm"><button type="button" onclick="bwLink(false)">사장님 링크</button><button type="button" onclick="bwLink(true)">링크 바꾸기</button></span>' : '';
+      return '<button type="button" class="ry-bwh-tg" aria-expanded="' + BW_OPEN + '" onclick="BW_OPEN = !BW_OPEN; renderInboundList(cachedInboundItems)"><span><b>📦 부외품 · 사장님이 직접 입고해요</b><small>사장님이 진열하고 사장님 폰에서 입고완료를 눌러요 · 급하면 펼쳐서 직접 입고</small></span><span class="ry-bwh-n">' + n + '건</span><span class="ry-bwh-chev">' + (BW_OPEN ? '접기' : '펼치기') + '</span></button>' + adm;
+    }
+    function bwHeadAppend(tbody, cards, n) {
+      if (tbody) { var tr = document.createElement('tr'); tr.className = 'ry-bwh-tr'; tr.innerHTML = '<td colspan="6"><div class="ry-bwh">' + bwHeadHtml(n) + '</div></td><td hidden></td>'; tbody.appendChild(tr); }   /* 빈 칸 = 'td:last-child button' 알약 버튼 스타일 피함 */
+      if (cards) { var d = document.createElement('div'); d.className = 'ry-bwh'; d.innerHTML = bwHeadHtml(n); cards.appendChild(d); }
+    }
+    function bwLink(rot) {
+      if (currentSelectedMember !== '문준') return;
+      var go = function () {
+        var ok = function (r) { if (!r || !r.ok) { showToast('⚠️ ' + (r && r.msg || '링크를 못 받았어요')); return; } ryPrompt('부외품 사장님 링크' + (rot ? ' · 새로 바꿨어요' : '') + '\n카톡으로 사장님께 보내 주세요. 이 링크만 있으면 부외품 입고를 할 수 있으니 다른 곳엔 올리지 마세요.', r.url, { copy: true }); };
+        var bad = function (e) { showToast('⚠️ 링크를 못 받았어요 · ' + (e && e.message || '')); };
+        if (rot) google.script.run.withSuccessHandler(ok).withFailureHandler(bad).bwRotateToken(currentSelectedMember);
+        else google.script.run.withSuccessHandler(ok).withFailureHandler(bad).bwSetupToken(currentSelectedMember);
+      };
+      if (!rot) { go(); return; }
+      ryConfirm({ title: '사장님 링크를 바꿀까요?', items: [{ t: 'warn', h: '지금 링크는 바로 안 열려요', d: '바꾼 뒤 새 링크를 사장님께 다시 보내 주세요' }], ok: '바꾸기', danger: true }).then(function (y) { if (y) go(); });
+    }
     function renderInboundList(items) {
       refreshDelayReasons(false);
       // 주문(발주)일자가 오래된 것부터 위로 정렬 — 날짜 없는 항목은 맨 아래 · 1024 MJ '이지엔6이브 30c 어제 주문했는데 왜 맨 위야' → 재주문 날짜(effOrderDate) 기준
@@ -12679,10 +12712,13 @@ video {
       let checkReqCount = 0;
       allItems.forEach(item => { if (item.isCheckRequested) checkReqCount++; });
       const shown = allItems.filter(item => (!isFilterCheckRequestedOnly || item.isCheckRequested) && matchInboundQuery(item));
-      shown.forEach(item => {
+      const addIn = item => {
         if (tbody) tbody.appendChild(createInboundRow(item));
         if (cards) cards.appendChild(createInboundCard(item));
-      });
+      };
+      const bwItems = shown.filter(it => it.bw);   /* 1109 부외품은 맨 아래 접힌 묶음 (검색 중이면 펼침) */
+      shown.filter(it => !it.bw).forEach(addIn);
+      if (bwItems.length) { bwHeadAppend(tbody, cards, bwItems.length); if (BW_OPEN || inboundQuery.trim()) bwItems.forEach(addIn); }
       const badgeReq = document.getElementById('checkReqBadgeCount');
       if (badgeReq) badgeReq.innerText = checkReqCount;
       const lateN = lateInboundItems().length;
