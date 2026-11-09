@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw8nrb5b">
+  <meta name="ry-build" content="mw8nwr09">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4512,11 +4512,22 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 .sc-cd small{font-size:9px;font-weight:600;color:var(--ry-ink-3);letter-spacing:-.04em;white-space:nowrap;line-height:1.2}
 .sc-cd em{position:absolute;top:5px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:#155EEF}
 .sc-cd.we i{color:#D92D20}
-.sc-cd.ok{background:#DCFAE6;color:#067647}.sc-cd.mid{background:#FEF0C7;color:#B54708}.sc-cd.low{background:#FEE4E2;color:#B42318}.sc-cd.nt{background:rgba(16,24,40,var(--a))}
+.sc-cd{background:#F9FAFB}.sc-cd i,.sc-cd b,.sc-cd em{position:relative;z-index:1}
+.sc-cd.ok b{color:#067647}.sc-cd.mid b{color:#B54708}.sc-cd.low b{color:#B42318}.sc-cd.nt b{color:#475467}
+.sc-cd.ok::before,.sc-cd.mid::before,.sc-cd.low::before{content:"";position:absolute;left:7px;right:7px;bottom:4px;height:4px;border-radius:2px;z-index:1;background:var(--st)}.sc-cd.ok{--st:#17B26A}.sc-cd.mid{--st:#F79009}.sc-cd.low{--st:#F04438}
+.sc-cd[data-wx]::after{content:attr(data-wx);position:absolute;right:-4px;top:12px;font-size:27px;line-height:1;opacity:.5;pointer-events:none;z-index:0}
+.sc-cd.wx-sun{background:radial-gradient(circle at 85% 30%,#FFE58A 0,#FFF3C4 45%,#FFFAEB 100%)}
+.sc-cd.wx-part{background:linear-gradient(160deg,#FFF6D6 0%,#EEF1F5 70%)}
+.sc-cd.wx-cloud{background:linear-gradient(170deg,#F2F4F7,#DDE2E8)}
+.sc-cd.wx-fog{background:linear-gradient(180deg,#F2F4F7 0%,#E4E7EC 50%,#F2F4F7 100%)}
+.sc-cd.wx-rain{background:repeating-linear-gradient(110deg,rgba(21,94,239,.13) 0 2px,transparent 2px 8px),linear-gradient(180deg,#DCE7F7,#C3D5EE)}
+.sc-cd.wx-snow{background:radial-gradient(circle,#fff 1.6px,transparent 2.2px) 0 0/9px 9px,radial-gradient(circle,#fff 1.2px,transparent 1.8px) 4px 5px/11px 11px,linear-gradient(180deg,#E6F0FB,#CFE0F5)}
+html body:not(#_):not(#_) #scCal .sc-cd.cold{border:2px solid #8EC0F0!important}
+.sc-wx-lg span::before{width:14px!important;height:11px!important;border-radius:3px!important}.sc-wx-lg .wx-sun{--b:#FFE58A}.sc-wx-lg .wx-cloud{--b:#DDE2E8}.sc-wx-lg .wx-rain{--b:repeating-linear-gradient(110deg,#7FA6E0 0 2px,#C3D5EE 2px 5px)}.sc-wx-lg .wx-snow{--b:radial-gradient(circle,#fff 1px,#CFE0F5 1.6px) 0 0/4px 4px}.sc-wx-lg .cold::before{border:2px solid #8EC0F0;background:#fff}
 html body:not(#_):not(#_) #scCal .sc-cd.now{outline:2px solid #155EEF!important;outline-offset:-2px!important}.sc-cd.fut{opacity:.45}.sc-cd:disabled{opacity:.3}
 .sc-cal-lg{display:flex;flex-wrap:wrap;gap:4px 10px;margin:8px 0 0;font-size:11.5px;font-weight:700;color:var(--ry-ink-3)}
 .sc-cal-lg span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px;vertical-align:-1px;background:var(--b)}
-.sc-cal-lg .ok{--b:#DCFAE6}.sc-cal-lg .mid{--b:#FEF0C7}.sc-cal-lg .low{--b:#FEE4E2}.sc-cal-lg .nt{--b:rgba(16,24,40,.12)}.sc-cal-lg .mm{--b:#155EEF}.sc-cal-lg .mm::before{width:6px;height:6px;border-radius:50%;vertical-align:1px}
+.sc-cal-lg .ok{--b:#17B26A}.sc-cal-lg .mid{--b:#F79009}.sc-cal-lg .low{--b:#F04438}.sc-cal-lg .nt{--b:rgba(16,24,40,.12)}.sc-cal-lg .mm{--b:#155EEF}.sc-cal-lg .mm::before{width:6px;height:6px;border-radius:50%;vertical-align:1px}
 .sc-ms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 .sc-ms div{display:flex;flex-direction:column;gap:1px;min-width:0;padding:8px 10px;border-radius:12px;background:var(--ry-sunken)}
 .sc-ms small{font-size:11.5px;font-weight:700;color:var(--ry-ink-3);white-space:nowrap}.sc-ms b{font-size:17px;font-weight:800;color:var(--ry-ink);font-variant-numeric:tabular-nums;white-space:nowrap}.sc-ms b span{margin-left:1px;font-size:12px;font-weight:700;color:var(--ry-ink-3)}
@@ -8069,6 +8080,7 @@ video {
        따로 떼어 쓰기 쉽게: scCalHtml(D) → HTML (D = getSetChallenge 응답) · 상태는 SC.cal {m, k} · 다시 그리기 scCalDraw() 는 #scCal 만 바꿈 ══ */
     var SC_WX_URL = 'https://api.open-meteo.com/v1/forecast?latitude=37.5446&longitude=127.0557&timezone=Asia%2FSeoul&past_days=92&forecast_days=1&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum';   /* 서버 getWeather 와 같은 성수동 좌표(_WX_LAT/_WX_LON) */
     SC.cal = { m: '', k: '', ms: [] }; SC.wx = null; SC.wxBusy = false; SC.wxFail = 0; SC.dayD = '';
+    function scWxCls(w) { var c = +w[0], k = c <= 1 ? 'sun' : c === 2 ? 'part' : c === 45 || c === 48 ? 'fog' : (c >= 71 && c <= 77) || c === 85 || c === 86 ? 'snow' : c >= 51 ? 'rain' : 'cloud'; return ' wx-' + k + (+w[1] <= 5 ? ' cold' : ''); }   /* 1109 날씨 = 칸 배경 · 최고 5° 이하 = 추운 날(얼음 테두리) */
     function scWxIc(c) { c = +c; return c <= 1 ? ['☀️', '맑음'] : c === 2 ? ['⛅', '구름 조금'] : c === 3 ? ['☁️', '흐림'] : c === 45 || c === 48 ? ['🌫️', '안개'] : (c >= 71 && c <= 77) || c === 85 || c === 86 ? ['❄️', '눈'] : c >= 95 ? ['🌧️', '뇌우'] : c >= 51 ? ['🌧️', c <= 57 ? '이슬비' : '비'] : ['☁️', '흐림']; }
     function scWxGet() { if (!SC.wx) { try { SC.wx = JSON.parse(localStorage.getItem('ry_sc_wx') || 'null'); } catch (e) {} if (!SC.wx || !SC.wx.d) SC.wx = { d: {}, at: 0 }; } return SC.wx; }   /* {d: {날짜: [날씨코드, 최고, 최저, 강수mm]}, at} */
     function scWxLoad(today) {   /* 지난 날씨는 한 번 받으면 그대로 · 오늘은 3시간마다 새로 · 실패하면 10분 쉬고 · 달력은 날씨 없이도 그려짐 */
@@ -8112,8 +8124,9 @@ video {
           mSum += v; if (d < t) { mPast += v; mN++; if (g) { mG++; if (v >= g) mHit++; } }
           if (g && v >= g) st = ' ok'; else if (g && d < t) st = v >= g * .7 ? ' mid' : ' low'; else { st = ' nt'; sty = ' style="--a:' + (.04 + .16 * v / mx).toFixed(3) + '"'; }   /* 목표 없는 날 · 오늘(집계 중) = 많을수록 진한 회색 */
         }
-        cells += '<button type="button" class="sc-cd' + st + (d === t ? ' now' : '') + (fut ? ' fut' : '') + (scDow(d) > 4 ? ' we' : '') + '"' + sty + (fut && !boss && !m ? ' disabled' : '') + ' onclick="scDayOpen(\'' + d + '\')" aria-label="' + scMd(d) + (v != null ? ' ' + v + '개' : '') + (wx ? ' ' + scWxIc(wx[0])[1] : '') + (m ? ' 메모 있음' : '') + '">'
-          + '<i>' + dd + (wx ? '<span aria-hidden="true">' + scWxIc(wx[0])[0] + '</span>' : '') + '</i><b>' + (v != null ? v : '') + '</b>' + (wx ? '<small>' + wx[1] + '/' + wx[2] + '°</small>' : '') + (m ? '<em></em>' : '') + '</button>';
+        var wc = wx ? scWxCls(wx) : '';   /* 1109 MJ '온도 숫자는 헷갈려 · 그림으로만 · 칸 배경이 날씨 이미지처럼' */
+        cells += '<button type="button" class="sc-cd' + st + (d === t ? ' now' : '') + (fut ? ' fut' : '') + (scDow(d) > 4 ? ' we' : '') + wc + '"' + (wx ? ' data-wx="' + scWxIc(wx[0])[0] + '"' : '') + (fut && !boss && !m ? ' disabled' : '') + ' onclick="scDayOpen(\'' + d + '\')" aria-label="' + scMd(d) + (v != null ? ' ' + v + '개' : '') + (wx ? ' ' + scWxIc(wx[0])[1] : '') + (m ? ' 메모 있음' : '') + '">'
+          + '<i>' + dd + '</i><b>' + (v != null ? v : '') + '</b>' + (m ? '<em></em>' : '') + '</button>';
       }
       var wk = [0, 1, 2, 3, 4, 5, 6].map(function () { return { s: 0, n: 0 }; }); past.forEach(function (d) { var j = scDow(d); wk[j].s += val(d); wk[j].n++; });
       var av = wk.map(function (x) { return x.n ? Math.round(x.s / x.n) : null; }), top = -1, amx = 1, nav = 0;
@@ -8124,7 +8137,7 @@ video {
         + (sets.length > 1 ? '<div class="sc-cal-chips" role="group" aria-label="세트 고르기">' + sets.map(function (x) { return '<button type="button" class="sc-chip" style="--sc:' + x.c + ';--sc-soft:' + x.soft + '" aria-pressed="' + (x.k === k) + '" onclick="scCalPick(\'' + x.k + '\')"><i></i>' + escapeHtml(x.label) + '</button>'; }).join('') + '</div>' : '')
         + '<div class="sc-cal-bd"><div class="sc-cal-l"><div class="sc-cal-h"><button type="button"' + (mi > 0 ? '' : ' disabled') + ' onclick="scCalMove(-1)" aria-label="지난달">◀</button><b>' + y + '년 ' + mo + '월</b><button type="button"' + (mi < S.ms.length - 1 ? '' : ' disabled') + ' onclick="scCalMove(1)" aria-label="다음 달">▶</button></div>'
         + '<div class="sc-cal-w" aria-hidden="true">' + '월화수목금토일'.split('').map(function (w) { return '<span>' + w + '</span>'; }).join('') + '</div><div class="sc-cal-g">' + cells + '</div>'
-        + '<p class="sc-cal-lg"><span class="ok">달성</span><span class="mid">70%↑</span><span class="low">70% 미만</span><span class="nt">목표 없음</span><span class="mm">메모</span></p></div>'
+        + '<p class="sc-cal-lg"><span class="ok">달성</span><span class="mid">70%↑</span><span class="low">70% 미만</span><span class="mm">메모</span></p><p class="sc-cal-lg sc-wx-lg"><span class="wx-sun">맑음</span><span class="wx-cloud">흐림</span><span class="wx-rain">비</span><span class="wx-snow">눈</span><span class="cold">추운 날</span></p></div>'
         + '<div class="sc-cal-r"><div class="sc-ms"><div><small>' + mo + '월 합계</small><b>' + mSum + '<span>개</span></b></div><div><small>하루 평균</small><b>' + (mN ? Math.round(mPast / mN) : '–') + '<span>' + (mN ? '개' : '') + '</span></b></div><div><small>목표 달성</small><b>' + (mG ? mHit + '<span>/' + mG + '일</span>' : '–') + '</b></div></div>'
         + '<h4>요일 평균 <small>지난 ' + past.length + '일</small></h4><div class="sc-wd" role="list">' + av.map(function (a, j) { return '<div role="listitem"' + (j === top ? ' class="top"' : '') + ' aria-label="' + '월화수목금토일'.charAt(j) + '요일 평균 ' + (a == null ? '없음' : a + '개') + '"><em>' + (j === top ? '<u>👑</u>' : '') + (a == null ? '–' : a) + '</em><span><i style="height:' + (a ? Math.max(4, a / amx * 100) : 0).toFixed(0) + '%"></i></span><b>' + '월화수목금토일'.charAt(j) + '</b></div>'; }).join('') + '</div>'
         + (tips.length ? '<div class="sc-tips">' + tips.map(function (x) { return '<p>' + x + '</p>'; }).join('') + '</div>' : '')
