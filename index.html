@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw8ln1vs">
+  <meta name="ry-build" content="mw8lrexj">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4270,7 +4270,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 .ry-fly-dock svg{width:16px;height:16px;color:#155EEF;flex:none}.ry-fly-dock b{color:#155EEF;font-weight:800;display:inline-block}
 @media(prefers-reduced-motion:reduce){.ry-req-now{animation:none}}
 </style>
-<style id="rySc1026">/* 1026 세트 2주 집중 대시보드 (MJ 가 매일 아침 전날 판매 입력) → 1109 🎯 이번 주 목표 */
+<style id="rySc1026">.sc-fixbtn{display:block;width:100%;margin:0 0 12px;padding:8px 12px;border:1px dashed #D0D5DD;border-radius:12px;background:transparent;color:#475467;font-size:13px;text-align:left;min-height:0!important}.sc-fixbtn small{color:#98A2B3;margin-left:6px;font-size:12px}/* 1026 세트 2주 집중 대시보드 (MJ 가 매일 아침 전날 판매 입력) → 1109 🎯 이번 주 목표 */
 .sc{display:grid;gap:12px;max-width:760px;margin:0 auto}
 .sc-today,.sc-card{background:#fff;border:1px solid var(--ry-line);border-radius:20px;padding:16px}
 .sc-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:12px}
@@ -7921,7 +7921,8 @@ video {
         var days = scDays(w), left = days.filter(function (d) { return d >= t; }).length, nth = days.indexOf(t) + 1;
         h += '<section class="sc-card sc-head"><div class="sc-hd"><div><b>🎯 이번 주 목표</b><span>' + scMd(w.from) + ' ~ ' + scMd(w.to) + (nth > 0 ? ' · ' + nth + '일째 · 오늘 포함 ' + left + '일 남음' : '') + '</span></div>' + (boss ? '<button type="button" class="sc-edit" onclick="scFormOpen()">목표 정하기</button>' : '') + '</div>'
           + (w.note ? '<p class="sc-memo">📣 ' + escapeHtml(w.note) + '</p>' : '') + '</section>';
-        if (scAdm()) h += scInHtml(c, w, t);   /* MJ(문준만): 판매 넣기 — 1026 '수시로 숫자를 적어 넣게' */
+        /* 1109 MJ '판매 넣기 칸 필요해? POS로 자동으로 올라가잖아' → 평소엔 숨김(POS 30분마다 자동) · POS 로그인이 풀린 날 고치기용 작은 버튼만 */
+        if (scAdm()) h += SC.inOpen ? scInHtml(c, w, t) : '<button type="button" class="sc-fixbtn" onclick="SC.inOpen=1;scRender()">✏️ 숫자 직접 고치기 <small>평소엔 POS에서 30분마다 자동</small></button>';
         h += '<div class="sc-sets">' + SC_SETS.map(function (s) {
           var G = (w.goal && w.goal[s.k]) || 0, dg = scGoal(c, nth > 0 ? t : w.from, s.k), sum = 0, sumB = 0;
           days.forEach(function (d) { if (d <= t) { var v = scV(d, s.k) || 0; sum += v; if (d < t) sumB += v; } });   // 오늘 넣은 것도 합계에 · 남은 하루 개수는 어제까지 기준
