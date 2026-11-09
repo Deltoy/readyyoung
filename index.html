@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw8xivjz">
+  <meta name="ry-build" content="mw8zr99g">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -2708,6 +2708,7 @@ html body:not(#_):not(#_) .ry-delay.has{border:0!important;background:var(--ry-w
 body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 input,textarea,select,[contenteditable="true"]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 #loading.sync-pill{background-image:linear-gradient(90deg,rgba(21,94,239,.16) var(--syncp,0%),transparent var(--syncp,0%))!important;transition:background-image .2s}   /* 1109 동기화 진행 막대 */
+#inb1R{max-height:min(48vh,400px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}.inb1-rw{position:relative}#inb1R{padding-right:10px}.inb1-bar{position:absolute;right:1px;width:6px;border-radius:3px;background:#98A2B3;pointer-events:none;transition:top .05s linear}.inb1-cnt{position:sticky;top:0;z-index:1;background:#fff;margin:0 0 6px;padding:4px 2px;font-size:13px;font-weight:600;color:#475467}/* 1109 입고하기 검색 결과 40개까지 · 상자 안 스크롤 */
 </style>
 <style id="ry25-design">
 /* ═══════════ 0925 디자인 시스템 — 밝은 머리 · 파이프라인 · 카드 (맨 마지막에 둬서 이전 규칙을 덮는다) ═══════════
@@ -13486,14 +13487,23 @@ video {
     if (window.visualViewport) visualViewport.addEventListener('resize', function () { if (!INB1.pad || visualViewport.height < INB1.vh0 - 80) return; INB1.pad = 0; INB1.vh0 = 0; var pd = document.getElementById('inb1Pad'); if (pd) pd.style.height = '0px'; });   // 키보드 내려가면 빈 자리 없앰
     function inb1Search(q) {
       var box = document.getElementById('inb1R'); if (!box) return; q = String(q || '').replace(/\s+/g, '').toLowerCase();
-      if (q.length < 2) { box.innerHTML = ''; return; }
+      if (q.length < 2) { box.innerHTML = ''; inb1Bar(); return; }
       if (!RY_CAT || !RY_CAT.items) { try { ryCatLoad(true); } catch (e) {} box.innerHTML = '<div class="inv-n">상품 목록 불러오는 중… 다시 쳐 주세요</div>'; return; }
       var live = inb1Live(), mt = function (x) { return String(x.name).replace(/\s+/g, '').toLowerCase().indexOf(q) >= 0; }, seen = {};
       var hit = Object.keys(live).map(function (r) { return live[r]; }).filter(mt).concat(RY_CAT.items.filter(function (x) { return mt(x) && !/취급안함/.test(String(x.note || '')); }))
-        .filter(function (x) { if (seen[x.rowNumber]) return false; seen[x.rowNumber] = 1; return true; }).slice(0, 6);   // 1026 입고대기 주문 먼저 · 폰 키보드 위에 다 보이게 6개
+        .filter(function (x) { if (seen[x.rowNumber]) return false; seen[x.rowNumber] = 1; return true; }).slice(0, 40);   /* 1026 입고대기 주문 먼저 · 1109 MJ '산리오' 주문 5개가 6칸을 다 써서 피규어칫솔이 안 나옴 → 40개 + 상자 안에서 스크롤 */
       box.innerHTML = hit.length ? hit.map(function (x) { var nm = String(x.name).split('\n')[0], im = typeof invImgOf === 'function' ? invImgOf(x) : x.imgUrl, o = live[x.rowNumber], got = INB1.pick[x.rowNumber] || INB1.add.some(function (a) { return a.row === x.rowNumber; });
         return '<button type="button" class="' + (o ? 'is-o' : '') + '" data-r="' + x.rowNumber + '" data-n="' + escapeHtml(nm) + '" onclick="inb1Add(+this.dataset.r, this.dataset.n)">' + (im ? '<img src="' + escapeHtml(im) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : '<i class="inv-noimg">📦</i>') + '<span>' + escapeHtml(nm) + (o ? '<small>주문 있음 · ' + escapeHtml(String(o.targetQty || '') + (o.unit || '개')) + (o.requester ? ' · ' + escapeHtml(o.requester) : '') + '</small>' : '') + '</span><b>' + (got ? '✓' : '＋') + '</b></button>'; }).join('') /* 1023 MJ '검색했을 때 사진도 간략하게' */ : '<div class="inv-n">앱에 없는 상품이에요</div>';
       box.innerHTML += '<button type="button" class="inb1-new" data-q="' + escapeHtml(String(document.getElementById('inb1S').value || '').trim()) + '" onclick="inb1New(this.dataset.q)">🆕 앱에 없는 상품이면 → 새 상품으로 등록하고 입고</button>';   // 1023 MJ '명세서도 없고 물류앱에도 없으면 바로 새 상품 등록 옵션'
+      if (hit.length > 5) box.insertAdjacentHTML('afterbegin', '<div class="inv-n inb1-cnt">🔎 ' + hit.length + (hit.length >= 40 ? '개 넘게' : '개') + ' 찾았어요 · 아래로 밀면 더 있어요</div>');   /* 1109 MJ '스크롤로 더 · 옆에 슬라이드 바' */
+      box.scrollTop = 0; inb1Bar();
+    }
+    /* 1109 MJ '옆에 슬라이드 바 같은 게 있어서 더 있으면 찾아볼 수 있게' — 아이폰은 스크롤바를 숨겨서 직접 그린 막대 (#inb1R 오른쪽, 스크롤 위치 따라 움직임) */
+    function inb1Bar() {
+      var b = document.getElementById('inb1R'); if (!b) return; var w = b.parentElement;
+      if (!w.classList.contains('inb1-rw')) { w = document.createElement('div'); w.className = 'inb1-rw'; b.parentNode.insertBefore(w, b); w.appendChild(b); var t0 = document.createElement('i'); t0.className = 'inb1-bar'; t0.setAttribute('aria-hidden', 'true'); w.appendChild(t0); b.addEventListener('scroll', inb1Bar, { passive: true }); }
+      var t = w.querySelector('.inb1-bar'), sh = b.scrollHeight, ch = b.clientHeight; if (sh <= ch + 2) { t.hidden = true; return; }
+      var h = Math.max(32, ch * ch / sh); t.hidden = false; t.style.height = h + 'px'; t.style.top = (b.offsetTop + (ch - h) * b.scrollTop / (sh - ch)) + 'px';
     }
     function inb1BoxStr(a) { var q = a.qty || 0, b = Math.floor(q / a.bu), r = q % a.bu; return q ? '= ' + (b ? b + '박스' : '') + (b && r ? ' + ' : '') + (r ? r + '개' : '') : '1박스 = ' + a.bu + '개'; }
     function inb1BoxTxt(k) { var a = INB1.add[k], el = document.getElementById('inb1Bx' + k); if (a && a.bu && el) el.textContent = inb1BoxStr(a); }
