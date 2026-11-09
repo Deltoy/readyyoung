@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw8h0dwx">
+  <meta name="ry-build" content="mw8kmuum">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -13188,6 +13188,16 @@ video {
       });
       invDo_(dp);
     }
+    function inbResumePending() {   /* 1109 끊긴 명세서 입고 마저 하기: 같은 사람·6시간 안·아직 입고대기인 줄만, 서버에 이미 저장됐는지(inbSavedCheck) 먼저 확인 */
+      var p = null; try { p = JSON.parse(localStorage.getItem('ry_inb_pend') || 'null'); localStorage.removeItem('ry_inb_pend'); } catch (e) { return; }
+      if (!p || !p.rows || Date.now() - p.at > 6 * 3600e3 || p.who !== currentSelectedMember) return;
+      var nm = {}; (cachedInboundItems || []).forEach(function (it) { nm[it.rowNumber] = String(it.name || '').split('\n')[0]; });
+      var left = p.rows.filter(function (r) { return nm[r]; }); if (!left.length) return;
+      showToast('지난번에 끊긴 입고 ' + left.length + '개를 마저 처리할게요', 3500);
+      var k = 0, go = function () { if (k >= left.length) { loadAllData(true, true, true); return; } var r = left[k++];
+        inbSavedCheck(r, nm[r], '', go, function () { completeInbound(r, true, function () { go(); }); }); };
+      go();
+    }
     async function invDo_(dp) {
       var rows = invPicked(), gs = invExtras(), ex = gs.reduce(function (a, g) { return a.concat(g.ex); }, []), nw = ex.filter(function (x) { return x.newItem; }).length;
       var bRows = inb1Picked().filter(function (r) { return rows.indexOf(r) < 0; }), adds = inb1Adds();   // 1023 명세서 없이 온 주문 · 주문 안 한 것
@@ -13240,7 +13250,10 @@ video {
       invClose(true);
       if (!rows.length && adds.length) { showToast('주문 안 한 상품 ' + adds.length + '개 입고했어요', 3000); setTimeout(function () { try { loadAllData(true, true, true); } catch (e) {} }, 2500); }
       var okN = 0, bad = [], k0 = 0, nm = {}; (cachedInboundItems || []).forEach(function (it) { nm[it.rowNumber] = String(it.name).split('\n')[0]; });
+      /* 1109 MJ '명세서에 후시딘도 있었는데 입력이 안 됐어' — '입고 처리 중 1/2' 에서 앱을 나가면 남은 줄이 안 보내짐 → 남은 줄을 기기에 적어 두고 다음에 열 때 마저 (inbResumePending) */
+      var pendSave = function () { try { if (k0 >= rows.length) localStorage.removeItem('ry_inb_pend'); else localStorage.setItem('ry_inb_pend', JSON.stringify({ who: currentSelectedMember, rows: rows.slice(k0), at: Date.now() })); } catch (eP) {} };
       var next = function () {
+        pendSave();
         if (k0 >= rows.length) { loadAllData(true, true, true); if (bad.length) alert('입고 처리 안 된 상품이 있어요 (다시 눌러 주세요):\n' + bad.join('\n')); else showToast(okN + '개 입고완료 처리했어요' + (adds.length ? ' · 주문 안 한 상품 ' + adds.length + '개도' : ''), 3000); return; }
         var row = rows[k0++]; showToast('입고 처리 중… ' + k0 + '/' + rows.length, 1500);
         completeInbound(row, true, function (ok, msg) { if (ok) okN++; else bad.push((nm[row] || row + '행') + (msg ? ' · ' + msg : '')); next(); });
@@ -13935,6 +13948,7 @@ video {
           }
           applyDashboardData(res);
           setSyncState('done');
+          if (!loadAllData._resumed && currentSelectedMember) { loadAllData._resumed = 1; setTimeout(function () { try { inbResumePending(); } catch (eR) {} }, 1500); }   /* 1109 서버에서 받은 뒤 한 번 · 캐시 응답이어도 줄마다 inbSavedCheck 로 서버 확인 */
         })
         .withFailureHandler(function(err) {
           finish();
