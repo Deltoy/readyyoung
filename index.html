@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw8u8jx6">
+  <meta name="ry-build" content="mw8x9hg1">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -13864,6 +13864,10 @@ video {
       if (nInv) cf.items.push({ t: 'warn', h: '명세서 이름과 앱 상품이 같은지 확인했나요?' });
       if (rows.length) cf.items.push({ h: '입고완료 ' + rows.length + '개' + (bRows.length ? ' (명세서 없는 주문 ' + bRows.length + '개 포함)' : '') });
       if (adds.length) cf.items.push({ h: '주문 안 한 상품 ' + adds.length + '개', d: adds.map(function (a) { return (a.isNew ? '🆕 ' : '') + a.name.slice(0, 18) + '  ' + a.qty + '개'; }).join('\n') + (adds.some(function (a) { return a.isNew; }) ? '\n🆕 = 새 상품으로 등록' : '') });
+      /* 1109 MJ '사진 한 번 올린 것 같은데 입고 기록 3번' — 오늘 이미 '주문 없이 입고'한 상품을 또 고르면 맨 위에 경고 (사진만 넣으려다 입고가 또 됨) */
+      var _td = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10).replace(/-/g, '.'), _nk = function (x) { return String(x || '').split('\n')[0].replace(/\s+/g, ''); };
+      var again = adds.map(function (a) { var h = (cachedHistoryItems || []).filter(function (h) { return /^주문없이입고/.test(h.requester || '') && h.inboundDate === _td && _nk(h.name) === _nk(a.name); }); return h.length ? a.name.slice(0, 18) + '  오늘 ' + h.map(function (x) { return (x.inTime || '').slice(0, 5) + ' ' + (x.targetQty || '') + '개'; }).join(', ') : ''; }).filter(Boolean);
+      if (again.length) cf.items.unshift({ t: 'bad', h: '오늘 이미 입고한 상품이에요 · 또 입고돼요', d: again.join('\n') + '\n사진만 넣으려면 [취소] → 검색에서 상품 사진 칸을 눌러 주세요' });
       if (ex.length) cf.items.push({ h: '주문 안 한 상품 ' + ex.length + '개도 재고에 넣어요' + (nw ? ' (새 상품 ' + nw + '개 등록)' : '') });
       if (rows.length || diff.length) cf.note = '잘못 넣었으면 입고내역에서 ⏪ 되돌리기';
       cf.icon = 'box'; cf.sub = (currentSelectedMember || '') + ' 님 이름으로 입고돼요';
@@ -15108,7 +15112,7 @@ video {
         try { if (!q.row) ryCatLoad(true); } catch (e) {}
         try { loadAllData(true, true, true); } catch (e) {}
       }).withFailureHandler(function (e) { alert('[' + name + '] ' + n + '개 입고가 저장되지 않았어요: ' + (e && e.message ? e.message : e) + '\n검색해서 [📦 바로 입고]를 다시 눌러 주세요.'); })
-        .quickInbound({ name: name, qty: n, reason: why, custom: custom, photo: q.photo, isNew: !q.row }, currentSelectedMember);
+        .quickInbound({ name: name, qty: n, reason: why, custom: custom, photo: q.photo, isNew: !q.row, prodPhoto: q.row ? '' : q.photo }, currentSelectedMember);   /* 1109 새 상품은 찍은 사진을 상품 사진으로도 (듀얼소닉 알토 사진 빠짐 → 사진 넣으려다 입고 3번) */
     }
     /* 1105 MJ '검색창 하나에서 다 — 상태가 입고 대기면 바로 입고완료' : 검색 결과의 입고 대기 상품에 [입고 완료] (입고 대기 탭과 같은 completeInbound → 확인창 · 근무 확인(문준 면제) · ⏪ 되돌리기 그대로) */
     function rySrInbInfo(item) {
