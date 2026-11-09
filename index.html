@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw8lrexj">
+  <meta name="ry-build" content="mw8nrb5b">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1635,6 +1635,65 @@ html body:not(#_):not(#_) .st-opt.dis{color:var(--ry-bad)!important}
 /* 1029 대시보드 v2 (#dshPage) — 세트 화면(#setPage)과 같은 전체 화면 · 앱 테마(400/600 · 그림자 없음 · var(--ry-brand)) 에 맞춤 · 검수 3팀 반영 */
 #dshPage{position:fixed;inset:0;z-index:60;background:var(--ry-canvas);display:none;flex-direction:column}
 #dshPage.on{display:flex}
+/* 1109 📊 판매 목표 전체 화면 (#slPage) — 세트 화면과 같은 틀 · 🎉 행사 효과 */
+#slPage{position:fixed;inset:0;z-index:60;background:var(--ry-canvas);display:none;flex-direction:column}
+#slPage.on{display:flex}
+#slPage .sp-seg button{white-space:nowrap}
+.ef-chip{flex:none;display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 10px;border-radius:999px;font-size:12.5px;font-weight:700;white-space:nowrap}
+.ef-chip.ef-good{background:#ECFDF3;color:#067647}.ef-chip.ef-meh{background:#FFFAEB;color:#B54708}.ef-chip.ef-bad{background:#FEF3F2;color:#B42318}.ef-chip.ef-na,.ef-chip.ef-wait{background:#F2F4F7;color:#475467}
+.ef-sum{margin:0;padding:12px 14px;border-radius:14px;background:#F5F8FF;color:var(--ry-ink);font-size:14px;line-height:1.6;font-weight:600}
+.ef-key{display:flex;flex-wrap:wrap;gap:6px 12px;margin:10px 0 0;font-size:12px;font-weight:600;color:var(--ry-ink-3)}
+.ef-list{display:grid;gap:8px}
+.ef-row{display:flex;align-items:center;gap:12px;width:100%;min-height:72px;padding:12px;border:1px solid var(--ry-line);border-radius:16px!important;background:#fff;text-align:left;color:var(--ry-ink);font:inherit}
+.ef-row:hover{background:#F9FAFB}.ef-row:active{transform:scale(.99)}
+.ef-rk{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#F2F4F7;color:var(--ry-ink-2);font-size:14px;font-weight:800}.ef-rk.top{background:#155EEF;color:#fff}
+.ef-m{flex:1;min-width:0;display:grid;gap:3px}
+.ef-t{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.ef-t b{font-size:15px;font-weight:800;overflow-wrap:anywhere}
+.ef-m small{font-size:12.5px;color:var(--ry-ink-3);font-weight:600}
+.ef-l{font-size:13.5px;color:var(--ry-ink-2);line-height:1.5}.ef-l b{color:var(--ry-ink)}.ef-l em{font-style:normal;font-weight:800;color:#155EEF}.ef-l em.dn{color:#B42318}
+.ef-go{flex:none;font-size:22px;color:#98A2B3}
+.ef-back{justify-self:start;min-height:40px;padding:0 12px 0 8px;border:0;border-radius:10px!important;background:transparent;color:#155EEF;font-size:14px;font-weight:700}
+.ef-hero.ef-good{border-color:#ABEFC6}.ef-hero.ef-bad{border-color:#FECDCA}.ef-hero.ef-meh{border-color:#FEDF89}
+.ef-cmp{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) minmax(0,1.1fr);gap:8px;align-items:stretch}
+.ef-cmp>div{display:flex;flex-direction:column;gap:2px;padding:10px;border-radius:14px;background:#F9FAFB;min-width:0}
+.ef-cmp>div.on{background:#EFF4FF}.ef-cmp>i{align-self:center;font-style:normal;color:#98A2B3;font-weight:700}
+.ef-cmp small{font-size:11.5px;color:var(--ry-ink-3);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ef-cmp b{font-size:24px;font-weight:800;letter-spacing:-.02em;line-height:1.2}.ef-cmp b span{font-size:13px;font-weight:600;margin-left:1px}
+.ef-cmp>div.on b{color:#155EEF}
+.ef-lift{background:#fff!important;border:1px solid var(--ry-line)}
+.ef-good .ef-lift b{color:#067647}.ef-bad .ef-lift b{color:#B42318}.ef-meh .ef-lift b{color:#B54708}
+.ef-why{margin:10px 0 0;font-size:13px;color:var(--ry-ink-3);font-weight:600;line-height:1.5}
+.ef-next{margin:12px 0 0;padding:10px 12px;border-radius:12px;background:#F9FAFB;font-size:14px;font-weight:600;line-height:1.55;color:var(--ry-ink)}
+.ef-ch{position:relative}
+.ef-seg{display:flex;gap:2px;margin-bottom:22px;font-size:11.5px;font-weight:700;text-align:center}
+.ef-seg span{min-width:0;padding:3px 0;border-radius:6px;white-space:nowrap;overflow:hidden}
+.ef-seg .p0{background:#F2F4F7;color:#475467}.ef-seg .p1{background:#155EEF;color:#fff}.ef-seg .p2{background:#EFF4FF;color:#155EEF}
+.ef-bars{position:relative;display:flex;align-items:flex-end;gap:2px;height:150px;border-bottom:1px solid var(--ry-line)}
+.ef-b{position:relative;flex:1 1 0;min-width:0;border-radius:4px 4px 0 0;background:#D0D5DD;cursor:pointer;transform-origin:bottom;animation:efGrow .5s cubic-bezier(.2,.8,.2,1) both}
+.ef-b.p1{background:#155EEF}.ef-b.p2{background:#B2CCFF}.ef-b.no{background:transparent}
+.ef-b i{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);font-style:normal;font-size:10px;line-height:1.4;pointer-events:none}
+@keyframes efGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@media (prefers-reduced-motion:reduce){.ef-b{animation:none}}
+.ef-av{position:absolute;left:0;right:0;height:0;border-top:1.5px dashed #667085;text-decoration:none;pointer-events:none}
+.ef-av.d{border-color:#155EEF}
+.ef-av em{position:absolute;right:0;bottom:2px;font-style:normal;font-size:11px;font-weight:700;padding:0 4px;border-radius:4px;background:rgba(255,255,255,.9);color:#475467}
+.ef-av.d em{color:#155EEF;bottom:auto;top:2px}
+.ef-xs{position:relative;height:20px;font-size:11.5px;color:var(--ry-ink-3);font-weight:600}
+.ef-xs span{position:absolute;top:4px;transform:translateX(-50%);white-space:nowrap}.ef-xs span.l{transform:none}.ef-xs span.r{transform:translateX(-100%)}
+.ef-xs span.l{left:0!important}.ef-xs span.r{left:100%!important}
+.ef-lg{display:flex;flex-wrap:wrap;gap:6px 14px;margin:10px 0 0;font-size:12px;font-weight:600;color:var(--ry-ink-3)}
+.ef-lg span::before{content:'';display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:#D0D5DD}
+.ef-lg .p1::before{background:#155EEF}.ef-lg .p2::before{background:#B2CCFF}.ef-lg .av::before{height:0;border-top:1.5px dashed #667085;border-radius:0;vertical-align:3px}
+.ef-aft{margin:0;font-size:14px;line-height:1.7;color:var(--ry-ink-2)}.ef-aft b{color:var(--ry-ink)}
+.ef-tb{display:grid;font-size:13.5px}
+.ef-tr{display:grid;grid-template-columns:minmax(0,1fr) 42px 54px 58px 52px;gap:6px;align-items:center;min-height:48px;border-bottom:1px solid var(--ry-line)}
+.ef-tr:last-child{border-bottom:0}.ef-tr span{text-align:right;font-variant-numeric:tabular-nums}.ef-tr span:first-child{text-align:left;font-weight:700;overflow-wrap:anywhere;line-height:1.4}
+.ef-th{min-height:32px;font-size:12px;color:var(--ry-ink-3);font-weight:700}.ef-th span:first-child{font-weight:700}
+.ef-tr .up{color:#067647;font-weight:800}.ef-tr .dn{color:#B42318;font-weight:800}.ef-tr .mid{color:#B54708;font-weight:800}
+.ef-miss{margin:0;padding:10px 12px;border-radius:12px;background:#FFFAEB;border:1px solid #FEDF89;color:#7A2E0E;font-size:13px;font-weight:600;line-height:1.5;overflow-wrap:anywhere}
+.ef-fh{margin:8px 0 0;font-size:12.5px;color:var(--ry-ink-3);font-weight:600}
+.ef-none{margin:0;font-size:13px;color:var(--ry-ink-3)}
+@media (max-width:420px){.ef-cmp{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}.ef-lift{grid-column:1/-1;flex-direction:row!important;align-items:baseline;gap:8px!important}.ef-cmp b{font-size:22px}}
 #dshPage .sp-head{padding-left:max(12px,calc((100% - 1180px)/2));padding-right:max(12px,calc((100% - 1180px)/2))}
 #dshPage .sp-head b small{display:block;font-size:12px;font-weight:400;color:var(--ry-ink-3)}
 #dshPage .sp-head>button:last-child{justify-self:end}
@@ -4436,6 +4495,52 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 .sc-btn2{background:#fff;color:var(--ry-ink);border:1px solid var(--ry-line)}
 .sc-set .sc-wk-s span{white-space:nowrap}
 @media(min-width:768px){.sc-sets,.sc-charts{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}}
+/* 1109 📅 날짜별 판매 — 달력(그날 하루 목표 대비 색 · 날씨 · 메모 점) · 요일 평균 · 한 줄 정리 · 그날 시트 */
+.sc-cal-chips{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 12px}
+.sc-chip{min-height:44px;max-width:100%;padding:0 14px;border:1px solid var(--ry-line);border-radius:999px!important;background:#fff;color:var(--ry-ink-2);font-size:13.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.sc-chip i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--sc)}
+.sc-chip[aria-pressed="true"]{border-color:var(--sc);background:var(--sc-soft);color:var(--sc);font-weight:800}
+.sc-cal-bd{display:grid;gap:14px}.sc-cal-l,.sc-cal-r{min-width:0}
+.sc-cal-h{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:6px}.sc-cal-h b{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+.sc-cal-h button{width:44px;min-height:44px!important;border:0;border-radius:12px!important;background:var(--ry-sunken);color:var(--ry-ink-2);font-size:13px}.sc-cal-h button:disabled{opacity:.3}
+.sc-cal-w,.sc-cal-g{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
+.sc-cal-w span{text-align:center;font-size:11px;font-weight:700;color:var(--ry-ink-3);padding:2px 0}.sc-cal-w span:nth-child(n+6){color:#D92D20}
+.sc-cd{position:relative;min-width:0;min-height:58px!important;padding:3px 2px!important;border:0;border-radius:10px!important;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:1px;color:var(--ry-ink);overflow:hidden;font-variant-numeric:tabular-nums}
+.sc-cd i{align-self:stretch;display:flex;justify-content:space-between;align-items:center;padding:0 2px;font-style:normal;font-size:11px;font-weight:700;color:var(--ry-ink-3);line-height:1.25}
+.sc-cd i span{font-size:10.5px;line-height:1}
+.sc-cd b{font-size:15px;font-weight:800;line-height:1.15;min-height:17px}
+.sc-cd small{font-size:9px;font-weight:600;color:var(--ry-ink-3);letter-spacing:-.04em;white-space:nowrap;line-height:1.2}
+.sc-cd em{position:absolute;top:5px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:#155EEF}
+.sc-cd.we i{color:#D92D20}
+.sc-cd.ok{background:#DCFAE6;color:#067647}.sc-cd.mid{background:#FEF0C7;color:#B54708}.sc-cd.low{background:#FEE4E2;color:#B42318}.sc-cd.nt{background:rgba(16,24,40,var(--a))}
+html body:not(#_):not(#_) #scCal .sc-cd.now{outline:2px solid #155EEF!important;outline-offset:-2px!important}.sc-cd.fut{opacity:.45}.sc-cd:disabled{opacity:.3}
+.sc-cal-lg{display:flex;flex-wrap:wrap;gap:4px 10px;margin:8px 0 0;font-size:11.5px;font-weight:700;color:var(--ry-ink-3)}
+.sc-cal-lg span::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px;vertical-align:-1px;background:var(--b)}
+.sc-cal-lg .ok{--b:#DCFAE6}.sc-cal-lg .mid{--b:#FEF0C7}.sc-cal-lg .low{--b:#FEE4E2}.sc-cal-lg .nt{--b:rgba(16,24,40,.12)}.sc-cal-lg .mm{--b:#155EEF}.sc-cal-lg .mm::before{width:6px;height:6px;border-radius:50%;vertical-align:1px}
+.sc-ms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.sc-ms div{display:flex;flex-direction:column;gap:1px;min-width:0;padding:8px 10px;border-radius:12px;background:var(--ry-sunken)}
+.sc-ms small{font-size:11.5px;font-weight:700;color:var(--ry-ink-3);white-space:nowrap}.sc-ms b{font-size:17px;font-weight:800;color:var(--ry-ink);font-variant-numeric:tabular-nums;white-space:nowrap}.sc-ms b span{margin-left:1px;font-size:12px;font-weight:700;color:var(--ry-ink-3)}
+.sc-cal-r h4{display:flex;justify-content:space-between;align-items:baseline;margin:12px 0 6px;font-size:13.5px;font-weight:800}.sc-cal-r h4 small{font-size:11.5px;font-weight:600;color:var(--ry-ink-3)}
+.sc-wd{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;height:88px}
+.sc-wd div{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0}
+.sc-wd em{font-style:normal;font-size:12.5px;font-weight:800;color:var(--ry-ink-2);font-variant-numeric:tabular-nums;white-space:nowrap;letter-spacing:-.03em}
+.sc-wd span{flex:1;display:flex;align-items:flex-end;width:100%;max-width:28px;border-radius:6px;background:var(--ry-sunken);overflow:hidden}
+.sc-wd span i{width:100%;border-radius:6px;background:var(--sc);opacity:.35}
+.sc-wd .top i{opacity:1}.sc-wd .top em{color:var(--sc)}.sc-wd em u{text-decoration:none;font-size:10px;margin-right:1px}
+.sc-wd b{font-size:12px;font-weight:700;color:var(--ry-ink-3)}
+.sc-tips{display:grid;gap:6px;margin-top:10px}
+.sc-tips p{margin:0;padding:9px 12px;border-radius:12px;background:#F5F8FF;color:#1849A9;font-size:13px;font-weight:600;line-height:1.5;word-break:keep-all;overflow-wrap:anywhere}.sc-tips b{color:#155EEF}
+.sc-bw{margin:10px 0 0;font-size:13px;font-weight:600;color:var(--ry-ink-2);line-height:1.6;word-break:keep-all}.sc-bw b{color:var(--ry-ink)}
+@media(min-width:900px){.sc-cal-bd{grid-template-columns:minmax(0,1fr) 280px;gap:20px}.sc-cal-r{display:flex;flex-direction:column}.sc-wd{flex:1;height:auto;min-height:110px}.sc-cd{min-height:72px!important;padding:5px 4px!important}.sc-cd b{font-size:19px;min-height:22px}.sc-cd small{font-size:11px}.sc-cd i,.sc-cd i span{font-size:12px}.sc-chip{min-height:36px}}
+.sc-day .sc-dw{margin:2px 0 10px;font-size:14px;font-weight:600;color:var(--ry-ink-2)}
+.sc-dl{display:grid;gap:6px}
+.sc-dr{display:grid;grid-template-columns:minmax(0,1fr) auto 76px;gap:8px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--ry-sunken)}
+.sc-dr span{font-size:14px;font-weight:800;color:var(--sc);overflow-wrap:anywhere}
+.sc-dr b{font-size:18px;font-weight:800;color:var(--ry-ink);font-variant-numeric:tabular-nums;white-space:nowrap}.sc-dr b small{font-size:12.5px;font-weight:700;color:var(--ry-ink-3)}
+.sc-dr em{justify-self:end;font-style:normal;font-size:12px;font-weight:800;border-radius:999px;padding:3px 9px;background:#fff;color:var(--ry-ink-2);white-space:nowrap}.sc-dr em:empty{display:none}.sc-dr em.ok{background:#DCFAE6;color:#067647}.sc-dr em.mid{background:#FEF0C7;color:#B54708}.sc-dr em.low{background:#FEE4E2;color:#B42318}
+.sc-dm{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:#FFFAEB;border:1px solid #FEDF89;color:#7A2E0E;font-size:14px;font-weight:600;overflow-wrap:anywhere}.sc-dm small{color:#B54708;font-weight:600}
+.sc-dme{display:flex;gap:8px;margin-top:10px}.sc-dme input{flex:1;min-width:0;min-height:44px;border:1px solid var(--ry-line);border-radius:12px;padding:0 10px;font-size:16px;background:#fff;color:var(--ry-ink)}.sc-dme .sc-btn{flex:none}
+.sc-dmh{display:block;margin-top:4px;font-size:12px;color:var(--ry-ink-3)}
 </style>
 <style id="twPre">/* Tailwind 3.4.17 미리 만든 것 — ~/bin/tw-build.js 가 배포 때마다 다시 만듦, 손으로 고치지 말 것 */
 *, ::before, ::after {
@@ -6074,7 +6179,7 @@ video {
         <button type="button" class="ry-ghost ry-quick" onclick="invOpen()" title="명세서 · 명세서 없이 온 주문 · 주문 안 한 상품을 한 화면에서 한 번에 입고">📦 입고하기</button>
         <button type="button" class="ry-ghost ry-quick ry-surge-q" id="surgeQuick" onclick="rySurgeOpen()" title="최근 3일 판매가 평소의 2배 넘게 뛴 상품 (매일 아침 POS 판매량 기준)" hidden>🔥 급상승<i id="surgeQuickN"></i></button>
         <button type="button" class="ry-ghost ry-quick" onclick="openSetPage(); spShow('sets')" title="세트 상품 · 박스 재고 · 오늘 만든 세트 기록">🎁 세트 상품<i id="bxDot" class="bx-today" hidden>박스 아직</i></button>
-        <button type="button" class="ry-ghost ry-quick" id="scQuick" onclick="scOpen()" title="이번 주 세트 목표" hidden>🎯 <span class="qm-long">이번 </span>주 목표<i id="scQuickN"></i></button>
+        <button type="button" class="ry-ghost ry-quick" id="scQuick" onclick="slOpen()" title="주 목표 · 날짜별 판매 · 행사 효과">📊 판매 목표<i id="scQuickN"></i></button>
         <button type="button" class="ry-ghost ry-quick" onclick="window.open('https://pallang-0258.github.io/seongsu/viewer.html', '_blank', 'noopener')" title="근무표를 새 창으로 열기">근무표</button>
         <button type="button" class="ry-ghost ry-quick" onclick="mbOpenArchive()" title="날짜별 아침 뷰티 브리핑">뷰티 브리핑</button>
         <button type="button" class="ry-ghost ry-quick" onclick="eduOpen()" title="제품 교육 자료">교육 자료실<i id="eduDot" class="mb-dot edu-qdot" hidden aria-label="새 교육 자료"></i></button>
@@ -7882,10 +7987,10 @@ video {
       if (!quiet && !SC.data) { try { var c0 = JSON.parse(localStorage.getItem('ry_sc') || 'null'); if (c0 && c0.cfg) SC.data = c0; } catch (e) {} }
       google.script.run.withSuccessHandler(function (r) {
           SC.busy = false; if (!r || !r.success || rev0 !== SC.rev) return;   // 받는 사이에 저장했으면 옛 응답은 버림
-          var same = SC.data && SC.data.today === r.today && JSON.stringify(SC.data.days) === JSON.stringify(r.days) && JSON.stringify(SC.data.cfg) === JSON.stringify(r.cfg), typing = document.activeElement && document.activeElement.closest && document.activeElement.closest('#spBody .sc');
+          var same = SC.data && SC.data.today === r.today && JSON.stringify(SC.data.days) === JSON.stringify(r.days) && JSON.stringify(SC.data.cfg) === JSON.stringify(r.cfg) && JSON.stringify(SC.data.memos || {}) === JSON.stringify(r.memos || {}), typing = document.activeElement && document.activeElement.closest && document.activeElement.closest('#slBody .sc');
           SC.data = r; SC.t = Date.now(); try { localStorage.setItem('ry_sc', JSON.stringify(r)); } catch (e) {} scQuick(); try { spSegSync(); } catch (eS) {}
-          if ((!same || !quiet) && !typing && !SC.form && SP.view === 'goal' && document.body.classList.contains('sp-open')) scRender(); })
-        .withFailureHandler(function () { SC.busy = false; if (SP.view === 'goal' && !SC.data) document.getElementById('spBody').innerHTML = '<div class="sp-msg">못 불러왔어요 · 인터넷 확인<button type="button" class="ry-info-sub" onclick="scLoad()">다시 시도</button></div>'; })
+          if ((!same || !quiet) && !typing && !SC.form && slIsOpen() && SL.tab !== 'ev') slRender(); })
+        .withFailureHandler(function () { SC.busy = false; if (slIsOpen() && SL.tab !== 'ev' && !SC.data) document.getElementById('slBody').innerHTML = '<div class="sp-msg">못 불러왔어요 · 인터넷 확인<button type="button" class="ry-info-sub" onclick="scLoad()">다시 시도</button></div>'; })
         .getSetChallenge();
     }
     function scLastDay() {   // 이번 주에서 판매가 들어온 가장 최근 날 (오늘 넣었으면 오늘)
@@ -7894,13 +7999,13 @@ video {
       return '';
     }
     function scQuick() {   // 퀵메뉴 [🎯 이번 주 목표] · 마지막 날 세트 모두 하루 목표면 ★
-      var b = document.getElementById('scQuick'); if (!b) return; b.hidden = !scShown();
+      var b = document.getElementById('scQuick'); if (!b) return; b.hidden = false;   /* 1109 📊 판매 목표 = 모두에게 (주 목표 · 날짜별 판매 · 행사 효과) */
       var n = document.getElementById('scQuickN'), w = SC.data ? scUse() : null; if (!n) return;
       var d = w ? scLastDay() : '', all = !!d && SC_SETS.every(function (s) { return scOk(SC.data.cfg, d, s.k); });
       n.textContent = all ? '★' : ''; n.classList.toggle('done', all);
-      b.title = w ? '이번 주 세트 목표 ' + scMd(w.from) + ' ~ ' + scMd(w.to) + (w.note ? ' · ' + w.note : '') : '이번 주 목표 정하기';
+      b.title = w ? '이번 주 세트 목표 ' + scMd(w.from) + ' ~ ' + scMd(w.to) + (w.note ? ' · ' + w.note : '') : '주 목표 · 날짜별 판매 · 행사 효과';
     }
-    function scOpen() { if (!checkMemberSelectedOrAlert()) return; openSetPage(); spShow('goal'); }
+    function scOpen() { slOpen('goal'); }
     setTimeout(function () { try { if (!SC.data) { var c0 = JSON.parse(localStorage.getItem('ry_sc') || 'null'); if (c0 && c0.cfg) SC.data = c0; } } catch (e) {} try { scQuick(); scLoad(true); } catch (e) {} }, 4500);
     setInterval(function () { try { if (!document.hidden && Date.now() - SC.t > (scCur() ? 5 : 30) * 60000) scLoad(true); } catch (e) {} }, 60000);
     function scRing(s, v, g, pv) {
@@ -7908,8 +8013,7 @@ video {
       return '<svg class="sc-ring" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" class="sc-ring-bg"/><circle cx="60" cy="60" r="52" class="sc-ring-fg" style="stroke:' + s.c + ';stroke-dasharray:' + C + ';stroke-dashoffset:' + f(pv) + '" data-to="' + f(v) + '"/></svg>';
     }
     function scRender() {
-      var b = document.getElementById('spBody'), D = SC.data; if (!b) return;
-      document.getElementById('spTitle').textContent = '이번 주 목표';
+      var b = document.getElementById('slBody'), D = SC.data; if (!b || SL.tab !== 'goal') return;
       if (!D) { b.innerHTML = '<div class="sp-msg"><span class="ry-info-spin"></span>불러오는 중…</div>'; scLoad(); return; }
       if (SC.form) { b.innerHTML = '<div class="sc">' + scFormHtml() + '</div>'; return; }
       var c = D.cfg, t = D.today, w = scUse(), boss = scBoss(), h = '', now = w && scHas(t) ? t : '';
@@ -7937,9 +8041,9 @@ video {
         var legs = SC_SETS.filter(function (s) { return s.leg; }).map(function (s) { return escapeHtml(s.label.split(' ')[0]) + ' ' + s.leg + '↑'; });
         h += '<section class="sc-card"><h3>날마다 판매 <span>점선 = 하루 목표 · 🔥 달성 · 20개↑ 💥' + (legs.length ? ' · 👑 ' + legs.join(' · ') : '') + '</span></h3><p class="sc-tier" aria-label="막대 색 = 그날 판 개수">' + SC_TIER.slice().reverse().map(function (x) { return '<i style="background:' + x[1] + '"></i>' + x[0]; }).join('') + '개↑</p><div class="sc-charts">' + SC_SETS.map(function (s) { return scChart(s, c, days, t); }).join('') + '</div></section>';
       }
-      h += scHistHtml(c, t);
+      h += scHistHtml(c, t);   /* 1109 📅 날짜별 판매는 판매 목표 화면의 따로 탭 (scCalTab) */
       b.innerHTML = '<div class="sc">' + h + '</div>';
-      scAnim(now);
+      scAnim(now); scWxLoad(t);
     }
     function scInHtml(c, w, t) {   /* 기본은 오늘 · 다른 날(지난 주도)도 고침 · 그 날짜가 든 주의 세트 칸 */
       var dMax = t < w.to ? t : w.to, dMin = c.weeks[0].from, dIn = SC.day && SC.day >= dMin && SC.day <= dMax ? SC.day : dMax, wi = scWeek(c, dIn), ss = scSetsOf(c, wi < 0 ? w : c.weeks[wi]);
@@ -7950,7 +8054,7 @@ video {
         + '<label class="sc-date">날짜 <input type="date" id="scDate" value="' + dIn + '" min="' + dMin + '" max="' + dMax + '" onchange="SC.day=this.value;scRender()">'
         + (miss.length ? '<button type="button" class="sc-miss" onclick="SC.day=\'' + miss[0] + '\';scRender()">안 넣은 날 ' + miss.length + '일 · ' + scMd(miss[0]) + '</button>' : '') + '</label></section>';
     }
-    function scInKey(e, el) { if (e.key !== 'Enter') return; e.preventDefault(); var all = [].slice.call(document.querySelectorAll('#spBody .sc-in input[data-k]')), i = all.indexOf(el); if (i < all.length - 1) all[i + 1].focus(); else scSave(); }
+    function scInKey(e, el) { if (e.key !== 'Enter') return; e.preventDefault(); var all = [].slice.call(document.querySelectorAll('#slBody .sc-in input[data-k]')), i = all.indexOf(el); if (i < all.length - 1) all[i + 1].focus(); else scSave(); }
     function scHistHtml(c, t) {   /* 📂 지난 목표 — 주마다 접어서: 세트별 목표 · 실적 · 달성률 */
       var past = c.weeks.filter(function (w) { return w.to < t; }).reverse(); if (!past.length) return '';
       return '<section class="sc-card sc-hist"><h3>📂 지난 목표 <span>' + past.length + '주</span></h3>' + past.map(function (w) {
@@ -7961,6 +8065,106 @@ video {
           + (w.note ? '<p class="sc-hnote">📣 ' + escapeHtml(w.note) + '</p>' : '') + '</div></details>';
       }).join('') + '</section>';
     }
+    /* ══ 1109 MJ '직원들이 지난 날짜 중 어느 날 잘 팔렸는지 · 안 팔렸는지' → 📅 날짜별 판매: 달력(세트 칩 · 그날 하루 목표 대비 색) + 날씨(Open-Meteo, 기기에 저장) + 요일 평균 + 한 줄 정리 + 최고·최저 + 날짜 메모(목표 정하는 사람만 적음, 서버 setSetMemo)
+       따로 떼어 쓰기 쉽게: scCalHtml(D) → HTML (D = getSetChallenge 응답) · 상태는 SC.cal {m, k} · 다시 그리기 scCalDraw() 는 #scCal 만 바꿈 ══ */
+    var SC_WX_URL = 'https://api.open-meteo.com/v1/forecast?latitude=37.5446&longitude=127.0557&timezone=Asia%2FSeoul&past_days=92&forecast_days=1&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum';   /* 서버 getWeather 와 같은 성수동 좌표(_WX_LAT/_WX_LON) */
+    SC.cal = { m: '', k: '', ms: [] }; SC.wx = null; SC.wxBusy = false; SC.wxFail = 0; SC.dayD = '';
+    function scWxIc(c) { c = +c; return c <= 1 ? ['☀️', '맑음'] : c === 2 ? ['⛅', '구름 조금'] : c === 3 ? ['☁️', '흐림'] : c === 45 || c === 48 ? ['🌫️', '안개'] : (c >= 71 && c <= 77) || c === 85 || c === 86 ? ['❄️', '눈'] : c >= 95 ? ['🌧️', '뇌우'] : c >= 51 ? ['🌧️', c <= 57 ? '이슬비' : '비'] : ['☁️', '흐림']; }
+    function scWxGet() { if (!SC.wx) { try { SC.wx = JSON.parse(localStorage.getItem('ry_sc_wx') || 'null'); } catch (e) {} if (!SC.wx || !SC.wx.d) SC.wx = { d: {}, at: 0 }; } return SC.wx; }   /* {d: {날짜: [날씨코드, 최고, 최저, 강수mm]}, at} */
+    function scWxLoad(today) {   /* 지난 날씨는 한 번 받으면 그대로 · 오늘은 3시간마다 새로 · 실패하면 10분 쉬고 · 달력은 날씨 없이도 그려짐 */
+      var W = scWxGet(); if (SC.wxBusy || typeof fetch !== 'function' || Date.now() - SC.wxFail < 600000 || (W.d[today] && Date.now() - W.at < 3 * 3600000)) return;
+      SC.wxBusy = true;
+      fetch(SC_WX_URL).then(function (r) { return r.json(); }).then(function (j) {
+        var x = j && j.daily; if (!x || !x.time) throw new Error('wx');
+        x.time.forEach(function (d, i) { if (x.temperature_2m_max[i] != null) W.d[d] = [x.weather_code[i], Math.round(x.temperature_2m_max[i]), Math.round(x.temperature_2m_min[i]), Math.round((x.precipitation_sum[i] || 0) * 10) / 10]; });
+        W.at = Date.now(); try { localStorage.setItem('ry_sc_wx', JSON.stringify(W)); } catch (e) {}
+        scCalDraw(); if (slIsOpen() && SL.tab === 'ev' && SL.sel) efRender();
+      }).catch(function () { SC.wxFail = Date.now(); }).then(function () { SC.wxBusy = false; });
+    }
+    function scAllSets(c) { var o = {}, L = []; c.weeks.forEach(function (w) { scSetsOf(c, w).forEach(function (s) { if (!o[s.k]) L.push(s.k); o[s.k] = s; }); }); return L.map(function (k) { return o[k]; }); }   /* 모든 주의 세트 · 같은 키는 하나로(이름·색은 최근 주) */
+    function scDow(d) { var p = d.split('-'); return (new Date(+p[0], +p[1] - 1, +p[2]).getDay() + 6) % 7; }   /* 월=0 … 일=6 */
+    function scCalTips(t, past, val, wk, W) {   /* 한 줄 정리 — 실제 숫자로만 · 표본 적으면(요일당 2일 미만 등) 그 문장은 뺌 · 최대 2줄 */
+      var out = [], WDF = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'], ok = [], j, avg = function (L) { return Math.round(L.reduce(function (s, v) { return s + v; }, 0) / L.length); };
+      for (j = 0; j < 7; j++) if (wk[j].n >= 2) ok.push(j);
+      if (ok.length >= 2) { var b = ok.reduce(function (a, x) { return wk[x].s / wk[x].n > wk[a].s / wk[a].n ? x : a; }); out.push('<b>' + WDF[b] + '</b>이 평균 <b>' + Math.round(wk[b].s / wk[b].n) + '개</b>로 가장 잘 팔려요 → ' + WDF[(b + 6) % 7] + '에 세트를 미리 넉넉히'); }
+      var rn = [], dr = []; past.forEach(function (d) { var x = W[d]; if (!x) return; if (x[3] >= 1) rn.push(val(d)); else if (x[3] < .1) dr.push(val(d)); });
+      if (rn.length >= 2 && dr.length >= 2) out.push('☔ 비 온 날 평균 <b>' + avg(rn) + '개</b> · 안 온 날 <b>' + avg(dr) + '개</b>');
+      var mon = scAdd(t, -scDow(t)), a = 0, z = 0, n = 0;
+      past.forEach(function (d) { if (d < mon) return; var q = val(scAdd(d, -7)); if (q != null) { a += val(d); z += q; n++; } });
+      if (n >= 2 && z > 0) { var pc = Math.round((a - z) / z * 100); out.push('이번 주는 지난주 같은 요일보다 <b>' + (pc > 0 ? '+' : '') + pc + '%</b>' + (pc > 0 ? ' 📈' : pc < 0 ? ' 📉' : '')); }
+      return out.slice(0, 2);
+    }
+    function scCalHtml(D) {
+      var c = D.cfg, t = D.today, days = D.days || {}, memo = D.memos || {}, sets = scAllSets(c); if (!sets.length) return '';
+      var S = SC.cal, wi = scWeek(c, t), cur = wi >= 0 ? scSetsOf(c, c.weeks[wi]) : [];
+      if (!sets.some(function (x) { return x.k === S.k; })) S.k = (cur[0] || sets[0]).k;
+      var s = sets.filter(function (x) { return x.k === S.k; })[0], k = s.k, val = function (d) { var o = days[d]; return o && o[k] != null ? o[k] : null; };
+      var mo0 = {}; mo0[t.slice(0, 7)] = 1; Object.keys(days).concat(Object.keys(memo)).forEach(function (d) { if (d <= t) mo0[d.slice(0, 7)] = 1; }); S.ms = Object.keys(mo0).sort();   /* 자료 있는 달만 */
+      if (S.ms.indexOf(S.m) < 0) S.m = t.slice(0, 7);
+      var mi = S.ms.indexOf(S.m), y = +S.m.slice(0, 4), mo = +S.m.slice(5, 7), nd = new Date(y, mo, 0).getDate(), W = scWxGet().d, boss = scBoss();
+      var past = Object.keys(days).filter(function (d) { return d < t && val(d) != null; }).sort();   /* 오늘은 아직 집계 중 → 평균·최고·최저·정리에서 뺌 */
+      var mx = Math.max.apply(null, past.map(val).concat([val(t) || 0, 1])), cells = '', i, mSum = 0, mN = 0, mPast = 0, mHit = 0, mG = 0;
+      var pad = scDow(S.m + '-01'); for (i = 0; i < pad; i++) cells += '<span></span>';
+      for (var dd = 1; dd <= nd; dd++) {
+        var d = S.m + '-' + ('0' + dd).slice(-2), v = val(d), g = scGoal(c, d, k), wx = W[d], m = memo[d], fut = d > t, st = '', sty = '';
+        if (fut && scDow(d) === 0) break;   /* 다음 주부터는 빈 줄이라 안 그림 (달력이 짧게) */
+        if (v != null) {
+          mSum += v; if (d < t) { mPast += v; mN++; if (g) { mG++; if (v >= g) mHit++; } }
+          if (g && v >= g) st = ' ok'; else if (g && d < t) st = v >= g * .7 ? ' mid' : ' low'; else { st = ' nt'; sty = ' style="--a:' + (.04 + .16 * v / mx).toFixed(3) + '"'; }   /* 목표 없는 날 · 오늘(집계 중) = 많을수록 진한 회색 */
+        }
+        cells += '<button type="button" class="sc-cd' + st + (d === t ? ' now' : '') + (fut ? ' fut' : '') + (scDow(d) > 4 ? ' we' : '') + '"' + sty + (fut && !boss && !m ? ' disabled' : '') + ' onclick="scDayOpen(\'' + d + '\')" aria-label="' + scMd(d) + (v != null ? ' ' + v + '개' : '') + (wx ? ' ' + scWxIc(wx[0])[1] : '') + (m ? ' 메모 있음' : '') + '">'
+          + '<i>' + dd + (wx ? '<span aria-hidden="true">' + scWxIc(wx[0])[0] + '</span>' : '') + '</i><b>' + (v != null ? v : '') + '</b>' + (wx ? '<small>' + wx[1] + '/' + wx[2] + '°</small>' : '') + (m ? '<em></em>' : '') + '</button>';
+      }
+      var wk = [0, 1, 2, 3, 4, 5, 6].map(function () { return { s: 0, n: 0 }; }); past.forEach(function (d) { var j = scDow(d); wk[j].s += val(d); wk[j].n++; });
+      var av = wk.map(function (x) { return x.n ? Math.round(x.s / x.n) : null; }), top = -1, amx = 1, nav = 0;
+      av.forEach(function (a, j) { if (a == null) return; nav++; amx = Math.max(amx, a); if (top < 0 || a > av[top]) top = j; }); if (nav < 2) top = -1;
+      var hi = '', lo = ''; past.forEach(function (d) { if (!hi || val(d) > val(hi)) hi = d; if (!lo || val(d) < val(lo)) lo = d; });
+      var tips = scCalTips(t, past, val, wk, W);
+      return '<section class="sc-card sc-cal" id="scCal" style="--sc:' + s.c + ';--sc-soft:' + s.soft + '"><h3>📅 날짜별 판매 <span>칸을 누르면 그날 자세히</span></h3>'
+        + (sets.length > 1 ? '<div class="sc-cal-chips" role="group" aria-label="세트 고르기">' + sets.map(function (x) { return '<button type="button" class="sc-chip" style="--sc:' + x.c + ';--sc-soft:' + x.soft + '" aria-pressed="' + (x.k === k) + '" onclick="scCalPick(\'' + x.k + '\')"><i></i>' + escapeHtml(x.label) + '</button>'; }).join('') + '</div>' : '')
+        + '<div class="sc-cal-bd"><div class="sc-cal-l"><div class="sc-cal-h"><button type="button"' + (mi > 0 ? '' : ' disabled') + ' onclick="scCalMove(-1)" aria-label="지난달">◀</button><b>' + y + '년 ' + mo + '월</b><button type="button"' + (mi < S.ms.length - 1 ? '' : ' disabled') + ' onclick="scCalMove(1)" aria-label="다음 달">▶</button></div>'
+        + '<div class="sc-cal-w" aria-hidden="true">' + '월화수목금토일'.split('').map(function (w) { return '<span>' + w + '</span>'; }).join('') + '</div><div class="sc-cal-g">' + cells + '</div>'
+        + '<p class="sc-cal-lg"><span class="ok">달성</span><span class="mid">70%↑</span><span class="low">70% 미만</span><span class="nt">목표 없음</span><span class="mm">메모</span></p></div>'
+        + '<div class="sc-cal-r"><div class="sc-ms"><div><small>' + mo + '월 합계</small><b>' + mSum + '<span>개</span></b></div><div><small>하루 평균</small><b>' + (mN ? Math.round(mPast / mN) : '–') + '<span>' + (mN ? '개' : '') + '</span></b></div><div><small>목표 달성</small><b>' + (mG ? mHit + '<span>/' + mG + '일</span>' : '–') + '</b></div></div>'
+        + '<h4>요일 평균 <small>지난 ' + past.length + '일</small></h4><div class="sc-wd" role="list">' + av.map(function (a, j) { return '<div role="listitem"' + (j === top ? ' class="top"' : '') + ' aria-label="' + '월화수목금토일'.charAt(j) + '요일 평균 ' + (a == null ? '없음' : a + '개') + '"><em>' + (j === top ? '<u>👑</u>' : '') + (a == null ? '–' : a) + '</em><span><i style="height:' + (a ? Math.max(4, a / amx * 100) : 0).toFixed(0) + '%"></i></span><b>' + '월화수목금토일'.charAt(j) + '</b></div>'; }).join('') + '</div>'
+        + (tips.length ? '<div class="sc-tips">' + tips.map(function (x) { return '<p>' + x + '</p>'; }).join('') + '</div>' : '')
+        + (past.length > 1 ? '<p class="sc-bw">🔥 최고 <b>' + scMd(hi) + ' ' + val(hi) + '개</b> · 🧊 최저 <b>' + scMd(lo) + ' ' + val(lo) + '개</b></p>' : '') + '</div></div></section>';
+    }
+    function scCalDraw() { var el = document.getElementById('scCal'); if (el && SC.data) el.outerHTML = scCalHtml(SC.data); }
+    function scCalPick(k) { SC.cal.k = k; scCalDraw(); }
+    function scCalMove(n) { var L = SC.cal.ms, m = L[L.indexOf(SC.cal.m) + n]; if (m) { SC.cal.m = m; scCalDraw(); } }
+    function scDayHtml(D, d) {   /* 그날 자세히: 날씨 · 그 주 세트별 판매 / 하루 목표 · 메모 (목표 정하는 사람은 고침) */
+      var c = D.cfg, t = D.today, o = (D.days || {})[d] || {}, wi = scWeek(c, d), ss = wi >= 0 ? scSetsOf(c, c.weeks[wi]) : scAllSets(c).filter(function (s) { return o[s.k] != null; }), wx = scWxGet().d[d], m = (D.memos || {})[d], ic = wx ? scWxIc(wx[0]) : null;
+      var rows = ss.map(function (s) {
+        var v = o[s.k], g = scGoal(c, d, s.k), p = v != null && g ? Math.round(v / g * 100) : 0, st = v == null ? ['', d > t ? '' : '기록 없음'] : !g ? ['', '목표 없음'] : v >= g ? ['ok', '달성'] : d === t ? ['', p + '% · 집계 중'] : [p >= 70 ? 'mid' : 'low', p + '%'];
+        return '<div class="sc-dr" style="--sc:' + s.c + '"><span>' + escapeHtml(s.label) + '</span><b>' + (v == null ? '–' : v) + (g ? '<small> / ' + g + '</small>' : '') + '</b>' + (st[1] ? '<em class="' + st[0] + '">' + st[1] + '</em>' : '<em></em>') + '</div>';
+      }).join('');
+      return '<div class="ava-head"><b class="ry-info-title" id="scDayT">' + scMd(d) + (d === t ? ' · 오늘' : '') + '</b><button type="button" onclick="scDayClose()">닫기</button></div>'
+        + (ic ? '<p class="sc-dw">' + ic[0] + ' ' + ic[1] + ' · 최고 ' + wx[1] + '° · 최저 ' + wx[2] + '°' + (wx[3] > 0 ? ' · ' + (ic[1] === '눈' ? '눈 ' : '비 ') + wx[3] + 'mm' : '') + '</p>' : '')
+        + (rows ? '<div class="sc-dl">' + rows + '</div>' : '<p class="sc-dw">이날은 목표 세트가 없어요</p>')
+        + (m ? '<p class="sc-dm">📝 ' + escapeHtml(m.t) + (m.by ? '<small> · ' + escapeHtml(m.by) + '</small>' : '') + '</p>' : '')
+        + (scBoss() ? '<div class="sc-dme"><input id="scMemoIn" maxlength="40" value="' + escapeHtml(m ? m.t : '') + '" placeholder="예: 비 옴 · 단체 손님 · 행사 시작" aria-label="이날 메모 (40자)" enterkeyhint="done" onkeydown="if(event.key===\'Enter\'&&!event.isComposing){event.preventDefault();scMemoSave(\'' + d + '\')}"><button type="button" class="sc-btn" id="scMemoBtn" onclick="scMemoSave(\'' + d + '\')">' + (m ? '고쳐 저장' : '메모 저장') + '</button></div>' + (m ? '<small class="sc-dmh">비우고 저장하면 메모가 지워져요</small>' : '') : '');
+    }
+    function scDayOpen(d) {
+      if (!SC.data) return; var sh = document.getElementById('scDaySheet');
+      if (!sh) { document.body.insertAdjacentHTML('beforeend', '<div class="ava-dim" id="scDayDim" onclick="scDayClose()"></div><div class="ava-sheet sc-day" id="scDaySheet" role="dialog" aria-modal="true" aria-labelledby="scDayT"></div>'); sh = document.getElementById('scDaySheet'); }
+      SC.dayD = d; sh.innerHTML = scDayHtml(SC.data, d); document.getElementById('scDayDim').classList.add('on'); sh.classList.add('on'); sh.scrollTop = 0;
+      setTimeout(function () { var b = sh.querySelector('.ava-head button'); try { if (b) b.focus({ preventScroll: true }); } catch (e) {} }, 30);
+    }
+    function scDayClose() { SC.dayD = ''; ['scDayDim', 'scDaySheet'].forEach(function (id) { var e = document.getElementById(id); if (e) e.classList.remove('on'); }); }
+    function scMemoSave(d) {
+      var inp = document.getElementById('scMemoIn'), btn = document.getElementById('scMemoBtn'), v = inp ? inp.value.replace(/\s+/g, ' ').trim().slice(0, 40) : '', had = !!(SC.data.memos || {})[d], bt0 = btn ? btn.textContent : '';
+      if (!v && !had) { showToast('메모를 적어 주세요', 2000); return; }
+      var undo = function (msg) { showToast(msg, 3000); if (btn) { btn.disabled = false; btn.textContent = bt0; } };
+      if (typeof google.script.run.setSetMemo !== 'function') { undo('서버 업데이트 뒤에 쓸 수 있어요'); return; }
+      if (btn) { btn.disabled = true; btn.textContent = '저장 중…'; } SC.rev++;
+      google.script.run.withSuccessHandler(function (r) {
+        if (!r || !r.success) { undo((r && r.message) || '저장 안 됨'); return; }
+        SC.data = r; SC.t = Date.now(); try { localStorage.setItem('ry_sc', JSON.stringify(r)); } catch (e) {}
+        scCalDraw(); var sh = document.getElementById('scDaySheet'); if (sh && SC.dayD === d) sh.innerHTML = scDayHtml(r, d);
+        showToast(scMd(d) + (v ? ' 메모 저장했어요' : ' 메모 지웠어요'), 2200);
+      }).withFailureHandler(function (e) { undo(/허용되지 않은|is not a function/.test(String(e && e.message || e)) ? '서버 업데이트 뒤에 쓸 수 있어요' : '저장 안 됨 · 인터넷 확인 후 다시 눌러 주세요'); }).setSetMemo(currentSelectedMember, d, v);
+    }
     /* 1109 목표 정하기 (MJ '관리약사와 물류관리자·팀장만' = sdCanEdit) — 줄마다 종류 [세트](앱 세트 목록) · [상품](카탈로그 검색)에서 1개 이상 고름 → 고른 이름이 POS 이름(고칠 수 있음, 여러 개면 합산)
        기본 = 이번 주 월~일 · 이번 주가 있으면 그 주 고치기 · 없으면 지난 목표 줄(세트·POS·수량)을 복사 */
     function scFormOpen(from) {
@@ -7969,43 +8173,47 @@ video {
       var ex = c.weeks.filter(function (w) { return w.from === from; })[0], src = ex || c.weeks.filter(function (w) { return w.from < from; }).slice(-1)[0];
       SC.form = { from: from, to: ex ? ex.to : scAdd(from, 6), note: ex ? ex.note || '' : '', ex: !!ex,
         rows: src ? scSetsOf(c, src).map(function (s, i) { var a = (src.sets && src.sets[i] && src.sets[i].app) || [], kind = (src.sets && src.sets[i] && src.sets[i].kind) || 'set'; return { k: s.k, label: s.label, kind: kind, picks: s.pos.map(function (x, j) { return { n: a[j] || '', pos: x }; }), goal: (src.goal && src.goal[s.k]) || '', day: (src.day && src.day[s.k]) || '' }; }) : [scFormRow()] };
-      SC.pickRes = []; scRender(); var bd = document.getElementById('spBody'); if (bd) bd.scrollTop = 0;
+      SC.pickRes = []; scRender(); var bd = document.getElementById('slBody'); if (bd) bd.scrollTop = 0;
     }
     function scFormRow() { return { k: '', label: '', kind: 'set', picks: [], goal: '', day: '' }; }
     function scFormHtml() {
       var f = SC.form, n = f.rows.length;
       return '<section class="sc-card sc-form"><h3>🎯 주간 목표 정하기 <span>' + (f.ex ? '저장된 목표 고치기' : '새 목표') + '</span></h3>'
         + '<div class="sc-f"><label>시작<input type="date" id="scFFrom" value="' + f.from + '" onchange="scFormFrom(this.value)"></label><label>끝<input type="date" id="scFTo" value="' + f.to + '"></label></div>'
-        + f.rows.map(function (r, i) {
+        + scFormRowsHtml(f, false)
+        + '<div class="sc-f"><label class="sc-wide">직원 공지 <small>목표 위에 보여요</small><textarea id="scFNote" rows="3" maxlength="500" placeholder="예: 신규 제품 반응이 좋아요 · 제품 설명 숙지해 주세요">' + escapeHtml(f.note) + '</textarea></label></div>'
+        + '<div class="sc-f sc-fbtn"><button type="button" class="sc-btn sc-btn2" onclick="scFormClose()">취소</button><button type="button" class="sc-btn" id="scFSave" onclick="scFormSave()">저장</button></div></section>';
+    }
+    function scFormRowsHtml(f, ev) {   /* 줄마다 [세트]/[상품] → POS 이름 · ev = 행사 등록(주 목표·하루 목표 칸 없음, 20줄) */
+      var n = f.rows.length;
+      return f.rows.map(function (r, i) {
           var dp = +r.goal > 0 ? '주÷7 = ' + Math.round(r.goal / 7) : '주÷7', it = r.kind === 'item';
-          return '<div class="sc-fr" data-i="' + i + '" data-k="' + escapeHtml(r.k || '') + '" data-kind="' + (it ? 'item' : 'set') + '"><div class="sc-fr-hd"><b>목표 ' + (i + 1) + '</b>'
+          return '<div class="sc-fr" data-i="' + i + '" data-k="' + escapeHtml(r.k || '') + '" data-kind="' + (it ? 'item' : 'set') + '"><div class="sc-fr-hd"><b>' + (ev ? '상품 ' : '목표 ') + (i + 1) + '</b>'
             + '<span class="sc-kind" role="group" aria-label="종류"><button type="button" aria-pressed="' + !it + '" onclick="scFormKind(' + i + ', \'set\')">세트</button><button type="button" aria-pressed="' + it + '" onclick="scFormKind(' + i + ', \'item\')">상품</button></span>'
-            + (n > 1 ? '<button type="button" class="sc-x" onclick="scFormDel(' + i + ')" aria-label="목표 ' + (i + 1) + ' 빼기">×</button>' : '') + '</div><div class="sc-f">'
+            + (n > 1 ? '<button type="button" class="sc-x" onclick="scFormDel(' + i + ')" aria-label="' + (ev ? '상품 ' : '목표 ') + (i + 1) + ' 빼기">×</button>' : '') + '</div><div class="sc-f">'
             + '<label class="sc-wide">표시 이름<input data-f="label" maxlength="40" value="' + escapeHtml(r.label) + '" placeholder="' + (it ? '예: 리쥬올 베리어 4종' : '예: Total skin care') + '"></label></div>'
             + '<div class="sc-picks">' + (r.picks.length ? '<small class="sc-pk-h">POS 이름 · ' + (r.picks.length > 1 ? r.picks.length + '개 합산' : '앱 이름과 다르면 고쳐 주세요') + '</small>' : '')
             + r.picks.map(function (pk, j) { return '<div class="sc-pk" data-n="' + escapeHtml(pk.n || '') + '">' + (pk.n && pk.n !== pk.pos ? '<small>앱 · ' + escapeHtml(pk.n) + '</small>' : '') + '<input data-p="pos" value="' + escapeHtml(pk.pos) + '" aria-label="POS 이름" placeholder="POS 에 나오는 이름 그대로"><button type="button" class="sc-x" onclick="scPickDel(' + i + ', ' + j + ')" aria-label="빼기">×</button></div>'; }).join('')
             + '<div class="sc-pf"><input type="search" enterkeyhint="search" placeholder="' + (it ? '상품 이름으로 찾아 고르기' : '세트 이름으로 찾아 고르기') + '" oninput="scPickFind(this, ' + i + ')"><div class="sc-pr" id="scPr-' + i + '"></div></div>'
             + '<button type="button" class="sc-link" onclick="scPickAdd(' + i + ', -1)">＋ POS 이름 직접 적기</button></div>'
-            + '<div class="sc-f"><label>주 목표<input type="number" inputmode="numeric" min="0" data-f="goal" value="' + escapeHtml(r.goal) + '" oninput="scFormDay(this)"></label>'
-            + '<label>하루 목표<input type="number" inputmode="numeric" min="0" data-f="day" value="' + escapeHtml(r.day) + '" placeholder="' + dp + '"></label></div></div>';
+            + (ev ? '</div>' : '<div class="sc-f"><label>주 목표<input type="number" inputmode="numeric" min="0" data-f="goal" value="' + escapeHtml(r.goal) + '" oninput="scFormDay(this)"></label>'
+            + '<label>하루 목표<input type="number" inputmode="numeric" min="0" data-f="day" value="' + escapeHtml(r.day) + '" placeholder="' + dp + '"></label></div></div>');
         }).join('')
-        + (n < 8 ? '<button type="button" class="sc-add" onclick="scFormAdd()">＋ 목표 줄 추가</button>' : '')
-        + '<div class="sc-f"><label class="sc-wide">직원 공지 <small>목표 위에 보여요</small><textarea id="scFNote" rows="3" maxlength="500" placeholder="예: 신규 제품 반응이 좋아요 · 제품 설명 숙지해 주세요">' + escapeHtml(f.note) + '</textarea></label></div>'
-        + '<div class="sc-f sc-fbtn"><button type="button" class="sc-btn sc-btn2" onclick="scFormClose()">취소</button><button type="button" class="sc-btn" id="scFSave" onclick="scFormSave()">저장</button></div></section>';
+        + (n < (ev ? 20 : 8) ? '<button type="button" class="sc-add" onclick="scFormAdd()">＋ ' + (ev ? '상품' : '목표') + ' 줄 추가</button>' : '');
     }
     function scFormRead() {
-      var f = SC.form; if (!f) return; var a = document.getElementById('scFFrom'), z = document.getElementById('scFTo'), nt = document.getElementById('scFNote');
+      var f = scF(); if (!f) return; var nm = document.getElementById('efFName'); if (nm) f.name = nm.value; var a = document.getElementById('scFFrom'), z = document.getElementById('scFTo'), nt = document.getElementById('scFNote');
       if (a) f.from = a.value; if (z) f.to = z.value; if (nt) f.note = nt.value;
-      f.rows = [].map.call(document.querySelectorAll('#spBody .sc-fr'), function (el) {
+      f.rows = [].map.call(document.querySelectorAll('#slBody .sc-fr'), function (el) {
         var g = function (k) { var x = el.querySelector('[data-f="' + k + '"]'); return x ? x.value : ''; };
         return { k: el.getAttribute('data-k') || '', kind: el.getAttribute('data-kind') || 'set', label: g('label'), goal: g('goal'), day: g('day'),
           picks: [].map.call(el.querySelectorAll('.sc-pk'), function (pe) { return { n: pe.getAttribute('data-n') || '', pos: pe.querySelector('input').value }; }) };
       });
     }
     function scFormDay(el) { var d = el.closest('.sc-fr').querySelector('[data-f="day"]'); if (d) d.placeholder = +el.value > 0 ? '주÷7 = ' + Math.round(el.value / 7) : '주÷7'; }
-    function scFormAdd() { scFormRead(); SC.form.rows.push(scFormRow()); scRender(); var r = document.querySelectorAll('#spBody .sc-fr'), x = r[r.length - 1]; if (x) { x.scrollIntoView({ block: 'center' }); x.querySelector('input').focus(); } }
-    function scFormDel(i) { scFormRead(); SC.form.rows.splice(i, 1); scRender(); }
-    function scFormKind(i, k) { scFormRead(); SC.form.rows[i].kind = k; scRender(); }
+    function scFormAdd() { scFormRead(); scF().rows.push(scFormRow()); scFRe(); var r = document.querySelectorAll('#slBody .sc-fr'), x = r[r.length - 1]; if (x) { x.scrollIntoView({ block: 'center' }); x.querySelector('input').focus(); } }
+    function scFormDel(i) { scFormRead(); scF().rows.splice(i, 1); scFRe(); }
+    function scFormKind(i, k) { scFormRead(); scF().rows[i].kind = k; scFRe(); }
     function scPickFind(inp, i) {   /* 세트 = 앱 세트 목록(세트 이름 = POS 이름) · 상품 = 카탈로그 검색(ryCatSearch) */
       var q = inp.value.trim(), box = document.getElementById('scPr-' + i), kind = inp.closest('.sc-fr').getAttribute('data-kind'), list; if (!box) return;
       if (!q) { box.innerHTML = ''; return; }
@@ -8015,12 +8223,12 @@ video {
       box.innerHTML = SC.pickRes.length ? SC.pickRes.map(function (nm, j) { return '<button type="button" onclick="scPickAdd(' + i + ', ' + j + ')">' + escapeHtml(nm) + '</button>'; }).join('') : '<span>찾는 ' + (kind === 'set' ? '세트' : '상품') + '가 없어요</span>';
     }
     function scPickAdd(i, j) {
-      scFormRead(); var r = SC.form.rows[i], nm = j < 0 ? '' : SC.pickRes[j] || ''; if (!r) return;
+      scFormRead(); var r = scF().rows[i], nm = j < 0 ? '' : SC.pickRes[j] || ''; if (!r) return;
       if (!nm || !r.picks.some(function (p) { return p.n === nm; })) r.picks.push({ n: nm, pos: nm });
       if (!String(r.label).trim() && nm && r.picks.length === 1) r.label = nm;
-      scRender(); var el = document.querySelector('#spBody .sc-fr[data-i="' + i + '"]'); if (el) { var ins = el.querySelectorAll(j < 0 ? '.sc-pk input' : '.sc-pf input'); if (ins.length) ins[ins.length - 1].focus(); }
+      scFRe(); var el = document.querySelector('#slBody .sc-fr[data-i="' + i + '"]'); if (el) { var ins = el.querySelectorAll(j < 0 ? '.sc-pk input' : '.sc-pf input'); if (ins.length) ins[ins.length - 1].focus(); }
     }
-    function scPickDel(i, j) { scFormRead(); SC.form.rows[i].picks.splice(j, 1); scRender(); }
+    function scPickDel(i, j) { scFormRead(); scF().rows[i].picks.splice(j, 1); scFRe(); }
     function scFormFrom(v) { scFormRead(); if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) return; if (SC.data.cfg.weeks.some(function (w) { return w.from === v; })) { scFormOpen(v); return; } SC.form.from = v; SC.form.to = scAdd(v, 6); SC.form.ex = false; scRender(); }   /* 저장된 주를 고르면 그 주 목표를 불러옴 */
     function scFormClose() { SC.form = null; scRender(); }
     function scFormSave() {
@@ -8087,13 +8295,13 @@ video {
     }
     function scAnim(last) {   /* 여는 순간: 링이 채워지고 숫자가 올라감 · 막대가 자람 · 달성한 날은 이 기기에서 처음 볼 때 한 번 축하 */
       var rm = scRm();
-      document.querySelectorAll('#spBody .sc-ring-fg').forEach(function (c) { if (rm) { c.style.transition = 'none'; c.style.strokeDashoffset = c.dataset.to; return; } requestAnimationFrame(function () { requestAnimationFrame(function () { c.style.strokeDashoffset = c.dataset.to; }); }); });
-      document.querySelectorAll('#spBody .sc-num b').forEach(function (el) {
+      document.querySelectorAll('#slBody .sc-ring-fg').forEach(function (c) { if (rm) { c.style.transition = 'none'; c.style.strokeDashoffset = c.dataset.to; return; } requestAnimationFrame(function () { requestAnimationFrame(function () { c.style.strokeDashoffset = c.dataset.to; }); }); });
+      document.querySelectorAll('#slBody .sc-num b').forEach(function (el) {
         if (el.textContent === '–') return; var to = +el.dataset.n, from = +el.dataset.p; if (rm || from === to) { el.textContent = to; return; }
         var t0 = performance.now(), dur = Math.min(1000, 300 + Math.abs(to - from) * 40), step = function (now) { var k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(from + (to - from) * e); if (k < 1) requestAnimationFrame(step); };
         requestAnimationFrame(step);
       });
-      if (!rm) document.querySelectorAll('#spBody .sc-ch').forEach(function (sv) { sv.classList.add('grow'); });
+      if (!rm) document.querySelectorAll('#slBody .sc-ch').forEach(function (sv) { sv.classList.add('grow'); });
       var seen = SC.party; try { seen = localStorage.getItem('ry_sc_party') || seen; } catch (e) {}
       if (last && seen !== last && SC_SETS.some(function (s) { return scOk(SC.data.cfg, last, s.k); })) {
         SC.party = last; try { localStorage.setItem('ry_sc_party', last); } catch (e) {}
@@ -8112,7 +8320,7 @@ video {
     }
     function scSave() {
       var d = (document.getElementById('scDate') || {}).value, vals = {}, any = false;
-      [].forEach.call(document.querySelectorAll('#spBody .sc-in input[data-k]'), function (el) { if (el.value !== '') { vals[el.getAttribute('data-k')] = +el.value; any = true; } });
+      [].forEach.call(document.querySelectorAll('#slBody .sc-in input[data-k]'), function (el) { if (el.value !== '') { vals[el.getAttribute('data-k')] = +el.value; any = true; } });
       if (!d || !any) { showToast('날짜와 개수를 적어 주세요', 2400); return; }
       var btn = document.querySelector('.sc-in .sc-btn'), bt0 = btn ? btn.textContent : ''; if (btn) { btn.disabled = true; btn.textContent = '✓ 저장했어요'; } SC.rev++; showToast(scMd(d) + ' 판매 저장했어요', 2400);   // 1029 바로 끝난 것처럼 (그래프는 서버 계산이 오면)
       var undo = function (m) { showToast(m, 3000); if (btn) { btn.disabled = false; btn.textContent = bt0; } };   // 실패면 적은 숫자 그대로
@@ -8121,6 +8329,177 @@ video {
         SC.data = r; SC.day = ''; SC.edit = 0; try { localStorage.setItem('ry_sc', JSON.stringify(r)); localStorage.removeItem('ry_sc_party'); } catch (e) {} SC.party = '';
         scRender(); scQuick();
       }).withFailureHandler(function () { undo('저장 안 됨 · 인터넷 확인 후 다시 눌러 주세요'); }).setChallengeDay(currentSelectedMember, d, vals);
+    }
+    /* ══ 1109 MJ '주 목표와 행사를 세트 상품과 따로 빼서, 같이 있어서 혼동' → 📊 판매 목표 전체 화면 #slPage (RY_NAV 'sl' · 행사 자세히/등록 'slsub')
+       탭 3개: 🎯 주 목표(scRender) · 📅 날짜별 판매(scCalHtml + 그날 시트·메모) · 🎉 행사 효과(efRender, 서버 getEvents) · 마지막 탭은 기기에 기억(ry_sl_tab) ══ */
+    var SL = { tab: 'goal', ev: null, at: 0, busy: false, sel: '', form: null, back: null };
+    try { var _slt = localStorage.getItem('ry_sl_tab'); if (/^(goal|cal|ev)$/.test(_slt)) SL.tab = _slt; } catch (e) {}
+    function slIsOpen() { var p = document.getElementById('slPage'); return !!(p && p.classList.contains('on')); }
+    function slOpen(tab) {
+      if (!checkMemberSelectedOrAlert()) return;
+      var pg = document.getElementById('slPage'); SL.back = document.activeElement;
+      pg.classList.add('on'); pg.setAttribute('aria-hidden', 'false'); document.body.classList.add('sp-open');
+      if (!SP.data) { try { var c0 = JSON.parse(localStorage.getItem(spCacheKey()) || 'null'); if (c0 && c0.sets) SP.data = c0; } catch (e) {} }   /* 목표·행사 등록의 [세트] 고르기용 (지난번 받은 목록) */
+      if (!SP.data && scBoss()) try { spLoad(true); } catch (e) {}   /* 처음이면 뒤에서 받아 둠 (정하는 사람만) */
+      SL.sel = ''; SL.form = null; SC.prev = {}; SC.edit = 0; SC.day = ''; SC.form = null;
+      slTab(tab || SL.tab);
+      if (Date.now() - SC.t > 15000) scLoad(true);
+    }
+    function slClose() {
+      var pg = document.getElementById('slPage'); if (!pg || !pg.classList.contains('on')) return;
+      pg.classList.remove('on'); pg.setAttribute('aria-hidden', 'true'); document.body.classList.remove('sp-open'); scDayClose();
+      try { if (SL.back && SL.back.focus) SL.back.focus({ preventScroll: true }); } catch (e) {}
+    }
+    function slTab(t) {
+      SL.tab = /^(goal|cal|ev)$/.test(t) ? t : 'goal'; try { localStorage.setItem('ry_sl_tab', SL.tab); } catch (e) {}
+      [['slTabGoal', 'goal'], ['slTabCal', 'cal'], ['slTabEv', 'ev']].forEach(function (x) { var b = document.getElementById(x[0]); if (b) { b.classList.toggle('on', SL.tab === x[1]); b.setAttribute('aria-selected', SL.tab === x[1]); } });
+      slRender(); var bd = document.getElementById('slBody'); if (bd) bd.scrollTop = 0;
+    }
+    function slRender() { if (SL.tab === 'cal') scCalTab(); else if (SL.tab === 'ev') efRender(); else scRender(); }
+    function scCalTab() {
+      var b = document.getElementById('slBody'), D = SC.data; if (!b) return;
+      if (!D) { b.innerHTML = '<div class="sp-msg"><span class="ry-info-spin"></span>불러오는 중…</div>'; scLoad(); return; }
+      b.innerHTML = '<div class="sc">' + (scCalHtml(D) || '<div class="sp-msg">아직 목표 세트가 없어요 · 주 목표를 정하면 날짜별로 보여요</div>') + '</div>'; scWxLoad(D.today);
+    }
+    document.addEventListener('keydown', function (e) { if (e.key !== 'Escape' || !slIsOpen() || document.querySelector('.ava-sheet.on') || document.getElementById('ryCf')) return; if (SL.tab === 'ev' && (SL.sel || SL.form)) efBack(); else slClose(); });
+    /* 폼 줄(세트/상품 고르기 → POS 이름)은 주 목표·행사 등록이 같이 씀 — 지금 탭의 폼 */
+    function scF() { return SL.tab === 'ev' ? SL.form : SC.form; }
+    function scFRe() { if (SL.tab === 'ev') efRender(); else scRender(); }
+
+    /* ── 🎉 행사 효과: 행사 기간 하루 판매 vs 바로 전 같은 일수 (서버 efStats_) · 판정 · 다음 행동 · 지난 행사 순위 ── */
+    var EF_V = { good: ['🟢', '효과 있음'], meh: ['🟡', '애매'], bad: ['🔴', '효과 없음'], na: ['⚪', '비교할 자료가 부족해요'], wait: ['🗓️', '시작 전'] };
+    function efN(x) { return x == null ? '–' : x >= 10 ? Math.round(x) : Math.round(x * 10) / 10; }
+    function efPct(x) { return x == null ? '–' : (x > 0 ? '+' : '') + x + '%'; }
+    function efLoad(quiet) {
+      if (SL.busy) return; SL.busy = true; SL.at = Date.now();
+      var b = document.getElementById('slBody'), fail = function (m) { SL.busy = false; if (slIsOpen() && SL.tab === 'ev' && !SL.ev && b) b.innerHTML = '<div class="sp-msg">' + m + '<button type="button" class="ry-info-sub" onclick="efLoad()">다시 시도</button></div>'; };
+      if (typeof google.script.run.getEvents !== 'function') { fail('서버 업데이트 뒤에 볼 수 있어요'); return; }
+      google.script.run.withSuccessHandler(function (r) {
+        if (!r || !r.success) { fail((r && r.message) || '못 불러왔어요'); return; }
+        SL.busy = false; SL.ev = r; try { localStorage.setItem('ry_ev', JSON.stringify(r)); } catch (e) {}
+        if (slIsOpen() && SL.tab === 'ev' && !SL.form) efRender();
+      }).withFailureHandler(function (e) { fail(/허용되지 않은|is not a function/.test(String(e && e.message || e)) ? '서버 업데이트 뒤에 볼 수 있어요' : '못 불러왔어요 · 인터넷 확인'); }).getEvents(currentSelectedMember);
+    }
+    function efRender() {
+      var b = document.getElementById('slBody'); if (!b) return;
+      if (!SL.ev) { try { var c0 = JSON.parse(localStorage.getItem('ry_ev') || 'null'); if (c0 && c0.events) SL.ev = c0; } catch (e) {} }
+      if (Date.now() - SL.at > 10 * 60000) efLoad(true);
+      if (!SL.ev) { b.innerHTML = '<div class="sp-msg"><span class="ry-info-spin"></span>불러오는 중…</div>'; return; }
+      if (SL.form) { b.innerHTML = '<div class="sc">' + efFormHtml() + '</div>'; return; }
+      var e = SL.sel ? SL.ev.events.filter(function (x) { return x.id === SL.sel; })[0] : null; if (!e) SL.sel = '';
+      b.innerHTML = '<div class="sc ef">' + (e ? efDetailHtml(e) : efListHtml()) + '</div>';
+      if (e) scWxLoad(SL.ev.today);
+    }
+    function efRank(L) { var o = { good: 0, meh: 0, bad: 0, na: 1, wait: 2 }; return L.slice().sort(function (a, b) { var x = a.st || { v: 'na' }, y = b.st || { v: 'na' }; return o[x.v] - o[y.v] || (o[x.v] ? (a.from < b.from ? 1 : -1) : y.lift - x.lift); }); }
+    function efWhy(e) {   /* 판정 못 하는 이유 · 한 줄 */
+      var s = e.st; if (!s) return '계산하지 못했어요';
+      if (s.v === 'wait') return scMd(e.from) + ' 시작 · 시작하면 매일 아침 POS 판매로 계산돼요';
+      if (s.b.n < 3) return '행사 전 자료가 ' + s.b.n + '일뿐이라 비교할 자료가 부족해요';
+      if (!(s.b.avg >= .5)) return '행사 전엔 거의 안 팔려서 비교할 자료가 부족해요 (새 상품이면 자연스러워요)';
+      if (s.d.n < 3) return '행사 ' + s.d.n + '일째 · 3일 지나면 판정해요';
+      return '비교할 자료가 부족해요';
+    }
+    function efLine(e) { var s = e.st; return s && s.lift != null ? '하루 <b>' + efN(s.b.avg) + '개</b> → <b>' + efN(s.d.avg) + '개</b> · <em' + (s.lift < 0 ? ' class="dn"' : '') + '>' + efPct(s.lift) + '</em>' + (s.extra ? ' · 약 ' + (s.extra > 0 ? '+' : '') + s.extra + '개' : '') : escapeHtml(efWhy(e)); }
+    function efNext(e) {   /* 다음 행동 한 줄 */
+      var s = e.st || {}, wd = SC_WD[scDow(e.from) === 6 ? 0 : scDow(e.from) + 1];
+      if (s.v === 'good') return s.alift != null && s.alift >= 20 ? '끝난 뒤에도 ' + efPct(s.alift) + ' 유지 → 행사 끝나도 지금 진열 그대로 두기' : '효과 좋음 → 다음 행사도 ' + wd + '요일 시작 · 같은 상품 묶음으로 추천';
+      if (s.v === 'meh') return '조금 늘었어요 → 진열 위치나 안내 문구를 바꿔서 한 번 더 시험해 보기';
+      if (s.v === 'bad') return '효과 없음 → 상품 구성이나 진열을 바꿔 보기 (행사 전보다 덜 팔렸어요)';
+      if (s.v === 'wait') return '시작 전 → 행사 상품 진열·재고 미리 확인하기';
+      return s.live ? '진행 중 → 매일 아침 판매가 들어오면 다시 계산돼요' : '다음 행사는 시작 전 판매가 3일 이상 쌓인 상품으로 비교해 보기';
+    }
+    function efChip(v) { var x = EF_V[v] || EF_V.na; return '<span class="ef-chip ef-' + (v || 'na') + '">' + x[0] + ' ' + (v === 'na' ? '자료 부족' : x[1]) + '</span>'; }
+    function efPer(e) { return scMd(e.from) + ' ~ ' + scMd(e.to) + ' · ' + ((e.st && e.st.L) || '') + '일' + (e.st && e.st.live && e.st.v !== 'wait' ? ' · 진행 중' : ''); }
+    function efListHtml() {
+      var R = SL.ev, L = efRank(R.events || []), boss = scBoss(), ok = L.filter(function (e) { return e.st && e.st.lift != null && /good|meh|bad/.test(e.st.v); }), best = ok[0], n = 0;
+      var sum = !L.length ? '아직 등록한 행사가 없어요' + (boss ? ' → [행사 등록]으로 기간과 상품을 넣으면 효과가 계산돼요' : ' → 행사가 등록되면 여기서 효과를 볼 수 있어요')
+        : !best ? '아직 판정할 수 있는 행사가 없어요 → 행사가 3일 넘게 지나면 판정돼요'
+        : '🏆 가장 효과 큰 행사 <b>' + escapeHtml(best.name) + '</b> ' + efPct(best.st.lift) + ' → ' + (best.st.v === 'good' ? '다음 행사도 이 방식(같은 상품 묶음·같은 요일 시작)으로' : '아직 +20% 넘은 행사는 없어요 · 상품이나 진열을 바꿔 시험해 보기');
+      return '<section class="sc-card ef-top"><div class="sc-hd"><div><b>🎉 행사 효과</b><span>행사 기간 하루 판매를 바로 전 같은 일수와 비교해요' + (R.first ? ' · POS 자료 ' + scMd(R.first) + '부터' : '') + '</span></div>' + (boss ? '<button type="button" class="sc-edit" onclick="efFormOpen()">＋ 행사 등록</button>' : '') + '</div>'
+        + '<p class="ef-sum">' + sum + '</p><p class="ef-key"><span class="ef-good">🟢 +20%↑ 효과 있음</span><span class="ef-meh">🟡 0~20% 애매</span><span class="ef-bad">🔴 줄어듦</span></p></section>'
+        + (L.length ? '<section class="sc-card"><h3>지난 행사 비교 순위 <span>효과 큰 순</span></h3><div class="ef-list">' + L.map(function (e) {
+          var v = (e.st && e.st.v) || 'na', rk = /good|meh|bad/.test(v) && e.st.lift != null ? ++n : 0;
+          return '<button type="button" class="ef-row" onclick="efOpen(\'' + e.id + '\')"><span class="ef-rk' + (rk === 1 ? ' top' : '') + '">' + (rk || '·') + '</span><span class="ef-m"><span class="ef-t"><b>' + escapeHtml(e.name) + '</b>' + efChip(v) + '</span><small>' + efPer(e) + '</small><span class="ef-l">' + efLine(e) + '</span></span><span class="ef-go" aria-hidden="true">›</span></button>';
+        }).join('') + '</div></section>' : '');
+    }
+    function efChart(e) {
+      var s = e.st, S = s.ser || [], N = S.length; if (!N) return '<p class="ef-none">아직 그릴 판매 자료가 없어요</p>';
+      var W = scWxGet().d, mx = Math.max.apply(null, S.map(function (x) { return x[1] || 0; }).concat([s.b.avg || 0, s.d.avg || 0, 1])) * 1.1, wx = N <= 31, pc = function (v) { return (v / mx * 100).toFixed(1) + '%'; };
+      var bars = S.map(function (x, i) {
+        var w = W[x[0]], ic = w ? scWxIc(w[0]) : null, t = scMd(x[0]) + ' ' + (x[1] == null ? '자료 없음' : efN(x[1]) + '개') + (ic ? ' · ' + ic[1] + ' ' + w[1] + '°' : '') + ' · ' + ['행사 전', '행사 중', '끝난 뒤'][x[2]];
+        return '<span class="ef-b p' + x[2] + (x[1] == null ? ' no' : '') + '" style="height:' + (x[1] == null ? '0%' : pc(x[1])) + '" data-t="' + escapeHtml(t) + '">' + (wx && ic ? '<i aria-hidden="true">' + ic[0] + '</i>' : '') + '</span>';
+      }).join('');
+      var ix = function (d) { for (var i = 0; i < N; i++) if (S[i][0] >= d) return i; return -1; }, marks = [0, ix(e.from), ix(scAdd(e.to, 1)), N - 1].filter(function (i, j, a) { return i >= 0 && a.indexOf(i) === j; }), last = -99, xs = '';
+      marks.forEach(function (i) { var p = i / N * 100 + 50 / N; if (p - last < 14 && i !== marks[0]) return; last = p; xs += '<span style="left:' + p.toFixed(1) + '%"' + (i === 0 ? ' class="l"' : i === N - 1 ? ' class="r"' : '') + '>' + scMd(S[i][0]).replace(/\(.\)/, '') + '</span>'; });
+      var seg = [0, 1, 2].map(function (p) { var c = S.filter(function (x) { return x[2] === p; }).length; return c ? '<span class="p' + p + '" style="flex:' + c + '">' + ['행사 전', '행사 중', '끝난 뒤'][p] + '</span>' : ''; }).join('');
+      return '<div class="ef-ch" role="img" aria-label="날마다 판매 막대 · 행사 전 하루 ' + efN(s.b.avg) + '개 · 행사 중 하루 ' + efN(s.d.avg) + '개"><div class="ef-seg" aria-hidden="true">' + seg + '</div>'
+        + '<div class="ef-bars" onclick="efTip(event)">' + bars + (s.b.avg != null ? '<u class="ef-av b" style="bottom:' + pc(s.b.avg) + '"><em>전 ' + efN(s.b.avg) + '</em></u>' : '') + (s.d.avg != null ? '<u class="ef-av d" style="bottom:' + pc(s.d.avg) + '"><em>행사 ' + efN(s.d.avg) + '</em></u>' : '') + '</div>'
+        + '<div class="ef-xs" aria-hidden="true">' + xs + '</div></div>';
+    }
+    function efTip(ev) { var b = ev.target.closest('.ef-b'); if (b) showToast(b.getAttribute('data-t'), 2200); }
+    function efDetailHtml(e) {
+      var s = e.st || { b: {}, d: {}, a: {}, per: [], miss: [], v: 'na' }, boss = scBoss(), v = s.v, L = s.L || 0, part = s.b.n && s.b.n < L;
+      var hero = '<section class="sc-card ef-hero ef-' + v + '"><div class="sc-hd"><div><b>' + escapeHtml(e.name) + '</b><span>' + efPer(e) + '</span></div>' + efChip(v) + '</div>'
+        + (s.lift != null || s.b.n ? '<div class="ef-cmp"><div><small>행사 전 하루</small><b>' + efN(s.b.avg) + '<span>개</span></b><small>' + (s.bFrom ? scMd(s.bFrom).replace(/\(.\)/, '') + '~' + scMd(scAdd(e.from, -1)).replace(/\(.\)/, '') : '') + ' · ' + (s.b.n || 0) + '일</small></div><i aria-hidden="true">→</i>'
+          + '<div class="on"><small>행사 중 하루</small><b>' + efN(s.d.avg) + '<span>개</span></b><small>' + (s.d.n || 0) + '일' + (s.live ? ' (지금까지)' : '') + '</small></div>'
+          + '<div class="ef-lift"><small>늘어난 비율</small><b>' + efPct(s.lift) + '</b><small>' + (s.extra != null ? '약 ' + (s.extra > 0 ? '+' : '') + s.extra + '개 ' + (s.extra >= 0 ? '더' : '덜') : '–') + '</small></div></div>' : '')
+        + (v === 'na' || v === 'wait' ? '<p class="ef-why">' + escapeHtml(efWhy(e)) + '</p>' : '')
+        + (part ? '<p class="ef-why">행사 전 자료 ' + s.b.n + '일뿐 (같은 일수 ' + L + '일 중) · 있는 날만으로 비교했어요</p>' : '')
+        + '<p class="ef-next">💡 ' + escapeHtml(efNext(e)) + '</p>' + (e.note ? '<p class="sc-memo">📣 ' + escapeHtml(e.note) + '</p>' : '') + '</section>';
+      var aft = s.live || v === 'wait' ? '행사가 끝나면 다음 날부터 \'끝난 뒤\' 판매가 쌓여요' : !s.a.n ? '끝난 뒤 판매는 내일 아침부터 쌓여요 (' + scMd(scAdd(e.to, 1)) + '부터 ' + L + '일 동안 비교)'
+        : '끝난 뒤 ' + s.a.n + '일' + (s.a.n < L ? ' (지금까지)' : '') + ' 하루 <b>' + efN(s.a.avg) + '개</b> · 행사 전보다 <b>' + efPct(s.alift) + '</b><br>' + (s.alift == null ? '' : s.alift >= 20 ? '🟢 끝나도 효과가 남아 있어요 → 진열 그대로 유지' : s.alift >= 0 ? '🟡 행사 전 수준으로 돌아왔어요' : '🔴 행사 전보다 줄었어요 → 행사 때 미리 사 둔 손님이 많았을 수 있어요');
+      var per = s.per || [], pl = per.filter(function (p) { return p.lift != null; }).sort(function (a, b) { return b.lift - a.lift; });
+      var tb = per.length ? '<section class="sc-card"><h3>상품별 <span>하루 평균 개수</span></h3><div class="ef-tb" role="table"><div class="ef-tr ef-th" role="row"><span role="columnheader">상품</span><span role="columnheader">전</span><span role="columnheader">행사 중</span><span role="columnheader">변화</span><span role="columnheader">끝난 뒤</span></div>'
+        + per.map(function (p) { return '<div class="ef-tr" role="row"><span role="cell">' + escapeHtml(p.label) + '</span><span role="cell">' + efN(p.b) + '</span><span role="cell"><b>' + efN(p.d) + '</b></span><span role="cell" class="' + (p.lift == null ? '' : p.lift >= 20 ? 'up' : p.lift < 0 ? 'dn' : 'mid') + '">' + efPct(p.lift) + '</span><span role="cell">' + efN(p.a) + '</span></div>'; }).join('') + '</div>'
+        + (pl.length > 1 ? '<p class="ef-next">💡 가장 잘 반응한 상품 <b>' + escapeHtml(pl[0].label) + '</b> ' + efPct(pl[0].lift) + (pl[pl.length - 1].lift < 20 ? ' · 약한 상품 <b>' + escapeHtml(pl[pl.length - 1].label) + '</b> ' + efPct(pl[pl.length - 1].lift) + ' → 다음엔 잘 팔린 상품 위주로' : ' → 다음 행사 메인 상품으로') + '</p>' : '') + '</section>' : '';
+      return '<button type="button" class="ef-back" onclick="efBack()">‹ 행사 목록</button>' + hero
+        + '<section class="sc-card"><h3>날마다 판매 <span>행사 상품 합 · 막대를 누르면 숫자</span></h3>' + efChart(e) + '<p class="ef-lg"><span class="p0">행사 전</span><span class="p1">행사 중</span><span class="p2">끝난 뒤</span><span class="av">점선 = 하루 평균</span></p></section>'
+        + '<section class="sc-card"><h3>끝난 뒤 효과</h3><p class="ef-aft">' + aft + '</p></section>' + tb
+        + (s.miss && s.miss.length ? '<p class="ef-miss">⚠️ POS 판매에서 못 찾은 이름: ' + s.miss.map(escapeHtml).join(', ') + (boss ? ' → [고치기]에서 POS 이름을 확인해 주세요' : '') + '</p>' : '')
+        + (boss ? '<div class="sc-f sc-fbtn"><button type="button" class="sc-btn sc-btn2" onclick="efDel(\'' + e.id + '\')">지우기</button><button type="button" class="sc-btn" onclick="efFormOpen(\'' + e.id + '\')">고치기</button></div>' : '');
+    }
+    function efOpen(id) { SL.sel = id; efRender(); var b = document.getElementById('slBody'); if (b) b.scrollTop = 0; }
+    function efBack() { if (SL.form) { SL.form = null; } else SL.sel = ''; efRender(); var b = document.getElementById('slBody'); if (b) b.scrollTop = 0; }
+    function efDel(id) {
+      var e = SL.ev.events.filter(function (x) { return x.id === id; })[0]; if (!e) return;
+      ryConfirm({ title: '행사를 지울까요?', items: [{ t: 'warn', h: e.name, d: scMd(e.from) + ' ~ ' + scMd(e.to) + ' · 판매 기록은 그대로예요' }], ok: '지우기', danger: true }).then(function (ok) {
+        if (!ok) return;
+        google.script.run.withSuccessHandler(function (r) { if (!r || !r.success) { showToast((r && r.message) || '안 지워졌어요', 3000); return; } SL.ev = r; SL.at = Date.now(); SL.sel = ''; try { localStorage.setItem('ry_ev', JSON.stringify(r)); } catch (x) {} efRender(); showToast(e.name + ' 지웠어요', 2200); })
+          .withFailureHandler(function () { showToast('안 지워졌어요 · 인터넷 확인 후 다시 눌러 주세요', 3000); }).deleteEvent(currentSelectedMember, id);
+      });
+    }
+    function efFormOpen(id) {
+      var e = id ? SL.ev.events.filter(function (x) { return x.id === id; })[0] : null, t = SL.ev.today || scYmd(new Date());
+      SL.form = e ? { id: e.id, name: e.name, from: e.from, to: e.to, note: e.note || '', rows: e.items.map(function (it) { return { k: '', label: it.label, kind: it.kind || 'set', picks: it.pos.map(function (p, j) { return { n: (it.app && it.app[j]) || '', pos: p }; }), goal: '', day: '' }; }) }
+        : { id: '', name: '', from: t, to: scAdd(t, 6), note: '', rows: [scFormRow()] };
+      SC.pickRes = []; efRender(); var b = document.getElementById('slBody'); if (b) b.scrollTop = 0;
+      setTimeout(function () { var n = document.getElementById('efFName'); if (n && !id) try { n.focus({ preventScroll: true }); } catch (x) {} }, 30);
+    }
+    function efFormHtml() {
+      var f = SL.form, R = SL.ev || {};
+      return '<section class="sc-card sc-form"><h3>🎉 ' + (f.id ? '행사 고치기' : '행사 등록') + ' <span>행사 전 같은 일수와 비교해요</span></h3>'
+        + '<div class="sc-f"><label class="sc-wide">행사 이름<input id="efFName" maxlength="40" value="' + escapeHtml(f.name) + '" placeholder="예: 리쥬올 1+1 · 세트 2주 집중" enterkeyhint="next"></label></div>'
+        + '<div class="sc-f"><label>시작<input type="date" id="scFFrom" value="' + f.from + '"></label><label>끝<input type="date" id="scFTo" value="' + f.to + '"></label></div>'
+        + (R.first ? '<p class="ef-fh">POS 판매 자료는 ' + scMd(R.first) + '부터 있어요 · 기간은 31일까지</p>' : '')
+        + scFormRowsHtml(f, true)
+        + '<div class="sc-f"><label class="sc-wide">메모 <small>할인 내용 · 진열 위치</small><textarea id="scFNote" rows="2" maxlength="200" placeholder="예: 2+1 · 계산대 앞 진열">' + escapeHtml(f.note) + '</textarea></label></div>'
+        + '<div class="sc-f sc-fbtn"><button type="button" class="sc-btn sc-btn2" onclick="efBack()">취소</button><button type="button" class="sc-btn" id="efFSave" onclick="efSave()">저장</button></div></section>';
+    }
+    function efSave() {
+      scFormRead(); var f = SL.form, name = String(f.name || '').trim();
+      if (!name) { showToast('행사 이름을 적어 주세요', 2400); return; }
+      if (!f.from || !f.to || f.from > f.to) { showToast('기간을 확인해 주세요', 2400); return; }
+      var items = f.rows.map(function (r) { var pk = r.picks.filter(function (p) { return String(p.pos).trim(); }); return { kind: r.kind, label: String(r.label).trim() || (pk[0] ? pk[0].n || pk[0].pos : ''), pos: pk.map(function (p) { return String(p.pos).trim(); }), app: pk.map(function (p) { return p.n; }) }; }).filter(function (x) { return x.label; });
+      if (!items.length) { showToast('행사 상품을 하나 이상 골라 주세요', 2400); return; }
+      var none = items.filter(function (x) { return !x.pos.length; })[0]; if (none) { showToast(none.label + ' · 세트나 상품을 골라 주세요', 2800); return; }
+      var btn = document.getElementById('efFSave'), undo = function (m) { showToast(m, 3000); if (btn) { btn.disabled = false; btn.textContent = '저장'; } };
+      if (typeof google.script.run.saveEvent !== 'function') { undo('서버 업데이트 뒤에 쓸 수 있어요'); return; }
+      if (btn) { btn.disabled = true; btn.textContent = '저장 중…'; }
+      google.script.run.withSuccessHandler(function (r) {
+        if (!r || !r.success) { undo((r && r.message) || '저장 안 됨'); return; }
+        SL.ev = r; SL.at = Date.now(); SL.form = null; SL.sel = r.id || ''; try { localStorage.setItem('ry_ev', JSON.stringify(r)); } catch (x) {}
+        efRender(); var b = document.getElementById('slBody'); if (b) b.scrollTop = 0; showToast(name + ' 저장했어요', 2400);
+      }).withFailureHandler(function () { undo('저장 안 됨 · 인터넷 확인 후 다시 눌러 주세요'); }).saveEvent(currentSelectedMember, { id: f.id, name: name, from: f.from, to: f.to, note: f.note, items: items });
     }
     function openSetPage(want) {
       SP.want = want || null;
@@ -8230,9 +8609,8 @@ video {
                  : '<div class="' + cls + ' none">📷 샘플 사진 없음</div>';
     }
     function spSegSync() {
-      [['spSegSets', 'sets'], ['spSegTags', 'tags'], ['spSegBox', 'boxes'], ['spSegMade', 'made'], ['spSegGoal', 'goal'], ['spSegLedger', 'ledger']].forEach(function (x) { var b = document.getElementById(x[0]); if (b) { b.classList.toggle('on', SP.view === x[1]); b.setAttribute('aria-selected', SP.view === x[1]); } });
+      [['spSegSets', 'sets'], ['spSegTags', 'tags'], ['spSegBox', 'boxes'], ['spSegMade', 'made'], ['spSegLedger', 'ledger']].forEach(function (x) { var b = document.getElementById(x[0]); if (b) { b.classList.toggle('on', SP.view === x[1]); b.setAttribute('aria-selected', SP.view === x[1]); } });
       var lb = document.getElementById('spSegLedger'); if (lb) lb.hidden = true;   /* 1106 MJ '박스 장부 탭 없어져도 괜찮아' */   // 1023 박스 장부는 문준만
-      var gb = document.getElementById('spSegGoal'); if (gb) gb.hidden = !scShown();   // 1109 이번 주 목표가 있을 때 (목표 정하는 사람은 늘)
     }
     function spRender() {
       if (SP.view === 'ledger' && String(currentSelectedMember || '').trim() === '문준') {   /* 1023 MJ 박스 장부 (문준만) */
@@ -8240,12 +8618,7 @@ video {
         document.getElementById('spBackBtn').textContent = '✕ 닫기'; document.getElementById('spTitle').textContent = '박스 장부';
         spSegSync(); return lgRender();
       }
-      if (SP.view === 'goal') {   /* 1026 MJ 세트 2주 집중 대시보드 */
-        document.getElementById('spSeg').hidden = false; document.getElementById('spNewBtn').hidden = true;
-        document.getElementById('spBackBtn').textContent = '✕ 닫기'; spSegSync(); SC.prev = {}; SC.edit = 0; SC.day = ''; SC.form = null; scRender(); if (Date.now() - SC.t > 15000) scLoad(true);
-        try { var sg = document.getElementById('spSeg'), gb = document.getElementById('spSegGoal'); if (sg && gb && sg.scrollWidth > sg.clientWidth) sg.scrollLeft = gb.offsetLeft - (sg.clientWidth - gb.offsetWidth) / 2; } catch (eSg) {}   // 폰 360: 고른 탭이 오른쪽에서 잘리지 않게
-        return;
-      }
+      if (SP.view === 'goal') SP.view = 'sets';   /* 1109 주 목표는 📊 판매 목표 화면으로 옮김 */
       if (SP.view === 'made') {   /* 1022 MJ: 오전·오후 세트 담당이 만든 세트 개수 → 아크릴박스 자동 소진 */
         document.getElementById('spSeg').hidden = false; document.getElementById('spNewBtn').hidden = true;
         document.getElementById('spBackBtn').textContent = '✕ 닫기'; document.getElementById('spTitle').textContent = '오늘 만든 세트';
@@ -9219,7 +9592,7 @@ video {
     var RY_NAV = { pushed: 0, goAt: 0, ready: false, busy: false, tabs: [], ok: true };
     var RY_SHEET_CLOSE = { noteSheet: 'closeNote', npSheet: 'closeNewProduct', dupSheet: 'closeDuplicates', cbSheet: 'closeCatBrowse', infoSheet: 'closeInfo', inMemoSheet: 'closeInMemo',
                            seSheet: 'closeSetEdit', teSheet: 'closeTagEdit', avaSheet: 'closeAvaPicker', phSheet: 'closePhotoChoice', drSheet: 'closeDelayReason', rejSheet: 'closeRejects',
-                           stSheet: 'closeStale', ntSheet: 'ntClosePaste', ntESheet: 'ntCloseEdit', sdSheet: 'sdCloseWeek', sdPk: 'sdPkClose', pfaSheet: 'pfaClose', s15Sheet: 's15Close' };
+                           stSheet: 'closeStale', ntSheet: 'ntClosePaste', ntESheet: 'ntCloseEdit', sdSheet: 'sdCloseWeek', sdPk: 'sdPkClose', pfaSheet: 'pfaClose', s15Sheet: 's15Close', scDaySheet: 'scDayClose' };
     function ryOpenSheets() { return [].slice.call(document.querySelectorAll('.ava-sheet.on')); }
     function ryShown(id) { var e = document.getElementById(id); return !!e && !e.hidden; }
     function ryLayers() {   /* 아래 → 위 순서 */
@@ -9229,6 +9602,7 @@ video {
       var sp = document.getElementById('setPage');
       if (sp && sp.classList.contains('on')) { L.push('setpage'); if (typeof SP !== 'undefined' && SP.view === 'detail') L.push('setdetail'); }
       var dp = document.getElementById('dshPage'); if (dp && dp.classList.contains('on')) L.push('dsh');   /* 1029 대시보드 */
+      var slp = document.getElementById('slPage'); if (slp && slp.classList.contains('on')) { L.push('sl'); if (typeof SL !== 'undefined' && SL.tab === 'ev' && (SL.sel || SL.form)) L.push('slsub'); }   /* 1109 판매 목표 · 행사 자세히/등록 */
       var cf = document.getElementById('ryCf'); if (cf && !cf._done) L.push('cf');   /* 1029 앱 확인창 — 뒤로가기 = 취소 */
       if (ryShown('ryLaunch')) L.push('launch');
       if (ryShown('mbReader')) { L.push('mb'); if (typeof MB !== 'undefined' && MB.view === 'archive' && MB.cur) L.push('mb'); }
@@ -9281,6 +9655,8 @@ video {
         else if (top === 'launch') ryLaunchClose();
         else if (top === 'setdetail' || top === 'setpage') spBack();
         else if (top === 'dsh') dshClose();
+        else if (top === 'sl') slClose();
+        else if (top === 'slsub') efBack();
         else if (top === 'cf') { var cfe = document.getElementById('ryCf'); if (cfe && cfe._res) cfe._res(false); }
         else if (top === 'search') clearGlobalSearch();
         else if (top === 'tab') { RY_NAV.tabs = [RY_NAV.tabs[0]]; RY_NAV._sw(RY_NAV.tabs[0]); window.scrollTo(0, 0); }
@@ -17933,6 +18309,19 @@ video {
   </header>
   <main id="dshBody"></main>
 </div>
+<div id="slPage" class="sp" role="dialog" aria-modal="true" aria-label="판매 목표" aria-hidden="true">
+  <header class="sp-head">
+    <button type="button" class="sp-back" onclick="slClose()">✕ 닫기</button>
+    <b>판매 목표</b>
+    <span aria-hidden="true"></span>
+  </header>
+  <div class="sp-seg" role="tablist" aria-label="판매 목표 보기">
+    <button type="button" id="slTabGoal" role="tab" onclick="slTab('goal')">🎯 주 목표</button>
+    <button type="button" id="slTabCal" role="tab" onclick="slTab('cal')">📅 날짜별 판매</button>
+    <button type="button" id="slTabEv" role="tab" onclick="slTab('ev')">🎉 행사 효과</button>
+  </div>
+  <main id="slBody" class="sp-body"></main>
+</div>
 <div id="setPage" class="sp" role="dialog" aria-label="세트 상품과 용도별 상품" aria-hidden="true">
   <header class="sp-head">
     <button type="button" class="sp-back" id="spBackBtn" onclick="spBack()">✕ 닫기</button>
@@ -17944,7 +18333,6 @@ video {
     <button type="button" id="spSegTags" role="tab" onclick="spShow('tags')" hidden>🏷 용도별 상품</button>
     <button type="button" id="spSegBox" role="tab" onclick="spShow('boxes')">📦 박스 재고<i id="spBoxN"></i></button>
     <button type="button" id="spSegMade" role="tab" onclick="spShow('made')">📝 만든 세트</button>
-    <button type="button" id="spSegGoal" role="tab" onclick="spShow('goal')" hidden>🎯 이번 주 목표</button>
     <button type="button" id="spSegLedger" role="tab" onclick="LG = null; spShow('ledger')" hidden>📒 박스 장부</button>
   </div>
   <main id="spBody" class="sp-body"></main>
