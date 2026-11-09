@@ -220,7 +220,8 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
 @keyframes skm{to{background-position:-200% 0}}
 .sw-btn{flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:14px;background:#EEF4FF;color:#155EEF;font-size:15px;font-weight:700;text-decoration:none;white-space:nowrap}
 #undo{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));z-index:21;width:calc(100% - 32px);max-width:528px;transform:translate(-50%,160%);display:flex;align-items:center;gap:12px;padding:10px 10px 10px 18px;border-radius:18px;background:#101828;color:#fff;font-size:16px;font-weight:600;box-shadow:0 10px 28px rgba(0,0,0,.25);transition:transform .25s}
-#undo.on{transform:translate(-50%,0)}#undo span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#undo.on{transform:translate(-50%,0)}
+#undo:not(.on){pointer-events:none;visibility:hidden;transition:transform .25s,visibility 0s .25s}   /* 1109 숨은 띠가 아래 [한 번에 입고 완료]를 가로막던 것 */#undo span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #undo button{flex:none;min-height:44px;padding:0 16px;border:0;border-radius:12px;background:#FDE272;color:#101828;font-size:16px;font-weight:800}
 body.has-bar #undo{bottom:calc(92px + env(safe-area-inset-bottom))}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
