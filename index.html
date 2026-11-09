@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw8qlcim">
+  <meta name="ry-build" content="mw8qu0hz">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -14777,7 +14777,7 @@ video {
     function ryCatSearch(query, strict) {
       if (!RY_CAT || !RY_CAT.items) return null;
       var hit = ryHitFn(query), out = [];
-      for (var i = 0; i < RY_CAT.items.length && out.length < 100; i++) { var it = RY_CAT.items[i]; if (hit(ryKeyOf(it))) out.push(it); }
+      for (var i = 0; i < RY_CAT.items.length && out.length < 200; i++) { var it = RY_CAT.items[i]; if (hit(ryKeyOf(it))) out.push(it); }   /* 1109 '부외품' 122개 다 나오게 100→200 */
       if (!out.length && !strict) ryQueryAlts(query).some(function (a) { var h2 = ryHitFn(a); for (var j = 0; j < RY_CAT.items.length && out.length < 40; j++) { var it2 = RY_CAT.items[j]; if (h2(ryKeyOf(it2))) out.push(it2); } return out.length; });
       /* 폰 목록은 최대 5분 전 것 → 지금 화면이 아는 상태 · 사진을 덮어씀 (방금 요청·승인·입고한 것도 바로 맞게) */
       var live = ryLiveMap();
