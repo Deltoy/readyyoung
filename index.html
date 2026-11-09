@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw8t5jlg">
+  <meta name="ry-build" content="mw8tau4f">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4557,6 +4557,16 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 .sc-ln.ok{color:#067647}.sc-ln.low{color:#D92D20}
 .sc-cal-sub{margin:0 0 6px;font-size:12px;font-weight:700;color:var(--ry-ink-3)}
 .sc-set-lg span::before{width:7px!important;height:7px!important;border-radius:50%!important}.sc-st-lg .ok::before,.sc-st-lg .low::before{display:none}.sc-st-lg .ok{color:#067647}.sc-st-lg .low{color:#D92D20}
+/* 1109 가독성: 숫자는 흰 판 위 · 세트 이름표 · 날씨 그림은 오른쪽 위 작게 */
+#scCal .sc-cd{min-height:84px!important;justify-content:flex-start}
+#scCal .sc-lns{margin-top:3px;padding:3px 4px;border-radius:8px;background:rgba(255,255,255,.88);gap:1px}
+#scCal .sc-lns:empty{display:none}
+#scCal .sc-ln{gap:4px;font-size:12px;line-height:1.35}
+#scCal .sc-ln u{flex:none;width:auto;height:auto;min-width:30px;padding:0 3px;border-radius:5px;background:var(--c);color:#fff;font-size:10px;font-weight:800;text-align:center;line-height:15px;text-decoration:none}
+#scCal .sc-ln b{font-size:14px;font-weight:800;color:var(--ry-ink);font-variant-numeric:tabular-nums}
+#scCal .sc-ln.ok b{color:#067647}#scCal .sc-ln.low b{color:#D92D20}
+#scCal .sc-cd[data-wx]::after{top:3px;right:4px;font-size:16px;opacity:.95}
+.sc-pl u{display:inline-block;margin-right:4px;padding:0 4px;border-radius:5px;background:var(--c);color:#fff;font-size:10px;font-weight:800;text-decoration:none;line-height:15px}.sc-set-lg .sc-pl::before{display:none}
 .sc-cd[data-wx]::after{content:attr(data-wx);position:absolute;right:-4px;top:12px;font-size:27px;line-height:1;opacity:.5;pointer-events:none;z-index:0}
 .sc-cd.wx-sun{background:radial-gradient(circle at 85% 30%,#FFE58A 0,#FFF3C4 45%,#FFFAEB 100%)}
 .sc-cd.wx-part{background:linear-gradient(160deg,#FFF6D6 0%,#EEF1F5 70%)}
@@ -8126,6 +8136,7 @@ video {
        따로 떼어 쓰기 쉽게: scCalHtml(D) → HTML (D = getSetChallenge 응답) · 상태는 SC.cal {m, k} · 다시 그리기 scCalDraw() 는 #scCal 만 바꿈 ══ */
     var SC_WX_URL = 'https://api.open-meteo.com/v1/forecast?latitude=37.5446&longitude=127.0557&timezone=Asia%2FSeoul&past_days=92&forecast_days=1&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum';   /* 서버 getWeather 와 같은 성수동 좌표(_WX_LAT/_WX_LON) */
     SC.cal = { m: '', k: '', ms: [] }; SC.wx = null; SC.wxBusy = false; SC.wxFail = 0; SC.dayD = '';
+    function scShort(l) { l = String(l || ''); if (/total/i.test(l)) return '토탈'; if (/smart/i.test(l)) return '스마트'; var m = (l.match(/[가-힣]+/g) || []).filter(function (w) { return !/종$/.test(w); }); return (m.length ? m[m.length - 1] : l).slice(0, 3); }
     function scWxCls(w) { var c = +w[0], k = c <= 1 ? 'sun' : c === 2 ? 'part' : c === 45 || c === 48 ? 'fog' : (c >= 71 && c <= 77) || c === 85 || c === 86 ? 'snow' : c >= 51 ? 'rain' : 'cloud'; return ' wx-' + k + (+w[1] <= 5 ? ' cold' : ''); }   /* 1109 날씨 = 칸 배경 · 최고 5° 이하 = 추운 날(얼음 테두리) */
     function scWxIc(c) { c = +c; return c <= 1 ? ['☀️', '맑음'] : c === 2 ? ['⛅', '구름 조금'] : c === 3 ? ['☁️', '흐림'] : c === 45 || c === 48 ? ['🌫️', '안개'] : (c >= 71 && c <= 77) || c === 85 || c === 86 ? ['❄️', '눈'] : c >= 95 ? ['🌧️', '뇌우'] : c >= 51 ? ['🌧️', c <= 57 ? '이슬비' : '비'] : ['☁️', '흐림']; }
     function scWxGet() { if (!SC.wx) { try { SC.wx = JSON.parse(localStorage.getItem('ry_sc_wx') || 'null'); } catch (e) {} if (!SC.wx || !SC.wx.d) SC.wx = { d: {}, at: 0 }; } return SC.wx; }   /* {d: {날짜: [날씨코드, 최고, 최저, 강수mm]}, at} */
@@ -8172,7 +8183,7 @@ video {
         }
         var wc = wx ? scWxCls(wx) : '';   /* 1109 MJ '온도 숫자는 헷갈려 · 그림으로만 · 칸 배경이 날씨 이미지처럼' */
         /* 1109 MJ '세트를 눌러야 몇 개 팔린지 보여 — 그 날짜에 다 넣고 가독성 좋게' → 칸에 세트별 숫자를 다 (세트 색 점 · 목표 달성 ✓ · 70% 미만 빨강) */
-        var od = days[d] || {}, lines = sets.filter(function (x) { return od[x.k] != null; }).map(function (x) { var vx = od[x.k], gx = scGoal(c, d, x.k), cl = gx && vx >= gx ? ' ok' : gx && d < t && vx < gx * .7 ? ' low' : ''; return '<span class="sc-ln' + cl + '" style="--c:' + x.c + '"><u></u>' + vx + (cl === ' ok' ? '<small>✓</small>' : '') + '</span>'; }).join('');
+        var od = days[d] || {}, lines = sets.filter(function (x) { return od[x.k] != null; }).map(function (x) { var vx = od[x.k], gx = scGoal(c, d, x.k), cl = gx && vx >= gx ? ' ok' : gx && d < t && vx < gx * .7 ? ' low' : ''; return '<span class="sc-ln' + cl + '" style="--c:' + x.c + '"><u>' + scShort(x.label) + '</u><b>' + vx + '</b>' + (cl === ' ok' ? '<small>✓</small>' : '') + '</span>'; }).join('');   /* 1109 MJ '숫자가 잘 안 보이고 무슨 숫자인지 모르겠어' → 세트 이름표(토탈·스마트·베리어) + 큰 숫자 · 흰 판 위에 */
         cells += '<button type="button" class="sc-cd' + (d === t ? ' now' : '') + (fut ? ' fut' : '') + (scDow(d) > 4 ? ' we' : '') + wc + '"' + (wx ? ' data-wx="' + scWxIc(wx[0])[0] + '"' : '') + (fut && !boss && !m ? ' disabled' : '') + ' onclick="scDayOpen(\'' + d + '\')" aria-label="' + scMd(d) + (v != null ? ' ' + v + '개' : '') + (wx ? ' ' + scWxIc(wx[0])[1] : '') + (m ? ' 메모 있음' : '') + '">'
           + '<i>' + dd + '</i><div class="sc-lns">' + lines + '</div>' + (m ? '<em></em>' : '') + '</button>';
       }
@@ -8181,10 +8192,10 @@ video {
       av.forEach(function (a, j) { if (a == null) return; nav++; amx = Math.max(amx, a); if (top < 0 || a > av[top]) top = j; }); if (nav < 2) top = -1;
       var hi = '', lo = ''; past.forEach(function (d) { if (!hi || val(d) > val(hi)) hi = d; if (!lo || val(d) < val(lo)) lo = d; });
       var tips = scCalTips(t, past, val, wk, W);
-      return '<section class="sc-card sc-cal" id="scCal" style="--sc:' + s.c + ';--sc-soft:' + s.soft + '"><h3>📅 날짜별 판매 <span>칸을 누르면 그날 자세히</span></h3>'
+      return '<section class="sc-card sc-cal" id="scCal" style="--sc:' + s.c + ';--sc-soft:' + s.soft + '"><h3>📅 날짜별 판매 <span>칸 숫자 = 그날 팔린 개수 · 누르면 자세히</span></h3>'
         + '<div class="sc-cal-bd"><div class="sc-cal-l"><div class="sc-cal-h"><button type="button"' + (mi > 0 ? '' : ' disabled') + ' onclick="scCalMove(-1)" aria-label="지난달">◀</button><b>' + y + '년 ' + mo + '월</b><button type="button"' + (mi < S.ms.length - 1 ? '' : ' disabled') + ' onclick="scCalMove(1)" aria-label="다음 달">▶</button></div>'
         + '<div class="sc-cal-w" aria-hidden="true">' + '월화수목금토일'.split('').map(function (w) { return '<span>' + w + '</span>'; }).join('') + '</div><div class="sc-cal-g">' + cells + '</div>'
-        + '<p class="sc-cal-lg sc-set-lg">' + sets.map(function (x) { return '<span style="--b:' + x.c + '">' + escapeHtml(x.label) + '</span>'; }).join('') + '</p><p class="sc-cal-lg sc-st-lg"><span class="ok">✓ 하루 목표 달성</span><span class="low">빨강 = 70% 미만</span><span class="mm">메모</span></p><p class="sc-cal-lg sc-wx-lg"><span class="wx-sun">맑음</span><span class="wx-cloud">흐림</span><span class="wx-rain">비</span><span class="wx-snow">눈</span><span class="cold">추운 날</span></p></div>'
+        + '<p class="sc-cal-lg sc-set-lg">' + sets.map(function (x) { return '<span class="sc-pl" style="--c:' + x.c + '"><u>' + scShort(x.label) + '</u>' + escapeHtml(x.label) + '</span>'; }).join('') + '</p><p class="sc-cal-lg sc-st-lg"><span class="ok">✓ 하루 목표 달성</span><span class="low">빨강 = 70% 미만</span><span class="mm">메모</span></p><p class="sc-cal-lg sc-wx-lg"><span class="wx-sun">맑음</span><span class="wx-cloud">흐림</span><span class="wx-rain">비</span><span class="wx-snow">눈</span><span class="cold">추운 날</span></p></div>'
         + '<div class="sc-cal-r">' + (sets.length > 1 ? '<p class="sc-cal-sub">아래 통계 볼 세트</p><div class="sc-cal-chips" role="group" aria-label="세트 고르기">' + sets.map(function (x) { return '<button type="button" class="sc-chip" style="--sc:' + x.c + ';--sc-soft:' + x.soft + '" aria-pressed="' + (x.k === k) + '" onclick="scCalPick(\'' + x.k + '\')"><i></i>' + escapeHtml(x.label) + '</button>'; }).join('') + '</div>' : '') + '<div class="sc-ms"><div><small>' + mo + '월 합계</small><b>' + mSum + '<span>개</span></b></div><div><small>하루 평균</small><b>' + (mN ? Math.round(mPast / mN) : '–') + '<span>' + (mN ? '개' : '') + '</span></b></div><div><small>목표 달성</small><b>' + (mG ? mHit + '<span>/' + mG + '일</span>' : '–') + '</b></div></div>'
         + '<h4>요일 평균 <small>지난 ' + past.length + '일</small></h4><div class="sc-wd" role="list">' + av.map(function (a, j) { return '<div role="listitem"' + (j === top ? ' class="top"' : '') + ' aria-label="' + '월화수목금토일'.charAt(j) + '요일 평균 ' + (a == null ? '없음' : a + '개') + '"><em>' + (j === top ? '<u>👑</u>' : '') + (a == null ? '–' : a) + '</em><span><i style="height:' + (a ? Math.max(4, a / amx * 100) : 0).toFixed(0) + '%"></i></span><b>' + '월화수목금토일'.charAt(j) + '</b></div>'; }).join('') + '</div>'
         + (tips.length ? '<div class="sc-tips">' + tips.map(function (x) { return '<p>' + x + '</p>'; }).join('') + '</div>' : '')
