@@ -227,6 +227,9 @@ body.has-bar #undo{bottom:calc(92px + env(safe-area-inset-bottom))}
 /* 1109 관리자 보기(문준 PC 등): 보기만 — 입고·챙김·찾기 버튼 숨김 */
 .bw-adm .done,.bw-adm .step,.bw-adm .tick,.bw-adm [data-a=find],.bw-adm #fix,.bw-adm .steps,.bw-adm .inst,.bw-adm #inst{display:none!important}
 .bw-adm .top-in::after{content:"관리자 보기 · 읽기 전용";flex:none;order:2;padding:4px 10px;border-radius:999px;background:#FEF0C7;color:#B54708;font-size:13px;font-weight:700}
+/* 1109 MJ '밑에 이런 개 이런 거 검색 안 되게' — 글자를 길게 누르면 크롬 '탭하여 검색'이 뜸 → 글자 선택 끔 (입력칸은 그대로) */
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
