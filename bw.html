@@ -271,7 +271,7 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
   /* 열쇠: 주소 #t= · 없으면 이 기기에 기억한 것 (안드로이드 설치 앱은 bw.html 로 열림) */
   var TOK = (location.hash.match(/[#&]t=([A-Za-z0-9]{24,64})/) || [])[1] || '';
   try { if (TOK) localStorage.setItem('bw_t', TOK); else TOK = localStorage.getItem('bw_t') || ''; } catch (e) {}
-  try { var _me = localStorage.getItem('s_selected_member') || ''; if (_me) { var _tm = document.getElementById('toMain'); _tm.hidden = false; _tm.href = './?me=' + encodeURIComponent(_me); } } catch (e) {}
+  try { var _me = localStorage.getItem('s_selected_member') || ''; if (_me === '문준') {   /* 1109 MJ '전환은 나만 · 사장님은 못 하게' */ var _tm = document.getElementById('toMain'); _tm.hidden = false; _tm.href = './?me=' + encodeURIComponent(_me); } } catch (e) {}
   /* 1109b 기기 번호 (서버가 승인한 폰만) — 이 폰에서 처음 한 번 만들고 계속 씀 */
   var DEV = ''; try { DEV = localStorage.getItem('bw_dev') || ''; } catch (e) {}
   if (!/^[0-9a-f]{32}$/.test(DEV)) {
