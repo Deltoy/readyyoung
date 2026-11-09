@@ -133,15 +133,47 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
 .fi:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(21,94,239,.15)}
 .tg{display:inline-block;margin-right:6px;padding:0 7px;border-radius:999px;background:#F2F4F7;color:var(--sub);font-size:12px;font-weight:700;vertical-align:1px}
 .tg.new2{background:#ECFDF3;color:var(--green)}
+/* 1109 디자인 업그레이드 — 레디영 로고·브랜드 파랑 */
+body{background:linear-gradient(180deg,#EAF1FF 0,#F5F6F8 280px) no-repeat,#F5F6F8}
+.top{display:block;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;background:rgba(255,255,255,.88)}
+.top-in{max-width:560px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.logo{flex:none;width:44px;height:44px;border-radius:12px;box-shadow:0 4px 12px rgba(21,94,239,.25)}
+.top .tx small{display:block;font-size:13px;font-weight:600;color:var(--blue);letter-spacing:0}
+.top h1{font-size:21px;font-weight:800}
+.hero{position:relative;overflow:hidden;margin:4px 0 22px;padding:20px 20px 18px;border-radius:24px;color:#fff;background:linear-gradient(135deg,#155EEF 0%,#2970FF 55%,#4F8BFF 100%);box-shadow:0 10px 28px rgba(21,94,239,.28)}
+.hero::after{content:"";position:absolute;right:-30px;top:-30px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.12)}
+.hero::before{content:"";position:absolute;right:40px;bottom:-50px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.08)}
+.hero .hi{margin:0;font-size:19px;font-weight:800;position:relative;z-index:1}
+.hero .dt{margin:2px 0 16px;font-size:14px;opacity:.85;position:relative;z-index:1}
+.hero .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative;z-index:1}
+.hero .stats div{padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.16);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.hero .stats b{display:block;font-size:28px;font-weight:800;line-height:1.1}
+.hero .stats span{font-size:14px;opacity:.9}
+.sec{display:flex;align-items:center;gap:8px;margin:0 2px 10px;font-size:16px;color:var(--ink)}
+.sec::before{content:"";width:4px;height:16px;border-radius:2px;background:var(--blue)}
+.card{border:0;box-shadow:0 1px 2px rgba(16,24,40,.06),0 4px 14px rgba(16,24,40,.05)}
+.card:has(.new){box-shadow:0 0 0 2px #B2CCFF,0 4px 14px rgba(21,94,239,.10)}
+.thumb{border:0;background:#F2F5FA}
+.done{background:linear-gradient(135deg,#155EEF,#2970FF);box-shadow:0 6px 16px rgba(21,94,239,.30)}
+.big2.wide{margin-top:10px;background:#fff;border-style:dashed}
+.recent ul,.empty,.res{border:0;box-shadow:0 1px 2px rgba(16,24,40,.06),0 4px 14px rgba(16,24,40,.05)}
+.foot{display:flex;align-items:center;justify-content:center;gap:8px;max-width:560px;margin:8px auto 0;padding:16px;font-size:13px;color:var(--mute)}
+.foot img{border-radius:6px}
+.sk{border-radius:20px;background:linear-gradient(90deg,#E9EDF3 0%,#F4F6FA 50%,#E9EDF3 100%);background-size:200% 100%;animation:skm 1.2s linear infinite;margin-bottom:14px}
+.sk-hero{height:150px;border-radius:24px;background:linear-gradient(90deg,#C9D9FF 0%,#DDE7FF 50%,#C9D9FF 100%);background-size:200% 100%}
+.sk-card{height:190px}
+@keyframes skm{to{background-position:-200% 0}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<header class="top">
-  <div class="tx"><h1>성수레디영 부외품<span id="badge" class="badge" hidden></span></h1><p>주문 온 상품을 진열하고 입고 완료를 눌러 주세요</p></div>
+<header class="top"><div class="top-in">
+  <img class="logo" src="ry-icon-192.png" alt="" width="44" height="44">
+  <div class="tx"><small>성수레디영약국</small><h1>부외품 입고<span id="badge" class="badge" hidden></span></h1></div>
   <button type="button" class="icon-btn" id="reload" aria-label="새로고침"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36L21 8"/><path d="M21 3v5h-5"/></svg></button>
-</header>
-<main id="app"><div class="loading">불러오는 중…</div></main>
+</div></header>
+<main id="app"><div class="sk sk-hero"></div><div class="sk sk-card"></div><div class="sk sk-card"></div></main>
+<footer class="foot"><img src="ry-icon-192.png" alt="" width="20" height="20">성수레디영약국 · 궁금한 점은 약국으로 연락 주세요</footer>
 <div id="toast" role="status" aria-live="polite"></div>
 <input type="file" id="cam" accept="image/*" capture="environment" class="sr" tabindex="-1" aria-hidden="true">
 <script>
@@ -224,8 +256,8 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
     return '<div class="row"><span class="lb" id="lb' + esc(it.k) + '">가져온 수량</span><span style="display:flex;align-items:center"><span class="step"><button type="button" data-a="minus" aria-label="하나 빼기">−</button>'
       + '<input type="number" inputmode="numeric" pattern="[0-9]*" min="1" max="99999" value="' + s.qty + '" aria-labelledby="lb' + esc(it.k) + '" data-a="qty"><button type="button" data-a="plus" aria-label="하나 더하기">+</button></span><span class="unit">' + unit + '</span></span></div>'
       + '<p class="diff"' + (diff ? '' : ' hidden') + '>' + esc(diff) + '</p>'
-      + (s.photo ? '<div class="pv"><img src="' + s.photo + '" alt="찍은 진열 사진"><span class="ok">사진 준비됐어요</span><button type="button" data-a="photo">다시 찍기</button></div>'
-        : '<button type="button" class="photo" data-a="photo">' + IC.cam + '진열 사진 찍기 (꼭 필요해요)</button>')
+      + (it.kind !== 'new' ? '' : s.photo ? '<div class="pv"><img src="' + s.photo + '" alt="찍은 상품 사진"><span class="ok">사진 준비됐어요</span><button type="button" data-a="photo">다시 찍기</button></div>'
+        : '<button type="button" class="photo" data-a="photo">' + IC.cam + '상품 사진 찍기 (선택)</button>')   /* 1109 MJ '진열 사진 찍기는 필요 없을 거 같아' → 새 상품 등록에서만 상품 사진(선택) */
       + '<p class="err" hidden></p>'
       + '<button type="button" class="done" data-a="done">' + doneLabel + '</button>';
   }
@@ -259,7 +291,7 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
         h += '<div class="newbox"><p>찾는 상품이 없나요?</p><button type="button" class="big2" data-a="new">' + IC.plus + '새 상품으로 등록</button></div>';
       } else h += '<p class="hint">상품 이름을 두 글자 이상 적고 [찾기]를 눌러 주세요.</p>';
     } else if (VIEW === 'pick' && PICK) {
-      h += backBar('주문 안 한 상품 넣기', '② 수량 · 진열 사진');
+      h += backBar('주문 안 한 상품 넣기', '② 가져온 수량');
       PICK.kind = 'pick'; PICK.k = 'u:' + key(PICK);
       h += cardHtml(PICK);
     } else if (VIEW === 'new') {
@@ -273,8 +305,11 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
         + controls(it, s, '등록하고 입고') + '</article>';
     } else {
       VIEW = 'list';
+      var _d = new Date(), _wd = '일월화수목금토'.charAt(_d.getDay());   /* 1109 MJ '레디영 로고 · 디자인 업그레이드 · 너무 밋밋' → 위에 브랜드 요약 카드 */
+      h += '<section class="hero"><p class="hi">사장님, 오늘도 감사합니다</p><p class="dt">' + (_d.getMonth() + 1) + '월 ' + _d.getDate() + '일 ' + _wd + '요일</p>'
+        + '<div class="stats"><div><b>' + ITEMS.length + '</b><span>입고할 상품</span></div><div><b>' + RECENT.length + '</b><span>최근 7일 입고</span></div></div></section>';
       h += '<h3 class="sec">주문 온 것</h3>';
-      if (ITEMS.length) h += '<p class="count">입고할 상품 <b>' + ITEMS.length + '개</b></p>' + ITEMS.map(cardHtml).join('');
+      if (ITEMS.length) h += ITEMS.map(cardHtml).join('');
       else h += '<div class="empty"><div class="ic">' + IC.check + '</div><h2>지금 입고할 주문이 없어요</h2><p>약국에서 새로 주문하면 여기에 바로 떠요.</p></div>';
       h += '<button type="button" class="big2 wide" data-a="find">' + IC.plus + '주문 안 한 상품 넣기</button>';
       h += recentHtml();
@@ -352,7 +387,7 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
     if (it.kind === 'new') { nm = NEWF.name.replace(/\s+/g, ' ').trim(); if (!nm) { showErr(o, '상품 이름을 적어 주세요'); document.getElementById('nName').focus(); return; } }
     if (!(q > 0)) { showErr(o, '가져온 수량을 숫자로 적어 주세요'); inp.focus(); return; }
     setQty(o, q);
-    if (!s.photo) { var pb = o.card.querySelector('.photo'); showErr(o, '진열 사진을 먼저 찍어 주세요'); if (pb) { pb.classList.remove('need'); void pb.offsetWidth; pb.classList.add('need'); } return; }
+    /* 1109 사진은 필수 아님 */
     if (it.kind === 'order' && s.qty !== it.qty && !confirm('주문은 ' + it.qty + it.unit + '인데 ' + s.qty + it.unit + '로 입고할까요?')) return;
     showErr(o, '');
     busy = true;
