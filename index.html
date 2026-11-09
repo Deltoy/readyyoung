@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw8rsnp0">
+  <meta name="ry-build" content="mw8sui1e">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -6232,6 +6232,7 @@ video {
         <button type="button" class="ry-ghost ry-quick ry-surge-q" id="surgeQuick" onclick="rySurgeOpen()" title="최근 3일 판매가 평소의 2배 넘게 뛴 상품 (매일 아침 POS 판매량 기준)" hidden>🔥 급상승<i id="surgeQuickN"></i></button>
         <button type="button" class="ry-ghost ry-quick" onclick="openSetPage(); spShow('sets')" title="세트 상품 · 박스 재고 · 오늘 만든 세트 기록">🎁 세트 상품<i id="bxDot" class="bx-today" hidden>박스 아직</i></button>
         <button type="button" class="ry-ghost ry-quick" id="scQuick" onclick="slOpen()" title="주 목표 · 날짜별 판매 · 행사 효과">📊 판매 목표<i id="scQuickN"></i></button>
+        <a class="ry-ghost ry-quick" id="bwQuick" href="bw.html" title="부외품 사장님 화면" hidden>📦 부외품</a>
         <button type="button" class="ry-ghost ry-quick" onclick="window.open('https://pallang-0258.github.io/seongsu/viewer.html', '_blank', 'noopener')" title="근무표를 새 창으로 열기">근무표</button>
         <button type="button" class="ry-ghost ry-quick" onclick="mbOpenArchive()" title="날짜별 아침 뷰티 브리핑">뷰티 브리핑</button>
         <button type="button" class="ry-ghost ry-quick" onclick="eduOpen()" title="제품 교육 자료">교육 자료실<i id="eduDot" class="mb-dot edu-qdot" hidden aria-label="새 교육 자료"></i></button>
@@ -11238,6 +11239,7 @@ video {
     var HIST_OPEN = {};
     function histToggle(head) { var d = head.dataset.date; if (!d) return; HIST_OPEN[d] = !HIST_OPEN[d]; try { renderAllViews(); } catch (e) {} var again = document.querySelector('.hist-date-head[data-date="' + d + '"]'); if (again) again.scrollIntoView({ block: 'nearest' }); }
     function renderAllViews() {
+      try { var _bq = document.getElementById('bwQuick'); if (_bq) _bq.hidden = currentSelectedMember !== '문준'; } catch (eBq) {}   /* 1109 MJ '전체 물류앱에서 부외품으로도 전환' — 문준만 홈 버튼 줄에 */
       var aeQ = document.activeElement; if (aeQ && /^(m-)?in-qty-/.test(aeQ.id || '') && aeQ.value !== aeQ.defaultValue) { INB_RPEND = 1; return; }   // 1027 입고 수량 입력 중이면 나중에 (inbQtyBlur) · 1029 숫자를 안 고친 칸(방향키로 옮겨 온 칸)은 바로 그림 — 커서는 ryQty 가 지킴
       try { var sn = document.getElementById('satNudge'); if (sn) sn.hidden = new Date(Date.now() + 9 * 3600000).getUTCDay() !== 6; } catch (eSn) {}   // 1001 토요일 안내
       try { ryArrivedNotice(); } catch (eAr) {}
