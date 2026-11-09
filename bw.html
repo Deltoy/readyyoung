@@ -218,6 +218,7 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
 .sk-hero{height:76px;background:linear-gradient(90deg,#C9D9FF 0%,#DDE7FF 50%,#C9D9FF 100%);background-size:200% 100%}
 .sk-card{height:128px}
 @keyframes skm{to{background-position:-200% 0}}
+.sw-btn{flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:14px;background:#EEF4FF;color:#155EEF;font-size:15px;font-weight:700;text-decoration:none;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -225,6 +226,7 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
 <header class="top"><div class="top-in">
   <img class="logo" src="ry-icon-192.png" alt="" width="44" height="44">
   <div class="tx"><small>성수레디영약국</small><h1>부외품 입고</h1></div>
+  <a class="sw-btn" id="toMain" href="./" hidden>전체 물류앱</a>   <!-- 1109 MJ "나는 부외품과 전체 물류앱을 전환" — 이 기기에서 물류앱 이름이 고른 사람(s_selected_member)만 보임 -->
   <button type="button" class="icon-btn" id="reload" aria-label="새로고침"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36L21 8"/><path d="M21 3v5h-5"/></svg></button>
 </div></header>
 <main id="app"><div class="sk sk-hero"></div><div class="sk sk-card"></div><div class="sk sk-card"></div></main>
@@ -269,6 +271,7 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
   /* 열쇠: 주소 #t= · 없으면 이 기기에 기억한 것 (안드로이드 설치 앱은 bw.html 로 열림) */
   var TOK = (location.hash.match(/[#&]t=([A-Za-z0-9]{24,64})/) || [])[1] || '';
   try { if (TOK) localStorage.setItem('bw_t', TOK); else TOK = localStorage.getItem('bw_t') || ''; } catch (e) {}
+  try { var _me = localStorage.getItem('s_selected_member') || ''; if (_me) { var _tm = document.getElementById('toMain'); _tm.hidden = false; _tm.href = './?me=' + encodeURIComponent(_me); } } catch (e) {}
   /* 1109b 기기 번호 (서버가 승인한 폰만) — 이 폰에서 처음 한 번 만들고 계속 씀 */
   var DEV = ''; try { DEV = localStorage.getItem('bw_dev') || ''; } catch (e) {}
   if (!/^[0-9a-f]{32}$/.test(DEV)) {

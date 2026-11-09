@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw8qu0hz">
+  <meta name="ry-build" content="mw8rsnp0">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -2702,7 +2702,8 @@ html body:not(#_):not(#_) .ry-delay.has{border:0!important;background:var(--ry-w
   html body .m-stick::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c);flex:none}
   html body .m-stick:has(+ .mobile-only-card:empty){display:none}
 }
-.ry-sv.ry-sv{display:inline-flex!important;align-items:center;gap:4px;flex:none!important;width:auto!important;margin:0 0 0 4px!important;height:26px!important;min-height:0!important;padding:0 10px 0 4px!important;border:0!important;border-radius:999px!important;background:#F2F4F7!important;color:#344054!important;font-size:12px!important;font-weight:600!important;line-height:1;box-shadow:none!important;vertical-align:middle;white-space:nowrap;cursor:pointer;font-family:inherit;position:relative}.ry-sv.ry-sv::after{content:'';position:absolute;inset:-8px}.ry-sv>svg{width:18px;height:18px;flex:none;border-radius:50%;background:#fff;padding:2px;box-sizing:border-box}.ry-sv .dots{display:inline-flex;gap:2px;margin-left:1px}.ry-sv .dots i{width:5px;height:5px;border-radius:50%;background:#D0D5DD}.ry-sv .dots i.on{background:#03C75A}.ry-sv b{font-weight:800}.ry-sv b.up{color:#D92D20}.ry-sv b.dn{color:#667085}.ry-sv b.eq{color:#667085;font-weight:600}.ry-sv svg.bars{width:20px;height:12px;color:#D92D20;margin-left:2px;background:none;border-radius:0;padding:0}.ry-sv.ry-sv.hot{background:#FEF3F2!important;color:#B42318!important}</style>
+.ry-sv.ry-sv{display:inline-flex!important;align-items:center;gap:4px;flex:none!important;width:auto!important;margin:0 0 0 4px!important;height:26px!important;min-height:0!important;padding:0 10px 0 4px!important;border:0!important;border-radius:999px!important;background:#F2F4F7!important;color:#344054!important;font-size:12px!important;font-weight:600!important;line-height:1;box-shadow:none!important;vertical-align:middle;white-space:nowrap;cursor:pointer;font-family:inherit;position:relative}.ry-sv.ry-sv::after{content:'';position:absolute;inset:-8px}.ry-sv>svg{width:18px;height:18px;flex:none;border-radius:50%;background:#fff;padding:2px;box-sizing:border-box}.ry-sv .dots{display:inline-flex;gap:2px;margin-left:1px}.ry-sv .dots i{width:5px;height:5px;border-radius:50%;background:#D0D5DD}.ry-sv .dots i.on{background:#03C75A}.ry-sv b{font-weight:800}.ry-sv b.up{color:#D92D20}.ry-sv b.dn{color:#667085}.ry-sv b.eq{color:#667085;font-weight:600}.ry-sv svg.bars{width:20px;height:12px;color:#D92D20;margin-left:2px;background:none;border-radius:0;padding:0}.ry-sv.ry-sv.hot{background:#FEF3F2!important;color:#B42318!important}.ry-bw-go{display:inline-flex;align-items:center;min-height:32px;padding:0 10px;border-radius:999px;background:#EEF4FF;color:#155EEF;font-size:13px;font-weight:700;text-decoration:none;margin-left:6px}
+</style>
 <style id="ry25-design">
 /* ═══════════ 0925 디자인 시스템 — 밝은 머리 · 파이프라인 · 카드 (맨 마지막에 둬서 이전 규칙을 덮는다) ═══════════
    토큰: 바탕 #f6f7f9 · 카드 흰색 18px · 주색 #1a6aff · 먹 #111827 · Pretendard · 자간 -0.01em */
@@ -12671,7 +12672,7 @@ video {
     /* 1109 MJ '부외품은 사장님이 직접 가져와서 진열 — 사장님이 직접 입고완료 · 우리 입고 대기에서도 부외품은 따로' → 서버 it.bw(제조사 D열 '부외품') 줄은 맨 아래 접힌 묶음 · 직원도 펼쳐서 입고 가능 · 문준은 사장님 링크(bw.html) 복사·바꾸기 */
     var BW_OPEN = false;
     function bwHeadHtml(n) {
-      var adm = '<span class="ry-bwh-adm"><button type="button" onclick="bwLedgerOpen()">📒 장부</button>' + (currentSelectedMember === '문준' ? '<button type="button" onclick="bwAdmin()">사장님 링크</button>' : '') + '</span>';   /* 1109b 장부는 누구나 · 링크·기기 승인은 문준 */
+      var adm = '<span class="ry-bwh-adm"><button type="button" onclick="bwLedgerOpen()">📒 장부</button>' + (currentSelectedMember === '문준' ? '<button type="button" onclick="bwAdmin()">사장님 링크</button><a class="ry-bw-go" href="bw.html">부외품 화면 →</a>' : '') + '</span>';   /* 1109b 장부는 누구나 · 링크·기기 승인은 문준 */
       if (!n) return '<span class="ry-bwh-tg"><span><b>📦 부외품 · 사장님이 직접 입고해요</b><small>지금 사장님 입고 대기 없음</small></span></span>' + adm;
       return '<button type="button" class="ry-bwh-tg" aria-expanded="' + BW_OPEN + '" onclick="BW_OPEN = !BW_OPEN; renderInboundList(cachedInboundItems)"><span><b>📦 부외품 · 사장님이 직접 입고해요</b><small>사장님이 창고에서 챙기고(🧺) 진열한 뒤 사장님 폰에서 입고완료 · 급하면 펼쳐서 직접 입고</small></span><span class="ry-bwh-n">' + n + '건</span><span class="ry-bwh-chev">' + (BW_OPEN ? '접기' : '펼치기') + '</span></button>' + adm;
     }
