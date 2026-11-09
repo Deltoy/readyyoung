@@ -219,6 +219,10 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
 .sk-card{height:128px}
 @keyframes skm{to{background-position:-200% 0}}
 .sw-btn{flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:14px;background:#EEF4FF;color:#155EEF;font-size:15px;font-weight:700;text-decoration:none;white-space:nowrap}
+#undo{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));z-index:21;width:calc(100% - 32px);max-width:528px;transform:translate(-50%,160%);display:flex;align-items:center;gap:12px;padding:10px 10px 10px 18px;border-radius:18px;background:#101828;color:#fff;font-size:16px;font-weight:600;box-shadow:0 10px 28px rgba(0,0,0,.25);transition:transform .25s}
+#undo.on{transform:translate(-50%,0)}#undo span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#undo button{flex:none;min-height:44px;padding:0 16px;border:0;border-radius:12px;background:#FDE272;color:#101828;font-size:16px;font-weight:800}
+body.has-bar #undo{bottom:calc(92px + env(safe-area-inset-bottom))}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -233,6 +237,7 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
 <footer class="foot"><img src="ry-icon-192.png" alt="" width="18" height="18">성수레디영약국 · 만든 사람 <b>조문준</b></footer>
 <div id="fix"></div>
 <div id="toast" role="status" aria-live="polite"></div>
+<div id="undo" role="status" aria-live="polite"></div>
 <input type="file" id="cam" accept="image/*" capture="environment" class="sr" tabindex="-1" aria-hidden="true">
 <script>
 /* 1109b MJ '사장님 폰은 안드로이드' — 카톡 안 브라우저면 서버를 부르기 전에 크롬으로 (카톡 안에서 열면 그 창이 기기로 등록되는 것 막기)
@@ -343,7 +348,8 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
       if (!r || !r.ok) { if (!quiet) toast((r && (r.msg || r.__err)) || '목록을 못 불러왔어요', 'bad'); if (!loadedAt) app.innerHTML = '<div class="gate"><p>목록을 못 불러왔어요 · 오른쪽 위 새로고침을 눌러 주세요</p></div>'; return; }
       if (AUTH === 'pending') toast('승인됐어요', 'ok');
       AUTH = 'ok'; rb.hidden = false; clearTimeout(pendT);
-      ITEMS = r.items || []; loadedAt = Date.now();
+      var _pq = qGet().concat(UNDO ? UNDO.list : []).map(function (x) { return x.row + '|' + x.name; });   /* 1109 MJ '입고 누르면 바로바로' — 보내는 중·되돌리기 5초 안의 상품은 다시 안 보이게 */
+      ITEMS = (r.items || []).filter(function (it) { return _pq.indexOf(it.row + '|' + it.name) === -1; }); loadedAt = Date.now();
       var seen = seenGet();
       ITEMS.forEach(function (it) {
         it.kind = 'order'; it.k = key(it); it._new = seen.indexOf(it.k + '|' + it.od) === -1;
@@ -379,7 +385,7 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
       + controls(it, s, '입고 완료') + '</article>';
   }
   function backBar(title, step) { return '<div class="bar"><button type="button" class="back" data-a="back" aria-label="뒤로">' + IC.back + '</button><div><b>' + esc(title) + '</b>' + (step ? '<small>' + esc(step) + '</small>' : '') + '</div></div>'; }
-  function tabs() { return '<div class="seg" role="tablist"><button type="button" role="tab" data-a="tab" data-v="list" aria-selected="' + (VIEW === 'list') + '">입고하기</button><button type="button" role="tab" data-a="tab" data-v="ledger" aria-selected="' + (VIEW === 'ledger') + '">장부</button></div>'; }
+  function tabs() { return '<div class="seg" role="tablist"><button type="button" role="tab" data-a="tab" data-v="list" aria-selected="' + (VIEW === 'list') + '">입고하기</button><button type="button" role="tab" data-a="tab" data-v="ledger" aria-selected="' + (VIEW === 'ledger') + '">납품 내역</button></div>'; }
   function picked() { return ITEMS.filter(function (it) { return it.pick; }); }
 
   function render() {
@@ -431,10 +437,10 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
   /* ── 1109c 챙김 체크 · 아래 바 · 한 번에 입고 (끊기면 다음에 이어서) ── */
   function fixBar() {
     var el = document.getElementById('fix'), n = picked().length, q = qGet();
-    var on = AUTH === 'ok' && VIEW === 'list' && (n > 0 || !!RUN || q.length > 0);
+    var vis = !!RUN && !RUN.quiet, on = AUTH === 'ok' && VIEW === 'list' && (n > 0 || vis);   /* 1109 뒤에서 조용히 보내는 중엔 막대 안 띄움 */
     document.body.classList.toggle('has-bar', on);
     if (!on) { el.innerHTML = ''; return; }
-    el.innerHTML = '<div class="bar-fix"><div class="in">' + (RUN
+    el.innerHTML = '<div class="bar-fix"><div class="in">' + (vis
       ? '<span class="lb">입고하는 중</span><button type="button" class="go" disabled>' + Math.min(RUN.i + 1, RUN.n) + ' / ' + RUN.n + '</button></div><span class="pg"><i style="width:' + Math.round(100 * RUN.i / RUN.n) + '%"></i></span>'
       : q.length ? '<span class="lb">남은 <b>' + q.length + '개</b></span><button type="button" class="go" data-a="qgo">이어서 입고 완료</button></div>'
       : '<span class="lb">챙긴 것 <b>' + n + '개</b></span><button type="button" class="go" data-a="batch">한 번에 입고 완료</button></div>') + '</div>';
@@ -464,35 +470,57 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
   function qPut(q) { try { if (q.length) localStorage.setItem('bw_q', JSON.stringify(q)); else localStorage.removeItem('bw_q'); } catch (e) {} }
   function sheet(html) { var d = document.createElement('div'); d.className = 'sheet'; d.innerHTML = '<div class="pn" role="dialog" aria-modal="true">' + html + '</div>'; d.addEventListener('click', function (e) { if (e.target === d || e.target.closest('[data-x]')) d.remove(); }); document.body.appendChild(d); return d; }
   function batchAsk() {
-    var L = picked(); if (!L.length || RUN) return;
+    var L = picked(); if (!L.length) return;
     var d = sheet('<h2>챙긴 ' + L.length + '개를 입고할까요?</h2><ul>' + L.map(function (it) {
       var q = (ST[it.k] || {}).qty || it.qty;
       return '<li><span>' + esc(first(it.name)) + (q !== it.qty ? '<small>주문 ' + it.qty + it.unit + '와 달라요</small>' : '') + '</span><b>' + q + it.unit + '</b></li>';
     }).join('') + '</ul><div class="btns"><button type="button" class="no" data-x>취소</button><button type="button" class="ok" id="bgo">' + L.length + '개 입고 완료</button></div>');
     d.querySelector('#bgo').onclick = function () {
       d.remove();
-      qPut(L.map(function (it) { return { row: it.row, name: it.name, qty: (ST[it.k] || {}).qty || it.qty, unit: it.unit }; }));
-      qRun();
+      optimistic(L);
     };
   }
+  /* 1109 MJ '입고 누르면 바로바로 반응 · 전체 물류앱 방식 그대로' — 누르면 카드가 바로 빠지고 '입고 완료!' + [되돌리기] 5초 → 그 뒤 뒤에서 저장(bw_q, 끊기면 다음에 열 때 이어서) */
+  var UNDO = null;
+  function optimistic(list) {
+    var xs = list.map(function (it) { return { row: it.row, name: it.name, qty: (ST[it.k] || {}).qty || it.qty, unit: it.unit, it: it, ix: ITEMS.indexOf(it) }; });
+    if (UNDO) commitUndo();
+    ITEMS = ITEMS.filter(function (it) { return list.indexOf(it) === -1; }); render();
+    UNDO = { list: xs, t: setTimeout(commitUndo, 5000) };
+    var el = document.getElementById('undo');
+    el.innerHTML = '<span>입고 완료! ' + (xs.length === 1 ? esc(first(xs[0].name)) + ' ' + xs[0].qty + xs[0].unit : xs.length + '개') + '</span><button type="button" id="undoBtn">되돌리기</button>';
+    el.className = 'on'; document.getElementById('undoBtn').onclick = undoNow;
+    try { if (navigator.setAppBadge) { if (ITEMS.length) navigator.setAppBadge(ITEMS.length); else navigator.clearAppBadge(); } } catch (e) {}
+  }
+  function undoNow() {
+    if (!UNDO) return; clearTimeout(UNDO.t);
+    UNDO.list.slice().sort(function (a, b) { return a.ix - b.ix; }).forEach(function (x) { ITEMS.splice(Math.max(0, Math.min(x.ix, ITEMS.length)), 0, x.it); });
+    UNDO = null; document.getElementById('undo').className = ''; render(); toast('되돌렸어요');
+  }
+  function commitUndo() {
+    if (!UNDO) return; clearTimeout(UNDO.t);
+    var xs = UNDO.list.map(function (x) { return { row: x.row, name: x.name, qty: x.qty, unit: x.unit }; }); UNDO = null;
+    document.getElementById('undo').className = '';
+    xs.forEach(function (x) { delete ST[x.row + '|' + x.name]; });
+    qPut(qGet().concat(xs)); LED.data = null; qRun();
+  }
   function qRun() {
-    var q = qGet(); if (!q.length || RUN || busy) return;
-    RUN = { n: q.length, i: 0 }; busy = true; fixBar();
+    var q = qGet(); if (!q.length || RUN) return;
+    RUN = { n: q.length, i: 0, quiet: true };   /* busy 를 안 걸어서 보내는 동안에도 다른 상품을 계속 누를 수 있음 */
     var okN = 0, bad = [];
     (function next() {
       var q2 = qGet();
-      if (!q2.length) { RUN = null; busy = false; toast(bad.length ? okN + '개 입고 · ' + bad.length + '개는 안 됐어요 (' + bad.join(', ') + ')' : '입고 완료! ' + okN + '개', bad.length ? 'bad' : 'ok'); LED.data = null; render(); load(true); return; }
+      if (!q2.length) { RUN = null; if (bad.length) { toast(bad.length + '개는 입고가 안 됐어요 (' + bad.join(', ') + ') · 목록에 다시 보여요', 'bad'); load(true); } fixBar(); return; }
       var x = q2[0];
       call('bwInbound', [x.row, x.name, x.qty, '']).then(function (r) {
-        if (authStop(r)) { RUN = null; busy = false; return; }
+        if (authStop(r)) { RUN = null; return; }
         if (r && (r.ok || r.gone)) {
           if (r.ok) okN++;
           qPut(q2.slice(1));
-          ITEMS = ITEMS.filter(function (it) { return !(it.row === x.row && it.name === x.name); }); delete ST[x.row + '|' + x.name];
-          RUN.i++; render(); next(); return;
+          RUN.i++; next(); return;
         }
-        bad.push(first(x.name)); qPut(q2.slice(1)); RUN.i++; render(); next();   /* 이 상품만 건너뜀 (목록에 남아 있어 따로 입고 가능) */
-      }).catch(function () { RUN = null; busy = false; render(); toast('인터넷이 끊겼어요. 남은 건 [이어서 입고 완료]를 눌러 주세요', 'bad'); });
+        bad.push(first(x.name)); qPut(q2.slice(1)); RUN.i++; next();   /* 이 상품만 건너뜀 → 끝나고 목록 새로 받아 다시 보이게 */
+      }).catch(function () { RUN = null; fixBar(); setTimeout(qRun, 15000); });   /* 인터넷 끊김 → 15초 뒤 · 다음에 열 때 다시 (조용히) */
     })();
   }
   function qResume() { if (qGet().length && !RUN && !busy) { toast('남은 입고를 이어서 할게요'); qRun(); } }
@@ -513,7 +541,7 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
       if (authStop(r)) return;
       if (want !== LED.per + perRange(LED.per).join()) return;   /* 그 사이 기간을 바꿈 */
       LED.loading = false;
-      if (!r || !r.ok) { toast((r && (r.msg || r.__err)) || '장부를 못 불러왔어요', 'bad'); if (VIEW === 'ledger') render(); return; }
+      if (!r || !r.ok) { toast((r && (r.msg || r.__err)) || '납품 내역을 못 불러왔어요', 'bad'); if (VIEW === 'ledger') render(); return; }
       LED.data = r; LED.at = Date.now(); if (VIEW === 'ledger') render();
     }).catch(function (e) { LED.loading = false; toast(e.message, 'bad'); if (VIEW === 'ledger') render(); });
   }
@@ -543,7 +571,7 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
     var c = function (v) { v = String(v == null ? '' : v); if (/^[=+\-@]/.test(v)) v = "'" + v; return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
     var L = [['날짜', '시각', '상품명', '수량', '단위', '종류', '주문 수량', '사진']].concat(D.rows.map(function (x) { return [x.date, x.time, x.name, x.qty, x.unit, x.kind === '주문없이' ? '주문 없이' : x.kind, x.kind === '주문' ? x.ord : '', x.photo ? '있음' : '']; }));
     var blob = new Blob(['﻿' + L.map(function (r) { return r.map(c).join(','); }).join('\r\n')], { type: 'text/csv;charset=utf-8' });
-    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = '부외품장부_' + D.from + '_' + D.to + '.csv';
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = '부외품_납품내역_' + D.from + '_' + D.to + '.csv';
     document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
   }
 
@@ -658,6 +686,7 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
     setQty(o, q);
     if (it.kind === 'order' && s.qty !== it.qty && !confirm('주문은 ' + it.qty + it.unit + '인데 ' + s.qty + it.unit + '로 입고할까요?')) return;
     showErr(o, '');
+    if (it.kind === 'order') { optimistic([it]); return; }   /* 1109 주문 온 상품은 바로 반응 (주문 없이·새 상품은 서버 확인이 필요해 그대로) */
     busy = true;
     var btn = o.card.querySelector('.done'), label = btn.textContent; btn.disabled = true; btn.textContent = it.kind === 'new' ? '등록하는 중…' : '보내는 중…';
     var req = it.kind === 'order' ? call('bwInbound', [it.row, it.name, s.qty, '']) : it.kind === 'pick' ? call('bwUnordered', [it.row, it.name, s.qty, '']) : call('bwAddProduct', [{ name: nm, qty: s.qty, photo: s.photo, cat: NEWF.cat, note: NEWF.note.trim() }]);
