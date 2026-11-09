@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw8nwr09">
+  <meta name="ry-build" content="mw8nzt1o">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4515,6 +4515,12 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 .sc-cd{background:#F9FAFB}.sc-cd i,.sc-cd b,.sc-cd em{position:relative;z-index:1}
 .sc-cd.ok b{color:#067647}.sc-cd.mid b{color:#B54708}.sc-cd.low b{color:#B42318}.sc-cd.nt b{color:#475467}
 .sc-cd.ok::before,.sc-cd.mid::before,.sc-cd.low::before{content:"";position:absolute;left:7px;right:7px;bottom:4px;height:4px;border-radius:2px;z-index:1;background:var(--st)}.sc-cd.ok{--st:#17B26A}.sc-cd.mid{--st:#F79009}.sc-cd.low{--st:#F04438}
+.sc-lns{display:flex;flex-direction:column;align-items:stretch;gap:0;width:100%;padding:0 3px;position:relative;z-index:1}
+.sc-ln{display:flex;align-items:center;gap:3px;font-size:12.5px;font-weight:700;line-height:1.3;color:var(--ry-ink);font-variant-numeric:tabular-nums}
+.sc-ln u{flex:none;width:6px;height:6px;border-radius:50%;background:var(--c)}.sc-ln small{font-size:10px;color:#079455;margin-left:1px}
+.sc-ln.ok{color:#067647}.sc-ln.low{color:#D92D20}
+.sc-cal-sub{margin:0 0 6px;font-size:12px;font-weight:700;color:var(--ry-ink-3)}
+.sc-set-lg span::before{width:7px!important;height:7px!important;border-radius:50%!important}.sc-st-lg .ok::before,.sc-st-lg .low::before{display:none}.sc-st-lg .ok{color:#067647}.sc-st-lg .low{color:#D92D20}
 .sc-cd[data-wx]::after{content:attr(data-wx);position:absolute;right:-4px;top:12px;font-size:27px;line-height:1;opacity:.5;pointer-events:none;z-index:0}
 .sc-cd.wx-sun{background:radial-gradient(circle at 85% 30%,#FFE58A 0,#FFF3C4 45%,#FFFAEB 100%)}
 .sc-cd.wx-part{background:linear-gradient(160deg,#FFF6D6 0%,#EEF1F5 70%)}
@@ -8125,8 +8131,10 @@ video {
           if (g && v >= g) st = ' ok'; else if (g && d < t) st = v >= g * .7 ? ' mid' : ' low'; else { st = ' nt'; sty = ' style="--a:' + (.04 + .16 * v / mx).toFixed(3) + '"'; }   /* 목표 없는 날 · 오늘(집계 중) = 많을수록 진한 회색 */
         }
         var wc = wx ? scWxCls(wx) : '';   /* 1109 MJ '온도 숫자는 헷갈려 · 그림으로만 · 칸 배경이 날씨 이미지처럼' */
-        cells += '<button type="button" class="sc-cd' + st + (d === t ? ' now' : '') + (fut ? ' fut' : '') + (scDow(d) > 4 ? ' we' : '') + wc + '"' + (wx ? ' data-wx="' + scWxIc(wx[0])[0] + '"' : '') + (fut && !boss && !m ? ' disabled' : '') + ' onclick="scDayOpen(\'' + d + '\')" aria-label="' + scMd(d) + (v != null ? ' ' + v + '개' : '') + (wx ? ' ' + scWxIc(wx[0])[1] : '') + (m ? ' 메모 있음' : '') + '">'
-          + '<i>' + dd + '</i><b>' + (v != null ? v : '') + '</b>' + (m ? '<em></em>' : '') + '</button>';
+        /* 1109 MJ '세트를 눌러야 몇 개 팔린지 보여 — 그 날짜에 다 넣고 가독성 좋게' → 칸에 세트별 숫자를 다 (세트 색 점 · 목표 달성 ✓ · 70% 미만 빨강) */
+        var od = days[d] || {}, lines = sets.filter(function (x) { return od[x.k] != null; }).map(function (x) { var vx = od[x.k], gx = scGoal(c, d, x.k), cl = gx && vx >= gx ? ' ok' : gx && d < t && vx < gx * .7 ? ' low' : ''; return '<span class="sc-ln' + cl + '" style="--c:' + x.c + '"><u></u>' + vx + (cl === ' ok' ? '<small>✓</small>' : '') + '</span>'; }).join('');
+        cells += '<button type="button" class="sc-cd' + (d === t ? ' now' : '') + (fut ? ' fut' : '') + (scDow(d) > 4 ? ' we' : '') + wc + '"' + (wx ? ' data-wx="' + scWxIc(wx[0])[0] + '"' : '') + (fut && !boss && !m ? ' disabled' : '') + ' onclick="scDayOpen(\'' + d + '\')" aria-label="' + scMd(d) + (v != null ? ' ' + v + '개' : '') + (wx ? ' ' + scWxIc(wx[0])[1] : '') + (m ? ' 메모 있음' : '') + '">'
+          + '<i>' + dd + '</i><div class="sc-lns">' + lines + '</div>' + (m ? '<em></em>' : '') + '</button>';
       }
       var wk = [0, 1, 2, 3, 4, 5, 6].map(function () { return { s: 0, n: 0 }; }); past.forEach(function (d) { var j = scDow(d); wk[j].s += val(d); wk[j].n++; });
       var av = wk.map(function (x) { return x.n ? Math.round(x.s / x.n) : null; }), top = -1, amx = 1, nav = 0;
@@ -8134,11 +8142,10 @@ video {
       var hi = '', lo = ''; past.forEach(function (d) { if (!hi || val(d) > val(hi)) hi = d; if (!lo || val(d) < val(lo)) lo = d; });
       var tips = scCalTips(t, past, val, wk, W);
       return '<section class="sc-card sc-cal" id="scCal" style="--sc:' + s.c + ';--sc-soft:' + s.soft + '"><h3>📅 날짜별 판매 <span>칸을 누르면 그날 자세히</span></h3>'
-        + (sets.length > 1 ? '<div class="sc-cal-chips" role="group" aria-label="세트 고르기">' + sets.map(function (x) { return '<button type="button" class="sc-chip" style="--sc:' + x.c + ';--sc-soft:' + x.soft + '" aria-pressed="' + (x.k === k) + '" onclick="scCalPick(\'' + x.k + '\')"><i></i>' + escapeHtml(x.label) + '</button>'; }).join('') + '</div>' : '')
         + '<div class="sc-cal-bd"><div class="sc-cal-l"><div class="sc-cal-h"><button type="button"' + (mi > 0 ? '' : ' disabled') + ' onclick="scCalMove(-1)" aria-label="지난달">◀</button><b>' + y + '년 ' + mo + '월</b><button type="button"' + (mi < S.ms.length - 1 ? '' : ' disabled') + ' onclick="scCalMove(1)" aria-label="다음 달">▶</button></div>'
         + '<div class="sc-cal-w" aria-hidden="true">' + '월화수목금토일'.split('').map(function (w) { return '<span>' + w + '</span>'; }).join('') + '</div><div class="sc-cal-g">' + cells + '</div>'
-        + '<p class="sc-cal-lg"><span class="ok">달성</span><span class="mid">70%↑</span><span class="low">70% 미만</span><span class="mm">메모</span></p><p class="sc-cal-lg sc-wx-lg"><span class="wx-sun">맑음</span><span class="wx-cloud">흐림</span><span class="wx-rain">비</span><span class="wx-snow">눈</span><span class="cold">추운 날</span></p></div>'
-        + '<div class="sc-cal-r"><div class="sc-ms"><div><small>' + mo + '월 합계</small><b>' + mSum + '<span>개</span></b></div><div><small>하루 평균</small><b>' + (mN ? Math.round(mPast / mN) : '–') + '<span>' + (mN ? '개' : '') + '</span></b></div><div><small>목표 달성</small><b>' + (mG ? mHit + '<span>/' + mG + '일</span>' : '–') + '</b></div></div>'
+        + '<p class="sc-cal-lg sc-set-lg">' + sets.map(function (x) { return '<span style="--b:' + x.c + '">' + escapeHtml(x.label) + '</span>'; }).join('') + '</p><p class="sc-cal-lg sc-st-lg"><span class="ok">✓ 하루 목표 달성</span><span class="low">빨강 = 70% 미만</span><span class="mm">메모</span></p><p class="sc-cal-lg sc-wx-lg"><span class="wx-sun">맑음</span><span class="wx-cloud">흐림</span><span class="wx-rain">비</span><span class="wx-snow">눈</span><span class="cold">추운 날</span></p></div>'
+        + '<div class="sc-cal-r">' + (sets.length > 1 ? '<p class="sc-cal-sub">아래 통계 볼 세트</p><div class="sc-cal-chips" role="group" aria-label="세트 고르기">' + sets.map(function (x) { return '<button type="button" class="sc-chip" style="--sc:' + x.c + ';--sc-soft:' + x.soft + '" aria-pressed="' + (x.k === k) + '" onclick="scCalPick(\'' + x.k + '\')"><i></i>' + escapeHtml(x.label) + '</button>'; }).join('') + '</div>' : '') + '<div class="sc-ms"><div><small>' + mo + '월 합계</small><b>' + mSum + '<span>개</span></b></div><div><small>하루 평균</small><b>' + (mN ? Math.round(mPast / mN) : '–') + '<span>' + (mN ? '개' : '') + '</span></b></div><div><small>목표 달성</small><b>' + (mG ? mHit + '<span>/' + mG + '일</span>' : '–') + '</b></div></div>'
         + '<h4>요일 평균 <small>지난 ' + past.length + '일</small></h4><div class="sc-wd" role="list">' + av.map(function (a, j) { return '<div role="listitem"' + (j === top ? ' class="top"' : '') + ' aria-label="' + '월화수목금토일'.charAt(j) + '요일 평균 ' + (a == null ? '없음' : a + '개') + '"><em>' + (j === top ? '<u>👑</u>' : '') + (a == null ? '–' : a) + '</em><span><i style="height:' + (a ? Math.max(4, a / amx * 100) : 0).toFixed(0) + '%"></i></span><b>' + '월화수목금토일'.charAt(j) + '</b></div>'; }).join('') + '</div>'
         + (tips.length ? '<div class="sc-tips">' + tips.map(function (x) { return '<p>' + x + '</p>'; }).join('') + '</div>' : '')
         + (past.length > 1 ? '<p class="sc-bw">🔥 최고 <b>' + scMd(hi) + ' ' + val(hi) + '개</b> · 🧊 최저 <b>' + scMd(lo) + ' ' + val(lo) + '개</b></p>' : '') + '</div></div></section>';
