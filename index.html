@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw8tau4f">
+  <meta name="ry-build" content="mw8tdyid">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4566,6 +4566,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 #scCal .sc-ln b{font-size:14px;font-weight:800;color:var(--ry-ink);font-variant-numeric:tabular-nums}
 #scCal .sc-ln.ok b{color:#067647}#scCal .sc-ln.low b{color:#D92D20}
 #scCal .sc-cd[data-wx]::after{top:3px;right:4px;font-size:16px;opacity:.95}
+@media (max-width:600px){#scCal .sc-lns{padding:2px;margin-top:2px}#scCal .sc-ln{gap:2px}#scCal .sc-ln u{min-width:0;width:15px;padding:0;font-size:0;line-height:15px}#scCal .sc-ln u::before{content:attr(data-s);font-size:10px}#scCal .sc-ln b{font-size:13px}#scCal .sc-ln small{display:none}#scCal .sc-ln.ok b::after{content:"✓";font-size:9px;margin-left:1px}#scCal .sc-cd{padding:3px 1px!important}}   /* 1109 폰은 칸이 좁아 이름표를 한 글자(토·스·베)로 */
 .sc-pl u{display:inline-block;margin-right:4px;padding:0 4px;border-radius:5px;background:var(--c);color:#fff;font-size:10px;font-weight:800;text-decoration:none;line-height:15px}.sc-set-lg .sc-pl::before{display:none}
 .sc-cd[data-wx]::after{content:attr(data-wx);position:absolute;right:-4px;top:12px;font-size:27px;line-height:1;opacity:.5;pointer-events:none;z-index:0}
 .sc-cd.wx-sun{background:radial-gradient(circle at 85% 30%,#FFE58A 0,#FFF3C4 45%,#FFFAEB 100%)}
@@ -8183,7 +8184,7 @@ video {
         }
         var wc = wx ? scWxCls(wx) : '';   /* 1109 MJ '온도 숫자는 헷갈려 · 그림으로만 · 칸 배경이 날씨 이미지처럼' */
         /* 1109 MJ '세트를 눌러야 몇 개 팔린지 보여 — 그 날짜에 다 넣고 가독성 좋게' → 칸에 세트별 숫자를 다 (세트 색 점 · 목표 달성 ✓ · 70% 미만 빨강) */
-        var od = days[d] || {}, lines = sets.filter(function (x) { return od[x.k] != null; }).map(function (x) { var vx = od[x.k], gx = scGoal(c, d, x.k), cl = gx && vx >= gx ? ' ok' : gx && d < t && vx < gx * .7 ? ' low' : ''; return '<span class="sc-ln' + cl + '" style="--c:' + x.c + '"><u>' + scShort(x.label) + '</u><b>' + vx + '</b>' + (cl === ' ok' ? '<small>✓</small>' : '') + '</span>'; }).join('');   /* 1109 MJ '숫자가 잘 안 보이고 무슨 숫자인지 모르겠어' → 세트 이름표(토탈·스마트·베리어) + 큰 숫자 · 흰 판 위에 */
+        var od = days[d] || {}, lines = sets.filter(function (x) { return od[x.k] != null; }).map(function (x) { var vx = od[x.k], gx = scGoal(c, d, x.k), cl = gx && vx >= gx ? ' ok' : gx && d < t && vx < gx * .7 ? ' low' : ''; return '<span class="sc-ln' + cl + '" style="--c:' + x.c + '"><u data-s="' + scShort(x.label).charAt(0) + '">' + scShort(x.label) + '</u><b>' + vx + '</b>' + (cl === ' ok' ? '<small>✓</small>' : '') + '</span>'; }).join('');   /* 1109 MJ '숫자가 잘 안 보이고 무슨 숫자인지 모르겠어' → 세트 이름표(토탈·스마트·베리어) + 큰 숫자 · 흰 판 위에 */
         cells += '<button type="button" class="sc-cd' + (d === t ? ' now' : '') + (fut ? ' fut' : '') + (scDow(d) > 4 ? ' we' : '') + wc + '"' + (wx ? ' data-wx="' + scWxIc(wx[0])[0] + '"' : '') + (fut && !boss && !m ? ' disabled' : '') + ' onclick="scDayOpen(\'' + d + '\')" aria-label="' + scMd(d) + (v != null ? ' ' + v + '개' : '') + (wx ? ' ' + scWxIc(wx[0])[1] : '') + (m ? ' 메모 있음' : '') + '">'
           + '<i>' + dd + '</i><div class="sc-lns">' + lines + '</div>' + (m ? '<em></em>' : '') + '</button>';
       }
