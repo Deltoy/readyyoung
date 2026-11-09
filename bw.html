@@ -224,6 +224,9 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
 #undo:not(.on){pointer-events:none;visibility:hidden;transition:transform .25s,visibility 0s .25s}   /* 1109 숨은 띠가 아래 [한 번에 입고 완료]를 가로막던 것 */#undo span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #undo button{flex:none;min-height:44px;padding:0 16px;border:0;border-radius:12px;background:#FDE272;color:#101828;font-size:16px;font-weight:800}
 body.has-bar #undo{bottom:calc(92px + env(safe-area-inset-bottom))}
+/* 1109 관리자 보기(문준 PC 등): 보기만 — 입고·챙김·찾기 버튼 숨김 */
+.bw-adm .done,.bw-adm .step,.bw-adm .tick,.bw-adm [data-a=find],.bw-adm #fix,.bw-adm .steps,.bw-adm .inst,.bw-adm #inst{display:none!important}
+.bw-adm .top-in::after{content:"관리자 보기 · 읽기 전용";flex:none;order:2;padding:4px 10px;border-radius:999px;background:#FEF0C7;color:#B54708;font-size:13px;font-weight:700}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -277,6 +280,9 @@ body.has-bar #undo{bottom:calc(92px + env(safe-area-inset-bottom))}
   /* 열쇠: 주소 #t= · 없으면 이 기기에 기억한 것 (안드로이드 설치 앱은 bw.html 로 열림) */
   var TOK = (location.hash.match(/[#&]t=([A-Za-z0-9]{24,64})/) || [])[1] || '';
   try { if (TOK) localStorage.setItem('bw_t', TOK); else TOK = localStorage.getItem('bw_t') || ''; } catch (e) {}
+  /* 1109 MJ '컴퓨터에서도 보게' — 사장님 링크가 없는 기기라도 물류앱을 '문준'으로 쓰는 기기면 앱 암호로 '관리자 보기'(읽기 전용, 기기 자리 안 씀) */
+  var ADM = ''; try { if (!TOK && localStorage.getItem('s_selected_member') === '문준') ADM = localStorage.getItem('ry_pages_k') || ''; } catch (e) {}
+  if (ADM) document.documentElement.classList.add('bw-adm');
   try { var _me = localStorage.getItem('s_selected_member') || ''; if (_me === '문준') {   /* 1109 MJ '전환은 나만 · 사장님은 못 하게' */ var _tm = document.getElementById('toMain'); _tm.hidden = false; _tm.href = './?me=' + encodeURIComponent(_me); } } catch (e) {}
   /* 1109b 기기 번호 (서버가 승인한 폰만) — 이 폰에서 처음 한 번 만들고 계속 씀 */
   var DEV = ''; try { DEV = localStorage.getItem('bw_dev') || ''; } catch (e) {}
@@ -298,7 +304,8 @@ body.has-bar #undo{bottom:calc(92px + env(safe-area-inset-bottom))}
   function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
   function call(fn, args, n) {
     n = n || 0;
-    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ rpc: fn, t: TOK, d: DEV, u: UA.slice(0, 300), args: args || [] }) })
+    var body = ADM ? { rpc: ({ bwList: 'bwListAdmin', bwLedger: 'bwLedgerAdmin' })[fn] || '-', k: ADM, args: ['문준'].concat(args || []) } : { rpc: fn, t: TOK, d: DEV, u: UA.slice(0, 300), args: args || [] };
+    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })
       .then(function (r) { return r.text(); })
       .then(function (t) { try { return JSON.parse(t); } catch (e) { throw new Error('busy'); } })
       .catch(function (e) {
@@ -341,7 +348,7 @@ body.has-bar #undo{bottom:calc(92px + env(safe-area-inset-bottom))}
   window.addEventListener('popstate', function (e) { VIEW = e.state && e.state.v || 'list'; DEPTH = e.state && e.state.d || 0; render(); scrollTo(0, 0); if (VIEW === 'list') load(true); });
 
   function load(quiet) {
-    if (!TOK) { gate('링크를 다시 열어 주세요', '약국에서 받은 링크로 열어야 주문 목록이 보여요.'); return; }
+    if (!TOK && !ADM) { gate('링크를 다시 열어 주세요', '약국에서 받은 링크로 열어야 주문 목록이 보여요.'); return; }
     var rb = document.getElementById('reload'); rb.classList.add('spin');
     return call('bwList', []).then(function (r) {
       rb.classList.remove('spin');
