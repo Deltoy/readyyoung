@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw8xeff8">
+  <meta name="ry-build" content="mw8xhs1s">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -12708,7 +12708,7 @@ video {
       var bw = items.filter(function (it) { return it.bw; }); items.filter(function (it) { return !it.bw; }).forEach(add);
       if (!bw.length) return;
       var op = BW_OPEN_T[type], h = '<button type="button" class="ry-bwh-tg" aria-expanded="' + op + '" onclick="BW_OPEN_T.' + type + ' = !BW_OPEN_T.' + type + '; renderAllViews()"><span><b>📦 부외품</b><small>부외품 사장님 상품 · 일반 발주와 따로 봐요</small></span><span class="ry-bwh-n">' + bw.length + '건</span><span class="ry-bwh-chev">' + (op ? '접기' : '펼치기') + '</span></button>';
-      if (tbody) { var tr = document.createElement('tr'); tr.className = 'ry-bwh-tr'; tr.innerHTML = '<td colspan="20"><div class="ry-bwh">' + h + '</div></td><td hidden></td>'; tbody.appendChild(tr); }
+      if (tbody) { var tr = document.createElement('tr'); tr.className = 'ry-bwh-tr'; var th = tbody.closest('table'), nc = th && th.tHead && th.tHead.rows[0] ? th.tHead.rows[0].cells.length : 6; tr.innerHTML = '<td colspan="' + nc + '"><div class="ry-bwh">' + h + '</div></td><td hidden></td>';   /* 1109 colspan 20 → 표가 가짜 칸 생겨 찌그러짐 · 진짜 칸 수 */ tbody.appendChild(tr); }
       if (cards) { var d = document.createElement('div'); d.className = 'ry-bwh'; d.innerHTML = h; cards.appendChild(d); }
       if (op) bw.forEach(add);
     }
