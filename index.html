@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw8sui1e">
+  <meta name="ry-build" content="mw8sxc42">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -2703,6 +2703,7 @@ html body:not(#_):not(#_) .ry-delay.has{border:0!important;background:var(--ry-w
   html body .m-stick:has(+ .mobile-only-card:empty){display:none}
 }
 .ry-sv.ry-sv{display:inline-flex!important;align-items:center;gap:4px;flex:none!important;width:auto!important;margin:0 0 0 4px!important;height:26px!important;min-height:0!important;padding:0 10px 0 4px!important;border:0!important;border-radius:999px!important;background:#F2F4F7!important;color:#344054!important;font-size:12px!important;font-weight:600!important;line-height:1;box-shadow:none!important;vertical-align:middle;white-space:nowrap;cursor:pointer;font-family:inherit;position:relative}.ry-sv.ry-sv::after{content:'';position:absolute;inset:-8px}.ry-sv>svg{width:18px;height:18px;flex:none;border-radius:50%;background:#fff;padding:2px;box-sizing:border-box}.ry-sv .dots{display:inline-flex;gap:2px;margin-left:1px}.ry-sv .dots i{width:5px;height:5px;border-radius:50%;background:#D0D5DD}.ry-sv .dots i.on{background:#03C75A}.ry-sv b{font-weight:800}.ry-sv b.up{color:#D92D20}.ry-sv b.dn{color:#667085}.ry-sv b.eq{color:#667085;font-weight:600}.ry-sv svg.bars{width:20px;height:12px;color:#D92D20;margin-left:2px;background:none;border-radius:0;padding:0}.ry-sv.ry-sv.hot{background:#FEF3F2!important;color:#B42318!important}.ry-bw-go{display:inline-flex;align-items:center;min-height:32px;padding:0 10px;border-radius:999px;background:#EEF4FF;color:#155EEF;font-size:13px;font-weight:700;text-decoration:none;margin-left:6px}
+@media (max-width:600px){html body #bwQuick{display:none!important}}   /* 1109 폰은 홈 버튼 줄이 넘쳐서 '더보기' 메뉴 맨 위로 */
 </style>
 <style id="ry25-design">
 /* ═══════════ 0925 디자인 시스템 — 밝은 머리 · 파이프라인 · 카드 (맨 마지막에 둬서 이전 규칙을 덮는다) ═══════════
@@ -6239,6 +6240,7 @@ video {
         <button type="button" id="qmMore" class="ry-ghost" onclick="var t=this.parentNode;t.classList.toggle('qm-open');this.setAttribute('aria-expanded',t.classList.contains('qm-open'))" aria-expanded="false" title="다른 메뉴 펼치기">더보기</button>
         <div class="ry-more">
           <div class="ry-more-menu" id="toolMoreMenu" role="menu" hidden>
+            <button type="button" role="menuitem" id="bwEntry" hidden onclick="closeToolMore(); location.href='bw.html'">📦 부외품 화면</button>
             <button type="button" role="menuitem" onclick="closeToolMore(); openCatBrowse()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>카테고리별 보기<small>분류가 비었거나 기타인 상품 고치기</small></button>
             <button type="button" role="menuitem" onclick="closeToolMore(); ntOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>공지 보관함<small>카톡 공지 모아보기 · 증정품 변경 한눈에</small></button>
             <button type="button" role="menuitem" onclick="closeToolMore(); mbOpenArchive()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>뷰티 브리핑 모아보기<small>날짜별 목록 · 첫 화면 카드는 10시~23시엔 숨김</small></button>
@@ -11239,7 +11241,7 @@ video {
     var HIST_OPEN = {};
     function histToggle(head) { var d = head.dataset.date; if (!d) return; HIST_OPEN[d] = !HIST_OPEN[d]; try { renderAllViews(); } catch (e) {} var again = document.querySelector('.hist-date-head[data-date="' + d + '"]'); if (again) again.scrollIntoView({ block: 'nearest' }); }
     function renderAllViews() {
-      try { var _bq = document.getElementById('bwQuick'); if (_bq) _bq.hidden = currentSelectedMember !== '문준'; } catch (eBq) {}   /* 1109 MJ '전체 물류앱에서 부외품으로도 전환' — 문준만 홈 버튼 줄에 */
+      try { var _bm = currentSelectedMember !== '문준'; ['bwQuick', 'bwEntry'].forEach(function (id) { var e = document.getElementById(id); if (e) e.hidden = _bm; }); } catch (eBq) {}   /* 1109 MJ '전체 물류앱에서 부외품으로도 전환' — 문준만 홈 버튼 줄에 */
       var aeQ = document.activeElement; if (aeQ && /^(m-)?in-qty-/.test(aeQ.id || '') && aeQ.value !== aeQ.defaultValue) { INB_RPEND = 1; return; }   // 1027 입고 수량 입력 중이면 나중에 (inbQtyBlur) · 1029 숫자를 안 고친 칸(방향키로 옮겨 온 칸)은 바로 그림 — 커서는 ryQty 가 지킴
       try { var sn = document.getElementById('satNudge'); if (sn) sn.hidden = new Date(Date.now() + 9 * 3600000).getUTCDay() !== 6; } catch (eSn) {}   // 1001 토요일 안내
       try { ryArrivedNotice(); } catch (eAr) {}
