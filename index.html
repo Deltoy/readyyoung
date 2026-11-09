@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw8p3owl">
+  <meta name="ry-build" content="mw8qlcim">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1185,6 +1185,30 @@ html body:not(#_):not(#_) .ry-qe.chg .ry-qe-n{color:#B54708!important;border-col
 .ry-bwh-chev{flex:none;margin-left:auto;font-size:12px;font-weight:600;color:#155EEF}
 .ry-bwh-adm{display:flex;gap:6px}
 .ry-bwh-adm button{min-height:36px;padding:0 12px;border-radius:10px;border:1px solid #D0D5DD;background:#fff;font-size:12px;font-weight:600;color:#344054;cursor:pointer}
+/* 1109b 부외품 장부·기기 승인 창 · 1109c 사장님 챙김 */
+.ry-bwpk{display:inline-flex;align-items:center;margin-left:4px;padding:1px 8px;border-radius:999px;background:#ECFDF3;color:#067647;font-size:12px;font-weight:700;white-space:nowrap;vertical-align:1px}
+.bw-dl{width:min(520px,100%)!important}
+.bw-dl-h{display:flex;align-items:center;gap:8px;margin:0 2px 12px}.bw-dl-h b{flex:1}
+.bw-dl-x{flex:none;width:40px;height:40px;border:0;border-radius:12px;background:#F2F4F7;color:#475467;font-size:16px;cursor:pointer}
+.bw-sec{margin:0 0 16px}.bw-sec h4{display:flex;align-items:center;gap:6px;margin:0 2px 8px;font-size:14px;font-weight:700;color:#344054}
+.bw-cnt{padding:0 8px;border-radius:999px;background:#D92D20;color:#fff;font-size:12px}
+.bw-note{margin:6px 2px 0;font-size:13px;color:#667085}.bw-err{margin:6px 2px;font-size:13px;font-weight:600;color:#B42318}
+.bw-link{display:flex;gap:6px}.bw-link input{flex:1;min-width:0;height:44px;padding:0 10px;border:1px solid #D0D5DD;border-radius:12px;font-size:13px;color:#475467;background:#F9FAFB}
+.bw-link button,.bw-dev button,.bw-foot button,.bw-pend-b button,.bw-chips button{min-height:44px;padding:0 14px;border-radius:12px;border:1px solid #D0D5DD;background:#fff;font-size:14px;font-weight:700;color:#344054;cursor:pointer}
+.bw-link button{background:#155EEF;border-color:#155EEF;color:#fff}
+.bw-pend{padding:12px;margin-bottom:8px;border:1px solid #FEDF89;border-radius:14px;background:#FFFAEB}
+.bw-pend-t{display:flex;align-items:center;gap:12px}.bw-code{font-size:28px;font-weight:800;letter-spacing:.1em;color:#101828;font-variant-numeric:tabular-nums}
+.bw-pend-t span,.bw-dev span{display:flex;flex-direction:column;font-size:14px;font-weight:600;color:#101828}.bw-pend-t small,.bw-dev small{font-size:12px;font-weight:500;color:#667085}
+.bw-pend-b{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}.bw-pend-b .pri{grid-column:1/-1;background:#155EEF;border-color:#155EEF;color:#fff}
+.bw-dl button.neg{color:#B42318;border-color:#FECDCA}
+.bw-dev{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid #EAECF0;border-radius:14px;margin-bottom:6px}
+.bw-foot{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding-top:12px;border-top:1px solid #EAECF0}
+.bw-chips{display:flex;gap:6px;margin-bottom:12px}.bw-chips button[aria-pressed=true]{background:#EFF4FF;border-color:#155EEF;color:#155EEF}
+.bw-sum{padding:12px 14px;border-radius:14px;background:#F9FAFB;border:1px solid #EAECF0;margin-bottom:12px}.bw-sum p{margin:2px 0 0;font-size:13px;color:#475467}.bw-sum p.bw-sum-b{margin:0;font-size:17px;font-weight:700;color:#101828}.bw-sum b{color:#101828}.bw-sum-b b{color:#155EEF!important}
+.bw-day{position:sticky;top:-22px;margin:10px 0 0;padding:6px 2px;background:#fff;font-size:13px;font-weight:700;color:#344054;border-bottom:1px solid #EAECF0}
+.bw-rows{list-style:none;margin:0;padding:0}.bw-rows li{display:flex;align-items:center;gap:8px;min-height:44px;padding:6px 2px;border-bottom:1px solid #F2F4F7;font-size:14px}
+.bw-rows .nm{flex:1;min-width:0;word-break:keep-all;overflow-wrap:anywhere}.bw-rows .tm{flex:none;font-size:12px;color:#98A2B3}.bw-rows b{flex:none;text-align:right}.bw-rows b small{display:block;font-size:11px;font-weight:600;color:#B54708}
+.bw-tg{display:inline-block;margin-right:6px;padding:0 6px;border-radius:999px;background:#F2F4F7;color:#475467;font-size:11px;font-weight:700;vertical-align:1px}.bw-tg.new{background:#ECFDF3;color:#067647}
 
 /* ═══ 16. 최종 발주 '재고있음(발주 취소)' — 칸 한가운데에 두고 버튼답게 (0920) ═══ */
 #readyCardContainer>div>button:nth-child(3){align-self:center!important;justify-self:stretch;
@@ -7062,7 +7086,7 @@ video {
     function isEnded(item) { return !!(item && String(item.note || '').indexOf(END_TAG) !== -1); }
     function ryWasSo(s) { s = String(s || ''); if (!/품절/.test(ryNoRc(s))) return s; var d = new Date(), c = ryNoRc(s).replace(/품절\s*\([^)]*\)/g, '').replace(/품절/g, '').replace(/\s{2,}/g, ' ').trim(), tag = '〔품절이었음 ' + (d.getMonth() + 1) + '/' + d.getDate() + '〕'; return c ? tag + ' ' + c : tag; }   // 1103 서버 soToWas_ 와 같은 규칙
     function ryNoRc(s) { return String(s == null ? '' : s).replace(/〔품절 재확인[^〕]*〕|〔품절이었음[^〕]*〕/g, ' ').replace(/\s{2,}/g, ' ').trim(); }   // 0929 품절 재확인 안내 토막은 품절 판정에서 뺀다
-    function endedBadge(item) { return (typeof rySurgeBadge === 'function' ? rySurgeBadge(item) : '') + (typeof evBadge === 'function' ? evBadge(item) : '') + (typeof locBadge === 'function' ? locBadge(item) : '') + (isHiddenItem(item) ? '<span class="ry-end ry-hid">' + RYI.octx + '취급안함</span>' : '') + (isEnded(item) ? '<span class="ry-end">' + RYI.octx + '판매종료</span>' : '') + (String(item && item.note || '').indexOf('〔품절 재확인') !== -1 ? '<span class="ry-rc" title="품절이 풀렸는지 확인 후 주문해 주세요"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/></svg>품절 30일 · 다시 확인해 주세요</span>' : '') + infoBtn(item) + priceBtn(item) + invDocBtn(item) + stockBadge(item) + svBadge(item); }
+    function endedBadge(item) { return (item && item.bwPick ? '<span class="ry-bwpk">🧺 사장님 챙김</span>' : '') + (typeof rySurgeBadge === 'function' ? rySurgeBadge(item) : '') + (typeof evBadge === 'function' ? evBadge(item) : '') + (typeof locBadge === 'function' ? locBadge(item) : '') + (isHiddenItem(item) ? '<span class="ry-end ry-hid">' + RYI.octx + '취급안함</span>' : '') + (isEnded(item) ? '<span class="ry-end">' + RYI.octx + '판매종료</span>' : '') + (String(item && item.note || '').indexOf('〔품절 재확인') !== -1 ? '<span class="ry-rc" title="품절이 풀렸는지 확인 후 주문해 주세요"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/></svg>품절 30일 · 다시 확인해 주세요</span>' : '') + infoBtn(item) + priceBtn(item) + invDocBtn(item) + stockBadge(item) + svBadge(item); }
 
     /* 1020 MJ '모든 상품에 사입가와 판매가 · 나만 · 이름 옆 달러 표시를 누르면': 문준일 때만 서버에서 받아 메모리에만 (폰에 저장 안 함) */
     var RY_PR = null, _prLoading = false;
@@ -11031,7 +11055,7 @@ video {
       /* 1007b 탭 버튼이 화면에 보이는 채로 누른 거면 받침 유지(화면 그대로, 새 목록이 아래에 나옴) — 탭이 화면 밖일 때만 놓는다 */
       if (tab !== currentTab && typeof ryFloorRelease === "function" && ![].some.call(document.querySelectorAll('[id^="tabBtn"]'), function (b) { var r = b.getBoundingClientRect(); return r.height && r.bottom > 0 && r.top < innerHeight; })) ryFloorRelease();
       currentTab = tab;
-      dismissKeyboard();
+      if (!window._ryKeepKb) dismissKeyboard();   /* 1109 MJ '검색어를 백스페이스로 다 지우고 다시 치면 영어로 바뀌어 있어' — 검색창을 비울 때 포커스를 뺐다 다시 넣으면 윈도 한글 입력기가 영어로 돌아감 → 그 경우엔 키보드를 건드리지 않음 */
       if (tab === 'inbound') try { dutyGate(null); } catch (eDg) {}   // 1027 누르기 전에 근무 확인
       
       const btnReview = document.getElementById('tabBtnReview');
@@ -12647,23 +12671,97 @@ video {
     /* 1109 MJ '부외품은 사장님이 직접 가져와서 진열 — 사장님이 직접 입고완료 · 우리 입고 대기에서도 부외품은 따로' → 서버 it.bw(제조사 D열 '부외품') 줄은 맨 아래 접힌 묶음 · 직원도 펼쳐서 입고 가능 · 문준은 사장님 링크(bw.html) 복사·바꾸기 */
     var BW_OPEN = false;
     function bwHeadHtml(n) {
-      var adm = currentSelectedMember === '문준' ? '<span class="ry-bwh-adm"><button type="button" onclick="bwLink(false)">사장님 링크</button><button type="button" onclick="bwLink(true)">링크 바꾸기</button></span>' : '';
-      return '<button type="button" class="ry-bwh-tg" aria-expanded="' + BW_OPEN + '" onclick="BW_OPEN = !BW_OPEN; renderInboundList(cachedInboundItems)"><span><b>📦 부외품 · 사장님이 직접 입고해요</b><small>사장님이 진열하고 사장님 폰에서 입고완료를 눌러요 · 급하면 펼쳐서 직접 입고</small></span><span class="ry-bwh-n">' + n + '건</span><span class="ry-bwh-chev">' + (BW_OPEN ? '접기' : '펼치기') + '</span></button>' + adm;
+      var adm = '<span class="ry-bwh-adm"><button type="button" onclick="bwLedgerOpen()">📒 장부</button>' + (currentSelectedMember === '문준' ? '<button type="button" onclick="bwAdmin()">사장님 링크</button>' : '') + '</span>';   /* 1109b 장부는 누구나 · 링크·기기 승인은 문준 */
+      if (!n) return '<span class="ry-bwh-tg"><span><b>📦 부외품 · 사장님이 직접 입고해요</b><small>지금 사장님 입고 대기 없음</small></span></span>' + adm;
+      return '<button type="button" class="ry-bwh-tg" aria-expanded="' + BW_OPEN + '" onclick="BW_OPEN = !BW_OPEN; renderInboundList(cachedInboundItems)"><span><b>📦 부외품 · 사장님이 직접 입고해요</b><small>사장님이 창고에서 챙기고(🧺) 진열한 뒤 사장님 폰에서 입고완료 · 급하면 펼쳐서 직접 입고</small></span><span class="ry-bwh-n">' + n + '건</span><span class="ry-bwh-chev">' + (BW_OPEN ? '접기' : '펼치기') + '</span></button>' + adm;
     }
     function bwHeadAppend(tbody, cards, n) {
       if (tbody) { var tr = document.createElement('tr'); tr.className = 'ry-bwh-tr'; tr.innerHTML = '<td colspan="6"><div class="ry-bwh">' + bwHeadHtml(n) + '</div></td><td hidden></td>'; tbody.appendChild(tr); }   /* 빈 칸 = 'td:last-child button' 알약 버튼 스타일 피함 */
       if (cards) { var d = document.createElement('div'); d.className = 'ry-bwh'; d.innerHTML = bwHeadHtml(n); cards.appendChild(d); }
     }
-    function bwLink(rot) {
+    /* 1109b MJ '부외품 사이트는 1명만 · 다른 사람은 내 승인' — 링크 + 등록된 폰 + 승인 기다리는 폰(4자리 번호) · 서버 bwDevices·bwApprove·bwReject·bwResetDevices (문준) */
+    function bwDlg(title) {
+      var old = document.getElementById('bwDlg'); if (old) old.remove();
+      var d = document.createElement('div'); d.id = 'bwDlg'; d.className = 'ry-cf'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true'); d.setAttribute('aria-labelledby', 'bwDlgT');
+      d.innerHTML = '<div class="ry-cf-dim"></div><div class="ry-cf-card bw-dl" role="document"><div class="bw-dl-h"><b class="ry-cf-t" id="bwDlgT">' + escapeHtml(title) + '</b><button type="button" class="bw-dl-x" aria-label="닫기">✕</button></div><div class="bw-dl-b"><div class="sp-msg"><span class="ry-info-spin"></span>불러오는 중…</div></div></div>';
+      var close = function () { document.removeEventListener('keydown', key, true); d.remove(); };
+      var key = function (e) { if (e.key === 'Escape' && !document.getElementById('ryCf')) { e.preventDefault(); close(); } };
+      d.querySelector('.ry-cf-dim').onclick = close; d.querySelector('.bw-dl-x').onclick = close; document.addEventListener('keydown', key, true);
+      document.body.appendChild(d); void d.offsetWidth; d.classList.add('on');
+      return d.querySelector('.bw-dl-b');
+    }
+    var BWA = { url: '', st: null };
+    function bwMd(iso) { var t = new Date(iso); return isNaN(t) ? '' : (t.getMonth() + 1) + '/' + t.getDate() + ' ' + ('0' + t.getHours()).slice(-2) + ':' + ('0' + t.getMinutes()).slice(-2); }
+    function bwAdmin() {
       if (currentSelectedMember !== '문준') return;
-      var go = function () {
-        var ok = function (r) { if (!r || !r.ok) { showToast('⚠️ ' + (r && r.msg || '링크를 못 받았어요')); return; } ryPrompt('부외품 사장님 링크' + (rot ? ' · 새로 바꿨어요' : '') + '\n카톡으로 사장님께 보내 주세요. 이 링크만 있으면 부외품 입고를 할 수 있으니 다른 곳엔 올리지 마세요.', r.url, { copy: true }); };
-        var bad = function (e) { showToast('⚠️ 링크를 못 받았어요 · ' + (e && e.message || '')); };
-        if (rot) google.script.run.withSuccessHandler(ok).withFailureHandler(bad).bwRotateToken(currentSelectedMember);
-        else google.script.run.withSuccessHandler(ok).withFailureHandler(bad).bwSetupToken(currentSelectedMember);
+      var box = bwDlg('부외품 사장님 링크'), me = currentSelectedMember, left = 2;
+      var done = function () { if (--left === 0) bwAdmRender(box); };
+      google.script.run.withSuccessHandler(function (r) { BWA.url = r && r.ok ? r.url : ''; done(); }).withFailureHandler(function () { BWA.url = ''; done(); }).bwSetupToken(me);
+      google.script.run.withSuccessHandler(function (r) { BWA.st = r && r.ok ? r : { err: (r && r.msg) || '못 불러왔어요' }; done(); }).withFailureHandler(function (e) { BWA.st = { err: '못 불러왔어요 · ' + (e && e.message || '') }; done(); }).bwDevices(me);
+    }
+    function bwAdmRender(box) {
+      if (!box || !document.body.contains(box)) return;
+      var st = BWA.st || {}, devs = st.devs || [], pend = st.pend || [];
+      var h = '<section class="bw-sec"><h4>사장님 링크</h4>' + (BWA.url ? '<div class="bw-link"><input readonly value="' + escapeHtml(BWA.url) + '" aria-label="사장님 링크"><button type="button" data-a="copy">복사</button></div><p class="bw-note">카톡으로 사장님께만 보내 주세요.</p>' : '<p class="bw-err">링크를 못 받았어요</p>') + '</section>';
+      if (st.err) h += '<p class="bw-err">' + escapeHtml(st.err) + '</p>';
+      if (pend.length) h += '<section class="bw-sec"><h4>승인 기다리는 폰 <span class="bw-cnt">' + pend.length + '</span></h4>' + pend.slice().reverse().map(function (x) {
+        return '<div class="bw-pend"><div class="bw-pend-t"><b class="bw-code">' + escapeHtml(x.code) + '</b><span>' + escapeHtml(x.ua || '') + '<small>' + escapeHtml(bwMd(x.at)) + ' 요청</small></span></div>'
+          + '<div class="bw-pend-b"><button type="button" class="pri" data-a="replace" data-id="' + escapeHtml(x.id) + '">승인 (이 폰으로 바꾸기)</button><button type="button" data-a="add" data-id="' + escapeHtml(x.id) + '">추가 승인</button><button type="button" class="neg" data-a="reject" data-id="' + escapeHtml(x.id) + '">거절</button></div></div>';
+      }).join('') + '<p class="bw-note">사장님이 알려 준 번호와 같은지 보고 승인해 주세요.</p></section>';
+      h += '<section class="bw-sec"><h4>쓰는 폰</h4>' + (st.open ? '<p class="bw-note">아직 없어요 · 링크를 처음 여는 폰이 자동으로 등록돼요</p>'
+        : devs.length ? devs.map(function (x) { return '<div class="bw-dev"><span><b>' + escapeHtml(x.ua || '폰') + '</b><small>' + escapeHtml(bwMd(x.at)) + ' 등록' + (x.code ? ' · 번호 ' + escapeHtml(x.code) : '') + '</small></span><button type="button" data-a="reject" data-id="' + escapeHtml(x.id) + '">해제</button></div>'; }).join('')
+        : '<p class="bw-note">없어요 · 새 폰은 여기서 승인해야 써요</p>') + '</section>';
+      h += '<div class="bw-foot"><button type="button" data-a="rotate">링크 바꾸기</button><button type="button" class="neg" data-a="reset">모든 폰 해제</button></div>';
+      box.innerHTML = h;
+      box.onclick = function (ev) {
+        var b = ev.target.closest('[data-a]'); if (!b || b.disabled) return;
+        var a = b.getAttribute('data-a'), id = b.getAttribute('data-id') || '', me = currentSelectedMember;
+        var after = function (r) { if (!r || !r.ok) { showToast('⚠️ ' + ((r && r.msg) || '안 됐어요')); bwAdmin(); return; } BWA.st = r; bwAdmRender(box); };
+        var fail = function (e) { showToast('⚠️ 안 됐어요 · ' + (e && e.message || '')); bwAdmRender(box); };
+        var run = function () { b.disabled = true; return google.script.run.withSuccessHandler(after).withFailureHandler(fail); };
+        if (a === 'copy') { var inp = box.querySelector('.bw-link input'); try { inp.select(); navigator.clipboard.writeText(inp.value).then(function () { showToast('✓ 복사했어요'); }, function () { document.execCommand('copy'); showToast('✓ 복사했어요'); }); } catch (e) {} return; }
+        if (a === 'replace') { run().bwApprove(me, id, 'replace'); showToast('✓ 승인했어요 · 전에 쓰던 폰은 해제'); return; }
+        if (a === 'add') { run().bwApprove(me, id, 'add'); showToast('✓ 추가로 승인했어요'); return; }
+        if (a === 'reject') { ryConfirm({ title: '이 폰을 막을까요?', items: [{ t: 'warn', h: '이 폰에서는 부외품 사이트를 못 써요', d: '다시 쓰게 하려면 [모든 폰 해제] 후 다시 등록' }], ok: '막기', danger: true }).then(function (y) { if (y) run().bwReject(me, id); }); return; }
+        if (a === 'reset') { ryConfirm({ title: '모든 폰을 해제할까요?', items: [{ t: 'warn', h: '링크를 다음에 처음 여는 폰이 자동으로 등록돼요', d: '사장님 폰에서 바로 링크를 열어 달라고 해 주세요' }], ok: '모두 해제', danger: true }).then(function (y) { if (y) run().bwResetDevices(me); }); return; }
+        if (a === 'rotate') { ryConfirm({ title: '사장님 링크를 바꿀까요?', items: [{ t: 'warn', h: '지금 링크는 바로 안 열려요 · 등록된 폰도 모두 해제', d: '새 링크를 사장님께 보내고, 사장님 폰에서 먼저 열어 달라고 해 주세요' }], ok: '바꾸기', danger: true }).then(function (y) {
+          if (!y) return; b.disabled = true;
+          google.script.run.withSuccessHandler(function (r) { if (!r || !r.ok) { showToast('⚠️ ' + ((r && r.msg) || '안 됐어요')); b.disabled = false; return; } BWA.url = r.url; BWA.st = { ok: true, open: true, devs: [], pend: [] }; bwAdmRender(box); showToast('✓ 링크를 바꿨어요 · 새 링크를 보내 주세요'); }).withFailureHandler(fail).bwRotateToken(me);
+        }); return; }
       };
-      if (!rot) { go(); return; }
-      ryConfirm({ title: '사장님 링크를 바꿀까요?', items: [{ t: 'warn', h: '지금 링크는 바로 안 열려요', d: '바꾼 뒤 새 링크를 사장님께 다시 보내 주세요' }], ok: '바꾸기', danger: true }).then(function (y) { if (y) go(); });
+    }
+    /* 1109b MJ '사장님 입고내역 = 장부' — 앱에서도 같은 장부 (가격 없음 → 누구나) · 서버 bwLedgerAdmin */
+    var BWL = { per: 'this', data: null };
+    function bwYmd(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+    function bwLedgerOpen() { var box = bwDlg('📒 부외품 장부'); BWL.data = null; bwLedgerLoad(box); }
+    function bwLedgerLoad(box) {
+      var n = new Date(), y = n.getFullYear(), m = n.getMonth(), p = BWL.per;
+      var r0 = p === 'last' ? [bwYmd(new Date(y, m - 1, 1)), bwYmd(new Date(y, m, 0))] : p === '3m' ? [bwYmd(new Date(y, m - 2, 1)), bwYmd(n)] : [bwYmd(new Date(y, m, 1)), bwYmd(n)];
+      BWL.data = null; bwLedgerRender(box);
+      google.script.run.withSuccessHandler(function (r) { if (p !== BWL.per) return; BWL.data = r && r.ok ? r : { err: (r && r.msg) || '못 불러왔어요' }; bwLedgerRender(box); })
+        .withFailureHandler(function (e) { BWL.data = { err: '못 불러왔어요 · ' + (e && e.message || '') }; bwLedgerRender(box); }).bwLedgerAdmin(currentSelectedMember || '', r0[0], r0[1]);
+    }
+    function bwLedgerRender(box) {
+      if (!box || !document.body.contains(box)) return;
+      var D = BWL.data, q = function (n, b) { return (n ? n.toLocaleString() + '개' : '') + (b ? (n ? ' · ' : '') + b.toLocaleString() + '박스' : '') || '0개'; };
+      var h = '<div class="bw-chips">' + [['this', '이번 달'], ['last', '지난달'], ['3m', '최근 3개월']].map(function (c) { return '<button type="button" data-p="' + c[0] + '" aria-pressed="' + (BWL.per === c[0]) + '">' + c[1] + '</button>'; }).join('') + '</div>';
+      if (!D) h += '<div class="sp-msg"><span class="ry-info-spin"></span>불러오는 중…</div>';
+      else if (D.err) h += '<p class="bw-err">' + escapeHtml(D.err) + '</p>';
+      else {
+        var t = D.tot, k = t.kinds || {}, top = D.top && D.top[0];
+        h += '<section class="bw-sum"><p class="bw-sum-b">입고 <b>' + t.n + '건</b> · 총 ' + q(t.qty, t.box) + '</p><p>주문 ' + (k['주문'] || 0) + ' · 주문 없이 ' + (k['주문없이'] || 0) + ' · 새 상품 ' + (k['새 상품'] || 0) + '</p>'
+          + (top && t.n > 1 ? '<p>가장 많이 넣은 상품 · <b>' + escapeHtml(top.name) + '</b> ' + top.qty.toLocaleString() + top.unit + '</p>' : '') + '</section>';
+        if (!D.rows.length) h += '<p class="bw-note">이 기간에 사장님이 입고한 게 없어요</p>';
+        var cur = '';
+        h += D.rows.map(function (x) {
+          var hd = '';
+          if (x.date !== cur) { var dd = new Date(x.date + 'T00:00:00'); hd = (cur ? '</ul>' : '') + '<h5 class="bw-day">' + (dd.getMonth() + 1) + '월 ' + dd.getDate() + '일 ' + '일월화수목금토'.charAt(dd.getDay()) + '요일</h5><ul class="bw-rows">'; cur = x.date; }
+          var tg = x.kind === '새 상품' ? '<span class="bw-tg new">새 상품</span>' : x.kind === '주문없이' ? '<span class="bw-tg">주문 없이</span>' : '';
+          return hd + '<li><span class="nm">' + tg + escapeHtml(x.name) + (x.photo ? ' 📷' : '') + '</span><span class="tm">' + escapeHtml(x.time) + '</span><b>' + x.qty.toLocaleString() + x.unit + (x.kind === '주문' && x.ord && x.ord !== x.qty ? '<small>주문 ' + x.ord + '</small>' : '') + '</b></li>';
+        }).join('') + (cur ? '</ul>' : '');
+      }
+      box.innerHTML = h;
+      box.onclick = function (ev) { var b = ev.target.closest('[data-p]'); if (!b) return; BWL.per = b.getAttribute('data-p'); bwLedgerLoad(box); };
     }
     function renderInboundList(items) {
       refreshDelayReasons(false);
@@ -12718,7 +12816,7 @@ video {
       };
       const bwItems = shown.filter(it => it.bw);   /* 1109 부외품은 맨 아래 접힌 묶음 (검색 중이면 펼침) */
       shown.filter(it => !it.bw).forEach(addIn);
-      if (bwItems.length) { bwHeadAppend(tbody, cards, bwItems.length); if (BW_OPEN || inboundQuery.trim()) bwItems.forEach(addIn); }
+      if (bwItems.length || (!inboundQuery.trim() && !isFilterCheckRequestedOnly)) { bwHeadAppend(tbody, cards, bwItems.length); if (BW_OPEN || inboundQuery.trim()) bwItems.forEach(addIn); }
       const badgeReq = document.getElementById('checkReqBadgeCount');
       if (badgeReq) badgeReq.innerText = checkReqCount;
       const lateN = lateInboundItems().length;
@@ -14808,7 +14906,7 @@ video {
       if (typeof ryFloorRelease === "function") ryFloorRelease();   /* 1007 검색을 닫을 땐 받침을 놓는다 */
       latestSearchRequestId++;
       const inputEl = document.getElementById('globalSearchInput');
-      if (inputEl) inputEl.value = '';
+      if (inputEl && inputEl.value !== '') inputEl.value = '';   /* 1109 이미 빈 칸이면 값을 다시 쓰지 않음 (입력기 상태 유지) */
       const clearBtn = document.getElementById('clearSearchBtn');
       if (clearBtn) clearBtn.classList.add('hidden');
       const sumText = document.getElementById('searchSummaryText');
@@ -14816,7 +14914,7 @@ video {
       const sView = document.getElementById('searchResultView');
       if (sView) sView.classList.add('hidden');
       if (!keepFocus) dismissKeyboard();
-      switchTab(currentTab);
+      window._ryKeepKb = !!keepFocus; try { switchTab(currentTab); } finally { window._ryKeepKb = false; }
       /* 1013 MJ 빈 화면: 긴 검색 결과 아래쪽에서 검색을 닫으면 받침(ryFloor)이 예전 높이를 붙잡아 빈 바닥만 보였다 → 탭 맨 위로 */
       window.scrollTo(0, 0); if (typeof ryFloorRelease === 'function') ryFloorRelease();
       if (keepFocus && inputEl && document.activeElement !== inputEl) inputEl.focus();
