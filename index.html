@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw8zwjrp">
+  <meta name="ry-build" content="mw975xmg">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8055,6 +8055,9 @@ video {
     function scMd(ymd) { var p = ymd.split('-'), d = new Date(+p[0], +p[1] - 1, +p[2]); return (+p[1]) + '/' + (+p[2]) + '(' + SC_WD[d.getDay()] + ')'; }
     function scAdm() { return String(currentSelectedMember || '').trim() === '문준'; }   // 1026 MJ '숫자 적는 건 나만 보이게'
     function scBoss() { try { return typeof sdCanEdit === 'function' && sdCanEdit(); } catch (e) { return false; } }   /* 1109 MJ '목표는 관리약사와 물류관리자·팀장만' = 세트 담당 변경과 같은 규칙 (서버 sdCanEdit_) */
+    function scWG(w, k) {   /* 1109 MJ '하루 목표 35로 바꿨는데 하루 25개씩' → 주 목표가 하루 목표와 안 맞으면(옛 값) 하루 목표 × 날 수 */
+      var G = (w.goal && w.goal[k]) || 0, d = (w.day && w.day[k]) || 0, n = scDays(w).length; return d && Math.round(G / n) !== d ? d * n : G;
+    }
     function scDays(w) { var out = [], d = w.from; while (d <= w.to && out.length < 60) { out.push(d); d = scAdd(d, 1); } return out; }
     function scWeek(c, d) { for (var i = 0; i < c.weeks.length; i++) if (d >= c.weeks[i].from && d <= c.weeks[i].to) return i; return -1; }
     function scCur() { var D = SC.data; if (!D || !D.cfg || !D.cfg.weeks) return null; var i = scWeek(D.cfg, D.today || scYmd(new Date())); return i < 0 ? null : D.cfg.weeks[i]; }
@@ -8112,7 +8115,7 @@ video {
         /* 1109 MJ '판매 넣기 칸 필요해? POS로 자동으로 올라가잖아' → 평소엔 숨김(POS 30분마다 자동) · POS 로그인이 풀린 날 고치기용 작은 버튼만 */
         if (scAdm()) h += SC.inOpen ? scInHtml(c, w, t) : '<button type="button" class="sc-fixbtn" onclick="SC.inOpen=1;scRender()">✏️ 숫자 직접 고치기 <small>평소엔 POS에서 30분마다 자동</small></button>';
         h += '<div class="sc-sets">' + SC_SETS.map(function (s) {
-          var G = (w.goal && w.goal[s.k]) || 0, dg = scGoal(c, nth > 0 ? t : w.from, s.k), sum = 0, sumB = 0;
+          var G = scWG(w, s.k), dg = scGoal(c, nth > 0 ? t : w.from, s.k), sum = 0, sumB = 0;
           days.forEach(function (d) { if (d <= t) { var v = scV(d, s.k) || 0; sum += v; if (d < t) sumB += v; } });   // 오늘 넣은 것도 합계에 · 남은 하루 개수는 어제까지 기준
           var tv = nth > 0 ? scV(t, s.k) : null, pv = SC.prev[s.k] != null ? SC.prev[s.k] : 0, need = left ? Math.ceil(Math.max(0, G - sumB) / left) : 0, win = G > 0 && sum >= G, tdone = tv != null && dg > 0 && tv >= dg;
           if (win) SC.totWin.push(s.k);
@@ -8142,7 +8145,7 @@ video {
     function scHistHtml(c, t) {   /* 📂 지난 목표 — 주마다 접어서: 세트별 목표 · 실적 · 달성률 */
       var past = c.weeks.filter(function (w) { return w.to < t; }).reverse(); if (!past.length) return '';
       return '<section class="sc-card sc-hist"><h3>📂 지난 목표 <span>' + past.length + '주</span></h3>' + past.map(function (w) {
-        var days = scDays(w), rows = scSetsOf(c, w).map(function (s) { var G = (w.goal && w.goal[s.k]) || 0, sum = days.reduce(function (a, d) { return a + (scV(d, s.k) || 0); }, 0); return { s: s, G: G, sum: sum, p: G ? Math.round(sum / G * 100) : 0 }; });
+        var days = scDays(w), rows = scSetsOf(c, w).map(function (s) { var G = scWG(w, s.k), sum = days.reduce(function (a, d) { return a + (scV(d, s.k) || 0); }, 0); return { s: s, G: G, sum: sum, p: G ? Math.round(sum / G * 100) : 0 }; });
         var withG = rows.filter(function (r) { return r.G; }), won = withG.filter(function (r) { return r.sum >= r.G; }).length, all = withG.length && won === withG.length;
         return '<details class="sc-hw"><summary><b>' + scMd(w.from) + ' ~ ' + scMd(w.to) + '</b><em' + (all ? ' class="all"' : '') + '>' + (!withG.length ? '실적만' : all ? '🏆 모두 달성' : won + '/' + withG.length + ' 달성') + '</em></summary><div class="sc-hrows">'
           + rows.map(function (r) { return '<div class="sc-hr" style="--sc:' + r.s.c + '"><span class="sc-hn">' + escapeHtml(r.s.label) + '</span><span class="sc-hv"><b>' + r.sum + '</b>' + (r.G ? ' / ' + r.G + '개' : '개') + '</span><span class="sc-hp' + (r.G && r.p >= 100 ? ' ok' : '') + '">' + (r.G ? r.p + '%' : '목표 없음') + '</span>' + (r.G ? '<div class="sc-bar"><i style="width:' + Math.min(100, r.p) + '%"></i></div>' : '') + '</div>'; }).join('')
@@ -8260,7 +8263,7 @@ video {
       if (!from) { from = cur ? cur.from : scAdd(t, -((new Date(+p[0], +p[1] - 1, +p[2]).getDay() + 6) % 7)); if (!cur && lastW && from <= lastW.to) from = scAdd(lastW.to, 1); }   /* 지난 목표와 겹치지 않게 */
       var ex = c.weeks.filter(function (w) { return w.from === from; })[0], src = ex || c.weeks.filter(function (w) { return w.from < from; }).slice(-1)[0];
       SC.form = { from: from, to: ex ? ex.to : scAdd(from, 6), note: ex ? ex.note || '' : '', ex: !!ex,
-        rows: src ? scSetsOf(c, src).map(function (s, i) { var a = (src.sets && src.sets[i] && src.sets[i].app) || [], kind = (src.sets && src.sets[i] && src.sets[i].kind) || 'set'; return { k: s.k, label: s.label, kind: kind, picks: s.pos.map(function (x, j) { return { n: a[j] || '', pos: x }; }), goal: (src.goal && src.goal[s.k]) || '', day: (src.day && src.day[s.k]) || '' }; }) : [scFormRow()] };
+        rows: src ? scSetsOf(c, src).map(function (s, i) { var a = (src.sets && src.sets[i] && src.sets[i].app) || [], kind = (src.sets && src.sets[i] && src.sets[i].kind) || 'set'; return { k: s.k, label: s.label, kind: kind, picks: s.pos.map(function (x, j) { return { n: a[j] || '', pos: x }; }), goal: scWG(src, s.k) || '', day: (src.day && src.day[s.k]) || '' }; }) : [scFormRow()] };
       SC.pickRes = []; scRender(); var bd = document.getElementById('slBody'); if (bd) bd.scrollTop = 0;
     }
     function scFormRow() { return { k: '', label: '', kind: 'set', picks: [], goal: '', day: '' }; }
@@ -8285,7 +8288,7 @@ video {
             + '<div class="sc-pf"><input type="search" enterkeyhint="search" placeholder="' + (it ? '상품 이름으로 찾아 고르기' : '세트 이름으로 찾아 고르기') + '" oninput="scPickFind(this, ' + i + ')"><div class="sc-pr" id="scPr-' + i + '"></div></div>'
             + '<button type="button" class="sc-link" onclick="scPickAdd(' + i + ', -1)">＋ POS 이름 직접 적기</button></div>'
             + (ev ? '</div>' : '<div class="sc-f"><label>주 목표<input type="number" inputmode="numeric" min="0" data-f="goal" value="' + escapeHtml(r.goal) + '" oninput="scFormDay(this)"></label>'
-            + '<label>하루 목표<input type="number" inputmode="numeric" min="0" data-f="day" value="' + escapeHtml(r.day) + '" placeholder="' + dp + '"></label></div></div>');
+            + '<label>하루 목표<input type="number" inputmode="numeric" min="0" data-f="day" value="' + escapeHtml(r.day) + '" placeholder="' + dp + '" oninput="scFormDay(this)"></label></div></div>');
         }).join('')
         + (n < (ev ? 20 : 8) ? '<button type="button" class="sc-add" onclick="scFormAdd()">＋ ' + (ev ? '상품' : '목표') + ' 줄 추가</button>' : '');
     }
@@ -8298,7 +8301,12 @@ video {
           picks: [].map.call(el.querySelectorAll('.sc-pk'), function (pe) { return { n: pe.getAttribute('data-n') || '', pos: pe.querySelector('input').value }; }) };
       });
     }
-    function scFormDay(el) { var d = el.closest('.sc-fr').querySelector('[data-f="day"]'); if (d) d.placeholder = +el.value > 0 ? '주÷7 = ' + Math.round(el.value / 7) : '주÷7'; }
+    function scFormDay(el) {   /* 1109 주 목표 ↔ 하루 목표 서로 맞춤 (날 수 = 시작~끝) */
+      var fr = el.closest('.sc-fr'), g = fr.querySelector('[data-f="goal"]'), d = fr.querySelector('[data-f="day"]'), a = document.getElementById('scFFrom'), z = document.getElementById('scFTo');
+      var n = a && z && a.value && z.value <= '9999' && a.value <= z.value ? scDays({ from: a.value, to: z.value }).length : 7, v = +el.value;
+      if (!g || !d) return;
+      if (el === d) g.value = v > 0 ? v * n : ''; else { d.value = v > 0 ? Math.round(v / n) : ''; d.placeholder = v > 0 ? '주÷' + n + ' = ' + Math.round(v / n) : '주÷' + n; }
+    }
     function scFormAdd() { scFormRead(); scF().rows.push(scFormRow()); scFRe(); var r = document.querySelectorAll('#slBody .sc-fr'), x = r[r.length - 1]; if (x) { x.scrollIntoView({ block: 'center' }); x.querySelector('input').focus(); } }
     function scFormDel(i) { scFormRead(); scF().rows.splice(i, 1); scFRe(); }
     function scFormKind(i, k) { scFormRead(); scF().rows[i].kind = k; scFRe(); }
