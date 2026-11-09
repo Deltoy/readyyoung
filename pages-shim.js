@@ -141,13 +141,15 @@
   function busy() { var a = document.activeElement; return (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) || document.body.style.position === 'fixed' || Date.now() - lastAct < 120000; }
   function check() {
     if (fresh) return;
-    fetch(location.pathname + '?ryv=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (t) {
+    /* 1109 점검: ?ryv 로 새 판을 보고 새로고침했는데 정작 새로고침은 캐시된 옛 판을 받아 다시 '새 판' → 성수 폰 세트 화면에서 30분에 6번 튕김. 새로고침이 받을 주소 그대로 확인 */
+    fetch(location.pathname, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (t) {
       var m = /name="ry-build" content="([^"]+)"/.exec(t || ''); if (m && m[1] !== cur) fresh = true;
     }, function () {});
   }
   setInterval(function () { if (fresh && !busy()) location.reload(); }, 15000);
   setInterval(check, 600000); setTimeout(check, 60000);
-  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') { if (fresh) location.reload(); else check(); } });
+  var hidAt = 0;   /* 1109 점검: 1초 알림창만 내려도 새로고침돼 보던 화면이 처음으로 → 30초 넘게 나갔다 올 때만 */
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') { hidAt = Date.now(); return; } if (fresh && Date.now() - hidAt > 30000) location.reload(); else check(); });
 })();
 /* 1023 MJ '이름 설정과 설치를 바로' — 크롬이 설치할 수 있다고 알려 주면(beforeinstallprompt) 이름을 고른 뒤 아래에 [📲 앱으로 설치] 한 번
    아이폰 사파리는 설치 버튼을 웹에서 띄울 수 없어 '공유 → 홈 화면에 추가' 안내만. 이미 설치된 앱 안 · [나중에] 누른 날은 안 띄움 */

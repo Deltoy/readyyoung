@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw975xmg">
+  <meta name="ry-build" content="mw9cc17g">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -146,13 +146,15 @@
   function busy() { var a = document.activeElement; return (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) || document.body.style.position === 'fixed' || Date.now() - lastAct < 120000; }
   function check() {
     if (fresh) return;
-    fetch(location.pathname + '?ryv=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (t) {
+    /* 1109 점검: ?ryv 로 새 판을 보고 새로고침했는데 정작 새로고침은 캐시된 옛 판을 받아 다시 '새 판' → 성수 폰 세트 화면에서 30분에 6번 튕김. 새로고침이 받을 주소 그대로 확인 */
+    fetch(location.pathname, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.text() : ''; }).then(function (t) {
       var m = /name="ry-build" content="([^"]+)"/.exec(t || ''); if (m && m[1] !== cur) fresh = true;
     }, function () {});
   }
   setInterval(function () { if (fresh && !busy()) location.reload(); }, 15000);
   setInterval(check, 600000); setTimeout(check, 60000);
-  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') { if (fresh) location.reload(); else check(); } });
+  var hidAt = 0;   /* 1109 점검: 1초 알림창만 내려도 새로고침돼 보던 화면이 처음으로 → 30초 넘게 나갔다 올 때만 */
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') { hidAt = Date.now(); return; } if (fresh && Date.now() - hidAt > 30000) location.reload(); else check(); });
 })();
 /* 1023 MJ '이름 설정과 설치를 바로' — 크롬이 설치할 수 있다고 알려 주면(beforeinstallprompt) 이름을 고른 뒤 아래에 [📲 앱으로 설치] 한 번
    아이폰 사파리는 설치 버튼을 웹에서 띄울 수 없어 '공유 → 홈 화면에 추가' 안내만. 이미 설치된 앱 안 · [나중에] 누른 날은 안 띄움 */
@@ -13379,7 +13381,7 @@ video {
       }
       inFlight.add(key);
       const _who = String(((cachedInboundItems.find(it => it.rowNumber === rowNumber) || {}).requester) || '').trim();
-      showToast((satD ? '최종 입고완료 처리했어요 · 입고일 ' + satD : '최종 입고완료 처리했어요') + (_who && _who !== currentSelectedMember ? ' · ' + _who + '님 앱에 입고 알림이 떠요' : ''), _who ? 3500 : 2200);
+      showToast((satD ? '최종 입고완료 처리했어요 · 입고일 ' + satD : '최종 입고완료 처리했어요') + (_who && _who !== currentSelectedMember && sharedMemberList.indexOf(_who) >= 0 ? ' · ' + _who + '님 앱에 입고 알림이 떠요' : ''), _who ? 3500 : 2200);
 
       const itemIdx = cachedInboundItems.findIndex(it => it.rowNumber === rowNumber);
       const _nm = itemIdx !== -1 ? String(cachedInboundItems[itemIdx].name || '').split('\n')[0] : '';
@@ -13874,7 +13876,7 @@ video {
       var invGot = {}; INVS.forEach(function (r) { (r.lines || []).forEach(function (l) { if (!l.row || rows.indexOf(l.row) === -1) return; var a = Number(l.bundle ? l.qty : (l.appQty != null ? l.appQty : l.qty)) || 0; if (a > 0) invGot[l.row] = (invGot[l.row] || 0) + a; }); });
       Object.keys(invGot).forEach(function (k) { var r = +k; if (oqOf(r) > 0 && invGot[r] !== oqOf(r)) { INB1.got[r] = invGot[r]; rows = rows.filter(function (x) { return x !== r; }); if (bRows.indexOf(r) < 0) bRows.push(r); } });
       var diff = bRows.filter(function (r) { return INB1.got[r] > 0 && INB1.got[r] !== oqOf(r); }); bRows = bRows.filter(function (r) { return diff.indexOf(r) < 0; });   // 수량 다르게 온 것
-      if (adds.some(function (a) { return !(a.qty > 0); })) { alert('③ 주문 안 한 상품의 수량을 적어 주세요'); return; }
+      if (adds.some(function (a) { return !(a.qty > 0); })) { alert('③ 주문 안 한 상품의 수량을 적어 주세요'); var _eq = document.getElementById('inb1Q' + INB1.add.findIndex(function (a) { return a && a.name && !(a.qty > 0); })); if (_eq) { _eq.scrollIntoView({ block: 'center' }); _eq.focus(); } return; }
       var nInv = rows.length; rows = rows.concat(bRows);
       if (!rows.length && !ex.length && !adds.length && !diff.length) return;
       var shorts = []; INVS.forEach(function (r) { (r.lines || []).forEach(function (l) { if (l.row && rows.indexOf(l.row) !== -1) { var o = parseFloat(String(l.orderQty || '').replace(/[^0-9.]/g, '')) || 0, a = Number(l.bundle ? l.qty : (l.appQty != null ? l.appQty : l.qty)) || 0; if (o > 0 && a > 0 && a < o) shorts.push(String(l.appName || l.name).slice(0, 20) + ' (' + a + '/' + o + ')'); } }); });
@@ -15310,7 +15312,7 @@ video {
       const tab = tabMap[status];
       if (!tab) return;
       try { var _gi = document.getElementById('globalSearchInput'); if (_gi && _gi.value) clearGlobalSearch(); } catch (e) {}
-      if (tab === 'history') { currentHistoryRange = '1month'; historyQuery = ''; const hs = document.getElementById('historySearch'); if (hs) hs.value = ''; const hc = document.getElementById('historySearchClear'); if (hc) hc.classList.add('hidden'); }
+      if (tab === 'history') { /* 1109 점검: 오늘 아닌 날짜 묶음은 접혀 있어 상품을 못 찾고 '탭으로 이동했어요' 알림만 떴음 → 그 상품의 가장 최근 입고 날짜를 펼침 */ (cachedHistoryItems || []).filter(function (h) { return h.rowNumber === rowNumber; }).slice(0, 1).forEach(function (h) { HIST_OPEN[h.inboundDate || '최근 입고'] = true; }); currentHistoryRange = '1month'; historyQuery = ''; const hs = document.getElementById('historySearch'); if (hs) hs.value = ''; const hc = document.getElementById('historySearchClear'); if (hc) hc.classList.add('hidden'); }
 
       // 검색 닫기
       const inputEl = document.getElementById('globalSearchInput');
