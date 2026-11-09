@@ -230,6 +230,8 @@ body.has-bar #undo{bottom:calc(92px + env(safe-area-inset-bottom))}
 /* 1109 MJ '밑에 이런 개 이런 거 검색 안 되게' — 글자를 길게 누르면 크롬 '탭하여 검색'이 뜸 → 글자 선택 끔 (입력칸은 그대로) */
 body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+.day li.cx .nm,.day li.cx .q{text-decoration:line-through;color:#98A2B3}.tg.cxd{background:#FEE4E2;color:#B42318}
+.cxb{flex:none;margin-left:8px;min-height:36px;padding:0 12px;border:1px solid #FDA29B;border-radius:10px;background:#fff;color:#B42318;font-size:14px;font-weight:700}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -284,6 +286,7 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
   var TOK = (location.hash.match(/[#&]t=([A-Za-z0-9]{24,64})/) || [])[1] || '';
   try { if (TOK) localStorage.setItem('bw_t', TOK); else TOK = localStorage.getItem('bw_t') || ''; } catch (e) {}
   /* 1109 MJ '컴퓨터에서도 보게' — 사장님 링크가 없는 기기라도 물류앱을 '문준'으로 쓰는 기기면 앱 암호로 '관리자 보기'(읽기 전용, 기기 자리 안 씀) */
+  var MJK = ''; try { if (localStorage.getItem('s_selected_member') === '문준') MJK = localStorage.getItem('ry_pages_k') || ''; } catch (e) {}   /* 1109 MJ 기기 = 납품 내역 [취소] (앱 암호로 bwCancelAdmin) */
   var ADM = ''; try { if (!TOK && localStorage.getItem('s_selected_member') === '문준') ADM = localStorage.getItem('ry_pages_k') || ''; } catch (e) {}
   if (ADM) document.documentElement.classList.add('bw-adm');
   try { var _me = localStorage.getItem('s_selected_member') || ''; if (_me === '문준') {   /* 1109 MJ '전환은 나만 · 사장님은 못 하게' */ var _tm = document.getElementById('toMain'); _tm.hidden = false; _tm.href = './?me=' + encodeURIComponent(_me); } } catch (e) {}
@@ -572,10 +575,21 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
     h += days.map(function (g) {
       return '<section class="day"><h3>' + esc(dayText(g.d)) + '<span>' + g.L.length + '건 · ' + qtyText(g.n, g.b) + '</span></h3><ul>' + g.L.map(function (x) {
         var tg = x.kind === '새 상품' ? '<span class="tg new2">새 상품</span>' : x.kind === '주문없이' ? '<span class="tg">주문 없이</span>' : '';
-        return '<li><span class="nm">' + tg + esc(x.name) + '</span>' + (x.photo ? '<span class="cm" title="사진 있음">' + IC.cam + '</span>' : '') + '<span class="q">' + x.qty.toLocaleString() + x.unit + '</span></li>';
+        if (x.cx) tg = '<span class="tg cxd">취소됨</span>';
+        return '<li' + (x.cx ? ' class="cx"' : '') + '><span class="nm">' + tg + esc(x.name) + '</span>' + (x.photo ? '<span class="cm" title="사진 있음">' + IC.cam + '</span>' : '') + '<span class="q">' + x.qty.toLocaleString() + x.unit + '</span>'
+          + (MJK && !x.cx && x.id ? '<button type="button" class="cxb" data-a="cx" data-id="' + esc(x.id) + '" data-n="' + esc(x.name) + '">취소</button>' : '') + '</li>';   /* 1109 MJ 화면만 [취소] */
       }).join('') + '</ul></section>';
     }).join('');
     return h + (D.more ? '<p class="hint">너무 많아서 2000줄까지만 보여요. 기간을 줄여 주세요.</p>' : '') + '<button type="button" class="lnk" data-a="csv">엑셀로 받기</button>';
+  }
+  function cancelLine(b) {
+    var id = b.getAttribute('data-id'), nm = b.getAttribute('data-n');
+    if (!confirm(nm + '\n이 입고를 취소할까요?\n(주문 입고면 물류앱 입고 대기로 돌아가요)')) return;
+    b.disabled = true; b.textContent = '취소 중…';
+    fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ rpc: 'bwCancelAdmin', k: MJK, args: ['문준', id] }) }).then(function (r) { return r.json(); }).then(function (r) {
+      if (r && r.ok) { toast('취소했어요 · ' + (r.msg || ''), 'ok'); LED.data = null; ledLoad(); load(true); }
+      else { b.disabled = false; b.textContent = '취소'; toast((r && (r.msg || r.__err)) || '취소가 안 됐어요', 'bad'); }
+    }).catch(function () { b.disabled = false; b.textContent = '취소'; toast('인터넷이 끊겼어요. 다시 눌러 주세요', 'bad'); });
   }
   function csv() {
     var D = LED.data; if (!D) return;
@@ -630,6 +644,7 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
     if (a === 'per') { LED.per = b.getAttribute('data-p'); if (LED.per === 'custom' && !LED.from) { var r0 = perRange('this'); LED.from = r0[0]; LED.to = r0[1]; } ledLoad(); return; }
     if (a === 'perGo') { var f = document.getElementById('cFrom').value, t = document.getElementById('cTo').value; if (!f || !t) { toast('날짜를 골라 주세요', 'bad'); return; } LED.from = f; LED.to = t; ledLoad(); return; }
     if (a === 'csv') { csv(); return; }
+    if (a === 'cx') { cancelLine(b); return; }
     if (a === 'inst') { instGo(); return; }
     if (a === 'instX') { try { localStorage.setItem('bw_inst_x', String(Date.now())); } catch (e) {} render(); return; }
     if (a === 'find') { RES = null; go('find'); setTimeout(function () { var q = document.getElementById('q'); if (q) q.focus(); }, 50); return; }
