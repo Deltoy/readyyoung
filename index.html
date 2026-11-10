@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwa6vrup">
+  <meta name="ry-build" content="mwa72z8n">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1901,7 +1901,8 @@ body.sp-open{overflow:hidden}
 .cv-sum{margin-top:12px;background:#F9FAFB;border:1px solid var(--ry-line);border-radius:14px;padding:12px 14px;font-size:13.5px;line-height:1.6;color:var(--ry-ink)}
 .cv-det{margin-top:12px;border-top:1px solid #EEF0F3;padding-top:12px}.cv-det h3{margin:0 0 6px;font-size:14px;color:var(--ry-ink)}.cv-det ul{list-style:none;padding:0;margin:0}.cv-det li{display:grid;grid-template-columns:minmax(0,1fr) auto 44px;gap:8px;align-items:center;font-size:13px;padding:7px 0;border-bottom:1px dashed #EEF0F3}
 .cv-det .nm{font-weight:600;overflow-wrap:anywhere}.cv-det .q{color:var(--ry-ink-2);white-space:nowrap}.cv-det .g{text-align:right;font-weight:800;color:var(--ry-ink-3)}.cv-det .g.neg{color:#B42318}.cv-det .g.pos{color:#B54708}.cv-wait{color:var(--ry-ink-3);font-size:13px;margin:4px 0}
-@media(max-width:599px){.cv-pill{display:none}.cv-c{min-height:68px!important;padding:5px 4px!important;font-size:10px}.cv-n em{font-size:10px;letter-spacing:-.04em}.cv-n1 small{font-size:9px;letter-spacing:-.04em}.cv-h b{font-size:14.5px}}
+.cv-nw{white-space:nowrap}
+@media(max-width:599px){html body:not(#_):not(#_) #spSeg button{padding:0 6px!important;letter-spacing:-.02em}.cv-pill{display:none}.cv-c{min-height:68px!important;padding:5px 4px!important;font-size:10px}.cv-n em{font-size:10px;letter-spacing:-.04em}.cv-n1 small{font-size:9px;letter-spacing:-.04em}.cv-h b{font-size:14.5px}}
 @media(min-width:720px){.cv-w,.cv-g{gap:8px}.cv-c{min-height:92px!important;padding:8px 9px!important;font-size:12px}.cv-c b{font-size:13px}.cv-pill{right:8px;top:8px;font-size:11px;padding:1px 7px}.cv-bar{height:7px;margin-top:6px}.cv-n{flex-direction:row;justify-content:space-between;margin-top:6px}.cv-n1 em{font-size:15px}.cv-n1 small{font-size:11.5px}.cv-sum{font-size:14px}}
 .md-slot button b{margin-left:4px;font-size:15px;font-weight:800}.md-tot{color:#155EEF!important;font-size:15px}
 .md-day{flex:1;font-size:17px;font-weight:800;color:var(--ry-ink)}
@@ -8904,7 +8905,7 @@ video {
         var lab = { ok: '맞음', lo: '부족', hi: '많이' }[v] || '', mx = Math.max(mk, sd, 1);
         cells += '<button type="button" class="cv-c' + (v ? ' cv-' + v : '') + (ds === today ? ' cv-t' : '') + sel + '" onclick="cvDay(\'' + ds + '\')" aria-label="' + m + '월 ' + dd + '일 만듦 ' + mk + (h ? ' 팔림 ' + sd + (lab ? ' ' + lab : '') : ' 판매 집계 전') + '"><b>' + dd + '</b>' + (lab ? '<i class="cv-pill">' + lab + '</i>' : '')
           + (h ? '<span class="cv-bar"><i class="m" style="width:' + Math.round(mk / mx * 100) + '%"></i></span><span class="cv-bar"><i class="s" style="width:' + Math.round(sd / mx * 100) + '%"></i></span><span class="cv-n"><em class="mk">만듦 ' + mk + '</em><em class="sk">팔림 ' + sd + '</em></span>'
-                : (mk || ds === today ? '<span class="cv-n1"><em class="mk">만듦 ' + mk + '</em><small>판매 집계 전</small></span>' : '')) + '</button>';
+                : (mk || ds === today ? '<span class="cv-n1"><em class="mk">만듦 ' + mk + '</em><small>판매 <span class="cv-nw">집계 전</span></small></span>' : '')) + '</button>';
       }
       var sum;
       if (!d0) sum = '📊 <b>판정</b>: 아직 이 달 POS 세트 판매가 안 들어왔어요 · <b>비교 기준</b>: 같은 날 POS 판매 · <b>다음 행동</b>: 내일 아침 판매가 들어오면 다시 보기';
