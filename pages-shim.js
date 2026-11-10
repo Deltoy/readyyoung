@@ -187,7 +187,7 @@
     if (u === '0' || u === '1') localStorage.setItem('ry_unslop', u);
     var me = q.get('me') || localStorage.getItem('s_selected_member') || '';
     if (me !== '문준' || localStorage.getItem('ry_unslop') === '0') return;
-    var go = function () { var s = document.createElement('script'); s.src = 'unslop.js?v=1109'; document.body.appendChild(s); };
+    var go = function () { var s = document.createElement('script'); s.src = 'unslop.js?v=1110s'; document.body.appendChild(s); };
     if (document.readyState === 'complete') go(); else window.addEventListener('load', go);
   } catch (e) {}
 })();

@@ -17,7 +17,7 @@
     if (c[2] > c[1] + 20 && c[2] > c[0] - 30 && lum(c) < 170) return '#155EEF';   /* 빨강·초록·노랑(상태 색)은 그대로 */
     return hex;
   }
-  var PILL_KEEP = /dot|badge|chip|pill|avatar|toggle|switch|knob|count|tag|spin|loader|circle|round|radio|check|dz-|us-/i;
+  var PILL_KEEP = /stamp|dot|badge|chip|pill|avatar|toggle|switch|knob|count|tag|spin|loader|circle|round|radio|check|dz-|us-/i;
   var PAD = ['padding-top', 'padding-bottom', 'padding-left', 'padding-right', 'margin-top', 'margin-bottom', 'gap', 'row-gap', 'column-gap'];
   var COL = ['color', 'background-color', 'border-color', 'border-top-color', 'border-bottom-color', 'border-left-color', 'border-right-color'];
   function fixDecl(st, sel) {
