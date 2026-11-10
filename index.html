@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwa8clah">
+  <meta name="ry-build" content="mwa8lb2w">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1680,6 +1680,12 @@ html body:not(#_):not(#_) .st-opt.dis{color:var(--ry-bad)!important}
 #slPage{position:fixed;inset:0;z-index:60;background:var(--ry-canvas);display:none;flex-direction:column}
 #slPage.on{display:flex}
 #slPage .sp-seg button{white-space:nowrap}
+/* 1110 MJ '하나로 합쳐줘' — 🧺 지금 만들 세트를 📝 만든 세트 탭 맨 위로 · 줄마다 매대 N개 */
+.ssh-start{display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 8px 8px;text-align:center}
+.ssh-start p{margin:0;font-size:15px;line-height:1.5;color:var(--ry-ink-2)}
+.ssh .ssh-start .ssh-cnt{min-height:56px!important;width:100%;max-width:360px;font-size:17px;border-radius:14px!important}
+.ssh .ssh-why summary{min-height:44px;font-size:14px;font-weight:600;color:var(--ry-ink-3)}
+.md-nm i.ssh-b{align-self:flex-start;padding:2px 8px;border-radius:999px;background:#EFF4FF;color:#155EEF;font-size:13px;font-weight:700}.md-nm i.ssh-b.red{background:#FEF3F2;color:#D92D20}
 .ef-chip{flex:none;display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 10px;border-radius:999px;font-size:12.5px;font-weight:700;white-space:nowrap}
 .ef-chip.ef-good{background:#ECFDF3;color:#067647}.ef-chip.ef-meh{background:#FFFAEB;color:#B54708}.ef-chip.ef-bad{background:#FEF3F2;color:#B42318}.ef-chip.ef-na,.ef-chip.ef-wait{background:#F2F4F7;color:#475467}
 .ef-sum{margin:0;padding:12px 14px;border-radius:14px;background:#F5F8FF;color:var(--ry-ink);font-size:14px;line-height:1.6;font-weight:600}
@@ -8745,7 +8751,7 @@ video {
       }, 150);
     }
     function spCacheKey() { return 'spCache_' + (currentSelectedMember || ''); }
-    function spShow(v) { SP.view = v; SP.setId = null; spRender(); document.getElementById('spBody').scrollTop = 0; }
+    function spShow(v) { SP.view = v; SP.setId = null; SS.counting = false; spRender(); document.getElementById('spBody').scrollTop = 0; }
     function spImg(url, cls) {
       return url ? '<img class="' + cls + '" src="' + escapeHtml(url) + '" referrerpolicy="no-referrer" loading="lazy" alt=""' + (cls === 'sp-card-img' ? ' data-no-preview' : '') + ' onerror="this.outerHTML=\'<div class=&quot;' + cls + ' none&quot;>사진을 불러오지 못했어요</div>\'">'
                  : '<div class="' + cls + ' none">📷 샘플 사진 없음</div>';
@@ -8868,13 +8874,14 @@ video {
       d.rows.forEach(function (x) { if (x.slot !== sl) { other.n++; other.q += x.q; } });
       var byId = {}; d.sets.forEach(function (st) { byId[st.id] = st; });
       var duty = (d.duty && d.duty[sl]) || [], slotTot = { am: 0, pm: 0 }; d.rows.forEach(function (x) { if (x.slot !== sl) slotTot[x.slot === 'am' ? 'am' : 'pm'] += x.q; }); slotTot[sl] = MD.list.reduce(function (a, x) { return a + (x.q || 0); }, 0);   // 1022 MJ '오전·오후 사람들이 만든 총 세트 수'
-      document.getElementById('spBody').innerHTML = mdCal(d) + '<div class="md-top"><b class="md-day">' + (+d.date.slice(5, 7)) + '/' + (+d.date.slice(8)) + ' (' + '일월화수목금토'.charAt(new Date(d.date + 'T00:00:00+09:00').getDay()) + ')</b>'
+      if (SS.counting && ssAllowed()) { ssCountPaint(); return; }
+      document.getElementById('spBody').innerHTML = (d.date === mdToday() ? ssCard() : '') + mdCal(d) + '<div class="md-top"><b class="md-day">' + (+d.date.slice(5, 7)) + '/' + (+d.date.slice(8)) + ' (' + '일월화수목금토'.charAt(new Date(d.date + 'T00:00:00+09:00').getDay()) + ')</b>'
         + '<div class="md-slot" role="radiogroup"><button type="button" class="' + (sl === 'am' ? 'on' : '') + '" onclick="MD.slot=\'am\';MD.slotPicked=true;mdRender()">☀️ 오전 <b id="mdTam">' + (slotTot.am || '') + '</b></button><button type="button" class="' + (sl === 'pm' ? 'on' : '') + '" onclick="MD.slot=\'pm\';MD.slotPicked=true;mdRender()">🌙 오후 <b id="mdTpm">' + (slotTot.pm || '') + '</b></button></div></div>'
         + '<div class="md-duty">' + (sl === 'am' ? '오전' : '오후') + ' 세트 담당 <b>' + (duty.length ? escapeHtml(duty.join(' · ')) : '근무표에 없음') + '</b> · 만든 세트 총 <b class="md-tot" id="mdTot">' + slotTot[sl] + '</b>개' + (other.n ? ' <span>· ' + (sl === 'am' ? '오후' : '오전') + '에 적은 것 ' + other.n + '종 ' + other.q + '개</span>' : '') + '</div>'
         + '<div class="md-list">' + (MD.list.length ? MD.list.map(function (x, i) {
           var st = byId[x.id] || { name: '(지워진 세트)', box: '' };
           return '<div class="md-row"><span class="md-ph">' + (st.photo ? '<img src="' + escapeHtml(st.photo) + '" alt="" referrerpolicy="no-referrer" loading="lazy" onerror="this.style.visibility=\'hidden\'">' : '🎁') + '</span>'
-            + '<span class="md-nm"><b>' + escapeHtml(st.name) + '</b>' + (st.box ? '<i>📦 ' + escapeHtml(st.box) + '</i>' : '<i class="no">박스 번호 없음</i>') + '<em class="md-by" id="mdBy' + i + '">' + mdByTxt(x.id) + '</em></span>'
+            + '<span class="md-nm"><b>' + escapeHtml(st.name) + '</b>' + (st.box ? '<i>📦 ' + escapeHtml(st.box) + '</i>' : '<i class="no">박스 번호 없음</i>') + '<em class="md-by" id="mdBy' + i + '">' + mdByTxt(x.id) + '</em>' + ssBadge(x.id) + '</span>'
             + '<input type="number" inputmode="numeric" min="0" max="999" class="md-q" data-i="' + i + '" value="' + (x.q || '') + '" placeholder="개수"' + (lk ? ' disabled' : ' oninput="MD.list[' + i + '].q=parseInt(this.value,10)||0;mdSum();mdAuto()" onchange="mdAuto(true)"') + ' aria-label="' + escapeHtml(st.name) + ' 만든 개수">'
             + (lk ? '' : '<button type="button" class="md-x" onclick="MD.list.splice(' + i + ',1);mdRender();mdAuto(true)" aria-label="빼기">✕</button>') + '</div>';
         }).join('') : '<div class="md-empty">' + (lk ? '적은 세트가 없어요' : '아직 적은 세트가 없어요<br>아래 <b>[＋ 세트 추가]</b>로 만든 세트를 골라 주세요') + '</div>')
@@ -9041,11 +9048,25 @@ video {
     var SS = { data: null, busy: false, at: 0, err: 0, counting: false };
     function ssAllowed() { return String(currentSelectedMember || '').trim() === '문준'; }   // 1110 MJ 먼저 확인 — 직원 모두에게 열 때는 이 조건만 빼면 됨
     function ssLoad() {
-      if (SS.busy) return; SS.busy = true;
-      google.script.run.withSuccessHandler(function (r) { SS.busy = false; if (r && r.success) { SS.data = r; SS.at = Date.now(); SS.err = 0; } else SS.err = 1; ssPaint(); })
+      if (SS.busy) { SS.again = 1; return; } SS.busy = true; SS.again = 0;
+      google.script.run.withSuccessHandler(function (r) { SS.busy = false; if (r && r.success) { SS.data = r; SS.at = Date.now(); SS.err = 0; } else SS.err = 1; ssPaint(); if (SS.again) ssLoad(); })
         .withFailureHandler(function () { SS.busy = false; SS.err = 1; ssPaint(); }).getSetShelf(currentSelectedMember || '');
     }
-    function ssPaint() { if (SP.view !== 'sets' || !document.getElementById('setPage').classList.contains('on')) return; var el = document.getElementById('ssCard'); if (SS.counting || !el) { if (SP.data) spRenderSets(); } else el.outerHTML = ssCard(); }
+    function ssPaint() {   // 📝 만든 세트 탭: 위 카드 + 줄마다 매대 배지만 바꿈 (적는 칸은 그대로)
+      if (SP.view !== 'made' || !document.getElementById('setPage').classList.contains('on')) return;
+      if (SS.counting) { if (!document.querySelector('#spBody .ssh-in')) ssCountPaint(); return; }
+      var el = document.getElementById('ssCard'); if (el) el.outerHTML = ssCard();
+      [].forEach.call(document.querySelectorAll('#spBody .md-row'), function (row) { var q = row.querySelector('.md-q'), nm = row.querySelector('.md-nm'); if (!q || !nm || !MD.list || !MD.list[q.dataset.i]) return; var o = nm.querySelector('.ssh-b'); if (o) o.remove(); nm.insertAdjacentHTML('beforeend', ssBadge(MD.list[q.dataset.i].id)); });
+    }
+    function ssBadge(id) {   // 매대 추정 = 센 개수 + 그 뒤 제작 − 그 뒤 POS 판매 (센 세트만)
+      if (!ssAllowed() || !SS.data) return '';
+      var s = SS.data.sets.filter(function (x) { return x.id === id; })[0];
+      return s && s.cnt ? '<i class="ssh-b' + (s.v === 'red' ? ' red' : '') + '">매대 ' + s.est + '개</i>' : '';
+    }
+    function ssCountPaint() {
+      var box = document.getElementById('spBody'); box.innerHTML = ssCountHtml();
+      [].forEach.call(box.querySelectorAll('.ssh-in'), function (x) { x.oninput = function () { document.getElementById('sshN').textContent = [].filter.call(box.querySelectorAll('.ssh-in'), function (y) { return y.value !== ''; }).length; }; });
+    }
     function ssWhen(at) { if (!at) return ''; return at.slice(0, 10) === mdToday() ? '오늘 ' + at.slice(11) : (+at.slice(5, 7)) + '/' + (+at.slice(8, 10)) + ' ' + at.slice(11); }
     function ssPh(s) { return '<span class="md-ph">' + (s.photo ? '<img src="' + escapeHtml(s.photo) + '" alt="" referrerpolicy="no-referrer" loading="lazy" onerror="this.style.visibility=\'hidden\'">' : '🎁') + '</span>'; }
     function ssCard() {
@@ -9064,28 +9085,30 @@ video {
       var rowOk = function (s) { return '<div class="ssh-r">' + ssPh(s) + '<span class="ssh-t"><b>' + escapeHtml(s.name) + '</b><span>매대 약 ' + s.est + '개 · 오늘 남은 예상 ' + ex(s) + '개</span></span><span class="ssh-ok">🟢 충분</span></div>'; };
       var rowGray = function (s) { return '<div class="ssh-r">' + ssPh(s) + '<span class="ssh-t"><b>' + escapeHtml(s.name) + '</b><span>' + (s.v === 'old' ? '센 지 2일 넘음 · 다시 세기' : '하루 평균 ' + s.avg + '개 팔림') + '</span></span><span class="ssh-no">⚪ ' + (s.v === 'old' ? '다시 세기' : '안 셈') + '</span></div>'; };
       var upd = d.soldAt ? 'POS 판매 반영 ' + ssWhen(d.soldAt) : 'POS 판매 반영 전';
-      var head = red.length ? '<b>지금 만들 세트 <em>' + red.length + '종 · 총 ' + tot + '개</em></b>' : green.length ? '<b>🟢 지금은 다 충분해요</b>' : '<b>🧺 매대 개수부터 세어 주세요</b>';
+      var none = !red.length && !green.length;   // 아직 아무것도 안 셈 → 큰 버튼 하나
+      var head = red.length ? '<b>지금 만들 세트 <em>' + red.length + '종 · 총 ' + tot + '개</em></b>' : green.length ? '<b>🟢 지금은 다 충분해요</b>' : '<b>🧺 지금 만들 세트</b>';
       var cntBtn = function (lbl) { return '<button type="button" class="ssh-cnt" onclick="event.preventDefault();event.stopPropagation();ssCount()">🧮 ' + lbl + '</button>'; };
-      return '<section id="ssCard" class="ssh"><div class="ssh-hdr"><div class="ssh-hd">' + head + '<small>' + upd + '</small></div>' + cntBtn('매대 개수 세기') + '</div>'
-        + (red.length ? '<p class="ssh-act">빨간 줄 개수만큼 만들고, 줄을 눌러 제작 개수를 적어 주세요</p><div class="ssh-l">' + red.map(rowRed).join('') + '</div>' : '')
+      return '<section id="ssCard" class="ssh"><div class="ssh-hdr"><div class="ssh-hd">' + head + '<small>' + upd + '</small></div>' + (none ? '' : cntBtn('매대 개수 세기')) + '</div>'
+        + (none ? '<div class="ssh-start"><p>매대 세트 개수를 한 번 세면, 그 뒤 제작·POS 판매로 부족한 세트를 알려 드려요</p>' + cntBtn('매대 개수 세기 시작') + '</div>' : '')
+        + (red.length ? '<p class="ssh-act">빨간 줄 개수만큼 만들고, 줄을 누르면 아래 칸에 제작 개수를 적을 수 있어요</p><div class="ssh-l">' + red.map(rowRed).join('') + '</div>' : '')
         + (green.length ? '<details><summary>🟢 충분 ' + green.length + '종 ▸</summary><div class="ssh-l">' + green.map(rowOk).join('') + '</div></details>' : '')
-        + (gray.length ? '<details class="ssh-gray"><summary><span>⚪ 아직 안 센 세트 ' + gray.length + '종 ▸</span>' + cntBtn('개수 세기') + '</summary><div class="ssh-l">' + gray.map(rowGray).join('') + '</div></details>' : '')
-        + '<p class="ssh-rule">판정: 매대 추정(센 개수 + 그 뒤 제작 − 그 뒤 POS 판매)이 오늘 남은 예상 판매(4주 같은 요일 평균 × 남은 ' + d.rem + '%) + 여유 ' + d.buf + '개보다 적으면 🔴 · 5개 단위</p></section>';
+        + (gray.length ? '<details class="ssh-gray"><summary><span>⚪ 아직 안 센 세트 ' + gray.length + '종 ▸</span>' + (none ? '' : cntBtn('개수 세기')) + '</summary><div class="ssh-l">' + gray.map(rowGray).join('') + '</div></details>' : '')
+        + '<details class="ssh-why"><summary>기준 보기 ▸</summary><p class="ssh-rule">판정: 매대 추정(센 개수 + 그 뒤 제작 − 그 뒤 POS 판매)이 오늘 남은 예상 판매(4주 같은 요일 평균 × 남은 ' + d.rem + '%) + 여유 ' + d.buf + '개보다 적으면 🔴 · 5개 단위</p></details></section>';
     }
     function ssMake(id) {   // 🔴 줄 → 📝 만든 세트 탭에 그 세트 줄을 넣고 개수 칸으로
-      SP.view = 'made'; spRender();
+      if (SP.view !== 'made') { SP.view = 'made'; spRender(); }
       if (!MD.data || !MD.list || mdLocked(MD.data.date, MD.slot)) return;
       var i = MD.list.map(function (x) { return x.id; }).indexOf(id); if (i < 0) { MD.list.push({ id: id, q: 0 }); i = MD.list.length - 1; mdRender(); }
       var inp = document.querySelector('.md-q[data-i="' + i + '"]'); if (inp) { inp.scrollIntoView({ block: 'center' }); inp.focus(); }
     }
-    function ssCount() { SS.counting = true; spRenderSets(); document.getElementById('spBody').scrollTop = 0; }
+    function ssCount() { SS.counting = true; ssCountPaint(); document.getElementById('spBody').scrollTop = 0; }
     function ssCountHtml() {
       if (!SS.data) { if (!SS.busy) ssLoad(); return '<div class="sp-msg"><span class="ry-info-spin"></span>불러오는 중…</div>'; }
       var s15 = {}; (SP.data && SP.data.sets || []).forEach(function (x) { s15[x.id] = x.s15 === '' || x.s15 == null ? -1 : +x.s15 || 0; });
       var L = SS.data.sets.slice().sort(function (a, b) { return (s15[b.id] || -1) - (s15[a.id] || -1) || b.avg - a.avg; });
       return '<div class="ssh-cl"><p class="ssh-rule">🧮 <b>매대에 지금 있는 세트</b>를 세어 숫자만 넣어 주세요 · 빈 칸은 안 센 것으로 두고, 0개면 0 · 다 넣고 아래 [저장]</p><div class="md-list" style="padding:0">'
         + L.map(function (s) { var c = s.cnt; return '<div class="md-row">' + ssPh(s) + '<span class="md-nm"><b>' + escapeHtml(s.name) + '</b><em class="md-by">' + (c ? '마지막으로 센 시각 ' + ssWhen(c.at) + ' · ' + c.n + '개 · ' + escapeHtml(c.by) : '아직 안 셈') + '</em></span><input type="number" inputmode="numeric" min="0" max="999" class="md-q ssh-in" data-id="' + escapeHtml(s.id) + '" placeholder="개수" aria-label="' + escapeHtml(s.name) + ' 매대 개수"></div>'; }).join('')
-        + '</div></div><div class="md-foot"><span>센 세트 <b id="sshN">0</b>종</span><button type="button" class="ry-info-sub" onclick="SS.counting=false;spRenderSets()">취소</button><button type="button" class="np-save" id="sshSave" onclick="ssSave()">저장</button></div>';
+        + '</div></div><div class="md-foot"><span>센 세트 <b id="sshN">0</b>종</span><button type="button" class="ry-info-sub" onclick="SS.counting=false;mdRender()">취소</button><button type="button" class="np-save" id="sshSave" onclick="ssSave()">저장</button></div>';
     }
     function ssSave() {
       var list = [].slice.call(document.querySelectorAll('.ssh-in')).filter(function (x) { return x.value !== ''; }).map(function (x) { return { id: x.dataset.id, n: parseInt(x.value, 10) }; }).filter(function (x) { return x.n >= 0; });
@@ -9093,20 +9116,19 @@ video {
       var b = document.getElementById('sshSave'); if (b) { b.disabled = true; b.textContent = '저장 중…'; }
       google.script.run.withSuccessHandler(function (r) {
         if (!r || !r.success) { if (b) { b.disabled = false; b.textContent = '저장'; } showToast((r && r.message) || '저장하지 못했어요', 2400); return; }
-        SS.data = r; SS.at = Date.now(); SS.counting = false; spRenderSets(); document.getElementById('spBody').scrollTop = 0; showToast(r.saved + '종 매대 개수 저장했어요', 2000);
+        SS.data = r; SS.at = Date.now(); SS.counting = false; mdRender(); document.getElementById('spBody').scrollTop = 0; showToast(r.saved + '종 매대 개수 저장했어요', 2000);
       }).withFailureHandler(function () { if (b) { b.disabled = false; b.textContent = '저장'; } showToast('저장이 안 됐어요 · 인터넷 확인 후 다시 눌러 주세요', 2400); }).setShelfSave(currentSelectedMember || '', list);
     }
     function spRenderSets() {
       var s15n = function (s) { return s.s15 === '' || s.s15 == null ? -1 : +s.s15 || 0; };
       var sets = SP.data.sets.slice().sort(function (a, b) { return s15n(b) - s15n(a); }), box = document.getElementById('spBody');   /* 1017 MJ: 15일 판매 많은 세트부터 (같으면 등록 순서) */
-      if (SS.counting && ssAllowed()) { box.innerHTML = ssCountHtml(); [].forEach.call(box.querySelectorAll('.ssh-in'), function (x) { x.oninput = function () { document.getElementById('sshN').textContent = [].filter.call(box.querySelectorAll('.ssh-in'), function (y) { return y.value !== ''; }).length; }; }); return; }
       if (!sets.length) {
         box.innerHTML = '<div class="sp-empty"><div class="sp-empty-i">🎁</div><b>아직 등록된 세트가 없어요</b>'
           + '<p>세트 이름, 들어가는 상품, 박스 번호, 완성 샘플 사진을 등록해두면<br>누구나 사진을 보고 똑같이 만들 수 있어요.</p>'
           + '<button type="button" class="np-save" onclick="openSetEdit(null)">＋ 첫 세트 만들기</button></div>';
         return;
       }
-      box.innerHTML = ssCard() + '<div class="sp-grid">' + sets.map(function (s) {
+      box.innerHTML = '<div class="sp-grid">' + sets.map(function (s) {
         var n = s.items.reduce(function (a, it) { return a + it.qty; }, 0);
         return '<button type="button" class="sp-card" data-id="' + escapeHtml(s.id) + '" onclick="spOpenSet(this.dataset.id)">'
           + spImg(s.photo, 'sp-card-img')
