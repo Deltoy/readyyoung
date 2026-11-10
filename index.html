@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwa1kc2x">
+  <meta name="ry-build" content="mwa29whj">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -12131,6 +12131,7 @@ video {
     /* ═══ 1106 MJ '갑자기 많이 나가는 상품을 빨리 알아서 주문해 두게' + '상품 옆에 급상승 표시' + '추정 재고가 너무 빨리 소진되면 자동으로 1차 검토로'
        하루 판매 기록(RY_DS = 추정 재고와 같은 자료, 매일 아침 POS) — 최근 3일 하루 평균 ≥ 그 전 2주 평균 × 2 + 최근 3일 6개 이상 = 🔥 급상승
        자동 1차 검토(rySurgeAuto, 아침 POS 자동 반영 끝에 부름) = 급상승 + 추정 재고가 최근 속도로 7일 안에 바닥 + 주문 흐름에 없음 + 7일 안에 자동으로 올린 적 없음 ═══ */
+    var RY_AUTO_DAYS = 7;   /* 1110 MJ '창고 여력이 없어 7일 부족으로 계산해서 자동 1차 검토' — 자동 요청 기준·수량 모두 7일치 (창고 여유 생기면 이 숫자만 15로) */
     var SURGE = { ratio: 2, min3: 6, leftDays: 7, cover: 7, maxBase: 3 };   // 1106 MJ '이미 많이 나가는 건 내가 조율 — 많이 안 팔리다가 갑자기 팔리는 것만' → 평소 하루 3개 이하였던 상품만
     function rySurgeOf(it) {
       var D = RY_DS; if (!D || !D.list || !D.list.length || !it || !it.name) return null;
@@ -12219,7 +12220,7 @@ video {
       low.sort(function (a, b) { return a.st.left - b.st.left || b.st.daily - a.st.daily; });
       for (var m = 0; m < low.length; m++) {
         var it3 = low[m].it, st3 = low[m].st, k3 = ryPrKey(it3.name), bu3 = parseFloat(it3.boxUnit) || 0, last = parseInt(String(it3.targetQty || '').replace(/[^0-9]/g, ''), 10) || 0;
-        var unit3 = it3.unit === '박스' && bu3 > 1 ? '박스' : '개', qty3 = last || (unit3 === '박스' ? Math.max(1, Math.ceil((st3.daily || 0) * 14 / bu3)) : Math.max(1, Math.ceil((st3.daily || 0) * 14)));
+        var unit3 = it3.unit === '박스' && bu3 > 1 ? '박스' : '개', need3 = Math.max(1, Math.ceil((st3.daily || 0) * RY_AUTO_DAYS - Math.max(0, st3.est || 0))), qty3 = unit3 === '박스' ? Math.max(1, Math.ceil(need3 / bu3)) : need3;   /* 1110 MJ '창고가 좁아 15일치는 너무 많아 — 7일 부족으로 계산' → 지난 주문 수량 대신 7일치에서 지금 재고를 뺀 만큼 */
         var why3 = '추정 재고 ' + st3.est + '개 · 하루 ' + (Math.round((st3.daily || 0) * 10) / 10) + '개 → 약 ' + st3.left + '일분';
         if (dry) { lowDone.push({ name: String(it3.name).split('\n')[0], qty: qty3, unit: unit3, why: why3, dry: true }); continue; }
         var r3 = await new Promise(function (res) { google.script.run.withSuccessHandler(res).withFailureHandler(function (e) { res({ success: false, message: String(e && e.message || e) }); }).requestOrderFromDashboard(it3.rowNumber, qty3, unit3, '재고부족', String(it3.name).split('\n')[0]); });
@@ -12239,7 +12240,7 @@ video {
       });
       for (var q = 0; q < srch.length; q++) {
         var it4 = srch[q].it, st4 = srch[q].st, p4 = srch[q].p, k4 = ryPrKey(it4.name), bu4 = parseFloat(it4.boxUnit) || 0, last4 = parseInt(String(it4.targetQty || '').replace(/[^0-9]/g, ''), 10) || 0, d4 = (st4 && st4.daily) || 0;
-        var unit4 = it4.unit === '박스' && bu4 > 1 ? '박스' : '개', qty4 = last4 || (unit4 === '박스' ? Math.max(1, Math.ceil(d4 * 14 / bu4)) : Math.max(1, Math.ceil(d4 * 14)));
+        var unit4 = it4.unit === '박스' && bu4 > 1 ? '박스' : '개', qty4 = unit4 === '박스' ? Math.max(1, Math.ceil(d4 * RY_AUTO_DAYS / bu4)) : Math.max(1, Math.ceil(d4 * RY_AUTO_DAYS));   /* 1110 7일치 */
         var why4 = '최근 7일 ' + p4.people + '명이 ' + p4.count + '번 찾음 · ' + (st4 ? '추정 재고 ' + st4.est + '개' + (st4.left != null ? ' (약 ' + st4.left + '일분)' : '') : '추정 재고 모름');
         if (dry) { srchDone.push({ name: String(it4.name).split('\n')[0], qty: qty4, unit: unit4, why: why4, dry: true }); continue; }
         var r4 = await new Promise(function (res) { google.script.run.withSuccessHandler(res).withFailureHandler(function (e) { res({ success: false, message: String(e && e.message || e) }); }).requestOrderFromDashboard(it4.rowNumber, qty4, unit4, '자주찾음', String(it4.name).split('\n')[0]); });
@@ -12253,12 +12254,12 @@ video {
         if (/\(합침\)|판매종료|취급안함|품절/.test(String(it.name || '') + String(it.note || ''))) return;
         if (it.status !== 'IDLE' && it.status !== 'DONE') return;
         var k = ryPrKey(it.name), nm = String(it.name).split('\n')[0]; if (got[nm] || flow[it.rowNumber] || flow['n:' + k] || (seen['sv:' + k] && now - seen['sv:' + k] < 7 * 864e5)) return;
-        var st = stkOf(it); if (!st || st.left == null || st.left >= 14) return;
+        var st = stkOf(it); if (!st || st.left == null || st.left >= RY_AUTO_DAYS) return;   /* 1110 14 → 7일 */
         svUp.push({ it: it, o: o, st: st });
       }); }
       for (var v5 = 0; v5 < svUp.length; v5++) {
         var it5 = svUp[v5].it, st5 = svUp[v5].st, o5 = svUp[v5].o, k5 = ryPrKey(it5.name), bu5 = parseFloat(it5.boxUnit) || 0, last5 = parseInt(String(it5.targetQty || '').replace(/[^0-9]/g, ''), 10) || 0, d5 = st5.daily || 0;
-        var unit5 = it5.unit === '박스' && bu5 > 1 ? '박스' : '개', qty5 = last5 || (unit5 === '박스' ? Math.max(1, Math.ceil(d5 * 14 / bu5)) : Math.max(1, Math.ceil(d5 * 14)));
+        var unit5 = it5.unit === '박스' && bu5 > 1 ? '박스' : '개', qty5 = unit5 === '박스' ? Math.max(1, Math.ceil(d5 * RY_AUTO_DAYS / bu5)) : Math.max(1, Math.ceil(d5 * RY_AUTO_DAYS));   /* 1110 7일치 */
         var why5 = [(o5.nr || 0) >= 1.5 ? '네이버 검색 ' + o5.nr + '배' : '', (o5.gr || 0) >= 1.5 ? '구글 검색 ' + o5.gr + '배' : ''].filter(Boolean).join(' · ') + ' · 추정 재고 ' + st5.est + '개 (약 ' + st5.left + '일분)';
         if (dry) { svDone.push({ name: String(it5.name).split('\n')[0], qty: qty5, unit: unit5, why: why5, dry: true }); continue; }
         var r5 = await new Promise(function (res) { google.script.run.withSuccessHandler(res).withFailureHandler(function (e) { res({ success: false, message: String(e && e.message || e) }); }).requestOrderFromDashboard(it5.rowNumber, qty5, unit5, '검색급증', String(it5.name).split('\n')[0]); });
