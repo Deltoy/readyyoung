@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw9cut1e">
+  <meta name="ry-build" content="mw9z0s1e">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -17804,7 +17804,7 @@ video {
     }
     function ntShowCard(id) { NT.tag = ''; ntOpen(); setTimeout(function () { var el = document.querySelector('.nt-card[data-nt="' + id + '"]'); if (el) { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); el.classList.add('nt-flash'); setTimeout(function () { el.classList.remove('nt-flash'); }, 1600); } }, 900); }
     /* 구글 지도 리뷰 주소만 버튼으로 (다른 주소는 그대로 글자) */
-    function ntBodyHtml(t) { return escapeHtml(t).replace(/https:\/\/(?:www\.google\.com\/maps|maps\.google\.com|maps\.app\.goo\.gl)[^\s<"']*/g, function (u) { if (/\/maps\/reviews\//.test(u)) u = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('성수레디영약국') + '&query_place_id=ChIJfzF6j_elfDURUC17aori8os'; /* 1109 MJ '원문 보기 안 보여' — 리뷰 하나 주소는 안드로이드 지도 앱이 못 열어 가게 페이지로 */ return '<a class="nt-gmap" href="' + u + '" target="_blank" rel="noopener noreferrer">구글 지도에서 원문 보기 ↗</a>'; }); }
+    function ntBodyHtml(t) { return escapeHtml(t).replace(/https:\/\/(?:www\.google\.com\/maps|maps\.google\.com|maps\.app\.goo\.gl)[^\s<"']*/g, function (u) { if (/\/maps\/reviews\/|query_place_id=/.test(u)) u = 'https://maps.google.com/?cid=10084371599755783504'; /* 1109 MJ '원문 보기 안 보여' — 리뷰 하나 주소는 안드로이드 지도 앱이 못 열어 가게 페이지로 · 1110 query_place_id 는 폰 지도 앱이 'id:…' 검색어로 넣어 '결과 없음' → 가게 고유 cid 주소(Places API googleMapsUri) */ return '<a class="nt-gmap" href="' + u + '" target="_blank" rel="noopener noreferrer">구글 지도에서 원문 보기 ↗</a>'; }); }
     function ntRender() {
       var box = document.getElementById('ntList'), chips = document.getElementById('ntTags'), mon = document.getElementById('ntMonth');
       if (!box) return;
