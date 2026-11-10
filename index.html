@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwaksk04">
+  <meta name="ry-build" content="mwakztrp">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -12788,7 +12788,7 @@ video {
       MR.map[r] = { maker: maker, route: route }; mrPaint(r);   // 먼저 보여주고 서버에 저장
       google.script.run.withSuccessHandler(function (res) {
         if (!res || !res.ok) { MR.map[r] = before; mrPaint(r); showToast((res && res.msg) || '저장하지 못했어요'); return; }
-        MR.map[r] = { maker: String(res.maker || ''), route: String(res.route || '') }; mrPaint(r); showToast('제조사·유통경로를 저장했어요');
+        MR.map[r] = { maker: String(res.maker || ''), route: String(res.route || '') }; mrPaint(r); showToast(res.cp ? '쿠팡 주소를 파트너스 링크로 바꿔 저장했어요' : '제조사·유통경로를 저장했어요');
       }).withFailureHandler(function () { MR.map[r] = before; mrPaint(r); showToast('저장이 안 됐어요 · 다시 눌러 주세요'); }).setMakerRoute(r, maker, route, currentSelectedMember);
     }
     function ryCanConfirmOrder() { try { return /^(관리약사|약사|물류관리자)$/.test(memberTitle(currentSelectedMember)); } catch (e) { return false; } }
