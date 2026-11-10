@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwa8a1wh">
+  <meta name="ry-build" content="mwa8clah">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -57,13 +57,18 @@
   var locked = false;
   /* 1022 MJ '주문 요청이 저장되지 않았어요 (Unexpected token <, <!DOCTYPE)' — 서버가 잠깐 JSON 대신 구글 오류 페이지(HTML)를 줄 때가 있다
      (배포가 바뀌는 순간 · 구글 쪽 일시 오류). 그럴 땐 1.5 · 4 · 8초 뒤 자동으로 다시 보내고, 그래도 안 되면 알아듣기 쉬운 말로 */
+  window.__ryInflight = window.__ryInflight || 0;   /* 1110 MJ '우루사 새 상품 등록했는데 검색이 안 돼' — 저장 요청이 가는 중에 새 판 새로고침이 끼면 요청이 사라짐 → 보내는 중엔 새로고침 안 함 (아래 busy) */
   function post(fn, args, key, n, rid) {
     n = n || 0;
+    if (!n) { window.__ryInflight++; var p0 = post2(fn, args, key, n, rid); p0.then(function () { window.__ryInflight--; }, function () { window.__ryInflight--; }); return p0; }
+    return post2(fn, args, key, n, rid);
+  }
+  function post2(fn, args, key, n, rid) {
     return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ rpc: fn, args: args, k: key, rid: rid || undefined }) })
       .then(function (r) { return r.text(); })
       .then(function (t) {
         try { return JSON.parse(t); } catch (e) {
-          if (n < 3) return new Promise(function (res) { setTimeout(res, [1500, 4000, 8000][n]); }).then(function () { return post(fn, args, key, n + 1, rid); });
+          if (n < 3) return new Promise(function (res) { setTimeout(res, [1500, 4000, 8000][n]); }).then(function () { return post2(fn, args, key, n + 1, rid); });
           var m = /<title>([^<]*)/i.exec(t || '');
           throw new Error('서버가 잠깐 응답하지 않았어요. 잠시 뒤 다시 눌러 주세요.' + (m ? ' (' + m[1].trim().slice(0, 40) + ')' : ''));
         }
@@ -143,7 +148,7 @@
   var meta = document.querySelector('meta[name="ry-build"]'), cur = meta && meta.content, fresh = false, lastAct = Date.now();
   if (!cur) return;
   ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(function (ev) { addEventListener(ev, function () { lastAct = Date.now(); }, { capture: true, passive: true }); });
-  function busy() { var a = document.activeElement; return (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) || document.body.style.position === 'fixed' || Date.now() - lastAct < 120000; }
+  function busy() { var a = document.activeElement; return (window.__ryInflight > 0) || (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) || document.body.style.position === 'fixed' || Date.now() - lastAct < 120000; }
   function check() {
     if (fresh) return;
     /* 1109 점검: ?ryv 로 새 판을 보고 새로고침했는데 정작 새로고침은 캐시된 옛 판을 받아 다시 '새 판' → 성수 폰 세트 화면에서 30분에 6번 튕김. 새로고침이 받을 주소 그대로 확인 */
@@ -154,7 +159,7 @@
   setInterval(function () { if (fresh && !busy()) location.reload(); }, 15000);
   setInterval(check, 600000); setTimeout(check, 60000);
   var hidAt = 0;   /* 1109 점검: 1초 알림창만 내려도 새로고침돼 보던 화면이 처음으로 → 30초 넘게 나갔다 올 때만 */
-  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') { hidAt = Date.now(); return; } if (fresh && Date.now() - hidAt > 30000) location.reload(); else check(); });
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') { hidAt = Date.now(); return; } if (fresh && Date.now() - hidAt > 30000 && !(window.__ryInflight > 0)) location.reload(); else check(); });
 })();
 /* 1023 MJ '이름 설정과 설치를 바로' — 크롬이 설치할 수 있다고 알려 주면(beforeinstallprompt) 이름을 고른 뒤 아래에 [📲 앱으로 설치] 한 번
    아이폰 사파리는 설치 버튼을 웹에서 띄울 수 없어 '공유 → 홈 화면에 추가' 안내만. 이미 설치된 앱 안 · [나중에] 누른 날은 안 띄움 */
@@ -10384,22 +10389,7 @@ video {
         err.textContent = msg; err.classList.add('on'); showToast(name + ' 등록 못 했어요');
       };
       closeNewProduct(); showToast('⏳ ' + name + ' 등록하는 중이에요' + (snap.req ? ' · 끝나면 1차 검토에 바로 떠요' : ''), 3000);   /* 1103 MJ '등록하고 1차 검토로 오게 했는데 안 떠' — 끝나기 전 '들어갔어요'라고 해서 헷갈림 */   // 1029 MJ '누르면 바로 끝난 것처럼' (뒤에서 등록, 안 되면 창을 다시 엶)
-      google.script.run
-        .withSuccessHandler(function (res) {
-          if (!res || res.success === false) { reopen((res && res.message) ? res.message : '등록에 실패했어요.'); return; }
-          if (res.requested) ry25TrackRequest(res.rowNumber, res.name, parseInt(document.getElementById('npQty').value, 10) || 1);   /* 0925: 하단 요약 바 */
-          closeNewProduct();
-          if (res.requested) try { optimisticAddToReview(res.rowNumber, { name: res.name, imgUrl: (res.photo && res.photo.ok && res.photo.url) || '', boxUnit: snap.npBox || '', note: snap.npNote || '', category: res.category || '', uses: res.uses || [], sales15: snap.npSales15 || '-' }, parseInt(snap.npQty, 10) || 1, snap.npUnit === '박스' ? '박스' : '개'); } catch (eO) {}   /* 1103 목록 새로 받기(18초쯤) 전에 1차 검토에 바로 */
-          showToast('✓ ' + res.name + ' 등록했어요' + (res.requested ? ' · 1차 검토에 올라왔어요' : ''), 3000);
-          if (res.photo && !res.photo.ok) showToast(res.name + ' · 사진은 저장 못 했어요 (상품은 등록됐어요)', 3500);
-          try { if (RY_CAT && RY_CAT.items) { RY_CAT.items.push({ rowNumber: res.rowNumber, name: res.name, category: res.category || '', imgUrl: (res.photo && res.photo.ok && res.photo.url) || '',   /* 1016 사진첩 사진이 검색에 안 보이던 것 */ uses: res.uses || [], note: '', sales15: '-', status: 'IDLE', _k: String(res.name || '').replace(/\s+/g, '').toLowerCase() }); ryCatSave(); } if (RY_CAT) RY_CAT.t = 0; ryCatLoad(true); } catch (eC) {}   // 1001 등록한 상품이 검색에 바로
-          // 0930 목록을 억지로 다시 받지 않는다(서버가 2분 걸림). 새 상품은 폰 목록에 없어도 서버 이름 스캔으로 바로 찾힌다
-          loadAllData(true, true, true);
-        })
-        .withFailureHandler(function (e) {
-          reopen('등록되지 않았어요 — 적은 내용 그대로 다시 등록하기를 눌러 주세요. (' + (e && e.message || '') + ')');
-        })
-        .addNewProduct({
+      var NP_PL = {
           name: name,
           boxRef: document.getElementById('npBox').value.trim(),
           qty: parseInt(document.getElementById('npQty').value, 10) || 1,
@@ -10412,8 +10402,47 @@ video {
           photo: snap.photo,
           request: document.getElementById('npRequest').checked,
           requester: currentSelectedMember || ''
-        });
+        };
+      /* 1110 MJ '우루사 새 상품 등록했다는데 검색이 안 돼' — 현주 10:15 등록하기 누른 순간 앱이 새로고침돼 요청이 서버에 못 감 → 보내기 전에 기기에 적어 두고, 다음에 앱을 열 때 안 끝났으면 다시 보낼지 물음 */
+      try { var keep = Object.assign({}, NP_PL); if (String(keep.photo || '').length > 1500000) keep.photo = ''; localStorage.setItem('ry_np_pending', JSON.stringify({ at: Date.now(), pl: keep })); } catch (eP) {}
+      var npDone = function () { try { localStorage.removeItem('ry_np_pending'); } catch (eR) {} };
+      google.script.run
+        .withSuccessHandler(function (res) {
+          npDone();
+          if (!res || res.success === false) { reopen((res && res.message) ? res.message : '등록에 실패했어요.'); return; }
+          if (res.requested) ry25TrackRequest(res.rowNumber, res.name, parseInt(document.getElementById('npQty').value, 10) || 1);   /* 0925: 하단 요약 바 */
+          closeNewProduct();
+          if (res.requested) try { optimisticAddToReview(res.rowNumber, { name: res.name, imgUrl: (res.photo && res.photo.ok && res.photo.url) || '', boxUnit: snap.npBox || '', note: snap.npNote || '', category: res.category || '', uses: res.uses || [], sales15: snap.npSales15 || '-' }, parseInt(snap.npQty, 10) || 1, snap.npUnit === '박스' ? '박스' : '개'); } catch (eO) {}   /* 1103 목록 새로 받기(18초쯤) 전에 1차 검토에 바로 */
+          showToast('✓ ' + res.name + ' 등록했어요' + (res.requested ? ' · 1차 검토에 올라왔어요' : ''), 3000);
+          if (res.photo && !res.photo.ok) showToast(res.name + ' · 사진은 저장 못 했어요 (상품은 등록됐어요)', 3500);
+          try { if (RY_CAT && RY_CAT.items) { RY_CAT.items.push({ rowNumber: res.rowNumber, name: res.name, category: res.category || '', imgUrl: (res.photo && res.photo.ok && res.photo.url) || '',   /* 1016 사진첩 사진이 검색에 안 보이던 것 */ uses: res.uses || [], note: '', sales15: '-', status: 'IDLE', _k: String(res.name || '').replace(/\s+/g, '').toLowerCase() }); ryCatSave(); } if (RY_CAT) RY_CAT.t = 0; ryCatLoad(true); } catch (eC) {}   // 1001 등록한 상품이 검색에 바로
+          // 0930 목록을 억지로 다시 받지 않는다(서버가 2분 걸림). 새 상품은 폰 목록에 없어도 서버 이름 스캔으로 바로 찾힌다
+          loadAllData(true, true, true);
+        })
+        .withFailureHandler(function (e) {
+          npDone();
+          reopen('등록되지 않았어요 — 적은 내용 그대로 다시 등록하기를 눌러 주세요. (' + (e && e.message || '') + ')');
+        })
+        .addNewProduct(NP_PL);
     }
+    /* 1110 앱을 열었을 때 끝나지 않은 새 상품 등록이 있으면(1시간 안) 다시 보낼지 묻는다 · 이미 목록에 있으면 조용히 지움 */
+    function npPendingCheck() {
+      var pd = null; try { pd = JSON.parse(localStorage.getItem('ry_np_pending') || 'null'); } catch (e) {}
+      if (!pd || !pd.pl || !pd.pl.name) return;
+      if (Date.now() - (pd.at || 0) > 3600000) { try { localStorage.removeItem('ry_np_pending'); } catch (e) {} return; }
+      var key = String(pd.pl.name).replace(/\s+/g, '').toLowerCase();
+      if (RY_CAT && RY_CAT.items && RY_CAT.items.some(function (it) { return String(it.name || '').split('\n')[0].replace(/\s+/g, '').toLowerCase() === key; })) { try { localStorage.removeItem('ry_np_pending'); } catch (e) {} return; }
+      if (!ryAsk('⏳ 새 상품 등록이 끝나지 않았어요\n\n[' + pd.pl.name + ']\n\n앱이 중간에 새로 고쳐져서 서버에 못 갔어요. 지금 다시 등록할까요?' + (pd.pl.photo ? '' : '\n(사진은 다시 찍어 주세요)'), npPendingCheck, { ok: '다시 등록' })) return;   /* ryAsk 는 먼저 false 를 돌려주고 [다시 등록]을 누르면 이 함수를 다시 부름 · 안 누르면 1시간 뒤 저절로 지워짐 */
+      try { localStorage.removeItem('ry_np_pending'); } catch (e) {}
+      showToast('⏳ ' + pd.pl.name + ' 다시 등록하는 중이에요', 3000);
+      google.script.run.withSuccessHandler(function (res) {
+        if (!res || res.success === false) { alert('등록 못 했어요: ' + ((res && res.message) || '') + '\n새 상품 등록에서 다시 해 주세요.'); return; }
+        showToast('✓ ' + res.name + ' 등록했어요' + (res.requested ? ' · 1차 검토에 올라왔어요' : ''), 3000);
+        try { if (RY_CAT && RY_CAT.items) RY_CAT.items.push({ rowNumber: res.rowNumber, name: res.name, category: res.category || '', imgUrl: (res.photo && res.photo.ok && res.photo.url) || '', uses: res.uses || [], note: '', sales15: '-', status: res.requested ? 'REVIEW' : 'IDLE' }); } catch (eC) {}
+        loadAllData(true, true, true);
+      }).withFailureHandler(function (e) { alert('등록 못 했어요: ' + (e && e.message || '') + '\n새 상품 등록에서 다시 해 주세요.'); }).addNewProduct(pd.pl);
+    }
+    setTimeout(function () { try { if (currentSelectedMember) npPendingCheck(); } catch (e) {} }, 6000);
 
     /* ===== 직원 캐릭터 ===== */
     var MEMBER_AVA = {};

@@ -52,13 +52,18 @@
   var locked = false;
   /* 1022 MJ '주문 요청이 저장되지 않았어요 (Unexpected token <, <!DOCTYPE)' — 서버가 잠깐 JSON 대신 구글 오류 페이지(HTML)를 줄 때가 있다
      (배포가 바뀌는 순간 · 구글 쪽 일시 오류). 그럴 땐 1.5 · 4 · 8초 뒤 자동으로 다시 보내고, 그래도 안 되면 알아듣기 쉬운 말로 */
+  window.__ryInflight = window.__ryInflight || 0;   /* 1110 MJ '우루사 새 상품 등록했는데 검색이 안 돼' — 저장 요청이 가는 중에 새 판 새로고침이 끼면 요청이 사라짐 → 보내는 중엔 새로고침 안 함 (아래 busy) */
   function post(fn, args, key, n, rid) {
     n = n || 0;
+    if (!n) { window.__ryInflight++; var p0 = post2(fn, args, key, n, rid); p0.then(function () { window.__ryInflight--; }, function () { window.__ryInflight--; }); return p0; }
+    return post2(fn, args, key, n, rid);
+  }
+  function post2(fn, args, key, n, rid) {
     return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ rpc: fn, args: args, k: key, rid: rid || undefined }) })
       .then(function (r) { return r.text(); })
       .then(function (t) {
         try { return JSON.parse(t); } catch (e) {
-          if (n < 3) return new Promise(function (res) { setTimeout(res, [1500, 4000, 8000][n]); }).then(function () { return post(fn, args, key, n + 1, rid); });
+          if (n < 3) return new Promise(function (res) { setTimeout(res, [1500, 4000, 8000][n]); }).then(function () { return post2(fn, args, key, n + 1, rid); });
           var m = /<title>([^<]*)/i.exec(t || '');
           throw new Error('서버가 잠깐 응답하지 않았어요. 잠시 뒤 다시 눌러 주세요.' + (m ? ' (' + m[1].trim().slice(0, 40) + ')' : ''));
         }
@@ -138,7 +143,7 @@
   var meta = document.querySelector('meta[name="ry-build"]'), cur = meta && meta.content, fresh = false, lastAct = Date.now();
   if (!cur) return;
   ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(function (ev) { addEventListener(ev, function () { lastAct = Date.now(); }, { capture: true, passive: true }); });
-  function busy() { var a = document.activeElement; return (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) || document.body.style.position === 'fixed' || Date.now() - lastAct < 120000; }
+  function busy() { var a = document.activeElement; return (window.__ryInflight > 0) || (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) || document.body.style.position === 'fixed' || Date.now() - lastAct < 120000; }
   function check() {
     if (fresh) return;
     /* 1109 점검: ?ryv 로 새 판을 보고 새로고침했는데 정작 새로고침은 캐시된 옛 판을 받아 다시 '새 판' → 성수 폰 세트 화면에서 30분에 6번 튕김. 새로고침이 받을 주소 그대로 확인 */
@@ -149,7 +154,7 @@
   setInterval(function () { if (fresh && !busy()) location.reload(); }, 15000);
   setInterval(check, 600000); setTimeout(check, 60000);
   var hidAt = 0;   /* 1109 점검: 1초 알림창만 내려도 새로고침돼 보던 화면이 처음으로 → 30초 넘게 나갔다 올 때만 */
-  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') { hidAt = Date.now(); return; } if (fresh && Date.now() - hidAt > 30000) location.reload(); else check(); });
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') { hidAt = Date.now(); return; } if (fresh && Date.now() - hidAt > 30000 && !(window.__ryInflight > 0)) location.reload(); else check(); });
 })();
 /* 1023 MJ '이름 설정과 설치를 바로' — 크롬이 설치할 수 있다고 알려 주면(beforeinstallprompt) 이름을 고른 뒤 아래에 [📲 앱으로 설치] 한 번
    아이폰 사파리는 설치 버튼을 웹에서 띄울 수 없어 '공유 → 홈 화면에 추가' 안내만. 이미 설치된 앱 안 · [나중에] 누른 날은 안 띄움 */
