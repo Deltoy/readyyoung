@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwa61ndf">
+  <meta name="ry-build" content="mwa6vrup">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -1886,6 +1886,23 @@ body.sp-open{overflow:hidden}
 .md-c{min-height:50px!important;padding:3px 0!important;border:0;border-radius:10px!important;background:var(--ry-sunken);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:1px;overflow:hidden}
 .md-c i{font-style:normal;font-size:11.5px;color:var(--ry-ink-2);font-weight:600}.md-c b{font-size:15px;font-weight:800;color:#155EEF;line-height:1.1}.md-c em{font-style:normal;font-size:8.5px;color:var(--ry-ink-3);white-space:nowrap;letter-spacing:-.03em}
 .md-c.we i{color:#D92D20}.md-c.today{box-shadow:inset 0 0 0 1.5px #84ADFF}.md-c.sel{background:#155EEF}.md-c.sel i,.md-c.sel b,.md-c.sel em{color:#fff}.md-c.fut{opacity:.4}
+/* 1110 만든 vs 팔린 달력 (문준만) */
+.cv{margin:0 4px}.cv-h{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 0 4px}.cv-h b{font-size:16px;color:var(--ry-ink);text-align:center;line-height:1.3}.cv-h button{flex:none;width:44px;min-height:40px!important;border:0;border-radius:10px!important;background:var(--ry-sunken);color:var(--ry-ink-2)}.cv-h button:disabled{opacity:.35}
+.cv-sub{margin:0 0 8px;text-align:center;color:var(--ry-ink-3);font-size:12px}.cv-lg{display:flex;flex-wrap:wrap;gap:4px 12px;justify-content:center;margin:0 0 10px;font-size:11.5px;color:var(--ry-ink-2)}.cv-lg i{display:inline-block;width:14px;height:8px;border-radius:4px;margin-right:4px;vertical-align:middle}.cv-lg i.ok{background:#ECFDF3;border:1px solid #ABEFC6}.cv-lg i.lo{background:#FEF3F2;border:1px solid #FECDCA}.cv-lg i.hi{background:#FFF7E6;border:1px solid #FEDF89}
+.cv-w,.cv-g{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}.cv-w span{text-align:center;font-size:12px;color:var(--ry-ink-3);padding:2px 0}.cv-w span.r{color:#E5484D}
+.cv-c{position:relative;min-height:74px!important;padding:6px 5px!important;border:0;border-radius:12px!important;background:var(--ry-sunken);display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;text-align:left;font-size:11px;color:var(--ry-ink);overflow:hidden;min-width:0}
+.cv-c b{font-size:12.5px;font-weight:800;line-height:1.2}.cv-c.cv-e{background:transparent}.cv-c.cv-f{background:#FAFAFA;color:#C0C4CC}
+.cv-c.cv-ok{background:#ECFDF3}.cv-c.cv-lo{background:#FEF3F2}.cv-c.cv-hi{background:#FFF7E6}.cv-c.sel{box-shadow:inset 0 0 0 2px var(--ry-ink)}
+.cv-c.cv-t{background:#155EEF;color:#fff}.cv-c.cv-t.sel{box-shadow:inset 0 0 0 2px #00337A}.cv-c.cv-t .mk{color:#fff!important}.cv-c.cv-t small{color:rgba(255,255,255,.85)}
+.cv-pill{position:absolute;right:5px;top:6px;font-style:normal;font-size:10px;font-weight:700;padding:0 5px;border-radius:99px;background:#fff;line-height:16px}.cv-ok .cv-pill{color:#067647}.cv-lo .cv-pill{color:#B42318}.cv-hi .cv-pill{color:#B54708}
+.cv-bar{display:block;height:6px;background:rgba(0,0,0,.06);border-radius:4px;margin-top:5px;overflow:hidden}.cv-bar i{display:block;height:100%;border-radius:4px}.cv-bar .m{background:#155EEF}.cv-bar .s{background:#F79009}
+.cv-n{display:flex;flex-direction:column;margin-top:4px;font-weight:700;line-height:1.3}.cv-n em,.cv-n1 em{font-style:normal;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cv-c .mk{color:#155EEF}.cv-c .sk{color:#DC6803}
+.cv-n1{display:flex;flex-direction:column;margin-top:auto;line-height:1.3}.cv-n1 em{font-weight:800;font-size:12px}.cv-n1 small{font-size:10px;color:var(--ry-ink-3)}
+.cv-sum{margin-top:12px;background:#F9FAFB;border:1px solid var(--ry-line);border-radius:14px;padding:12px 14px;font-size:13.5px;line-height:1.6;color:var(--ry-ink)}
+.cv-det{margin-top:12px;border-top:1px solid #EEF0F3;padding-top:12px}.cv-det h3{margin:0 0 6px;font-size:14px;color:var(--ry-ink)}.cv-det ul{list-style:none;padding:0;margin:0}.cv-det li{display:grid;grid-template-columns:minmax(0,1fr) auto 44px;gap:8px;align-items:center;font-size:13px;padding:7px 0;border-bottom:1px dashed #EEF0F3}
+.cv-det .nm{font-weight:600;overflow-wrap:anywhere}.cv-det .q{color:var(--ry-ink-2);white-space:nowrap}.cv-det .g{text-align:right;font-weight:800;color:var(--ry-ink-3)}.cv-det .g.neg{color:#B42318}.cv-det .g.pos{color:#B54708}.cv-wait{color:var(--ry-ink-3);font-size:13px;margin:4px 0}
+@media(max-width:599px){.cv-pill{display:none}.cv-c{min-height:68px!important;padding:5px 4px!important;font-size:10px}.cv-n em{font-size:10px;letter-spacing:-.04em}.cv-n1 small{font-size:9px;letter-spacing:-.04em}.cv-h b{font-size:14.5px}}
+@media(min-width:720px){.cv-w,.cv-g{gap:8px}.cv-c{min-height:92px!important;padding:8px 9px!important;font-size:12px}.cv-c b{font-size:13px}.cv-pill{right:8px;top:8px;font-size:11px;padding:1px 7px}.cv-bar{height:7px;margin-top:6px}.cv-n{flex-direction:row;justify-content:space-between;margin-top:6px}.cv-n1 em{font-size:15px}.cv-n1 small{font-size:11.5px}.cv-sum{font-size:14px}}
 .md-slot button b{margin-left:4px;font-size:15px;font-weight:800}.md-tot{color:#155EEF!important;font-size:15px}
 .md-day{flex:1;font-size:17px;font-weight:800;color:var(--ry-ink)}
 .md-x{flex:none;width:36px;min-height:36px!important;border:0;border-radius:10px!important;background:var(--ry-sunken);color:var(--ry-ink-3);font-size:14px}
@@ -8707,7 +8724,8 @@ video {
                  : '<div class="' + cls + ' none">📷 샘플 사진 없음</div>';
     }
     function spSegSync() {
-      [['spSegSets', 'sets'], ['spSegTags', 'tags'], ['spSegBox', 'boxes'], ['spSegMade', 'made'], ['spSegLedger', 'ledger']].forEach(function (x) { var b = document.getElementById(x[0]); if (b) { b.classList.toggle('on', SP.view === x[1]); b.setAttribute('aria-selected', SP.view === x[1]); } });
+      [['spSegSets', 'sets'], ['spSegTags', 'tags'], ['spSegBox', 'boxes'], ['spSegMade', 'made'], ['spSegCmp', 'cmp'], ['spSegLedger', 'ledger']].forEach(function (x) { var b = document.getElementById(x[0]); if (b) { b.classList.toggle('on', SP.view === x[1]); b.setAttribute('aria-selected', SP.view === x[1]); } });
+      var cb = document.getElementById('spSegCmp'); if (cb) cb.hidden = !cvAllowed();   /* 1110 만든 vs 팔린 (지금은 문준만) */
       var lb = document.getElementById('spSegLedger'); if (lb) lb.hidden = true;   /* 1106 MJ '박스 장부 탭 없어져도 괜찮아' */   // 1023 박스 장부는 문준만
     }
     function spRender() {
@@ -8717,6 +8735,12 @@ video {
         spSegSync(); return lgRender();
       }
       if (SP.view === 'goal') SP.view = 'sets';   /* 1109 주 목표는 📊 판매 목표 화면으로 옮김 */
+      if (SP.view === 'cmp' && !cvAllowed()) SP.view = 'sets';
+      if (SP.view === 'cmp') {
+        document.getElementById('spSeg').hidden = false; document.getElementById('spNewBtn').hidden = true;
+        document.getElementById('spBackBtn').textContent = '✕ 닫기'; document.getElementById('spTitle').textContent = '만든 vs 팔린 세트';
+        spSegSync(); return cvRender();
+      }
       if (SP.view === 'made') {   /* 1022 MJ: 오전·오후 세트 담당이 만든 세트 개수 → 아크릴박스 자동 소진 */
         document.getElementById('spSeg').hidden = false; document.getElementById('spNewBtn').hidden = true;
         document.getElementById('spBackBtn').textContent = '✕ 닫기'; document.getElementById('spTitle').textContent = '오늘 만든 세트';
@@ -8843,6 +8867,75 @@ video {
       var pm = m === 1 ? (y - 1) + '-12' : y + '-' + ('0' + (m - 1)).slice(-2), nm = m === 12 ? (y + 1) + '-01' : y + '-' + ('0' + (m + 1)).slice(-2), nmOk = nm + '-01' <= today;
       return '<div class="md-cal"><div class="md-cal-h"><button type="button" onclick="MD.data=null;MD.date=\'' + pm + '-01\';mdRender()" aria-label="지난달">◀</button><b>' + y + '년 ' + m + '월 · 만든 세트 ' + tot + '개</b><button type="button"' + (nmOk ? '' : ' disabled') + ' onclick="MD.data=null;MD.date=\'' + nm + '-01\';mdRender()" aria-label="다음 달">▶</button></div>'
         + '<div class="md-cal-w">' + '일월화수목금토'.split('').map(function (w) { return '<span>' + w + '</span>'; }).join('') + '</div><div class="md-cal-g">' + cells + '</div></div>';
+    }
+    /* ── 1110 MJ '만든 세트 vs 팔린 세트 달력' (문준만) — 파란 막대 = 만든(getSetMade 달 합계 오전+오후) · 주황 = POS 세트 판매(getSalesDash 의 it.set)
+       칸 색 = 판정: 만든/팔린 0.85~1.15 맞음 · 0.85 미만 부족 · 1.15 초과 많이 · 날짜를 누르면 세트별 (만든 − 팔린) 적은 순 ── */
+    var CV = { ym: '', made: null, sales: null, sel: '', day: null, key: '' };
+    var CV_USERS = ['문준'];
+    function cvAllowed() { return CV_USERS.indexOf(String(currentSelectedMember || '').trim()) !== -1; }
+    function cvShift(ym, n) { var y = +ym.slice(0, 4), m = +ym.slice(5, 7) - 1 + n; y += Math.floor(m / 12); m = ((m % 12) + 12) % 12; return y + '-' + ('0' + (m + 1)).slice(-2); }
+    function cvVerdict(mk, sd) { if (!sd) return ''; var r = mk / sd; return r < 0.85 ? 'lo' : r > 1.15 ? 'hi' : 'ok'; }
+    function cvGo(n) { CV.ym = cvShift(CV.ym, n); CV.made = CV.sales = CV.day = null; CV.sel = ''; cvRender(); }
+    function cvLoad() {
+      var ym = CV.ym, today = mdToday(), last = new Date(Date.UTC(+ym.slice(0, 4), +ym.slice(5, 7), 0)).toISOString().slice(0, 10), y = dshYmd(Date.now() - 864e5), to = last < y ? last : y, key = ym + '|' + currentSelectedMember;
+      if (CV.key === key) return; CV.key = key;
+      var fail = function () { if (CV.key !== key) return; CV.key = ''; CV.err = true; if (SP.view === 'cmp') cvRender(); };
+      CV.err = false;
+      google.script.run.withSuccessHandler(function (r) { if (CV.ym !== ym) return; if (!r || !r.success) return fail(); mdCachePut(r); CV.made = r.month || {}; cvRender(); }).withFailureHandler(fail).getSetMade(ym === today.slice(0, 7) ? today : ym + '-01');
+      if (ym + '-01' > to) { CV.sales = { daily: [], items: [] }; return; }
+      google.script.run.withSuccessHandler(function (r) { if (CV.ym !== ym) return; if (!r || !r.success) return fail(); CV.sales = { daily: r.daily, items: r.items.filter(function (it) { return it.set; }) }; cvRender(); }).withFailureHandler(fail).getSalesDash(currentSelectedMember, ym + '-01', to, 0);
+    }
+    function cvDay(ds) {   // 그날 세트별 만든 개수 (getSetMade 그날 · 폰에 받아 둔 것 먼저)
+      CV.sel = ds; var c = mdCacheGet(ds); CV.day = c && c.date === ds && !c.stub ? c : null; cvRender();
+      google.script.run.withSuccessHandler(function (r) { if (!r || !r.success) return; mdCachePut(r); if (CV.sel === ds) { CV.day = r; if (SP.view === 'cmp') cvRender(); } }).getSetMade(ds);
+    }
+    function cvRender() {
+      var today = mdToday(); if (!CV.ym) CV.ym = today.slice(0, 7);
+      var body = document.getElementById('spBody');
+      if (!CV.made || !CV.sales) { cvLoad(); body.innerHTML = CV.err ? '<div class="sp-msg">불러오지 못했어요<button type="button" class="ry-info-sub" onclick="CV.key=\'\';cvRender()">다시 시도</button></div>' : '<div class="sp-msg"><span class="ry-info-spin"></span>불러오는 중…</div>'; return; }
+      var ym = CV.ym, y = +ym.slice(0, 4), m = +ym.slice(5, 7), nd = new Date(Date.UTC(y, m, 0)).getUTCDate(), pad = new Date(Date.UTC(y, m - 1, 1)).getUTCDay();
+      var has = {}, sold = {}; CV.sales.daily.forEach(function (x, i) { has[x.d] = x.has; sold[x.d] = CV.sales.items.reduce(function (a, it) { return a + ((it.d && it.d[i]) || 0); }, 0); });
+      var cells = '', tm = 0, ts = 0, d0 = '', d1 = '', W = '일월화수목금토', lo = [];
+      for (var i = 0; i < pad; i++) cells += '<span class="cv-c cv-e"></span>';
+      for (var dd = 1; dd <= nd; dd++) {
+        var ds = ym + '-' + ('0' + dd).slice(-2), x = CV.made[ds], mk = x ? (x.am || 0) + (x.pm || 0) : 0, sd = sold[ds] || 0, h = !!has[ds], v = h ? cvVerdict(mk, sd) : '', sel = ds === CV.sel ? ' sel' : '';
+        if (ds > today) { cells += '<span class="cv-c cv-f"><b>' + dd + '</b></span>'; continue; }
+        if (h) { tm += mk; ts += sd; d0 = d0 || ds; d1 = ds; if (v === 'lo') lo.push({ w: W.charAt(new Date(ds + 'T00:00:00Z').getUTCDay()), r: mk / sd, g: sd - mk }); }
+        var lab = { ok: '맞음', lo: '부족', hi: '많이' }[v] || '', mx = Math.max(mk, sd, 1);
+        cells += '<button type="button" class="cv-c' + (v ? ' cv-' + v : '') + (ds === today ? ' cv-t' : '') + sel + '" onclick="cvDay(\'' + ds + '\')" aria-label="' + m + '월 ' + dd + '일 만듦 ' + mk + (h ? ' 팔림 ' + sd + (lab ? ' ' + lab : '') : ' 판매 집계 전') + '"><b>' + dd + '</b>' + (lab ? '<i class="cv-pill">' + lab + '</i>' : '')
+          + (h ? '<span class="cv-bar"><i class="m" style="width:' + Math.round(mk / mx * 100) + '%"></i></span><span class="cv-bar"><i class="s" style="width:' + Math.round(sd / mx * 100) + '%"></i></span><span class="cv-n"><em class="mk">만듦 ' + mk + '</em><em class="sk">팔림 ' + sd + '</em></span>'
+                : (mk || ds === today ? '<span class="cv-n1"><em class="mk">만듦 ' + mk + '</em><small>판매 집계 전</small></span>' : '')) + '</button>';
+      }
+      var sum;
+      if (!d0) sum = '📊 <b>판정</b>: 아직 이 달 POS 세트 판매가 안 들어왔어요 · <b>비교 기준</b>: 같은 날 POS 판매 · <b>다음 행동</b>: 내일 아침 판매가 들어오면 다시 보기';
+      else {
+        var pct = ts ? Math.round(tm / ts * 100) : 0, vv = cvVerdict(tm, ts), act;
+        if (vv === 'hi') act = '많이 만든 날이 많아요 — 다음 날 만들 개수를 줄이기';
+        else if (lo.length) {
+          lo.sort(function (a, b) { return a.r - b.r; }); var ws = []; lo.forEach(function (o) { if (ws.indexOf(o.w) === -1 && ws.length < 2) ws.push(o.w); });
+          var gap = Math.max(5, Math.round(lo.reduce(function (a, o) { return a + o.g; }, 0) / lo.length / 5) * 5);
+          act = ws.join('·') + '요일처럼 부족한 날은 오전에 인기 세트 ' + gap + '개쯤 더 (만든 기록 빠짐없이 적기)';
+        } else act = '지금처럼 판매만큼 만들기';
+        sum = '📊 <b>판정</b>: ' + m + '월 ' + (+d0.slice(8)) + (d1 !== d0 ? '~' + (+d1.slice(8)) : '') + '일 만든 ' + tm.toLocaleString() + '개 / 팔린 ' + ts.toLocaleString() + '개 → 판매의 <b>' + pct + '%</b> 만큼 만들었어요 · <b>비교 기준</b>: 같은 날 POS 판매 · <b>다음 행동</b>: ' + act;
+      }
+      if (!CV.sel && d1) { CV.sel = d1; setTimeout(function () { if (SP.view === 'cmp' && CV.sel === d1 && !CV.day) cvDay(d1); }, 0); }
+      body.innerHTML = '<div class="cv"><div class="cv-h"><button type="button" onclick="cvGo(-1)" aria-label="지난달">◀</button><b>' + y + '년 ' + m + '월 · 만든 세트 vs 팔린 세트</b><button type="button" onclick="cvGo(1)"' + (ym >= today.slice(0, 7) ? ' disabled' : '') + ' aria-label="다음 달">▶</button></div>'
+        + '<p class="cv-sub">파란 막대 = 만든 개수 (오전+오후) · 주황 막대 = POS 판매 · 칸 색 = 판정</p>'
+        + '<p class="cv-lg"><span><i class="ok"></i>맞음 (±15%)</span><span><i class="lo"></i>부족 (판매보다 15%↓)</span><span><i class="hi"></i>많이 (15%↑)</span></p>'
+        + '<div class="cv-w">' + W.split('').map(function (w, k) { return '<span' + (k ? '' : ' class="r"') + '>' + w + '</span>'; }).join('') + '</div><div class="cv-g">' + cells + '</div>'
+        + '<div class="cv-sum">' + sum + '</div>' + cvDetail(has, sold) + '</div>';
+    }
+    function cvDetail(has) {
+      var ds = CV.sel; if (!ds) return '';
+      var i = -1; CV.sales.daily.some(function (x, k) { if (x.d === ds) { i = k; return true; } });
+      var h = !!has[ds], rows = {}, add = function (id, n, f, q) { var o = rows[id] = rows[id] || { n: n, mk: 0, sd: 0 }; o[f] += q; if (!o.n) o.n = n; };
+      if (h) CV.sales.items.forEach(function (it) { var q = (it.d && it.d[i]) || 0; if (q) add(it.set.id, it.set.n, 'sd', q); });
+      var dy = CV.day && CV.day.date === ds ? CV.day : null;
+      if (dy) dy.rows.forEach(function (r) { if (r.q) add(r.id, r.name, 'mk', r.q); });
+      var list = Object.keys(rows).map(function (k) { return rows[k]; }).sort(function (a, b) { return (a.mk - a.sd) - (b.mk - b.sd) || b.sd - a.sd; });
+      var t = (+ds.slice(5, 7)) + '/' + (+ds.slice(8)) + ' (' + '일월화수목금토'.charAt(new Date(ds + 'T00:00:00Z').getUTCDay()) + ') 세트별 — ' + (h ? '판매보다 적게 만든 순' : '판매 집계 전 · 만든 것만');
+      return '<div class="cv-det"><h3>' + t + '</h3>' + (!dy ? '<p class="cv-wait"><span class="ry-info-spin"></span>만든 기록 불러오는 중…</p>' : '')
+        + (list.length ? '<ul>' + list.map(function (o) { var g = o.mk - o.sd; return '<li><span class="nm">' + escapeHtml(o.n || '(지워진 세트)') + '</span><span class="q">만듦 ' + o.mk + (h ? ' · 팔림 ' + o.sd : '') + '</span><span class="g ' + (!h ? '' : g < 0 ? 'neg' : g > 0 ? 'pos' : '') + '">' + (h ? (g > 0 ? '+' : '') + g : '') + '</span></li>'; }).join('') + '</ul>' : (dy ? '<p class="cv-wait">그날 만든 세트·팔린 세트가 없어요</p>' : '')) + '</div>';
     }
     function mdPick() {
       var box = document.getElementById('mdPick'); if (!box) return;
@@ -18574,6 +18667,7 @@ video {
     <button type="button" id="spSegTags" role="tab" onclick="spShow('tags')" hidden>🏷 용도별 상품</button>
     <button type="button" id="spSegBox" role="tab" onclick="spShow('boxes')">📦 박스 재고<i id="spBoxN"></i></button>
     <button type="button" id="spSegMade" role="tab" onclick="spShow('made')">📝 만든 세트</button>
+    <button type="button" id="spSegCmp" role="tab" onclick="CV.made=CV.sales=CV.day=null;CV.key='';CV.sel='';spShow('cmp')" hidden>📅 만든 vs 팔린</button>
     <button type="button" id="spSegLedger" role="tab" onclick="LG = null; spShow('ledger')" hidden>📒 박스 장부</button>
   </div>
   <main id="spBody" class="sp-body"></main>
