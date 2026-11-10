@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwa83fs3">
+  <meta name="ry-build" content="mwa8a1wh">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -7670,6 +7670,8 @@ video {
     function ryRowGoneNow(row) {
       var out = function (a) { return (a || []).filter(function (it) { return it.rowNumber !== row; }); };
       cachedReviewItems = out(cachedReviewItems); cachedOrderItems = out(cachedOrderItems); cachedInboundItems = out(cachedInboundItems); cachedHistoryItems = out(cachedHistoryItems);
+      /* 1110 MJ '지웠는데 없어졌다가 다시 생겼어' — 폰에 받아 둔 상품 목록(RY_CAT, 5분 유지)에서는 안 빼서 다음 검색에 다시 나왔음 → 여기서도 빼고 저장 */
+      try { if (RY_CAT && RY_CAT.items) { RY_CAT.items = out(RY_CAT.items); localStorage.setItem(RY_CAT_KEY, JSON.stringify(RY_CAT)); } } catch (eC) {}
       try { lastSearchResults = out(lastSearchResults); var sv = document.getElementById('searchResultView'); if (sv && !sv.classList.contains('hidden')) renderSearchResults(lastSearchResults); } catch (e) {}
       renderAllViews(); persistSnapshot();
     }
@@ -7701,6 +7703,7 @@ video {
       var row = NOTE_ROW; closeNote(); ryRowGoneNow(row); showToast('삭제했어요 · ' + item.name);   // 1029 바로 끝난 것처럼
       google.script.run.withSuccessHandler(function (res) {
         if (!res || res.success === false) { alert('삭제가 저장되지 않았어요: ' + ((res && res.message) || '')); loadAllData(true, true, true); return; }
+        try { ryCatStale(); } catch (eS) {}   /* 1110 줄이 지워지면 아래 상품 행 번호가 밀림 → 폰 상품 목록을 바로 새로 받음 */
         refreshAfterRowGone();
       }).withFailureHandler(function (e) { alert('삭제가 저장되지 않았어요: ' + (e && e.message || '')); loadAllData(true, true, true); })
         .deleteProductRow(row, item.name);
