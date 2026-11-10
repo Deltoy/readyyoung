@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwa7pnw7">
+  <meta name="ry-build" content="mwa7wczc">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9050,11 +9050,12 @@ video {
         var f = c && s.v !== 'old' && s.v !== 'none' ? '<span>센 ' + ssWhen(c.at) + ' ' + c.n + '개 + 만든 ' + (s.made || 0) + ' − 팔린 ' + (s.sold || 0) + '</span>' : c ? '<span>마지막으로 센 시각 ' + ssWhen(c.at) + ' · ' + c.n + '개</span>' : '';
         return '<div class="ssh-r ' + cls + '">' + ssPh(s) + '<div class="ssh-t"><b>' + escapeHtml(s.name) + '</b><span>' + t + '</span>' + f + '</div><div class="ssh-v">' + v + '</div></div>';
       };
-      var sum = (red.length ? '🔴 ' + red.length + '종 만들기' : '🟢 지금 만들 세트 없음') + (gray.length ? ' · ⚪ ' + gray.length + '종 개수 먼저' : '') + (green.length ? ' · 🟢 ' + green.length + '종 충분' : '');
+      var sum = (red.length ? '🔴 ' + red.length + '종 만들기' : green.length ? '🟢 지금 만들 세트 없음' : '⚪ 아직 센 세트가 없어요') + (gray.length ? ' · ⚪ ' + gray.length + '종 개수 먼저' : '') + (green.length ? ' · 🟢 ' + green.length + '종 충분' : '');
       var act = red.length ? '다음 행동: 빨간 세트부터 위 개수만큼 만들고 [📝 만든 세트]에 적어 주세요' : gray.length ? '다음 행동: [🧮 매대 개수 세기]로 매대에 있는 세트를 세어 주세요' : '다음 행동: 지금은 만들 필요 없어요 · 2~3시간 뒤 다시 보기';
       var rule = '판정 기준: 매대 추정(센 개수 + 그 뒤 만든 − 그 뒤 POS 판매)이 오늘 남은 예상 판매(지난 4주 같은 요일 평균 × 지금 이후 남은 ' + d.rem + '%' + (d.remSrc === 'data' ? ', 최근 ' + d.remDays + '일 기록' : ', 기본 곡선 — 16:30 뒤 57%') + ') + 여유 ' + d.buf + '개보다 적으면 🔴 · 만들 개수는 5개 단위 · POS 판매 반영 ' + (d.soldAt ? ssWhen(d.soldAt) : '아직 없음');
       return '<section id="ssCard" class="ssh">' + head + '<p class="ssh-sum">' + sum + '</p><p class="ssh-act">' + act + '</p>'
-        + (red.length || gray.length ? '<div class="ssh-l">' + red.concat(gray).map(row).join('') + '</div>' : '')
+        + (red.length || gray.length ? '<div class="ssh-l">' + red.concat(gray.slice(0, 6)).map(row).join('') + '</div>' : '')
+        + (gray.length > 6 ? '<details><summary>⚪ 개수 먼저 셀 세트 ' + (gray.length - 6) + '종 더 보기 ▾</summary><div class="ssh-l">' + gray.slice(6).map(row).join('') + '</div></details>' : '')
         + (green.length ? '<details><summary>🟢 충분한 세트 ' + green.length + '종 보기 ▾</summary><div class="ssh-l">' + green.map(row).join('') + '</div></details>' : '')
         + '<p class="ssh-rule" style="margin-top:8px">' + rule + '</p></section>';
     }
