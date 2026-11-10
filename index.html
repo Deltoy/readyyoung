@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwa2e4ie">
+  <meta name="ry-build" content="mwa5m0b4">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -14008,10 +14008,19 @@ video {
       }
       if (empty) empty.classList.add('hidden');
       if (cont) cont.classList.remove('hidden');
-      delayed.forEach(item => {
+      const addD = item => {
         if (tbody) tbody.appendChild(createInboundRow(item, 'delayed'));
         if (cards) cards.appendChild(createInboundCard(item, 'delayed'));
-      });
+      };
+      /* 1110 MJ '배송 지연되는 상품도 부외품은 따로 볼 수 있게 나눠줘' — 1차 검토·최종발주와 같이 일반 먼저, 아래 '📦 부외품' 구분 줄 (접기 없음) */
+      const bwD = delayed.filter(it => it.bw);
+      delayed.filter(it => !it.bw).forEach(addD);
+      if (bwD.length) {
+        const h = '<span class="ry-bwh-tg" style="cursor:default"><span><b>📦 부외품</b><small>부외품 사장님 상품 · 늦는 건 사장님께 따로 확인해요</small></span><span class="ry-bwh-n">' + bwD.length + '건</span></span>';
+        if (tbody) { const tr = document.createElement('tr'); tr.className = 'ry-bwh-tr'; const tb = tbody.closest('table'), nc = tb && tb.tHead && tb.tHead.rows[0] ? tb.tHead.rows[0].cells.length : 6; tr.innerHTML = '<td colspan="' + nc + '"><div class="ry-bwh">' + h + '</div></td><td hidden></td>'; tbody.appendChild(tr); }
+        if (cards) { const d = document.createElement('div'); d.className = 'ry-bwh'; d.innerHTML = h; cards.appendChild(d); }
+        bwD.forEach(addD);
+      }
       try { mrFill(); } catch (eM) {}   /* 1016 지연 탭 제조사·경로 */
     }
 
