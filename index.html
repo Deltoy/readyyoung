@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwa29whj">
+  <meta name="ry-build" content="mwa2e4ie">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -12236,7 +12236,8 @@ video {
         if (/\(합침\)|판매종료|취급안함/.test(String(it.name || '') + String(it.note || ''))) return;
         if (it.status !== 'IDLE' && it.status !== 'DONE') return;
         var k = ryPrKey(it.name), nm = String(it.name).split('\n')[0]; if (got[nm] || flow[it.rowNumber] || flow['n:' + k] || (seen['srch:' + k] && now - seen['srch:' + k] < 7 * 864e5)) return;
-        srch.push({ it: it, p: p, st: stkOf(it) });
+        var st4a = stkOf(it); if (st4a && st4a.left != null && st4a.left >= RY_AUTO_DAYS) return;   /* 1110 창고 여력: 자주 찾아도 7일치 넘게 있으면 안 올림(재고 모르면 올림) */
+        srch.push({ it: it, p: p, st: st4a });
       });
       for (var q = 0; q < srch.length; q++) {
         var it4 = srch[q].it, st4 = srch[q].st, p4 = srch[q].p, k4 = ryPrKey(it4.name), bu4 = parseFloat(it4.boxUnit) || 0, last4 = parseInt(String(it4.targetQty || '').replace(/[^0-9]/g, ''), 10) || 0, d4 = (st4 && st4.daily) || 0;
