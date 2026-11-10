@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mw9z0s1e">
+  <meta name="ry-build" content="mwa1kc2x">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -14711,12 +14711,20 @@ video {
       if (document.visibilityState === 'visible') setTimeout(checkForChanges, 500);
     });
 
+    (function () {   /* 1110 검색창 한글 조합 상태 기억 (위 handleSearchDebounced 가 조합 중엔 화면을 안 바꿈) */
+      document.addEventListener('compositionstart', function (e) { if (e.target && e.target.id === 'globalSearchInput') e.target._ryComp = true; }, true);
+      document.addEventListener('compositionend', function (e) { var g = e.target; if (!g || g.id !== 'globalSearchInput') return; g._ryComp = false; if (g._ryClrPend) { g._ryClrPend = false; setTimeout(function () { if (!g.value.trim() && !g._ryComp) clearGlobalSearch(true); }, 120); } }, true);
+    })();
     function handleSearchDebounced() {
       clearTimeout(searchDebounceTimer);
       const inputEl = document.getElementById('globalSearchInput');
       const query = (inputEl ? inputEl.value : '').trim();
       if (!query) {
-        clearGlobalSearch(true);   // 타이핑으로 비운 경우: 커서는 그대로 두고 화면만 원래 탭으로
+        /* 1110 MJ '아직 백스페이스로 다 지우면 영어로 바뀌어' — 윈도 한글 입력기가 조합 중(마지막 글자를 지우는 순간)일 때 화면을 다시 그리면
+           입력기가 영어로 돌아감 → 조합이 끝난 뒤(compositionend)·다음 틈에 한 번만 비우고, 비울 때도 검색창 둘레는 건드리지 않음 */
+        clearTimeout(window._ryClrT);
+        if (inputEl && inputEl._ryComp) { inputEl._ryClrPend = true; return; }
+        window._ryClrT = setTimeout(function () { var g = document.getElementById('globalSearchInput'); if (g && !g.value.trim() && !g._ryComp) clearGlobalSearch(true); }, 120);
         return;
       }
       const clearBtn = document.getElementById('clearSearchBtn');
