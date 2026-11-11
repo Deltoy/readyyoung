@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwbeluih">
+  <meta name="ry-build" content="mwbhstmn">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -6325,7 +6325,7 @@ video {
         <button type="button" class="ry-ghost ry-quick" onclick="invOpen()" title="명세서 · 명세서 없이 온 주문 · 주문 안 한 상품을 한 화면에서 한 번에 입고">📦 입고하기</button>
         <button type="button" class="ry-ghost ry-quick ry-surge-q" id="surgeQuick" onclick="rySurgeOpen()" title="최근 3일 판매가 평소의 2배 넘게 뛴 상품 (매일 아침 POS 판매량 기준)" hidden>🔥 급상승<i id="surgeQuickN"></i></button>
         <button type="button" class="ry-ghost ry-quick" onclick="openSetPage(); spShow('sets')" title="세트 상품 · 박스 재고 · 오늘 만든 세트 기록">🎁 세트 상품<i id="bxDot" class="bx-today" hidden>박스 아직</i></button>
-        <button type="button" class="ry-ghost ry-quick" id="scQuick" onclick="slOpen()" title="주 목표 · 날짜별 판매 · 행사 효과">📊 판매 목표<i id="scQuickN"></i></button>
+        <button type="button" class="ry-ghost ry-quick" id="scQuick" onclick="slOpen()" title="주 목표 · 판매 달력 · 행사 효과">📊 판매 목표<i id="scQuickN"></i></button>
         <a class="ry-ghost ry-quick" id="bwQuick" href="bw.html" title="부외품 사장님 화면" hidden>📦 부외품</a>
         <button type="button" id="rosterQuick" class="ry-ghost ry-quick" onclick="window.open('https://pallang-0258.github.io/seongsu/viewer.html', '_blank', 'noopener')" title="근무표를 새 창으로 열기">근무표</button>
         <button type="button" class="ry-ghost ry-quick" onclick="mbOpenArchive()" title="날짜별 아침 뷰티 브리핑">뷰티 브리핑</button>
@@ -8187,7 +8187,7 @@ video {
       var n = document.getElementById('scQuickN'), w = SC.data ? scUse() : null; if (!n) return;
       var d = w ? scLastDay() : '', all = !!d && SC_SETS.every(function (s) { return scOk(SC.data.cfg, d, s.k); });
       n.textContent = all ? '★' : ''; n.classList.toggle('done', all);
-      b.title = w ? '이번 주 세트 목표 ' + scMd(w.from) + ' ~ ' + scMd(w.to) + (w.note ? ' · ' + w.note : '') : '주 목표 · 날짜별 판매 · 행사 효과';
+      b.title = w ? '이번 주 세트 목표 ' + scMd(w.from) + ' ~ ' + scMd(w.to) + (w.note ? ' · ' + w.note : '') : '주 목표 · 판매 달력 · 행사 효과';
     }
     function scOpen() { slOpen('goal'); }
     setTimeout(function () { try { if (!SC.data) { var c0 = JSON.parse(localStorage.getItem('ry_sc') || 'null'); if (c0 && c0.cfg) SC.data = c0; } } catch (e) {} try { scQuick(); scLoad(true); } catch (e) {} }, 4500);
@@ -8216,14 +8216,14 @@ video {
           days.forEach(function (d) { if (d <= t) { var v = scV(d, s.k) || 0; sum += v; if (d < t) sumB += v; } });   // 오늘 넣은 것도 합계에 · 남은 하루 개수는 어제까지 기준
           var tv = nth > 0 ? scV(t, s.k) : null, pv = SC.prev[s.k] != null ? SC.prev[s.k] : 0, need = left ? Math.ceil(Math.max(0, G - sumB) / left) : 0, win = G > 0 && sum >= G, tdone = tv != null && dg > 0 && tv >= dg;
           if (win) SC.totWin.push(s.k);
-          var msg = !G ? '주 목표 없음' : win ? '🏆 주 목표 달성!' + (sum > G ? ' <b>+' + (sum - G) + '개</b>' : '') : '<span>남은 <b>' + (G - sum) + '개</b></span> · <span>' + left + '일 동안 하루 <b>' + need + '개</b>씩</span>';
+          var msg = !G ? '주 목표 없음' : win ? '🏆 주 목표 달성!' + (sum > G ? ' <b>+' + (sum - G) + '개</b>' : '') : '<span>남은 <b>' + (G - sum) + '개</b></span> · <span>남은 ' + left + '일 하루 평균 <b>' + need + '개</b> 필요</span>';
           return '<section class="sc-card sc-set' + (win ? ' win' : '') + '" id="scTot-' + s.k + '" style="--sc:' + s.c + ';--sc-soft:' + s.soft + '"><div class="sc-set-hd"><div class="sc-nm">' + escapeHtml(s.label) + (s.sub ? '<small>' + escapeHtml(s.sub) + '</small>' : '') + '</div>' + (G ? '<em class="sc-pct">' + Math.round(sum / G * 100) + '%</em>' : '') + '</div>'
             + '<div class="sc-set-bd"><div class="sc-mini' + (tdone ? ' done' : '') + '" id="scT-' + s.k + '"><div class="sc-rw">' + scRing(s, tv, dg, pv) + '<div class="sc-num"><b data-n="' + (tv || 0) + '" data-p="' + pv + '">' + (tv == null ? '–' : pv) + '</b><span>/ ' + (dg || '–') + '</span></div></div><small>' + (tdone ? '오늘 🎉 달성' : '오늘') + '</small></div>'
             + '<div><div class="sc-big"><b>' + sum + '</b><span>' + (G ? '/ ' + G + '개' : '개') + '</span></div>' + (G ? '<div class="sc-bar"><i style="width:' + Math.min(100, sum / G * 100).toFixed(1) + '%"></i></div>' : '') + '<div class="sc-wk-s">' + msg + '</div></div></div></section>';
         }).join('') + '</div>';
         SC.totKey = w.from + ':' + SC.totWin.join(',');
         var legs = SC_SETS.filter(function (s) { return s.leg; }).map(function (s) { return escapeHtml(s.label.split(' ')[0]) + ' ' + s.leg + '↑'; });
-        h += '<section class="sc-card"><h3>날마다 판매 <span>점선 = 하루 목표 · 🔥 달성 · 20개↑ 💥' + (legs.length ? ' · 👑 ' + legs.join(' · ') : '') + '</span></h3><p class="sc-tier" aria-label="막대 색 = 그날 판 개수">' + SC_TIER.slice().reverse().map(function (x) { return '<i style="background:' + x[1] + '"></i>' + x[0]; }).join('') + '개↑</p><div class="sc-charts">' + SC_SETS.map(function (s) { return scChart(s, c, days, t); }).join('') + '</div></section>';
+        h += '<section class="sc-card"><h3>일별 판매량 <span>점선 = 하루 목표 · 🔥 달성 · 20개↑ 💥' + (legs.length ? ' · 👑 ' + legs.join(' · ') : '') + '</span></h3><p class="sc-tier" aria-label="막대 색 = 그날 판 개수">' + SC_TIER.slice().reverse().map(function (x) { return '<i style="background:' + x[1] + '"></i>' + x[0]; }).join('') + '개↑</p><div class="sc-charts">' + SC_SETS.map(function (s) { return scChart(s, c, days, t); }).join('') + '</div></section>';
       }
       h += scHistHtml(c, t);   /* 1109 📅 날짜별 판매는 판매 목표 화면의 따로 탭 (scCalTab) */
       b.innerHTML = '<div class="sc">' + h + '</div>';
@@ -8309,7 +8309,7 @@ video {
       av.forEach(function (a, j) { if (a == null) return; nav++; amx = Math.max(amx, a); if (top < 0 || a > av[top]) top = j; }); if (nav < 2) top = -1;
       var hi = '', lo = ''; past.forEach(function (d) { if (!hi || val(d) > val(hi)) hi = d; if (!lo || val(d) < val(lo)) lo = d; });
       var tips = scCalTips(t, past, val, wk, W);
-      return '<section class="sc-card sc-cal" id="scCal" style="--sc:' + s.c + ';--sc-soft:' + s.soft + '"><h3>📅 날짜별 판매 <span>칸 숫자 = 그날 팔린 개수 · 누르면 자세히</span></h3>'
+      return '<section class="sc-card sc-cal" id="scCal" style="--sc:' + s.c + ';--sc-soft:' + s.soft + '"><h3>📅 판매 달력 <span>칸 숫자 = 그날 판매량 · 누르면 자세히</span></h3>'
         + '<div class="sc-cal-bd"><div class="sc-cal-l"><div class="sc-cal-h"><button type="button"' + (mi > 0 ? '' : ' disabled') + ' onclick="scCalMove(-1)" aria-label="지난달">◀</button><b>' + y + '년 ' + mo + '월</b><button type="button"' + (mi < S.ms.length - 1 ? '' : ' disabled') + ' onclick="scCalMove(1)" aria-label="다음 달">▶</button></div>'
         + '<div class="sc-cal-w" aria-hidden="true">' + '월화수목금토일'.split('').map(function (w) { return '<span>' + w + '</span>'; }).join('') + '</div><div class="sc-cal-g">' + cells + '</div>'
         + '<p class="sc-cal-lg sc-set-lg">' + sets.map(function (x) { return '<span class="sc-pl" style="--c:' + x.c + '"><u>' + scShort(x.label) + '</u>' + escapeHtml(x.label) + '</span>'; }).join('') + '</p><p class="sc-cal-lg sc-st-lg"><span class="ok">✓ 하루 목표 달성</span><span class="low">빨강 = 70% 미만</span><span class="mm">메모</span></p><p class="sc-cal-lg sc-wx-lg"><span class="wx-sun">맑음</span><span class="wx-cloud">흐림</span><span class="wx-rain">비</span><span class="wx-snow">눈</span><span class="cold">추운 날</span></p></div>'
@@ -8446,7 +8446,7 @@ video {
       var leg = s.leg && vals.some(function (v) { return v >= s.leg; }), H = leg ? 124 : 104;   // 1104 스페셜 날이 있으면 왕관 자리만큼 위를 더 비움
       var top = leg ? 62 : vals.some(function (v) { return v >= SC_MEGA; }) ? 40 : vals.some(function (v, i) { return v != null && goals[i] && v >= goals[i]; }) ? 32 : 18;   // 오라 위 숫자 자리
       var mx = Math.max.apply(null, goals.concat(vals.map(function (v) { return v || 0; })).concat([1])) * 1.15, y = function (v) { return top + (H - top) * (1 - v / mx); };
-      var g = '<svg class="sc-ch" viewBox="0 0 ' + (days.length * W) + ' ' + (H + 31) + '" role="img" aria-label="' + escapeHtml(s.label) + ' 날마다 판매"><defs><linearGradient id="scHeat-' + s.k + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFAEB" stop-opacity=".8"/><stop offset=".55" stop-color="#FEF0C7" stop-opacity="0"/></linearGradient><linearGradient id="scAu-' + s.k + '" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#F79009"/><stop offset="1" stop-color="#FDE272"/></linearGradient><linearGradient id="scAuR-' + s.k + '" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#B42318"/><stop offset=".6" stop-color="#F04438"/><stop offset="1" stop-color="#FDA29B"/></linearGradient><filter id="scBlur-' + s.k + '" x="-60%" y="-30%" width="220%" height="160%"><feGaussianBlur stdDeviation="3"/></filter></defs>';
+      var g = '<svg class="sc-ch" viewBox="0 0 ' + (days.length * W) + ' ' + (H + 31) + '" role="img" aria-label="' + escapeHtml(s.label) + ' 일별 판매량"><defs><linearGradient id="scHeat-' + s.k + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFAEB" stop-opacity=".8"/><stop offset=".55" stop-color="#FEF0C7" stop-opacity="0"/></linearGradient><linearGradient id="scAu-' + s.k + '" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#F79009"/><stop offset="1" stop-color="#FDE272"/></linearGradient><linearGradient id="scAuR-' + s.k + '" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#B42318"/><stop offset=".6" stop-color="#F04438"/><stop offset="1" stop-color="#FDA29B"/></linearGradient><filter id="scBlur-' + s.k + '" x="-60%" y="-30%" width="220%" height="160%"><feGaussianBlur stdDeviation="3"/></filter></defs>';
       days.forEach(function (d, i) {
         var x = i * W + ox, v = vals[i], gl = goals[i], ok = v != null && gl && v >= gl, lv = s.leg && v >= s.leg ? 3 : v >= SC_MEGA && ok ? 2 : ok ? 1 : 0;   /* 1109 하루 목표가 20개 넘는 상품(베리어 25)은 목표를 넘어야 오라 */    // 1104 MJ '30개 넘는 건 더 스페셜 · 스마트 초이스는 25개부터' = 3단계(왕관·도는 빛살·별)
         if (i === 7) g += '<line x1="' + x + '" x2="' + x + '" y1="2" y2="' + (H + 18) + '" class="sc-sep"/><text x="' + (x + 3) + '" y="' + (H + 28) + '" class="sc-wk2">2주차 →</text>';   // 1027 위에 두면 큰 숫자와 겹쳐서 날짜 밑으로
@@ -8457,7 +8457,7 @@ video {
         g += '<text x="' + (x + 12) + '" y="' + (H + 14) + '" class="sc-x' + (d === t ? ' now' : '') + '">' + (+d.slice(8)) + '</text>';
       });
       var hit = days.filter(function (d, i) { return vals[i] != null && goals[i] && vals[i] >= goals[i]; }).length;
-      return '<div class="sc-chw"><div class="sc-cht"><b style="color:' + s.c + '">' + escapeHtml(s.label) + '</b><span>🔥 ' + hit + '일 달성</span></div>' + g + '</svg></div>';
+      return '<div class="sc-chw"><div class="sc-cht"><b style="color:' + s.c + '">' + escapeHtml(s.label) + '</b><span>🔥 목표 달성 ' + hit + '일</span></div>' + g + '</svg></div>';
     }
     var SC_TIER = [[21, '#F04438'], [18, '#F79009'], [15, '#FDB022'], [12, '#66C61C'], [9, '#15B79E'], [6, '#2E90FA'], [3, '#7CD4FD'], [1, '#98A2B3']];   /* 1027 MJ '1·3·6·9·12·15·18·21개 갈수록 그래프 색이 달라지게' — 회색→하늘→파랑→청록→초록→금→주황→빨강 (목표 15 근처 = 금빛 오라, 20↑ = 빨강 오라와 같은 흐름) */
     function scTier(v) { for (var j = 0; j < SC_TIER.length; j++) if (v >= SC_TIER[j][0]) return SC_TIER[j][1]; return SC_TIER[SC_TIER.length - 1][1]; }
@@ -8625,7 +8625,7 @@ video {
       var ix = function (d) { for (var i = 0; i < N; i++) if (S[i][0] >= d) return i; return -1; }, marks = [0, ix(e.from), ix(scAdd(e.to, 1)), N - 1].filter(function (i, j, a) { return i >= 0 && a.indexOf(i) === j; }), last = -99, xs = '';
       marks.forEach(function (i) { var p = i / N * 100 + 50 / N; if (p - last < 14 && i !== marks[0]) return; last = p; xs += '<span style="left:' + p.toFixed(1) + '%"' + (i === 0 ? ' class="l"' : i === N - 1 ? ' class="r"' : '') + '>' + scMd(S[i][0]).replace(/\(.\)/, '') + '</span>'; });
       var seg = [0, 1, 2].map(function (p) { var c = S.filter(function (x) { return x[2] === p; }).length; return c ? '<span class="p' + p + '" style="flex:' + c + '">' + ['행사 전', '행사 중', '끝난 뒤'][p] + '</span>' : ''; }).join('');
-      return '<div class="ef-ch" role="img" aria-label="날마다 판매 막대 · 행사 전 하루 ' + efN(s.b.avg) + '개 · 행사 중 하루 ' + efN(s.d.avg) + '개"><div class="ef-seg" aria-hidden="true">' + seg + '</div>'
+      return '<div class="ef-ch" role="img" aria-label="일별 판매량 막대 · 행사 전 하루 ' + efN(s.b.avg) + '개 · 행사 중 하루 ' + efN(s.d.avg) + '개"><div class="ef-seg" aria-hidden="true">' + seg + '</div>'
         + '<div class="ef-bars" onclick="efTip(event)">' + bars + (s.b.avg != null ? '<u class="ef-av b" style="bottom:' + pc(s.b.avg) + '"><em>전 ' + efN(s.b.avg) + '</em></u>' : '') + (s.d.avg != null ? '<u class="ef-av d" style="bottom:' + pc(s.d.avg) + '"><em>행사 ' + efN(s.d.avg) + '</em></u>' : '') + '</div>'
         + '<div class="ef-xs" aria-hidden="true">' + xs + '</div></div>';
     }
@@ -8646,7 +8646,7 @@ video {
         + per.map(function (p) { return '<div class="ef-tr" role="row"><span role="cell">' + escapeHtml(p.label) + '</span><span role="cell">' + efN(p.b) + '</span><span role="cell"><b>' + efN(p.d) + '</b></span><span role="cell" class="' + (p.lift == null ? '' : p.lift >= 20 ? 'up' : p.lift < 0 ? 'dn' : 'mid') + '">' + efPct(p.lift) + '</span><span role="cell">' + efN(p.a) + '</span></div>'; }).join('') + '</div>'
         + (pl.length > 1 ? '<p class="ef-next">💡 가장 잘 반응한 상품 <b>' + escapeHtml(pl[0].label) + '</b> ' + efPct(pl[0].lift) + (pl[pl.length - 1].lift < 20 ? ' · 약한 상품 <b>' + escapeHtml(pl[pl.length - 1].label) + '</b> ' + efPct(pl[pl.length - 1].lift) + ' → 다음엔 잘 팔린 상품 위주로' : ' → 다음 행사 메인 상품으로') + '</p>' : '') + '</section>' : '';
       return '<button type="button" class="ef-back" onclick="efBack()">‹ 행사 목록</button>' + hero
-        + '<section class="sc-card"><h3>날마다 판매 <span>행사 상품 합 · 막대를 누르면 숫자</span></h3>' + efChart(e) + '<p class="ef-lg"><span class="p0">행사 전</span><span class="p1">행사 중</span><span class="p2">끝난 뒤</span><span class="av">점선 = 하루 평균</span></p></section>'
+        + '<section class="sc-card"><h3>일별 판매량 <span>행사 상품 합 · 막대를 누르면 숫자</span></h3>' + efChart(e) + '<p class="ef-lg"><span class="p0">행사 전</span><span class="p1">행사 중</span><span class="p2">끝난 뒤</span><span class="av">점선 = 하루 평균</span></p></section>'
         + '<section class="sc-card"><h3>끝난 뒤 효과</h3><p class="ef-aft">' + aft + '</p></section>' + tb
         + (s.miss && s.miss.length ? '<p class="ef-miss">⚠️ POS 판매에서 못 찾은 이름: ' + s.miss.map(escapeHtml).join(', ') + (boss ? ' → [고치기]에서 POS 이름을 확인해 주세요' : '') + '</p>' : '')
         + (boss ? '<div class="sc-f sc-fbtn"><button type="button" class="sc-btn sc-btn2" onclick="efDel(\'' + e.id + '\')">지우기</button><button type="button" class="sc-btn" onclick="efFormOpen(\'' + e.id + '\')">고치기</button></div>' : '');
@@ -18836,7 +18836,7 @@ video {
   </header>
   <div class="sp-seg" role="tablist" aria-label="판매 목표 보기">
     <button type="button" id="slTabGoal" role="tab" onclick="slTab('goal')">🎯 주 목표</button>
-    <button type="button" id="slTabCal" role="tab" onclick="slTab('cal')">📅 날짜별 판매</button>
+    <button type="button" id="slTabCal" role="tab" onclick="slTab('cal')">📅 판매 달력</button>
     <button type="button" id="slTabEv" role="tab" onclick="slTab('ev')">🎉 행사 효과</button>
   </div>
   <main id="slBody" class="sp-body"></main>
