@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwbhvlni">
+  <meta name="ry-build" content="mwbhz0nt">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8264,7 +8264,7 @@ video {
        따로 떼어 쓰기 쉽게: scCalHtml(D) → HTML (D = getSetChallenge 응답) · 상태는 SC.cal {m, k} · 다시 그리기 scCalDraw() 는 #scCal 만 바꿈 ══ */
     var SC_WX_URL = 'https://api.open-meteo.com/v1/forecast?latitude=37.5446&longitude=127.0557&timezone=Asia%2FSeoul&past_days=92&forecast_days=1&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum';   /* 서버 getWeather 와 같은 성수동 좌표(_WX_LAT/_WX_LON) */
     SC.cal = { m: '', k: '', ms: [] }; SC.wx = null; SC.wxBusy = false; SC.wxFail = 0; SC.dayD = '';
-    function scShort(l) { l = String(l || ''); if (/total/i.test(l)) return '토탈'; if (/smart/i.test(l)) return '스마트'; var m = (l.match(/[가-힣]+/g) || []).filter(function (w) { return !/종$/.test(w); }); return (m.length ? m[m.length - 1] : l).slice(0, 3); }
+    function scShort(l) { l = String(l || ''); if (/^세트\s*전체/.test(l)) return '전체'; if (/total/i.test(l)) return '토탈'; if (/smart/i.test(l)) return '스마트'; var m = (l.match(/[가-힣]+/g) || []).filter(function (w) { return !/종$/.test(w); }); return (m.length ? m[m.length - 1] : l).slice(0, 3); }
     function scWxCls(w) { var c = +w[0], k = c <= 1 ? 'sun' : c === 2 ? 'part' : c === 45 || c === 48 ? 'fog' : (c >= 71 && c <= 77) || c === 85 || c === 86 ? 'snow' : c >= 51 ? 'rain' : 'cloud'; return ' wx-' + k + (+w[1] <= 5 ? ' cold' : ''); }   /* 1109 날씨 = 칸 배경 · 최고 5° 이하 = 추운 날(얼음 테두리) */
     function scWxIc(c) { c = +c; return c <= 1 ? ['☀️', '맑음'] : c === 2 ? ['⛅', '구름 조금'] : c === 3 ? ['☁️', '흐림'] : c === 45 || c === 48 ? ['🌫️', '안개'] : (c >= 71 && c <= 77) || c === 85 || c === 86 ? ['❄️', '눈'] : c >= 95 ? ['🌧️', '뇌우'] : c >= 51 ? ['🌧️', c <= 57 ? '이슬비' : '비'] : ['☁️', '흐림']; }
     function scWxGet() { if (!SC.wx) { try { SC.wx = JSON.parse(localStorage.getItem('ry_sc_wx') || 'null'); } catch (e) {} if (!SC.wx || !SC.wx.d) SC.wx = { d: {}, at: 0 }; } return SC.wx; }   /* {d: {날짜: [날씨코드, 최고, 최저, 강수mm]}, at} */
