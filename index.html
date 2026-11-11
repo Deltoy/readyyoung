@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwbmgg4b">
+  <meta name="ry-build" content="mwbmmg8m">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4518,7 +4518,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 .sc-say.l{transform:translate(-14px,-100%)}.sc-say.l::after{left:14px}.sc-say.r{transform:translate(calc(-100% + 14px),-100%)}.sc-say.r::after{left:auto;right:10px}
 .sc-say.t7{background:#FFF0F7;color:#9E165F;font-size:11.5px}
 @keyframes scSay{0%{opacity:0;margin-top:4px}6%,88%{opacity:1;margin-top:0}100%{opacity:0}}
-.sc-djs{display:flex;flex-wrap:wrap;gap:6px 4px;margin:4px 0 2px}.sc-djs .sc-st{height:16px;padding:0 5px;font-size:9.5px;letter-spacing:0;border-width:1.2px;border-radius:5px;animation-delay:calc(var(--i) * 60ms + .5s)}
+.sc-ch .sc-dj rect{fill:rgba(255,255,255,.95);stroke:var(--fc);stroke-width:2}.sc-ch .sc-dj text{fill:var(--fc);font-size:13px;font-weight:900}   /* 1111 MJ '그날 성공 스탬프만 · 깔끔하게' — 날짜 밑 '성공' 도장(단계 색) */
+.sc-ch .sc-dj{transform-box:fill-box;transform-origin:center;rotate:-8deg}.sc-ch.grow .sc-dj{animation:scDj .4s cubic-bezier(.3,1.6,.5,1) both;animation-delay:calc(var(--i) * 35ms + .7s)}@keyframes scDj{from{opacity:0;scale:1.8}to{opacity:1;scale:1}}
 .sc-ch .sc-q{fill:#B42318;font-weight:900}.sc-ch .sc-wk2{text-anchor:start;font-size:10.5px}
 .sc-tip summary,.sc-adm summary{cursor:pointer;font-size:15px;font-weight:800;min-height:44px;display:flex;align-items:center;gap:8px;list-style:none;margin:-6px 0}
 .sc-tip summary::-webkit-details-marker,.sc-adm summary::-webkit-details-marker{display:none}
@@ -4537,7 +4538,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 @media(min-width:768px){.sc-charts{grid-template-columns:1fr 1fr;gap:20px}.sc-rings,.sc-goalchips{gap:14px}.sc-num b{font-size:40px}}
 @media(min-width:1100px){.sc{max-width:1040px}.sc-tile{display:grid;grid-template-columns:148px auto;column-gap:24px;justify-content:center;align-content:center;text-align:left;padding:16px}.sc-rw{grid-row:1/3;width:148px}.sc-nm{align-self:end}.sc-st{align-self:start}.sc-conf{top:50%;left:calc(50% - 95px)}}
 @media(prefers-reduced-motion:reduce){.sc-ch .sc-leg-rays,.sc-ch .sc-crown,.sc-ch .sc-star{animation:none}}
-@media(prefers-reduced-motion:reduce){.sc-ring-fg,.sc-bar i{transition:none}.sc-ch.grow .sc-b,.sc-conf i,.sc-ch .sc-au,.sc-ch .sc-auv,.sc-ch .sc-glow,.sc-ch .sc-fire.mega .sc-glow,.sc-say,.sc-ch .sc-heat,.sc-ch .sc-rg,.sc-ch.grow .sc-fire{animation:none}.sc-ch .sc-auv:first-child{opacity:1}.sc-ch .sc-sp,.sc-ch .sc-bolt{display:none}}
+@media(prefers-reduced-motion:reduce){.sc-ring-fg,.sc-bar i{transition:none}.sc-ch.grow .sc-b,.sc-conf i,.sc-ch .sc-au,.sc-ch .sc-auv,.sc-ch .sc-glow,.sc-ch .sc-fire.mega .sc-glow,.sc-say,.sc-ch.grow .sc-dj,.sc-ch .sc-heat,.sc-ch .sc-rg,.sc-ch.grow .sc-fire{animation:none}.sc-ch .sc-auv:first-child{opacity:1}.sc-ch .sc-sp,.sc-ch .sc-bolt{display:none}}
 @media(min-width:720px){html body:not(#_):not(#_) #spSeg::before{display:none}html body:not(#_):not(#_) #spSeg{width:fit-content;max-width:calc(100% - 32px);margin:10px auto 6px;padding:2px!important;background:#e8e8ed!important;border-radius:11px}html body:not(#_):not(#_) #spSeg button{flex:0 1 180px;min-width:120px;padding:0 14px}}/* 1026 PC 탭 바탕이 2칸(448px) 고정이라 탭 4~5개면 어긋났음 → 탭 묶음 크기에 맞춤 */
 @media(max-width:767px){.sp-seg{overflow-x:auto;scrollbar-width:none}.sp-seg::-webkit-scrollbar{display:none}.sp-seg button{flex:1 0 auto;white-space:nowrap;padding:0 10px}}/* 1026 폰: 탭이 5개(문준)여도 두 줄로 안 깨지게 */
 /* 1109 🎯 이번 주 목표 — 세트별 카드(오늘 링 + 주 합계 막대) · 공지 · 지난 목표(접기) · 목표 정하기 */
@@ -8568,7 +8569,7 @@ video {
       var leg = vals.some(function (v, i) { return (s.leg && v >= s.leg) || scFT(v, goals[i]) >= 6; }), bt = 0, bx = 0, by = 0, H = leg ? 124 : 104;   // 1104 스페셜 날이 있으면 왕관 자리만큼 위를 더 비움
       var top = leg ? 62 : vals.some(function (v) { return v >= SC_MEGA; }) ? 40 : vals.some(function (v, i) { return v != null && goals[i] && v >= goals[i]; }) ? 32 : 18;   // 오라 위 숫자 자리
       var mx = Math.max.apply(null, goals.concat(vals.map(function (v) { return v || 0; })).concat([1])) * 1.15, y = function (v) { return top + (H - top) * (1 - v / mx); };
-      var djs = [], g = '<svg class="sc-ch" viewBox="0 0 ' + (days.length * W) + ' ' + (H + 31) + '" role="img" aria-label="' + escapeHtml(s.label) + ' 일별 판매량"><defs><linearGradient id="scHeat-' + s.k + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFAEB" stop-opacity=".8"/><stop offset=".55" stop-color="#FEF0C7" stop-opacity="0"/></linearGradient>' + SC_FIRE.map(function (f, j) { return '<linearGradient id="scT' + (j + 1) + '-' + s.k + '" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="' + f[0] + '"/><stop offset="1" stop-color="' + f[1] + '"/></linearGradient>'; }).join('') + '<filter id="scBlur-' + s.k + '" x="-60%" y="-30%" width="220%" height="160%"><feGaussianBlur stdDeviation="3"/></filter></defs>';
+      var dj = days.some(function (d, i) { return d !== t && scFT(vals[i], goals[i]); }), g = '<svg class="sc-ch" viewBox="0 0 ' + (days.length * W) + ' ' + (H + 31 + (dj ? 10 : 0)) + '" role="img" aria-label="' + escapeHtml(s.label) + ' 일별 판매량"><defs><linearGradient id="scHeat-' + s.k + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFAEB" stop-opacity=".8"/><stop offset=".55" stop-color="#FEF0C7" stop-opacity="0"/></linearGradient>' + SC_FIRE.map(function (f, j) { return '<linearGradient id="scT' + (j + 1) + '-' + s.k + '" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="' + f[0] + '"/><stop offset="1" stop-color="' + f[1] + '"/></linearGradient>'; }).join('') + '<filter id="scBlur-' + s.k + '" x="-60%" y="-30%" width="220%" height="160%"><feGaussianBlur stdDeviation="3"/></filter></defs>';
       days.forEach(function (d, i) {
         var x = i * W + ox, v = vals[i], gl = goals[i], ok = v != null && gl && v >= gl, ft = scFT(v, gl), lv = (s.leg && v >= s.leg) || ft >= 6 ? 3 : v >= SC_MEGA && ok ? 2 : ok ? 1 : 0;   /* 1109 하루 목표가 20개 넘는 상품(베리어 25)은 목표를 넘어야 오라 */    // 1104 MJ '30개 넘는 건 더 스페셜 · 스마트 초이스는 25개부터' = 3단계(왕관·도는 빛살·별)
         if (i === 7) g += '<line x1="' + x + '" x2="' + x + '" y1="2" y2="' + (H + 18) + '" class="sc-sep"/><text x="' + (x + 3) + '" y="' + (H + 28) + '" class="sc-wk2">2주차 →</text>';   // 1027 위에 두면 큰 숫자와 겹쳐서 날짜 밑으로
@@ -8576,12 +8577,12 @@ video {
         if (v == null) { g += '<rect x="' + (x + 5) + '" y="' + y(gl || 0).toFixed(1) + '" width="14" height="' + Math.max(0, H - y(gl || 0)).toFixed(1) + '" rx="3" class="sc-ghost' + (d === t ? ' now' : '') + '"/>'; if (d < t) g += '<text x="' + (x + 12) + '" y="' + (H - 4) + '" class="sc-q">?</text>'; }
         else { var hh = Math.max(v ? 3 : 0, H - y(v)), au = lv ? scAura(x + 12, H, hh, s.k, i, lv, ft) : ['', '']; if (ft && d === t) { bt = ft; bx = x + 12; by = H - hh - (lv > 2 ? 60 : lv > 1 ? 41 : 34); }   /* 1111 MJ '불기둥 말하는 건 그날만 · 전날은 스탬프만' */ g += au[0] + '<rect x="' + (x + 5) + '" y="' + (H - hh).toFixed(1) + '" width="14" height="' + hh.toFixed(1) + '" rx="3" class="sc-b' + (lv > 2 ? ' leg' : '') + '" style="fill:' + (ft ? SC_FIRE[ft - 1][2] : scTier(v)) + ';--i:' + i + '"/>' + au[1]
           + '<text x="' + (x + 12) + '" y="' + (H - hh - (lv > 1 ? 37 : lv ? 30 : 3)).toFixed(1) + '" class="sc-v' + (lv > 1 ? ' mega' : '') + (lv > 2 ? ' leg' : '') + '">' + v + '</text>' + (lv > 2 ? '<text x="' + (x + 12) + '" y="' + (H - hh - 56).toFixed(1) + '" class="sc-crown">👑</text>' : '')
-          + ''; if (ft && d !== t) djs.push('<b class="sc-st st' + ft + '" style="--i:' + i + '">' + (+d.slice(8)) + '일 ' + (s.kind === 'item' ? SC_STAMP_I : SC_STAMP)[ft - 1] + '</b>'); }   // 지난날 = 스탬프 칩 (1111 MJ '뭐가 박힌지 모르겠어 · 날짜 밑에 · 스탬프 형식으로')
+          + (ft && d !== t ? '<g class="sc-dj" style="--fc:' + SC_FIRE[ft - 1][2] + ';--i:' + i + '"><rect x="' + (x + 12 - (W >= 40 ? 17 : 10)) + '" y="' + (H + 20) + '" width="' + (W >= 40 ? 34 : 20) + '" height="18" rx="4"/><text x="' + (x + 12) + '" y="' + (H + 33.5) + '">' + (W >= 40 ? '성공' : '✔') + '</text><title>' + (s.kind === 'item' ? SC_STAMP_I : SC_STAMP)[ft - 1] + '</title></g>' : ''); }   // 지난날 = 스탬프 칩 (1111 MJ '뭐가 박힌지 모르겠어 · 날짜 밑에 · 스탬프 형식으로')
         g += '<text x="' + (x + 12) + '" y="' + (H + 14) + '" class="sc-x' + (d === t ? ' now' : '') + '">' + (+d.slice(8)) + '</text>';
       });
       var hit = days.filter(function (d, i) { return vals[i] != null && goals[i] && vals[i] >= goals[i]; }).length;
       var lp = Math.round(bx / (days.length * W) * 100), say = bt ? '<em class="sc-say t' + bt + (lp < 40 ? ' l' : lp > 60 ? ' r' : '') + '" data-t="' + bt + '"' + (s.kind === 'item' ? ' data-i="1"' : '') + ' aria-hidden="true" style="left:' + lp + '%;top:' + Math.max(0, by / (H + 31) * 100).toFixed(1) + '%;--fc:' + SC_FIRE[bt - 1][2] + '">' + (s.kind === 'item' ? SC_SAY_I : SC_SAY)[bt][0] + '</em>' : '';   // 1111 그 차트에서 제일 센 불기둥(같으면 최근)이 말함
-      return '<div class="sc-chw"><div class="sc-cht"><b style="color:' + s.c + '">' + escapeHtml(s.label) + '</b><span>🔥 목표 달성 ' + hit + '일</span></div><div class="sc-chb">' + g + '</svg>' + say + '</div>' + (djs.length ? '<div class="sc-djs">' + djs.join('') + '</div>' : '') + '</div>';
+      return '<div class="sc-chw"><div class="sc-cht"><b style="color:' + s.c + '">' + escapeHtml(s.label) + '</b><span>🔥 목표 달성 ' + hit + '일</span></div><div class="sc-chb">' + g + '</svg>' + say + '</div></div>';
     }
     var SC_TIER = [[21, '#F04438'], [18, '#F79009'], [15, '#FDB022'], [12, '#66C61C'], [9, '#15B79E'], [6, '#2E90FA'], [3, '#7CD4FD'], [1, '#98A2B3']];   /* 1027 MJ '1·3·6·9·12·15·18·21개 갈수록 그래프 색이 달라지게' — 회색→하늘→파랑→청록→초록→금→주황→빨강 (목표 15 근처 = 금빛 오라, 20↑ = 빨강 오라와 같은 흐름) */
     /* 1111 MJ '불기둥 판매 수량이 차이 나도 비슷해 · 스탬프처럼 불기둥도 색이 바뀌게 · +30 회식 · 불기둥이 빼빼로처럼 말하게' — 하루 목표 넘고 +5개마다 불 색 변신(스탬프 색과 같은 순서) [아래, 위, 막대] */
