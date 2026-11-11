@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwbjqpdp">
+  <meta name="ry-build" content="mwbjucwn">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8352,9 +8352,10 @@ video {
     function ryWxFx(w) { var k = ryWxKind(w), se = rySeason(); ryFx(k || (se === 'pepero' ? '' : se)); ryMascot(k || (se === 'xmas' ? 'xmas' : '')); ryXmas(se === 'xmas'); ryPepero(se === 'pepero'); }
     if (document.body) ryWxFx(null); else document.addEventListener('DOMContentLoaded', function () { ryWxFx(null); });   // 날씨 오기 전엔 계절(·미리 보기)만
     /* 1111 MJ '그날 미션을 성공하면 성공 스탬프 · 대성공 수량마다 (롤 더블킬·트리플킬·쿼드라킬·펜타킬처럼)' + '주 목표에도 응원 스탬프' */
-    var SC_STAMP = [[5, '펜타!!', 6], [4, '쿼드라!', 5], [3, '트리플!', 4], [2, '더블!', 3], [1.5, '대성공', 2], [1, '성공', 1]];
-    function scStamp(tv, dg, se) { if (tv == null || !dg || tv < dg) return ''; var r = tv / dg, x = SC_STAMP.filter(function (z) { return r >= z[0]; })[0]; return '<b class="sc-st st' + x[2] + '" title="오늘 ' + tv + '개 · 하루 목표 ' + dg + '개">' + (se === 'xmas' && x[2] === 1 ? '⛄ ' : '') + x[1] + '</b>'; }
-    function scCombo(n) { return n < 2 ? '' : '<b class="sc-st sc-combo st' + Math.min(6, n + 1) + '">' + (['', '', '더블', '트리플', '쿼드라'][n] || '펜타') + ' 달성!</b>'; }
+    /* 1111 MJ '더블·트리플은 너무 어려워 → 하루 목표 달성 뒤 5개 더 팔 때마다 스탬프가 바뀌게 · 키크니식 재밌는 말로' */
+    var SC_STAMP = ['해냈닷!', '팔자 좋은 날', '세트 장인 등판', '손이 안 보여요', '계산대 불났닷 🔥', '오늘의 전설 👑'];
+    function scStamp(tv, dg, se) { if (tv == null || !dg || tv < dg) return ''; var i = Math.min(SC_STAMP.length - 1, Math.floor((tv - dg) / 5)), nx = i < SC_STAMP.length - 1 ? dg + (i + 1) * 5 - tv : 0; return '<b class="sc-st st' + (i + 1) + '" title="오늘 ' + tv + '개 · 하루 목표 ' + dg + '개' + (nx ? ' · ' + nx + '개 더 팔면 다음 스탬프' : '') + '">' + (se === 'xmas' && !i ? '⛄ ' : '') + SC_STAMP[i] + '</b>' + (nx && nx <= 2 ? '<b class="sc-tc near">' + nx + '개만 더면 승급!</b>' : ''); }
+    function scCombo(n) { return n < 2 ? '' : '<b class="sc-st sc-combo st' + Math.min(6, n + 1) + '">' + (['', '', '쌍끌이 달성!', '세 마리 토끼!', '싹쓸이!'][n] || '올킬!!') + '</b>'; }
     function scCheer(sum, G, pc) { if (!G) return ''; var p = sum / G * 100; if (!sum) return pc ? '<b class="sc-cheer">0%</b>' : ''; var t = p >= 120 ? '초과 달성!! 🚀' : p >= 100 ? '주 목표 달성 🏆' : p >= 75 ? '거의 다 왔어요 🔥' : p >= 50 ? '반 넘었어요 💪' : p >= 25 ? '좋아요 👍' : '출발!'; return '<b class="sc-cheer' + (p >= 100 ? ' win' : '') + '">' + t + (pc ? ' · ' + Math.round(p) + '%' : '') + '</b>'; }
     function scChip(m) {   /* 1111 MJ '한 개만 더 팔면 · 달성하면 성취감' — 오늘 하루 목표 기준 칩 (12월엔 눈사람 · 새해엔 불꽃) */
       if (m.tv == null || !m.dg) return '';
