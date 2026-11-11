@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwbkbwih">
+  <meta name="ry-build" content="mwbkpuz4">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8591,6 +8591,10 @@ video {
       ['계산대 불났닷! 🧯', '소방차 불러야 할 듯 🚒', '불났는데 아무도 안 끔, 다들 파느라 🔥', '진열대 빈자리 채워 주세요, 또 팔리게 📦', '5개만 더면 전설이야, 진짜야 👑'],
       ['오늘의 전설 등장 👑', '역사책에 남는 날 📜', '전설도 세트 권하기는 안 쉬어요 🎁', '사인해 드릴까요? ✍️', '5개만 더 팔면 회식 얘기 꺼낸닷 🍻'],
       ['이 정도 팔았으면 회식해야 하는 거 아니야? 🍻', '사장님, 회식 각입니다 🍖', '회식비는 세트가 벌어 왔어요 💰', '불판은 제가 할게요, 저 불이거든요 🔥', '고기는 내가 구울게, 너넨 팔기만 해 🥩']];
+    function scSayOf(t) {   /* 1111 MJ '똑같은 말만 나오지 않게 계속 바꿔줘' — 첫 줄은 단계 이름, 그 뒤는 매일 새 멘트(맥 제미나이 → SC.data.say) + 기본 멘트를 섞어서 */
+      var b = SC_SAY[t] || [], x = (SC.data && SC.data.say && SC.data.say[t]) || [];
+      return b.slice(0, 1).concat(x.concat(b.slice(1)).sort(function () { return Math.random() - .5; }));
+    }
     function scFT(v, gl) { return v == null || !gl || v < gl ? 0 : Math.min(SC_FIRE.length, Math.floor((v - gl) / 5) + 1); }
     function scTier(v) { for (var j = 0; j < SC_TIER.length; j++) if (v >= SC_TIER[j][0]) return SC_TIER[j][1]; return SC_TIER[SC_TIER.length - 1][1]; }
     var SC_MEGA = 20;   /* 1027 MJ '세트 20개를 판매하면 금빛과 빨강빛이 같이 도는 강력한 오라 — 20개 넘었으면 정말 열심히 했다는 거니까' (목표와 상관없이 그날 20개↑) */
@@ -8620,7 +8624,7 @@ video {
     }
     function scAnim(last) {   /* 여는 순간: 링이 채워지고 숫자가 올라감 · 막대가 자람 · 달성한 날은 이 기기에서 처음 볼 때 한 번 축하 */
       document.querySelectorAll('#slBody .sc-say').forEach(function (el) {
-        var a = SC_SAY[+el.dataset.t] || [], n = 0, fit = function () { el.style.marginLeft = ''; var p = el.parentNode.getBoundingClientRect(), r = el.getBoundingClientRect(), dx = r.right > p.right ? p.right - r.right : r.left < p.left ? p.left - r.left : 0; el.style.marginLeft = dx ? dx + 'px' : ''; el.style.setProperty('--tx', -dx + 'px'); };   // 차트 밖으로 안 나가게 밀고 꼬리는 막대 쪽에 그대로
+        var a = scSayOf(+el.dataset.t), n = 0, fit = function () { el.style.marginLeft = ''; var p = el.parentNode.getBoundingClientRect(), r = el.getBoundingClientRect(), dx = r.right > p.right ? p.right - r.right : r.left < p.left ? p.left - r.left : 0; el.style.marginLeft = dx ? dx + 'px' : ''; el.style.setProperty('--tx', -dx + 'px'); };   // 차트 밖으로 안 나가게 밀고 꼬리는 막대 쪽에 그대로
         fit(); el.addEventListener('animationiteration', function () { n = (n + 1) % a.length; el.textContent = a[n]; fit(); });
       });   // 1111 불기둥 말풍선 = 빼빼로처럼 돌아가며
       var rm = scRm();
