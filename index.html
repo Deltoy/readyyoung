@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwbiwjuc">
+  <meta name="ry-build" content="mwbj12k6">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4670,6 +4670,31 @@ html:not(#q1):not(#q2):not(#q3) body:not(#q4):not(#q5):not(#q6):not(#q7) .ry-too
 }
 </style>
 <style>
+/* 1111 MJ '퀵메뉴 디자인이 안 깔끔해 · 눈에 잘 보이게 · 우리 디자인에 맞춰' — 폰: 4칸 타일(아이콘 칸 + 이름) · 컴퓨터는 그대로 */
+.ry-tools .qi{margin-right:4px}.ry-tools .qi svg{vertical-align:-2px}
+@media(max-width:600px){
+html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;width:100%!important;margin-right:0!important;padding-right:0!important}
+html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>button,html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>a.ry-quick{position:relative!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:5px!important;grid-column:auto!important;order:8!important;height:70px!important;min-height:70px!important;min-width:0!important;padding:6px 2px!important;border-radius:16px!important;border:1px solid #EAECF0!important;background:#fff!important;color:#344054!important;font-size:12px!important;font-weight:700!important;line-height:1.1!important;white-space:nowrap!important;box-shadow:0 1px 2px rgba(16,24,40,.05)!important;text-decoration:none!important}
+html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>button:active,html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>a.ry-quick:active{transform:scale(.97)}
+html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools .qi{margin:0!important;width:32px;height:32px;border-radius:10px;display:grid!important;place-items:center;font-size:19px;line-height:1;background:#F2F4F7;color:#155EEF}
+html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools .qi svg{width:18px;height:18px;vertical-align:0}
+html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools .ql{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;font-size:12px}
+html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>[hidden]{display:none!important}
+html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools:not(.qm-open)>.ry-quick:not([onclick^="invOpen"]):not([onclick^="openSetPage"]):not(#scQuick):not(#bwQuick):not(#rosterQuick){display:none!important}
+html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>button[onclick^="invOpen"]{order:1!important;background:#155EEF!important;border-color:#155EEF!important;color:#fff!important;box-shadow:0 6px 14px rgba(21,94,239,.28)!important}
+html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>button[onclick^="invOpen"] .qi{background:rgba(255,255,255,.2)}
+html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>button[onclick^="openSetPage"]{order:2!important}html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>button[onclick^="openSetPage"] .qi{background:#FDF2FA}
+html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>#scQuick{order:3!important}html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>#scQuick .qi{background:#EFF8FF}
+html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>#bwQuick{order:4!important}html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>#bwQuick .qi{background:#FEF6EE}
+html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>#newProductBtn{order:5!important}html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>#newProductBtn .qi{background:#ECFDF3;color:#079455}
+html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>#rosterQuick{order:6!important}html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>#rosterQuick .qi{background:#F4F3FF}
+html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>#qmMore{order:7!important}html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>#qmMore .qi{font-size:20px;font-weight:900;color:#475467}
+html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>#surgeQuick .qi{background:#FEF3F2}
+html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>button>i:not(.bx-today),html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>a>i{position:absolute!important;top:5px!important;right:6px!important;margin:0!important}
+html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4):not(#b5) .ry-tools>.ry-more{order:9!important;grid-column:1/-1!important}
+}
+</style>
+<style>
 /* 1110 배송중 도장 (검색 결과 카드) — 상품 이름 바로 옆에 비스듬한 도장 */
 html body:not(#_):not(#_):not(#_) .ry25-pc-name .ry-ship-stamp{display:inline-flex!important;flex-direction:column;align-items:center;justify-content:center;vertical-align:middle;margin:-6px 0 -6px 8px;width:58px;height:58px;border-radius:50%!important;border:3px solid #D92D20!important;color:#D92D20!important;background:rgba(255,255,255,.9)!important;transform:rotate(-14deg);box-shadow:inset 0 0 0 2px rgba(217,45,32,.22);pointer-events:none;flex:none}
 html body:not(#_):not(#_):not(#_) .ry25-pc-name .ry-ship-stamp b{font-size:19px;line-height:1;font-weight:400}
@@ -6320,17 +6345,17 @@ video {
 
     <div class="ry25-toolrow">
       <div class="ry-tools">
-        <button type="button" id="newProductBtn" onclick="openNewProduct()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>새 상품 등록</button>
-        <button type="button" class="ry-ghost ry-quick" onclick="rlOpen()" title="일하면서 알아야 할 규칙 (주제별)">숙지사항<i id="rlDot" class="rl-btn-n" hidden></i></button>
-        <button type="button" class="ry-ghost ry-quick" onclick="invOpen()" title="명세서 · 명세서 없이 온 주문 · 주문 안 한 상품을 한 화면에서 한 번에 입고">📦 입고하기</button>
-        <button type="button" class="ry-ghost ry-quick ry-surge-q" id="surgeQuick" onclick="rySurgeOpen()" title="최근 3일 판매가 평소의 2배 넘게 뛴 상품 (매일 아침 POS 판매량 기준)" hidden>🔥 급상승<i id="surgeQuickN"></i></button>
-        <button type="button" class="ry-ghost ry-quick" onclick="openSetPage(); spShow('sets')" title="세트 상품 · 박스 재고 · 오늘 만든 세트 기록">🎁 세트 상품<i id="bxDot" class="bx-today" hidden>박스 아직</i></button>
-        <button type="button" class="ry-ghost ry-quick" id="scQuick" onclick="slOpen()" title="주 목표 · 판매 달력 · 행사 효과">📊 판매 목표<i id="scQuickN"></i></button>
-        <a class="ry-ghost ry-quick" id="bwQuick" href="bw.html" title="부외품 사장님 화면" hidden>📦 부외품</a>
-        <button type="button" id="rosterQuick" class="ry-ghost ry-quick" onclick="window.open('https://pallang-0258.github.io/seongsu/viewer.html', '_blank', 'noopener')" title="근무표를 새 창으로 열기">근무표</button>
-        <button type="button" class="ry-ghost ry-quick" onclick="mbOpenArchive()" title="날짜별 아침 뷰티 브리핑">뷰티 브리핑</button>
-        <button type="button" class="ry-ghost ry-quick" onclick="eduOpen()" title="제품 교육 자료">교육 자료실<i id="eduDot" class="mb-dot edu-qdot" hidden aria-label="새 교육 자료"></i></button>
-        <button type="button" id="qmMore" class="ry-ghost" onclick="var t=this.parentNode;t.classList.toggle('qm-open');this.setAttribute('aria-expanded',t.classList.contains('qm-open'))" aria-expanded="false" title="다른 메뉴 펼치기">더보기</button>
+        <button type="button" id="newProductBtn" onclick="openNewProduct()"><span class="qi"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span><span class="ql">새 상품 등록</span></button>
+        <button type="button" class="ry-ghost ry-quick" onclick="rlOpen()" title="일하면서 알아야 할 규칙 (주제별)"><span class="qi">📘</span><span class="ql">숙지사항</span><i id="rlDot" class="rl-btn-n" hidden></i></button>
+        <button type="button" class="ry-ghost ry-quick" onclick="invOpen()" title="명세서 · 명세서 없이 온 주문 · 주문 안 한 상품을 한 화면에서 한 번에 입고"><span class="qi">📦</span><span class="ql">입고하기</span></button>
+        <button type="button" class="ry-ghost ry-quick ry-surge-q" id="surgeQuick" onclick="rySurgeOpen()" title="최근 3일 판매가 평소의 2배 넘게 뛴 상품 (매일 아침 POS 판매량 기준)" hidden><span class="qi">🔥</span><span class="ql">급상승</span><i id="surgeQuickN"></i></button>
+        <button type="button" class="ry-ghost ry-quick" onclick="openSetPage(); spShow('sets')" title="세트 상품 · 박스 재고 · 오늘 만든 세트 기록"><span class="qi">🎁</span><span class="ql">세트 상품</span><i id="bxDot" class="bx-today" hidden>박스 아직</i></button>
+        <button type="button" class="ry-ghost ry-quick" id="scQuick" onclick="slOpen()" title="주 목표 · 판매 달력 · 행사 효과"><span class="qi">📊</span><span class="ql">판매 목표</span><i id="scQuickN"></i></button>
+        <a class="ry-ghost ry-quick" id="bwQuick" href="bw.html" title="부외품 사장님 화면" hidden><span class="qi">🧺</span><span class="ql">부외품</span></a>
+        <button type="button" id="rosterQuick" class="ry-ghost ry-quick" onclick="window.open('https://pallang-0258.github.io/seongsu/viewer.html', '_blank', 'noopener')" title="근무표를 새 창으로 열기"><span class="qi">🗓️</span><span class="ql">근무표</span></button>
+        <button type="button" class="ry-ghost ry-quick" onclick="mbOpenArchive()" title="날짜별 아침 뷰티 브리핑"><span class="qi">💄</span><span class="ql">뷰티 브리핑</span></button>
+        <button type="button" class="ry-ghost ry-quick" onclick="eduOpen()" title="제품 교육 자료"><span class="qi">🎓</span><span class="ql">교육 자료실</span><i id="eduDot" class="mb-dot edu-qdot" hidden aria-label="새 교육 자료"></i></button>
+        <button type="button" id="qmMore" class="ry-ghost" onclick="var t=this.parentNode;t.classList.toggle('qm-open');this.setAttribute('aria-expanded',t.classList.contains('qm-open'))" aria-expanded="false" title="다른 메뉴 펼치기"><span class="qi">⋯</span><span class="ql">더보기</span></button>
         <div class="ry-more">
           <div class="ry-more-menu" id="toolMoreMenu" role="menu" hidden>
             <button type="button" role="menuitem" id="bwEntry" hidden onclick="closeToolMore(); location.href='bw.html'">📦 부외품 화면</button>
