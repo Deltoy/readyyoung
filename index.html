@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwbld45c">
+  <meta name="ry-build" content="mwblji9c">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8354,7 +8354,7 @@ video {
       var mk = document.querySelector('.ry25-mark'); if (!on || !mk) return;
       var st = '<svg viewBox="0 0 14 52"><rect x="4" y="35" width="6" height="16" rx="3" fill="#E9C48B"/><rect x="3" y="2" width="8" height="37" rx="4" fill="#5B341C"/><path d="M3.5 9l7-3M3.5 17l7-3M3.5 25l7-3" stroke="#7A4A2A" stroke-width=".8"/><circle cx="5.6" cy="11" r="1.25" fill="#fff"/><circle cx="8.4" cy="11" r="1.25" fill="#fff"/><path d="M5.2 15q1.8 1.8 3.6 0" stroke="#fff" stroke-width="1" fill="none" stroke-linecap="round"/></svg>';
       /* 1111 MJ '빼빼로가 재밌는 말을 계속 · 초콜릿 많이 먹다 돼지 된다 같은 거 · 웃겨줘' — 빼빼로가 자기를 놀리는 말 위주(사람 외모 X) · 섞어서 하나씩 */
-      var say = ['빼빼로 데이! 🍫', '초콜릿 많이 먹으면 돼지 된다… 나처럼 🐷', '1년 중 오늘만 몸값 올라감 ✨', '빼빼로 먹다 빼빼가 아니라 통통해짐', '누드 빼빼로는 부끄러워서 숨었어요 🙈', '아몬드 빼빼로는 치과 예약부터 🦷', '빼빼로데이 = 빼빼로가 데이트하는 날 💘', '초코 쏙 빼먹고 과자만 남기기 없기!', '오늘 고백 성공률 +11% (출처: 나)', '한 개만 먹는다는 건 거짓말이야', '막대기 인생 364일 대기, 오늘 출근', '다 같이 빼빼 흔들어! 💃', '나 오늘 품절될 예정 😎', '세트도 오늘 빼빼로처럼 쭉쭉 나가자!', '직원들 항상 건강해요 💙', '성수레디영 화이팅! 💪'].sort(function () { return Math.random() - .5; }), n = 0, m = document.createElement('span');
+      var say = ['빼빼로 데이! 🍫', '초콜릿 많이 먹으면 돼지 된다… 나처럼 🐷', '1년 중 오늘만 몸값 올라감 ✨', '빼빼로 먹다 빼빼가 아니라 통통해짐', '누드 빼빼로는 부끄러워서 숨었어요 🙈', '아몬드 빼빼로는 치과 예약부터 🦷', '최애는 아몬드인데 또 품절… 아, 몬드 서운해 🥲', '아몬드 빼빼로는 오늘도 조기 퇴근 🌰', '품절된 아몬드 빼빼로 찾습니다 (사례함) 📢', '아몬드야, 나 두고 먼저 팔려 가니? 💔', '빼빼로데이 = 빼빼로가 데이트하는 날 💘', '초코 쏙 빼먹고 과자만 남기기 없기!', '오늘 고백 성공률 +11% (출처: 나)', '한 개만 먹는다는 건 거짓말이야', '막대기 인생 364일 대기, 오늘 출근', '다 같이 빼빼 흔들어! 💃', '나 오늘 품절될 예정 😎', '세트도 오늘 빼빼로처럼 쭉쭉 나가자!', '직원들 항상 건강해요 💙', '성수레디영 화이팅! 💪'].sort(function () { return Math.random() - .5; }), n = 0, m = document.createElement('span');
       m.id = 'ryPep'; m.className = 'ry-pep'; m.setAttribute('aria-hidden', 'true'); m.innerHTML = st + st + '<em>' + say[0] + '</em>'; mk.insertAdjacentElement('afterend', m);
       /* 1111 MJ '스크롤을 내려도 빼빼로는 위에 계속 보이게' — 머리글이 화면 밖으로 나가면 왼쪽 위에 떠서 따라옴 */
       if (window.IntersectionObserver) { window.ryPepIO = new IntersectionObserver(function (e) { m.classList.toggle('fly', !e[e.length - 1].isIntersecting); }); ryPepIO.observe(mk.closest('.ry25-top') || mk); }
@@ -17995,7 +17995,7 @@ video {
 
     /* ===== 0925 공지 보관함 — 카톡이 원래 통로, 앱은 보관 + 그림. 서버 listNotices / saveNotice / updateNotice · deleteNotice(문준) ===== */
     var NT = { data: null, loading: false, q: '', month: '', tag: '', err: '', parsed: null, matches: {}, recent: [], latest: null, parentSel: '' };
-    var NT_TAGS = ['공지', '증정', '품절', '업무', '기타', '일정', '이벤트'];   // 1016 일정 = 교육·방문 일정
+    var NT_TAGS = ['공지', '증정', '품절', '업무', '기타', '일정', '이벤트', '리뷰'];   // 1111 MJ '공지에 리뷰는 따로 모아서 볼 수 있게' = 리뷰 칩 (전체엔 안 섞임)   // 1016 일정 = 교육·방문 일정
     var NT_ICON = {
       mega: '<svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>',
       xc: '<svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>'
@@ -18124,7 +18124,23 @@ video {
     function ntRedraw(id) { var n = ntFind(id), el = document.querySelector('.nt-card[data-nt="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]'); if (n && el) el.outerHTML = ntCardHtml(n); }
     function ntPhotosHtml(ph) {
       if (!ph || !ph.length) return '';
-      return '<div class="ntp-grid n' + ph.length + '">' + ph.map(function (u, i) { return '<a class="ntp" href="' + escapeHtml(u) + '" target="_blank" rel="noopener" aria-label="사진 ' + (i + 1) + ' 크게 보기"><img src="' + escapeHtml(u) + '" alt="" loading="lazy"></a>'; }).join('') + '</div>';
+      return '<div class="ntp-grid n' + ph.length + '">' + ph.map(function (u, i) { return '<a class="ntp" href="' + escapeHtml(u) + '" target="_blank" rel="noopener" onclick="return ntPv(this, ' + i + ')" aria-label="사진 ' + (i + 1) + ' 크게 보기"><img src="' + escapeHtml(u) + '" alt="" loading="lazy"></a>'; }).join('') + '</div>';
+    }
+    /* 1111 MJ '리뷰 사진 누르면 그 리뷰 글에 다른 사진이 있으면 슬라이드로 볼 수 있게' — 앱 안에서 크게 · 옆으로 밀어 넘김(스크롤 스냅) · n / N · ✕·바깥 누르기·Esc 로 닫기 */
+    function ntPv(el, i) {
+      var us = [].map.call(el.parentNode.querySelectorAll('a.ntp'), function (x) { return x.getAttribute('href'); }), many = us.length > 1;
+      var v = document.createElement('div'); v.className = 'ntpv'; v.setAttribute('role', 'dialog'); v.setAttribute('aria-label', '사진 크게 보기');
+      v.innerHTML = '<div class="ntpv-tr">' + us.map(function (u) { return '<div class="ntpv-s"><img src="' + escapeHtml(u) + '" alt=""></div>'; }).join('') + '</div><button type="button" class="ntpv-x" aria-label="닫기">✕</button>'
+        + (many ? '<button type="button" class="ntpv-a p" aria-label="앞 사진">‹</button><button type="button" class="ntpv-a nx" aria-label="다음 사진">›</button><b class="ntpv-n">' + (i + 1) + ' / ' + us.length + '</b>' : '');
+      document.body.appendChild(v);
+      var tr = v.firstChild, n = v.querySelector('.ntpv-n'), key = function (e) { if (e.key === 'Escape') close(); else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') tr.scrollBy({ left: (e.key === 'ArrowRight' ? 1 : -1) * tr.clientWidth, behavior: 'smooth' }); }, close = function () { v.remove(); document.removeEventListener('keydown', key); };
+      tr.scrollLeft = i * tr.clientWidth;
+      tr.addEventListener('scroll', function () { if (n) n.textContent = (Math.round(tr.scrollLeft / tr.clientWidth) + 1) + ' / ' + us.length; }, { passive: true });
+      v.querySelector('.ntpv-x').onclick = close;
+      [].forEach.call(v.querySelectorAll('.ntpv-a'), function (b) { b.onclick = function () { tr.scrollBy({ left: (b.classList.contains('nx') ? 1 : -1) * tr.clientWidth, behavior: 'smooth' }); }; });
+      v.addEventListener('click', function (e) { if (e.target.classList.contains('ntpv-s')) close(); });
+      document.addEventListener('keydown', key); v.querySelector('.ntpv-x').focus();
+      return false;
     }
     function ntRsvpHtml(n) {
       if (!n.rsvp) return '';
@@ -18225,7 +18241,8 @@ video {
     function ntOnSearch(v) { NT.q = String(v || ''); clearTimeout(_ntQT); _ntQT = setTimeout(function () { if (typeof ryFloor === 'function') ryFloor(); ntRender(); }, 150); }
     function ntSetTag(t) { NT.tag = NT.tag === t ? '' : t; if (typeof ryFloor === 'function') ryFloor(); ntRender(); }   /* 목록이 짧아져도 누른 칩이 제자리 (받침) */
     function ntMatch(n) {
-      if (NT.tag && n.tag !== NT.tag && !(NT.tag === '이벤트' && n.ev)) return false;   // 1021 MJ: 증정 공지에 붙인 🎁 배지(ev)도 '이벤트' 칩·배지 누르기에서 보이게
+      if (NT.tag && n.tag !== NT.tag && !(NT.tag === '이벤트' && n.ev)) return false;
+      if (!NT.tag && n.tag === '리뷰' && !NT.q) return false;   // 1111 리뷰는 [리뷰] 칩에서만 (검색하면 같이 나옴)   // 1021 MJ: 증정 공지에 붙인 🎁 배지(ev)도 '이벤트' 칩·배지 누르기에서 보이게
       var q = ntNorm(NT.q); if (!q) return true;
       var names = [].concat(n.before || [], n.after || [], n.effectiveAfter || []).map(function (x) { return x.name; }).join(' ');
       return ntNorm([n.title, n.body, names].concat((n.corrections || []).map(function (c) { return c.title + ' ' + c.body; })).join(' ')).indexOf(q) !== -1;
@@ -19112,7 +19129,7 @@ video {
   <div class="ava-head"><b class="ry-info-title">카톡 공지 붙여넣기</b><button type="button" onclick="ntClosePaste()">닫기</button></div>
   <textarea id="ntRaw" class="nt-raw" rows="7" placeholder="[공지] 제목&#10;본문…&#10;기존 : 헤어세럼1 + 핸드크림1&#10;변경 : 헤어세럼1 + 마스크팩 2ea" oninput="ntOnPaste()" aria-label="카톡 공지 글"></textarea>
   <div class="nt-fields">
-    <label>태그<select id="ntTag" onchange="this.dataset.touched=1"><option>공지</option><option>증정</option><option>품절</option><option>업무</option><option>일정</option><option>이벤트</option><option>기타</option></select></label>
+    <label>태그<select id="ntTag" onchange="this.dataset.touched=1"><option>공지</option><option>증정</option><option>품절</option><option>업무</option><option>일정</option><option>이벤트</option><option>리뷰</option><option>기타</option></select></label>
     <label>공지일<input type="date" id="ntDate"></label>
     <label class="wide">제목<input type="text" id="ntTitle" maxlength="120" oninput="this.dataset.touched=1"></label>
     <label class="wide" id="ntParentWrap" hidden>어느 공지의 정정인가요?<select id="ntParent" onchange="this.dataset.touched=1; NT.parentSel=this.value"></select></label>
@@ -19126,7 +19143,7 @@ video {
 <div class="ava-sheet nt-sheet" id="ntESheet" role="dialog" aria-label="공지 고치기">
   <div class="ava-head"><b class="ry-info-title">공지 고치기</b><button type="button" onclick="ntCloseEdit()">닫기</button></div>
   <div class="nt-fields">
-    <label>태그<select id="ntETag"><option>공지</option><option>증정</option><option>품절</option><option>업무</option><option>일정</option><option>이벤트</option><option>기타</option></select></label>
+    <label>태그<select id="ntETag"><option>공지</option><option>증정</option><option>품절</option><option>업무</option><option>일정</option><option>이벤트</option><option>리뷰</option><option>기타</option></select></label>
     <label>공지일<input type="date" id="ntEDate"></label>
     <label class="wide">제목<input type="text" id="ntETitle" maxlength="120"></label>
   </div>
@@ -22575,7 +22592,14 @@ setInterval(function () { if (document.visibilityState === 'visible') rlLoad(); 
 .ev-box .ev-end{margin-top:10px;min-height:44px;padding:0 16px;border-radius:12px!important;border:1px solid #FDA29B;background:#fff;color:#B42318;font-weight:800;font-size:14px}
 .ev-box.off .ev-end{border-color:#D0D5DD;color:#344054}
 .ev-reg{min-height:44px;padding:0 14px;border-radius:999px!important;border:1px solid #FECDCA;background:#FFF1F0;color:#B42318;font-weight:800;font-size:13.5px;white-space:nowrap}
-.nt-tag.t-7{background:#FFF1F0!important;color:#B42318!important}
+.nt-tag.t-7{background:#FFF1F0!important;color:#B42318!important}.nt-tag.t-8{background:#FFFAEB;color:#B54708}
+.ntpv{position:fixed;inset:0;z-index:10100;background:rgba(10,12,16,.95);animation:ntpvIn .18s ease-out}
+.ntpv-tr{display:flex;width:100%;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior:contain}.ntpv-tr::-webkit-scrollbar{display:none}
+.ntpv-s{flex:0 0 100%;height:100%;display:grid;place-items:center;scroll-snap-align:center;scroll-snap-stop:always}.ntpv-s img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.ntpv-x,.ntpv-a{position:absolute;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.18);color:#fff;font-size:20px;line-height:44px;text-align:center;cursor:pointer}
+.ntpv-x{top:calc(env(safe-area-inset-top,0px) + 12px);right:12px}.ntpv-a{top:50%;margin-top:-22px;font-size:28px}.ntpv-a.p{left:10px}.ntpv-a.nx{right:10px}
+.ntpv-n{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);color:#fff;background:rgba(255,255,255,.18);padding:4px 12px;border-radius:999px;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+@media (hover:none){.ntpv-a{display:none}}@keyframes ntpvIn{from{opacity:0}}@media (prefers-reduced-motion:reduce){.ntpv{animation:none}}
 .nt-hbtns{display:inline-flex;gap:8px;flex:none}
 @media(max-width:600px){.nt-long{display:none}}
 #evSheet{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:8200;width:min(560px,100%);max-height:92vh;overflow-y:auto;background:#fff;border-radius:24px 24px 0 0!important;padding:20px 16px calc(20px + env(safe-area-inset-bottom))}
