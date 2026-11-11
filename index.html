@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwbhstmn">
+  <meta name="ry-build" content="mwbhvlni">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4536,7 +4536,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 .sc-head .sc-hd{margin-bottom:0}
 .sc-edit{flex:none;min-height:40px;padding:0 14px;border:1px solid #B2CCFF;border-radius:12px!important;background:#fff;color:#155EEF;font-size:13.5px;font-weight:800}
 .sc-memo{margin:12px 0 0;padding:12px 14px;border-radius:14px;background:#FFFAEB;border:1px solid #FEDF89;color:#7A2E0E;font-size:14px;font-weight:600;line-height:1.6;white-space:pre-line;overflow-wrap:anywhere}
-.sc-sets{display:grid;gap:12px}
+.sc-sets{display:grid;gap:12px}.sc-mob{display:none}@media (max-width:600px){.sc-sets,.sc-chartcard{display:none!important}.sc-mob{display:block}}.sc-mh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:4px}.sc-mh b{font-size:16px;font-weight:800;color:#101828}.sc-mh span{font-size:12px;color:#667085}.sc-mr{padding:10px 0;border-top:1px solid var(--ry-line)}.sc-mh+.sc-mr{border-top:0}.sc-mr1{display:flex;align-items:center;gap:8px}.sc-mn{flex:1;min-width:0;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:#101828;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sc-mn i{width:8px;height:8px;border-radius:50%;background:var(--sc);flex:none}.sc-mtd{font-size:12px;color:#667085;white-space:nowrap}.sc-mtd b{font-size:15px;color:#101828}.sc-mtd.done b{color:#12B76A}.sc-mw{font-size:12px;color:#667085;white-space:nowrap;min-width:76px;text-align:right}.sc-mw b{font-size:17px;font-weight:800;color:var(--sc)}.sc-mbar{height:6px;border-radius:99px;background:#F2F4F7;margin:6px 0 4px;overflow:hidden}.sc-mbar i{display:block;height:100%;background:var(--sc);border-radius:99px}.sc-mr3{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#667085}.sc-mr3 em{font-style:normal;font-weight:700;color:var(--sc)}.sc-mr.win .sc-mr3 span{color:#067647;font-weight:700}.sc-dtw{overflow-x:auto}.sc-dt{width:100%;border-collapse:collapse;font-size:13px;text-align:center}.sc-dt th,.sc-dt td{padding:7px 2px}.sc-dt thead th{font-size:12px;color:#667085;font-weight:600;line-height:1.2}.sc-dt thead th small{display:block;font-size:10px;color:#98A2B3;font-weight:500}.sc-dt thead th.td{color:#155EEF;font-weight:800}.sc-dt tbody th{text-align:left;font-size:12px;font-weight:700;color:var(--sc);white-space:nowrap;padding-right:6px}.sc-dt td{font-weight:700;color:#344054;border-top:1px solid var(--ry-line)}.sc-dt td.hit{background:#ECFDF3;color:#067647}.sc-dt td.fu,.sc-dt td.na{color:#D0D5DD;font-weight:400}.sc-dt td.td{box-shadow:inset 0 0 0 1.5px rgba(21,94,239,.25)}
 .sc-set{position:relative;padding:14px 16px}
 .sc-set-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px}
 .sc-set .sc-nm{font-size:16px;min-width:0;overflow-wrap:anywhere}
@@ -8211,19 +8211,30 @@ video {
           + (w.note ? '<p class="sc-memo">📣 ' + escapeHtml(w.note) + '</p>' : '') + '</section>';
         /* 1109 MJ '판매 넣기 칸 필요해? POS로 자동으로 올라가잖아' → 평소엔 숨김(POS 30분마다 자동) · POS 로그인이 풀린 날 고치기용 작은 버튼만 */
         if (scAdm()) h += SC.inOpen ? scInHtml(c, w, t) : '<button type="button" class="sc-fixbtn" onclick="SC.inOpen=1;scRender()">✏️ 숫자 직접 고치기 <small>평소엔 POS에서 30분마다 자동</small></button>';
+        var mob = [];   /* 1111 MJ '폰에서 너무 커 · 한눈에' → ≤600px 는 아래 간단판(sc-mob) */
         h += '<div class="sc-sets">' + SC_SETS.map(function (s) {
           var G = scWG(w, s.k), dg = scGoal(c, nth > 0 ? t : w.from, s.k), sum = 0, sumB = 0;
           days.forEach(function (d) { if (d <= t) { var v = scV(d, s.k) || 0; sum += v; if (d < t) sumB += v; } });   // 오늘 넣은 것도 합계에 · 남은 하루 개수는 어제까지 기준
           var tv = nth > 0 ? scV(t, s.k) : null, pv = SC.prev[s.k] != null ? SC.prev[s.k] : 0, need = left ? Math.ceil(Math.max(0, G - sumB) / left) : 0, win = G > 0 && sum >= G, tdone = tv != null && dg > 0 && tv >= dg;
           if (win) SC.totWin.push(s.k);
+          mob.push({ s: s, G: G, dg: dg, sum: sum, tv: tv, need: need, win: win, tdone: tdone });
           var msg = !G ? '주 목표 없음' : win ? '🏆 주 목표 달성!' + (sum > G ? ' <b>+' + (sum - G) + '개</b>' : '') : '<span>남은 <b>' + (G - sum) + '개</b></span> · <span>남은 ' + left + '일 하루 평균 <b>' + need + '개</b> 필요</span>';
           return '<section class="sc-card sc-set' + (win ? ' win' : '') + '" id="scTot-' + s.k + '" style="--sc:' + s.c + ';--sc-soft:' + s.soft + '"><div class="sc-set-hd"><div class="sc-nm">' + escapeHtml(s.label) + (s.sub ? '<small>' + escapeHtml(s.sub) + '</small>' : '') + '</div>' + (G ? '<em class="sc-pct">' + Math.round(sum / G * 100) + '%</em>' : '') + '</div>'
             + '<div class="sc-set-bd"><div class="sc-mini' + (tdone ? ' done' : '') + '" id="scT-' + s.k + '"><div class="sc-rw">' + scRing(s, tv, dg, pv) + '<div class="sc-num"><b data-n="' + (tv || 0) + '" data-p="' + pv + '">' + (tv == null ? '–' : pv) + '</b><span>/ ' + (dg || '–') + '</span></div></div><small>' + (tdone ? '오늘 🎉 달성' : '오늘') + '</small></div>'
             + '<div><div class="sc-big"><b>' + sum + '</b><span>' + (G ? '/ ' + G + '개' : '개') + '</span></div>' + (G ? '<div class="sc-bar"><i style="width:' + Math.min(100, sum / G * 100).toFixed(1) + '%"></i></div>' : '') + '<div class="sc-wk-s">' + msg + '</div></div></div></section>';
         }).join('') + '</div>';
         SC.totKey = w.from + ':' + SC.totWin.join(',');
+        h += '<section class="sc-card sc-mob"><div class="sc-mh"><b>이번 주 진행</b><span>오늘/하루 목표 · 이번 주/주 목표</span></div>' + mob.map(function (m) {
+          var p = m.G ? Math.min(100, m.sum / m.G * 100) : 0;
+          return '<div class="sc-mr' + (m.win ? ' win' : '') + '" style="--sc:' + m.s.c + '"><div class="sc-mr1"><span class="sc-mn"><i></i>' + escapeHtml(m.s.label) + '</span><span class="sc-mtd' + (m.tdone ? ' done' : '') + '">오늘 <b>' + (m.tv == null ? '–' : m.tv) + '</b>/' + (m.dg || '–') + '</span><span class="sc-mw"><b>' + m.sum + '</b>/' + (m.G || '–') + '</span></div>'
+            + (m.G ? '<div class="sc-mbar"><i style="width:' + p.toFixed(1) + '%"></i></div>' : '')
+            + '<div class="sc-mr3"><span>' + (m.win ? '🏆 주 목표 달성' + (m.sum > m.G ? ' +' + (m.sum - m.G) + '개' : '') : m.G ? '남은 ' + (m.G - m.sum) + '개 · 하루 평균 ' + m.need + '개 필요' : '주 목표 없음') + '</span><em>' + (m.G ? Math.round(m.sum / m.G * 100) + '%' : '') + '</em></div></div>';
+        }).join('') + '</section>';
+        h += '<section class="sc-card sc-mob"><div class="sc-mh"><b>일별 판매량</b><span>초록 = 하루 목표 달성</span></div><div class="sc-dtw"><table class="sc-dt"><thead><tr><th></th>' + days.map(function (d) { return '<th' + (d === t ? ' class="td"' : '') + '>' + (+d.slice(8)) + '<small>' + SC_WD[new Date(d + 'T00:00:00').getDay()] + '</small></th>'; }).join('') + '</tr></thead><tbody>'
+          + SC_SETS.map(function (s) { return '<tr style="--sc:' + s.c + '"><th>' + escapeHtml(/^세트\s*전체/.test(s.label) ? '전체' : scShort(s.label)) + '</th>' + days.map(function (d) { var v = scV(d, s.k), g = scGoal(c, d, s.k), cls = d > t ? 'fu' : v == null ? 'na' : g && v >= g ? 'hit' : ''; return '<td class="' + cls + (d === t ? ' td' : '') + '">' + (d > t || v == null ? '·' : v) + '</td>'; }).join('') + '</tr>'; }).join('')
+          + '</tbody></table></div></section>';
         var legs = SC_SETS.filter(function (s) { return s.leg; }).map(function (s) { return escapeHtml(s.label.split(' ')[0]) + ' ' + s.leg + '↑'; });
-        h += '<section class="sc-card"><h3>일별 판매량 <span>점선 = 하루 목표 · 🔥 달성 · 20개↑ 💥' + (legs.length ? ' · 👑 ' + legs.join(' · ') : '') + '</span></h3><p class="sc-tier" aria-label="막대 색 = 그날 판 개수">' + SC_TIER.slice().reverse().map(function (x) { return '<i style="background:' + x[1] + '"></i>' + x[0]; }).join('') + '개↑</p><div class="sc-charts">' + SC_SETS.map(function (s) { return scChart(s, c, days, t); }).join('') + '</div></section>';
+        h += '<section class="sc-card sc-chartcard"><h3>일별 판매량 <span>점선 = 하루 목표 · 🔥 달성 · 20개↑ 💥' + (legs.length ? ' · 👑 ' + legs.join(' · ') : '') + '</span></h3><p class="sc-tier" aria-label="막대 색 = 그날 판 개수">' + SC_TIER.slice().reverse().map(function (x) { return '<i style="background:' + x[1] + '"></i>' + x[0]; }).join('') + '개↑</p><div class="sc-charts">' + SC_SETS.map(function (s) { return scChart(s, c, days, t); }).join('') + '</div></section>';
       }
       h += scHistHtml(c, t);   /* 1109 📅 날짜별 판매는 판매 목표 화면의 따로 탭 (scCalTab) */
       b.innerHTML = '<div class="sc">' + h + '</div>';
