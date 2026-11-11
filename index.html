@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwbjboql">
+  <meta name="ry-build" content="mwbjet1t">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8304,8 +8304,8 @@ video {
       o.innerHTML = h; document.body.appendChild(o);
     }
     function ryBank(on, slow) {   /* 1111 MJ '눈이 쌓여 가는 느낌' + '눈 치우는 건 10초쯤 뒤에' — 처음 10초 만에 쌓이고 곧 치움, 그다음은 90초 동안 천천히 */
-      var bk = document.getElementById('ryBank'); clearTimeout(window._rySwT);
-      if (!on || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) { if (bk) bk.remove(); return; }
+      var bk = document.getElementById('ryBank');
+      if (!on || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) { clearTimeout(window._rySwT); if (bk) bk.remove(); return; }   // 날씨가 늦게 와서 두 번 불려도 치우기 예약은 그대로
       if (bk || !document.body) return;
       var dur = slow ? 90 : 10;
       document.body.insertAdjacentHTML('beforeend', '<div id="ryBank" aria-hidden="true" style="animation-duration:' + dur + 's"><svg viewBox="0 0 400 40" preserveAspectRatio="none"><path d="M0 22Q20 8 40 18T80 16T120 21T160 13T200 19T240 15T280 21T320 12T360 18T400 14V40H0Z" fill="#fff"/></svg></div>');
