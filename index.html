@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwbjp6zj">
+  <meta name="ry-build" content="mwbjqpdp">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8344,7 +8344,8 @@ video {
       var old = document.getElementById('ryPep'); if (old) old.remove();
       var mk = document.querySelector('.ry25-mark'); if (!on || !mk) return;
       var st = '<svg viewBox="0 0 14 52"><rect x="4" y="35" width="6" height="16" rx="3" fill="#E9C48B"/><rect x="3" y="2" width="8" height="37" rx="4" fill="#5B341C"/><path d="M3.5 9l7-3M3.5 17l7-3M3.5 25l7-3" stroke="#7A4A2A" stroke-width=".8"/><circle cx="5.6" cy="11" r="1.25" fill="#fff"/><circle cx="8.4" cy="11" r="1.25" fill="#fff"/><path d="M5.2 15q1.8 1.8 3.6 0" stroke="#fff" stroke-width="1" fill="none" stroke-linecap="round"/></svg>';
-      var say = ['빼빼로 데이! 🍫', '직원들 항상 건강해요 💙', '성수레디영 화이팅! 💪'], n = 0, m = document.createElement('span');
+      /* 1111 MJ '빼빼로가 재밌는 말을 계속 · 초콜릿 많이 먹다 돼지 된다 같은 거 · 웃겨줘' — 빼빼로가 자기를 놀리는 말 위주(사람 외모 X) · 섞어서 하나씩 */
+      var say = ['빼빼로 데이! 🍫', '초콜릿 많이 먹으면 돼지 된다… 나처럼 🐷', '1년 중 오늘만 몸값 올라감 ✨', '빼빼로 먹다 빼빼가 아니라 통통해짐', '누드 빼빼로는 부끄러워서 숨었어요 🙈', '아몬드 빼빼로는 치과 예약부터 🦷', '빼빼로데이 = 빼빼로가 데이트하는 날 💘', '초코 쏙 빼먹고 과자만 남기기 없기!', '오늘 고백 성공률 +11% (출처: 나)', '한 개만 먹는다는 건 거짓말이야', '막대기 인생 364일 대기, 오늘 출근', '다 같이 빼빼 흔들어! 💃', '나 오늘 품절될 예정 😎', '세트도 오늘 빼빼로처럼 쭉쭉 나가자!', '직원들 항상 건강해요 💙', '성수레디영 화이팅! 💪'].sort(function () { return Math.random() - .5; }), n = 0, m = document.createElement('span');
       m.id = 'ryPep'; m.className = 'ry-pep'; m.setAttribute('aria-hidden', 'true'); m.innerHTML = st + st + '<em>' + say[0] + '</em>'; mk.insertAdjacentElement('afterend', m);
       m.querySelector('em').addEventListener('animationiteration', function () { n = (n + 1) % say.length; this.textContent = say[n]; });
     }
