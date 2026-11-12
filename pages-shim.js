@@ -45,8 +45,12 @@
   var API = 'https://script.google.com/macros/s/AKfycbwvMFIQhV_N1TEso50QSVN7vdMCRXmOUPXDep8p7pKQs1bHvIye7LXbUDANLhzn3pDo/exec';
   var KEY = 'ry_pages_k', q = new URLSearchParams(location.search), k = q.get('k') || '';
   try { if (k) localStorage.setItem(KEY, k); else k = localStorage.getItem(KEY) || ''; } catch (e) {}
-  if (q.has('k')) {   /* 주소창·홈 화면 링크에 암호가 남지 않게 지운다 (?me= 는 그대로) */
-    q.delete('k');
+  /* 1112 대표 보기 전용 링크 (?me=이름&v=열쇠) — 앱 암호 대신 v · 서버가 읽기만 허락 (쓰기는 __ro) */
+  var VK = 'ry_viewer_v', vv = q.get('v') || '';
+  try { if (vv) localStorage.setItem(VK, vv); else vv = localStorage.getItem(VK) || ''; } catch (e) {}
+  window.RY_VIEW = !!vv;
+  if (q.has('k') || q.has('v')) {   /* 주소창·홈 화면 링크에 암호가 남지 않게 지운다 (?me= 는 그대로) */
+    q.delete('k'); q.delete('v');
     try { history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q.toString() : '') + location.hash); } catch (e) {}
   }
   var locked = false;
@@ -59,7 +63,7 @@
     return post2(fn, args, key, n, rid);
   }
   function post2(fn, args, key, n, rid) {
-    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ rpc: fn, args: args, k: key, rid: rid || undefined }) })
+    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(vv ? { rpc: fn, args: args, v: vv } : { rpc: fn, args: args, k: key, rid: rid || undefined }) })
       .then(function (r) { return r.text(); })
       .then(function (t) {
         try { return JSON.parse(t); } catch (e) {
@@ -80,12 +84,13 @@
   }
   function send(fn, args, ok, fail, uo, n, rid) {
     if (fn === 'getWebAppUrl') { setTimeout(function () { ok && ok(location.origin + location.pathname, uo); }); return; }   /* 전용 링크는 이 화면 주소로 */
-    if (locked || !k) { showGate(); return; }
+    if (locked || !(k || vv)) { showGate(); return; }
     n = n || 0;
     if (!rid && !/^(get|list|search)/.test(fn)) rid = newRid();   // 읽기는 번호 없이 (다시 해도 안전)
     var again = function (e) { if (n >= RETRY_MS.length) { if (fail) fail(e, uo); else console.error(fn, e); return; } later(RETRY_MS[n], function () { send(fn, args, ok, fail, uo, n + 1, rid); }); };
     post(fn, args, k, 0, rid).then(function (j) {
       if (j && j.__auth) { locked = true; showGate(j.__err); return; }
+      if (j && j.__ro) { roToast(); return; }   // 보기 전용 — 저장 안 됨 (실패 창 대신 안내 한 번)
       if (j && j.__busy) { again(new Error(j.__err)); return; }   // 앞의 같은 요청이 아직 처리 중
       if (j && j.__err) { if (fail) fail(new Error(j.__err), uo); else console.error(fn, j.__err); return; }
       ok && ok(j, uo);
@@ -93,6 +98,25 @@
       if (/fetch|network|load|서버가 잠깐/i.test(String(e && e.message || e))) { again(e); return; }
       if (fail) fail(e, uo); else console.error(fn, e);
     });
+  }
+  var lastTap = 0, lastRo = 0;
+  document.addEventListener('pointerdown', function () { lastTap = Date.now(); }, true);
+  function roToast() {   // 화면이 알아서 보내는 기록(사용 로그 등)엔 조용히 · 직접 누른 뒤에만 안내
+    var now = Date.now();
+    if (now - lastTap > 8000 || now - lastRo < 3000) return;
+    lastRo = now;
+    if (typeof window.showToast === 'function') window.showToast('👀 보기 전용이라 실제로 바뀌지 않아요', 2600);
+  }
+  if (vv) {   // 보기 전용 띠
+    var band = function () {
+      if (!document.body) { document.addEventListener('DOMContentLoaded', band); return; }
+      var nm = q.get('me') || ''; try { nm = nm || localStorage.getItem('s_selected_member') || ''; } catch (e) {}
+      var b = document.createElement('div'); b.id = 'ryViewBand'; b.setAttribute('role', 'status');
+      b.setAttribute('style', 'position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 12px);transform:translateX(-50%);z-index:2147483000;pointer-events:none;background:rgba(16,24,40,.88);color:#fff;font:600 13px/1.3 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",Pretendard,sans-serif;padding:8px 14px;border-radius:999px;white-space:nowrap;box-shadow:0 4px 14px rgba(16,24,40,.2)');
+      b.textContent = '👀 보기 전용' + (nm ? ' · ' + nm + '님' : '') + ' · 눌러도 실제로 바뀌지 않아요';
+      document.body.appendChild(b);
+    };
+    band();
   }
   function runner(ok, fail, uo) {
     return new Proxy({}, { get: function (_, name) {
