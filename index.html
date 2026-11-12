@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwcx8kij">
+  <meta name="ry-build" content="mwcxtu5q">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4471,24 +4471,17 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 /* 1112 MJ '특이사항 메모에 글을 많이 적으면 이상하게 보여' — 긴 메모가 노란 상자 밖으로 삐져나옴(가운데 정렬 + 높이 제한) → 표 칸에선 3줄까지 보이고 '…', 상자는 글자 높이만큼 늘어남, 누르면 전체(메모 창) */
 html:not(#q):not(#w):not(#e) body:not(#r) :is(#reviewTableBody,#readyTableBody,#soldOutTableBody,#inboundTableBody,#orderTableBody) .ry-note:not(.empty){display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden!important;white-space:normal!important;text-overflow:clip!important;max-height:none!important;min-height:0!important;padding:8px 12px 0!important;line-height:1.45!important;text-align:left!important;word-break:keep-all;overflow-wrap:anywhere;margin:6px 0!important;box-sizing:border-box!important;max-height:calc(4.35em + 16px)!important;background:var(--z-warn-soft)!important;border:0!important;border-bottom:8px solid var(--z-warn-soft)!important;border-radius:12px!important;box-shadow:0 0 0 1px #f7e3a6}
 html:not(#q):not(#w):not(#e) body:not(#r) :is(#reviewTableBody,#readyTableBody,#soldOutTableBody,#inboundTableBody,#orderTableBody) .ry-note:not(.empty)::before{display:none!important}
-/* 1112 헤더 전체 불바다 (MJ '이펙트가 약해, 보면 바로 바쁜 걸 알게') — 1 따뜻한 띠 · 2 주황 + 아래 불꽃 줄 · 3 움직이는 불 배경 + 불꽃 줄 + 불티 · 4 더 빨갛고 빠르게 + 큰 불꽃 */
-html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat]{position:relative;transition:background .8s}
-html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat] .ry25-top-in{position:relative;z-index:1}
-html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="1"]{background:linear-gradient(180deg,#FFE9CC 0%,#FFF8EE 100%);border-bottom:3px solid #FDB022}
-html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="2"]{background:linear-gradient(180deg,#FFC98A 0%,#FFE6C4 100%);border-bottom:3px solid #F79009}
-html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="3"]{background:linear-gradient(110deg,#FF4D1F,#FF8A00,#FFB800,#FF8A00,#FF4D1F);background-size:300% 100%;animation:ryHeatBg 3s linear infinite;border-bottom:0}
-html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="4"]{background:linear-gradient(110deg,#C4320A,#FF3B1F,#FF8A00,#FF3B1F,#C4320A);background-size:300% 100%;animation:ryHeatBg 1.5s linear infinite,ryBusy .5s ease-in-out infinite;border-bottom:0}
-html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="3"] .ry25-title,html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="4"] .ry25-title{color:#fff!important;text-shadow:0 1px 8px rgba(120,20,0,.55)}
-html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="3"] .ry25-sub,html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="4"] .ry25-sub{color:rgba(255,255,255,.92)!important}
-html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="2"]::after,html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="3"]::after,html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="4"]::after{content:'🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥';position:absolute;left:0;right:0;bottom:-15px;height:22px;overflow:hidden;white-space:nowrap;font-size:15px;line-height:22px;letter-spacing:1px;text-align:center;pointer-events:none;z-index:6;transform-origin:50% 100%;animation:ryFlick .45s ease-in-out infinite alternate}
-html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="2"]::after{opacity:.75;font-size:12px;bottom:-12px}
-html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="4"]::after{font-size:22px;height:30px;line-height:30px;bottom:-21px;animation-duration:.3s}
-html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="3"]::before,html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="4"]::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.8;background-image:radial-gradient(circle,#FFF1B8 1.6px,transparent 2.4px),radial-gradient(circle,#FFE08A 1.2px,transparent 2px);background-size:56px 56px,38px 38px;animation:ryEmber 2.4s linear infinite}
-html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="4"]::before{animation-duration:1.2s}
-@keyframes ryHeatBg{0%{background-position:0 0}100%{background-position:300% 0}}
-@keyframes ryFlick{from{transform:scaleY(.8)}to{transform:scaleY(1.15)}}
-@keyframes ryEmber{from{background-position:0 0,20px 10px}to{background-position:0 -56px,20px -28px}}
-@media(prefers-reduced-motion:reduce){html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat],html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat]::after,html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat]::before{animation:none!important}}
+/* 1112 MJ 시안 C 선택 ('LIVE 지금 바빠요 + 흐르는 밑줄') — 헤더는 하얀 그대로 · 불바다·불꽃 줄·로고 오라 없앰
+   1(40%) ♨️ 칩만 · 2(80%) 🔥 칩 + 옅은 밑줄 · 3(100%) LIVE 배지(빨간 점 깜빡) + 흐르는 밑줄 · 4(150%) 더 빠르고 두꺼운 밑줄 */
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat]{position:relative}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="2"]::after,html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="3"]::after,html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="4"]::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:3px;pointer-events:none;z-index:6;background:linear-gradient(90deg,#FDB022,#F04438,#EE46BC,#F79009,#FDB022);background-size:300% 100%;animation:ryFlow 2.4s linear infinite}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="2"]::after{height:2px;opacity:.55;animation-duration:4s}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="4"]::after{height:4px;animation-duration:1.2s}
+@keyframes ryFlow{to{background-position:300% 0}}
+#ryAura{display:none!important}
+#ryHeat i.rlv{display:inline-block;width:8px;height:8px;margin-right:6px;border-radius:50%;background:#F04438;animation:ryDot 1.2s infinite}
+@keyframes ryDot{0%{box-shadow:0 0 0 0 rgba(240,68,56,.55)}100%{box-shadow:0 0 0 9px rgba(240,68,56,0)}}
+@media(prefers-reduced-motion:reduce){html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat]::after,#ryHeat i.rlv{animation:none!important}}
 /* 1112 불타는 헤더 (scHeat) — 오늘 세트 판매가 목표에 가까울수록 */
 /* 1112 MJ '로고에 군데군데 불타는 건 이상해 — 손오공 초사이언처럼' → 로고 뒤 황금 오라(위로 솟는 불꽃 모양, #ryAura = 로고 뒤 따로 그린 칸) · 단계마다 커지고 빨라짐 · 4단계는 번쩍이는 전기 */
 .ry25-brand[data-heat]{position:relative}
@@ -4508,7 +4501,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="4"]::before{anima
 @keyframes ryAura{from{transform:scaleY(.9) scaleX(1.02)}to{transform:scaleY(1.12) scaleX(.97)}}
 @keyframes ryAuraIn{from{opacity:.55}to{opacity:1}}
 @keyframes ryZap{0%,62%,100%{filter:none}64%{filter:drop-shadow(0 0 6px #7DD3FC) drop-shadow(0 0 2px #fff) brightness(1.25)}68%{filter:none}72%{filter:drop-shadow(0 0 8px #93C5FD) brightness(1.2)}}
-.ry25-brand[data-heat="4"]{animation:ryBusy .45s ease-in-out infinite}
+
 #ryHeatSay{position:fixed;z-index:2147482000;max-width:min(78vw,260px);padding:8px 12px;border-radius:14px;background:#fff;color:#101828;font-size:13.5px;font-weight:800;line-height:1.4;box-shadow:0 10px 28px rgba(16,24,40,.22);border:2px solid #FDB022;pointer-events:none;opacity:0;transform:translateY(-6px) scale(.9);transform-origin:16px 0}
 #ryHeatSay::before{content:'';position:absolute;left:14px;top:-8px;border:7px solid transparent;border-top:0;border-bottom-color:#FDB022}
 #ryHeatSay.lv3,#ryHeatSay.lv4{border-color:#F04438;background:#FFF6ED}#ryHeatSay.lv3::before,#ryHeatSay.lv4::before{border-bottom-color:#F04438}
@@ -4518,8 +4511,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="4"]::before{anima
 .ry25-brand[data-heat="3"] #ryHeatB,.ry25-brand[data-heat="4"] #ryHeatB{background:linear-gradient(90deg,#F04438,#F79009);animation:ryWarm .9s ease-in-out infinite}
 @media(max-width:600px){#ryHeat{display:none!important}#ryHeatB{display:block}}
 #ryHeat{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:800;line-height:1.5;color:#B54708;background:#FEF0C7;white-space:nowrap}
-.ry25-brand[data-heat="2"] #ryHeat{color:#fff;background:linear-gradient(90deg,#F79009,#FDB022)}
-.ry25-brand[data-heat="3"] #ryHeat,.ry25-brand[data-heat="4"] #ryHeat{color:#fff;background:#7A2E0E;box-shadow:0 0 0 2px rgba(255,255,255,.85),0 4px 14px rgba(122,46,14,.45)}   /* 1112 불바다 헤더 위에선 진한 갈색 칩으로 또렷하게 */
+.ry25-brand[data-heat="2"] #ryHeat{color:#C4320A;background:#FFF4ED}
+.ry25-brand[data-heat="3"] #ryHeat,.ry25-brand[data-heat="4"] #ryHeat{color:#B42318;background:#FEF3F2;font-weight:900;letter-spacing:.2px}   /* 1112 불바다 헤더 위에선 진한 갈색 칩으로 또렷하게 */
 @keyframes ryWarm{0%,100%{filter:saturate(1)}50%{filter:saturate(1.5) brightness(1.08)}}
 @keyframes ryFlame{0%{transform:translate(-50%,6px) scale(.6);opacity:0}30%{opacity:1}100%{transform:translate(-50%,-14px) scale(1.15);opacity:0}}
 @keyframes ryFire{0%{background-position:0 0}100%{background-position:300% 0}}
@@ -8349,10 +8342,10 @@ video {
       var up = lv > (SC.heatLv || 0); SC.heatLv = lv; if (lv && up) setTimeout(heatSay, 2500);
       if (!SC.heatT) SC.heatT = setInterval(function () { if (!document.hidden && SC.heatLv) heatSay(); }, 45000);
       var ti = br.querySelector('.ry25-title'), ch = document.getElementById('ryHeat'), mk = br.querySelector('.ry25-mark'), bd = document.getElementById('ryHeatB');
-      if (!lv) { if (bd) bd.remove(); } else if (mk) { if (!bd) { bd = document.createElement('span'); bd.id = 'ryHeatB'; bd.setAttribute('aria-hidden', 'true'); mk.appendChild(bd); } bd.textContent = (lv >= 2 ? '🔥' : '♨️') + sum; }   /* 폰: 이름이 잘려서 로고 위 작은 배지 */
+      if (!lv) { if (bd) bd.remove(); } else if (mk) { if (!bd) { bd = document.createElement('span'); bd.id = 'ryHeatB'; bd.setAttribute('aria-hidden', 'true'); mk.appendChild(bd); } bd.textContent = (lv >= 3 ? '● ' : lv >= 2 ? '🔥' : '♨️') + sum; }   /* 폰: 이름이 잘려서 로고 위 작은 배지 (3단계부터 ● LIVE 점) */
       if (!lv) { if (ch) ch.remove(); } else if (ti) {
         if (!ch) { ch = document.createElement('span'); ch.id = 'ryHeat'; ch.setAttribute('role', 'status'); ti.appendChild(ch); }
-        ch.textContent = (lv >= 4 ? '🔥🔥 불이야! ' : lv >= 3 ? '🔥 호떡집에 불났어요 ' : lv >= 2 ? '🔥 ' : '♨️ ') + '세트 ' + sum + '개';
+        if (lv >= 3) ch.innerHTML = '<i class="rlv"></i>LIVE ' + (lv >= 4 ? '불났어요' : '지금 바빠요') + ' · 세트 ' + sum; else ch.textContent = (lv >= 2 ? '🔥 ' : '♨️ ') + '세트 ' + sum + '개';   /* 1112 시안 C */
         ch.title = '오늘 세트 ' + sum + '개 · 하루 목표 합 ' + goal + '개 (' + Math.round(p * 100) + '%)';
       }
     }
