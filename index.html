@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwdbohs4">
+  <meta name="ry-build" content="mwdn0vl7">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8360,7 +8360,9 @@ video {
       ['어? 계산대가 따뜻해지는데요? ♨️', '불붙기 직전이에요, 조금만 더! 🔥', '손님 줄이 슬슬 길어져요 🚶🚶', '세트 몇 개만 더 가면 활활!', '연기 나기 시작했어요 💨'],
       ['호떡집에 불났어요!! 🔥', '오늘 손님 왜 이렇게 많아요?! 😵', '계산대 쉴 틈이 없어요 💸', '숨 쉴 틈도 없이 바빠요 🏃💨', '물 한 잔 마실 시간도 없어요 💦', '목표 달성! 지금부턴 보너스 판이에요 🎁'],
       ['불이야!! 소방차 불러야 할 판 🚒', '오늘 문 닫을 틈이 없어요 🔥🔥', '이 정도면 전설의 날이에요 👑', '손이 열 개였으면 좋겠어요 🙌🙌', '재고 창고도 깜짝 놀랐어요 📦😲', '오늘 우리 약국 성수 핫플 등극 🌶️']];
+    function scOpenHr() { var h = new Date().getHours(); return h >= 8 && h < 23; }   /* 1112 MJ '11시에 영업 끝나면 말하는건 그만' — 영업 시간(8~23시)에만 말풍선·로고 멘트 */
     function heatSay() {
+      if (!scOpenHr()) { var ob = document.getElementById('ryHeatSay'); if (ob) ob.hidden = true; return; }
       var lv = SC.heatLv || 0, mk = document.querySelector('.ry25-brand .ry25-mark'); if (!lv || !mk) return;
       var a = HEAT_SAY[lv] || []; if (!a.length) return; SC.heatN = ((SC.heatN || 0) + 1) % 997;
       var r = mk.getBoundingClientRect(); if (!r.width || r.bottom < 0) return;
@@ -8773,7 +8775,7 @@ video {
         g += '<text x="' + (x + 12) + '" y="' + (H + 14) + '" class="sc-x' + (d === t ? ' now' : '') + '">' + (+d.slice(8)) + '</text>';
       });
       var hit = days.filter(function (d, i) { return vals[i] != null && goals[i] && vals[i] >= goals[i]; }).length;
-      var lp = Math.round(bx / (days.length * W) * 100), say = bt ? '<em class="sc-say t' + bt + (lp < 40 ? ' l' : lp > 60 ? ' r' : '') + '" data-t="' + bt + '"' + (s.kind === 'item' ? ' data-i="1"' : '') + ' aria-hidden="true" style="left:' + lp + '%;top:' + Math.max(0, by / (H + 31) * 100).toFixed(1) + '%;--fc:' + SC_FIRE[bt - 1][2] + '">' + (s.kind === 'item' ? SC_SAY_I : SC_SAY)[bt][0] + '</em>' : '';   // 1111 그 차트에서 제일 센 불기둥(같으면 최근)이 말함
+      var lp = Math.round(bx / (days.length * W) * 100), say = bt && scOpenHr() ? '<em class="sc-say t' + bt + (lp < 40 ? ' l' : lp > 60 ? ' r' : '') + '" data-t="' + bt + '"' + (s.kind === 'item' ? ' data-i="1"' : '') + ' aria-hidden="true" style="left:' + lp + '%;top:' + Math.max(0, by / (H + 31) * 100).toFixed(1) + '%;--fc:' + SC_FIRE[bt - 1][2] + '">' + (s.kind === 'item' ? SC_SAY_I : SC_SAY)[bt][0] + '</em>' : '';   // 1111 그 차트에서 제일 센 불기둥(같으면 최근)이 말함
       return '<div class="sc-chw"><div class="sc-cht"><b style="color:' + s.c + '">' + escapeHtml(s.label) + '</b><span>🔥 목표 달성 ' + hit + '일</span></div><div class="sc-chb">' + g + '</svg>' + say + '</div></div>';
     }
     var SC_TIER = [[21, '#F04438'], [18, '#F79009'], [15, '#FDB022'], [12, '#66C61C'], [9, '#15B79E'], [6, '#2E90FA'], [3, '#7CD4FD'], [1, '#98A2B3']];   /* 1027 MJ '1·3·6·9·12·15·18·21개 갈수록 그래프 색이 달라지게' — 회색→하늘→파랑→청록→초록→금→주황→빨강 (목표 15 근처 = 금빛 오라, 20↑ = 빨강 오라와 같은 흐름) */
