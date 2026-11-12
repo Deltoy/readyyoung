@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwcymrw3">
+  <meta name="ry-build" content="mwcyquyc">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -118,7 +118,7 @@
       var nm = q.get('me') || ''; try { nm = nm || localStorage.getItem('s_selected_member') || ''; } catch (e) {}
       var b = document.createElement('div'); b.id = 'ryViewBand'; b.setAttribute('role', 'status');
       b.setAttribute('style', 'position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 12px);transform:translateX(-50%);z-index:2147483000;pointer-events:none;background:rgba(16,24,40,.88);color:#fff;font:600 13px/1.3 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",Pretendard,sans-serif;padding:8px 14px;border-radius:999px;white-space:nowrap;box-shadow:0 4px 14px rgba(16,24,40,.2)');
-      b.textContent = '👀 보기 전용' + (nm ? ' · ' + nm + '님' : '') + ' · 눌러도 실제로 바뀌지 않아요';
+      b.textContent = '👀 보기 전용' + (nm ? ' · ' + nm + '님' : '');   // 누르면 '실제로 바뀌지 않아요' 안내가 따로 뜸
       document.body.appendChild(b);
     };
     band();

@@ -113,7 +113,7 @@
       var nm = q.get('me') || ''; try { nm = nm || localStorage.getItem('s_selected_member') || ''; } catch (e) {}
       var b = document.createElement('div'); b.id = 'ryViewBand'; b.setAttribute('role', 'status');
       b.setAttribute('style', 'position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 12px);transform:translateX(-50%);z-index:2147483000;pointer-events:none;background:rgba(16,24,40,.88);color:#fff;font:600 13px/1.3 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",Pretendard,sans-serif;padding:8px 14px;border-radius:999px;white-space:nowrap;box-shadow:0 4px 14px rgba(16,24,40,.2)');
-      b.textContent = '👀 보기 전용' + (nm ? ' · ' + nm + '님' : '') + ' · 눌러도 실제로 바뀌지 않아요';
+      b.textContent = '👀 보기 전용' + (nm ? ' · ' + nm + '님' : '');   // 누르면 '실제로 바뀌지 않아요' 안내가 따로 뜸
       document.body.appendChild(b);
     };
     band();
