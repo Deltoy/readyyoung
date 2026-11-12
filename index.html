@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwd29aa7">
+  <meta name="ry-build" content="mwd6ow1m">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8302,8 +8302,9 @@ video {
        MJ '매일 아침 전날 판매량을 내가 입력' → 서버 getSetChallenge · setChallengeDay (문준·물류관리자) · MJ '세트왕은 왜 들어가?' → 사람별 순위 없음
        1109 MJ '2주 집중 탭을 매주 목표치 달성을 위한 탭으로 · 예전 목표도 확인' → 🎯 이번 주 목표: 주마다 세트·목표·공지(cfg.weeks[i].sets/goal/day/note) · 지난 목표는 접어서 · 목표 정하기 = setWeekTargets ══════ */
     var SC = { data: null, busy: false, prev: {}, t: 0, day: '', edit: 0, rev: 0, party: '', form: null };
-    var SC_LOOK = { total: { c: '#107569', soft: '#E6F6F4', leg: 30, sub: 'Skin & Lip care 포함' }, smart: { c: '#6938EF', soft: '#F1EDFE', leg: 25, sub: 'PDRN x EGF' }, barrier: { c: '#0086C9', soft: '#E0F2FE', sub: '토너·세럼·데일리크림·인텐시브크림' } };
-    var SC_PAL = [['#107569', '#E6F6F4'], ['#6938EF', '#F1EDFE'], ['#0086C9', '#E0F2FE'], ['#C11574', '#FDF2FA'], ['#B54708', '#FFFAEB'], ['#3E4784', '#EEF4FF']];
+    /* 1112 MJ '색을 모두 다르게 물류앱 스타일로' — 세트 전체(s1)가 Total 과 같은 초록이었음 → 세트마다 다른 색 (전체 = 앱 파랑, 리쥬올 = 핑크) */
+    var SC_LOOK = { s1: { c: '#155EEF', soft: '#EFF4FF' }, total: { c: '#107569', soft: '#E6F6F4', leg: 30, sub: 'Skin & Lip care 포함' }, smart: { c: '#6938EF', soft: '#F1EDFE', leg: 25, sub: 'PDRN x EGF' }, barrier: { c: '#C11574', soft: '#FDF2FA', sub: '토너·세럼·데일리크림·인텐시브크림' } };
+    var SC_PAL = [['#155EEF', '#EFF4FF'], ['#107569', '#E6F6F4'], ['#6938EF', '#F1EDFE'], ['#C11574', '#FDF2FA'], ['#E04F16', '#FEF6EE'], ['#0086C9', '#E0F2FE'], ['#B54708', '#FFFAEB'], ['#3E4784', '#EEF4FF']];
     var SC_SETS = [], SC_WD = ['일', '월', '화', '수', '목', '금', '토'];
     function scYmd(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
     function scAdd(ymd, n) { var p = ymd.split('-'); return scYmd(new Date(+p[0], +p[1] - 1, +p[2] + n)); }
@@ -8321,7 +8322,7 @@ video {
     function scWeek(c, d) { for (var i = 0; i < c.weeks.length; i++) if (d >= c.weeks[i].from && d <= c.weeks[i].to) return i; return -1; }
     function scCur() { var D = SC.data; if (!D || !D.cfg || !D.cfg.weeks) return null; var i = scWeek(D.cfg, D.today || scYmd(new Date())); return i < 0 ? null : D.cfg.weeks[i]; }
     function scShown() { if (scCur() || scBoss()) return true; var D = SC.data, t = D && D.today, l = t && D.cfg && D.cfg.weeks ? D.cfg.weeks.filter(function (w) { return w.to < t; }).slice(-1)[0] : null; return !!l && scAdd(l.to, 7) >= t; }   /* 1109 이번 주 목표가 있으면 모두 · 정하는 사람은 늘 · 끝나고 일주일은 '다음 목표 준비 중' */
-    function scSetsOf(c, w) { return ((w && w.sets) || c.sets || []).map(function (s, i) { var L = SC_LOOK[s.k] || {}, p = SC_PAL[i % SC_PAL.length]; return { k: s.k, label: s.label, pos: s.pos || [], c: L.c || p[0], soft: L.soft || p[1], leg: L.leg || 0, sub: L.sub || '', from: s.from || '', to: s.to || '', kind: s.kind || 'set' }; }); }
+    function scSetsOf(c, w) { var L0 = (w && w.sets) || c.sets || [], used = L0.map(function (s) { return (SC_LOOK[s.k] || {}).c; }).filter(Boolean); return L0.map(function (s, i) { var L = SC_LOOK[s.k] || {}, p = L.c ? SC_PAL[0] : (SC_PAL.filter(function (q) { return used.indexOf(q[0]) < 0; })[0] || SC_PAL[i % SC_PAL.length]); if (!L.c) used.push(p[0]); return { k: s.k, label: s.label, pos: s.pos || [], c: L.c || p[0], soft: L.soft || p[1], leg: L.leg || 0, sub: L.sub || '', from: s.from || '', to: s.to || '', kind: s.kind || 'set' }; }); }
     function scUse() { var w = scCur(); SC_SETS = w ? scSetsOf(SC.data.cfg, w) : []; return w; }
     function scGoal(c, d, k) { var i = scWeek(c, d), w = i < 0 ? null : c.weeks[i]; if (!w) return 0; var ss = scSetOf(w, k); if (ss && ((ss.from && d < ss.from) || (ss.to && d > ss.to))) return 0; return (w.day && w.day[k]) || (w.goal && w.goal[k] ? Math.round(w.goal[k] / 7) : 0); }   /* 하루 목표 = 그 주 하루 목표 (없으면 주÷7) */
     function scHas(d) { var o = SC.data && SC.data.days[d]; return !!o && SC_SETS.some(function (s) { return o[s.k] != null; }); }
