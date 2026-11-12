@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwcvdnq1">
+  <meta name="ry-build" content="mwcvkt2m">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4468,6 +4468,14 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 .sc-bar{position:relative;height:14px;border-radius:999px;background:var(--ry-sunken);margin:6px 0 5px;overflow:hidden}
 .sc-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:var(--sc);transition:width .8s var(--ry-ease)}
 .sc-wk-s{font-size:13px;color:var(--ry-ink-2);font-weight:600}.sc-wk-s b{color:var(--ry-ink)}
+/* 1112 목표 달성 빵빠레·폭죽 (scFanfare) */
+#scFan{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;background:rgba(16,24,40,.45);animation:scfIn .25s ease-out}#scFan.out{opacity:0;transition:opacity .35s}
+#scFan canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#scFan .scf-card{position:relative;max-width:min(88vw,380px);padding:22px 26px 16px;border-radius:24px;background:#fff;text-align:center;box-shadow:0 24px 60px rgba(16,24,40,.35);animation:scfPop .55s cubic-bezier(.2,1.5,.4,1)}
+#scFan .scf-em{font-size:52px;line-height:1;animation:scfShake .9s ease-in-out 2}#scFan b{display:block;margin:8px 0 6px;font-size:26px;font-weight:900;color:#B54708}
+#scFan p{margin:4px 0;font-size:15px;font-weight:700;color:#344054}#scFan p em{font-style:normal;color:#F04438;font-weight:900}#scFan small{display:block;margin-top:10px;font-size:12px;color:#98A2B3}
+@keyframes scfIn{from{opacity:0}to{opacity:1}}@keyframes scfPop{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}@keyframes scfShake{0%,100%{transform:rotate(0)}25%{transform:rotate(-14deg) scale(1.15)}75%{transform:rotate(14deg) scale(1.15)}}
+@media(prefers-reduced-motion:reduce){#scFan,#scFan .scf-card,#scFan .scf-em{animation:none}}
 /* 1108 2주 합계 목표 달성 축하 · 화이팅 멘트 */
 .sc-card.sc-tot-win{border:2px solid #FDB022;background:linear-gradient(180deg,#FFFAEB,#fff 65%)}.sc-card.sc-tot-win h3{color:#B54708}
 .sc-wk.win{position:relative}
@@ -8250,6 +8258,34 @@ video {
       var d = w ? scLastDay() : '', all = !!d && SC_SETS.every(function (s) { return scOk(SC.data.cfg, d, s.k); });
       n.textContent = all ? '★' : ''; n.classList.toggle('done', all);
       b.title = w ? '이번 주 세트 목표 ' + scMd(w.from) + ' ~ ' + scMd(w.to) + (w.note ? ' · ' + w.note : '') : '주 목표 · 판매 달력 · 행사 효과';
+      try { scFanfareCheck(); } catch (eF) {}
+    }
+    /* 1112 MJ '판매 목표를 달성하면 물류앱에 목표 달성 빵빠레와 폭죽 터지는 장면을 잠깐' — 오늘 하루 목표를 넘긴 세트가 생기면 앱 어디서든 한 번(기기·세트·날짜마다) 전체 화면 폭죽 + 짧은 빵빠레 · 눌러서 닫기 · 3.8초 뒤 자동 · 움직임 줄이기 설정이면 폭죽 없이 카드만 */
+    function scFanfareCheck() {
+      var D = SC.data, w = D && scUse(); if (!w || !D.today || D.today < w.from || D.today > w.to) return;
+      var t = D.today, hit = SC_SETS.filter(function (s) { if (!scOk(D.cfg, t, s.k)) return false; var key = 'ry_fan_' + t + '_' + s.k; try { if (localStorage.getItem(key)) return false; localStorage.setItem(key, '1'); } catch (e) { if (SC['fan_' + key]) return false; SC['fan_' + key] = 1; } return true; });
+      if (hit.length) scFanfare(hit.map(function (s) { return { label: s.label, v: scV(t, s.k), g: scGoal(D.cfg, t, s.k) }; }));
+    }
+    function scFanfare(list) {
+      if (document.getElementById('scFan')) return;
+      var rm = scRm(), ov = document.createElement('div'); ov.id = 'scFan'; ov.setAttribute('role', 'alert');
+      ov.innerHTML = '<canvas></canvas><div class="scf-card"><div class="scf-em">🎉</div><b>목표 달성!</b>' + list.map(function (x) { return '<p>' + escapeHtml(x.label) + ' · 오늘 <em>' + x.v + '개</em> / 목표 ' + x.g + '개</p>'; }).join('') + '<small>눌러서 닫기</small></div>';
+      document.body.appendChild(ov);
+      var close = function () { if (!ov.parentNode) return; ov.classList.add('out'); setTimeout(function () { if (ov.parentNode) ov.parentNode.removeChild(ov); }, 350); };
+      ov.addEventListener('click', close); setTimeout(close, 3800);
+      try {   // 빵빠레: 짧은 금관 소리 (소리 막힌 기기는 조용히 넘어감)
+        var AC = window.AudioContext || window.webkitAudioContext, ac = new AC(), t0 = ac.currentTime + 0.05, vol = ac.createGain(); vol.gain.value = 0.12; vol.connect(ac.destination);
+        [[523.25, 0, .16], [523.25, .18, .12], [523.25, .32, .12], [659.25, .46, .2], [783.99, .68, .2], [1046.5, .9, .6]].forEach(function (n) {
+          ['sawtooth', 'square'].forEach(function (ty, i) { var o = ac.createOscillator(), g = ac.createGain(); o.type = ty; o.frequency.value = n[0] * (i ? 1.003 : 1); g.gain.setValueAtTime(0, t0 + n[1]); g.gain.linearRampToValueAtTime(i ? .25 : .5, t0 + n[1] + .02); g.gain.exponentialRampToValueAtTime(.001, t0 + n[1] + n[2]); o.connect(g); g.connect(vol); o.start(t0 + n[1]); o.stop(t0 + n[1] + n[2] + .05); });
+        });
+        if (ac.state === 'suspended') ac.resume().catch(function () {}); setTimeout(function () { try { ac.close(); } catch (e) {} }, 3000);
+      } catch (eA) {}
+      if (rm) return;
+      var cv = ov.querySelector('canvas'), cx = cv.getContext('2d'), W = cv.width = innerWidth * (devicePixelRatio || 1), H = cv.height = innerHeight * (devicePixelRatio || 1), P = [], C = ['#FDB022', '#F04438', '#155EEF', '#12B76A', '#EE46BC', '#FFFFFF'];
+      var boom = function (x, y) { for (var i = 0; i < 70; i++) { var a = Math.random() * Math.PI * 2, sp = (2 + Math.random() * 6) * (devicePixelRatio || 1); P.push({ x: x, y: y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, l: 1, c: C[i % C.length] }); } };
+      [[.25, .3, 0], [.75, .25, 350], [.5, .18, 700], [.3, .45, 1100], [.7, .42, 1500], [.5, .3, 1900]].forEach(function (b) { setTimeout(function () { boom(W * b[0], H * b[1]); }, b[2]); });
+      var t1 = performance.now(), step = function (now) { if (!ov.parentNode) return; cx.clearRect(0, 0, W, H); P = P.filter(function (q) { return q.l > 0; }); P.forEach(function (q) { q.x += q.vx; q.y += q.vy; q.vy += 0.08 * (devicePixelRatio || 1); q.vx *= .985; q.l -= .014; cx.globalAlpha = Math.max(0, q.l); cx.fillStyle = q.c; cx.beginPath(); cx.arc(q.x, q.y, 3 * (devicePixelRatio || 1), 0, 7); cx.fill(); }); if (now - t1 < 3800) requestAnimationFrame(step); };
+      requestAnimationFrame(step);
     }
     function scOpen() { slOpen('goal'); }
     setTimeout(function () { try { if (!SC.data) { var c0 = JSON.parse(localStorage.getItem('ry_sc') || 'null'); if (c0 && c0.cfg) SC.data = c0; } } catch (e) {} try { scQuick(); scLoad(true); } catch (e) {} }, 4500);
