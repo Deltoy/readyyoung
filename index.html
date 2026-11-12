@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwcvat7f">
+  <meta name="ry-build" content="mwcvdnq1">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4722,8 +4722,8 @@ html:not(#a1):not(#a2):not(#a3):not(#a4) body:not(#b1):not(#b2):not(#b3):not(#b4
 html body:not(#_):not(#_):not(#_) .ry25-pc-name .ry-ship-stamp{display:inline-flex!important;flex-direction:column;align-items:center;justify-content:center;vertical-align:middle;margin:-6px 0 -6px 8px;width:58px;height:58px;border-radius:50%!important;border:3px solid #D92D20!important;color:#D92D20!important;background:rgba(255,255,255,.9)!important;transform:rotate(-14deg);box-shadow:inset 0 0 0 2px rgba(217,45,32,.22);pointer-events:none;flex:none}
 html body:not(#_):not(#_):not(#_) .ry25-pc-name .ry-ship-stamp b{font-size:19px;line-height:1;font-weight:400}
 html body:not(#_):not(#_):not(#_) .ry25-pc-name .ry-ship-stamp i{font-style:normal;font-size:12.5px;font-weight:900;letter-spacing:-.3px;line-height:1.1;margin-top:1px}
-html body:not(#_):not(#_):not(#_) .ry25-pc-name .ry-ship-stamp.ry-stp-rv{border-radius:50%!important;border-color:#DC6803!important;color:#DC6803!important;box-shadow:inset 0 0 0 2px rgba(220,104,3,.22)}
-html body:not(#_):not(#_):not(#_) .ry25-pc-name .ry-ship-stamp.ry-stp-od{border-radius:50%!important;border-color:#155EEF!important;color:#155EEF!important;box-shadow:inset 0 0 0 2px rgba(21,94,239,.22)}
+html body:not(#_):not(#_):not(#_) .ry25-pc-name .ry-ship-stamp.ry-stp-rv{border-radius:9px!important;transform:rotate(-6deg)!important;width:60px!important;height:54px!important;border-color:#DC6803!important;color:#DC6803!important;box-shadow:inset 0 0 0 2px rgba(220,104,3,.22)}
+html body:not(#_):not(#_):not(#_) .ry25-pc-name .ry-ship-stamp.ry-stp-od{border-radius:9px!important;transform:rotate(-6deg)!important;width:60px!important;height:54px!important;border-color:#155EEF!important;color:#155EEF!important;box-shadow:inset 0 0 0 2px rgba(21,94,239,.22)}
 html body:not(#_):not(#_):not(#_) .ry25-pc-name .ry-ship-stamp.ry-stp-so{border-radius:50%!important;border-color:#B42318!important;color:#B42318!important;box-shadow:inset 0 0 0 2px rgba(180,35,24,.22)}
 html body:not(#_):not(#_):not(#_) .ry25-pc-name .ry-ship-stamp.ry-stp-end{border-radius:50%!important;border-color:#475467!important;color:#475467!important;box-shadow:inset 0 0 0 2px rgba(71,84,103,.22)}
 html body:not(#_):not(#_):not(#_) .ry25-pc-name .ry-ship-stamp.ry-stp-no{border-radius:50%!important;border-color:#101828!important;color:#101828!important;box-shadow:inset 0 0 0 2px rgba(16,24,40,.2)}
@@ -15787,7 +15787,7 @@ video {
           card.addEventListener('click', function(e) { if (e.target.closest('.ry25-link')) goToItem(item.rowNumber, item.status); });
         }
         /* 1110 MJ '배송 중이면 참 잘했어요 도장처럼 택배 표시 — 상품 이름 옆 흰 여백에' → 입고 대기(INBOUND) 카드 오른쪽 위 비스듬한 도장 */
-        /* 1110 MJ '1차검토·최종발주 도장도' → 상태별 도장 (주황 1차검토 · 파랑 최종발주 · 빨강 배송중) */
+        /* 1110 MJ '1차검토·최종발주 도장도' → 상태별 도장 (주황 1차검토 · 파랑 최종발주 · 빨강 배송중) · 1112 MJ '1차 검토·최종발주는 네모 도장, 배송중(동그라미)이랑 헷갈려' */
         /* 1110 MJ '품절·소진 후 판매종료·취급안함도 도장으로' — 하나만: 취급안함 > 진행 상태 > 판매종료 */
         var STP = isHiddenItem(item) ? ['🚫', '취급안함', 'no'] : ({ REVIEW: ['📋', '1차 검토', 'rv'], ORDER: ['📝', '최종 발주', 'od'], INBOUND: ['🚚', '배송중', ''], SOLDOUT: ['⛔', '품절', 'so'] }[item.status] || (isEnded(item) ? ['🛑', '판매종료', 'end'] : null));
         if (STP) { card.classList.add('ry-has-ship'); var stp = document.createElement('span'); stp.className = 'ry-ship-stamp' + (STP[2] ? ' ry-stp-' + STP[2] : ''); stp.setAttribute('aria-label', STP[1]); stp.innerHTML = '<b>' + STP[0] + '</b><i>' + STP[1] + '</i>'; var nmEl = card.querySelector('.ry25-pc-name'); (nmEl || card).appendChild(stp); }
