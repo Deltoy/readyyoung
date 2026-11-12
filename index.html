@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwdbf2yv">
+  <meta name="ry-build" content="mwdbohs4">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -22793,7 +22793,7 @@ function rvPraisePop(res) {
   })[0];
   if (!n) return;
   var body = String(n.body || ''), q = (body.match(/"([\s\S]+?)"/) || [])[1] || body, star = (body.match(/⭐\s?(\d)/) || [])[1] || '5', ko = (body.match(/🇰🇷\s*([\s\S]+?)(?:\n\n|$)/) || [])[1] || '';
-  var ph = ((n.items && n.items.photos) || []).slice(0, 4);
+  var ph = (n.photos || (n.items && n.items.photos) || []).slice(0, 4);   // 목록은 photos 가 맨 위에
   var el = document.createElement('div'); el.id = 'rvPraise'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-labelledby', 'rvT');
   el.innerHTML = '<div class="rvp-card"><div class="rvp-burst" aria-hidden="true">🎉</div>'
     + '<h2 id="rvT">' + escapeHtml(me) + '님, 축하해요!</h2><p class="rvp-sub">손님이 구글 리뷰에 칭찬을 남겼어요 · ' + '⭐'.repeat(Math.max(1, Math.min(5, +star))) + '</p>'
