@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwcw2fs5">
+  <meta name="ry-build" content="mwcw7gg4">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4468,6 +4468,24 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 .sc-bar{position:relative;height:14px;border-radius:999px;background:var(--ry-sunken);margin:6px 0 5px;overflow:hidden}
 .sc-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:var(--sc);transition:width .8s var(--ry-ease)}
 .sc-wk-s{font-size:13px;color:var(--ry-ink-2);font-weight:600}.sc-wk-s b{color:var(--ry-ink)}
+/* 1112 헤더 전체 불바다 (MJ '이펙트가 약해, 보면 바로 바쁜 걸 알게') — 1 따뜻한 띠 · 2 주황 + 아래 불꽃 줄 · 3 움직이는 불 배경 + 불꽃 줄 + 불티 · 4 더 빨갛고 빠르게 + 큰 불꽃 */
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat]{position:relative;transition:background .8s}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat] .ry25-top-in{position:relative;z-index:1}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="1"]{background:linear-gradient(180deg,#FFE9CC 0%,#FFF8EE 100%);border-bottom:3px solid #FDB022}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="2"]{background:linear-gradient(180deg,#FFC98A 0%,#FFE6C4 100%);border-bottom:3px solid #F79009}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="3"]{background:linear-gradient(110deg,#FF4D1F,#FF8A00,#FFB800,#FF8A00,#FF4D1F);background-size:300% 100%;animation:ryHeatBg 3s linear infinite;border-bottom:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="4"]{background:linear-gradient(110deg,#C4320A,#FF3B1F,#FF8A00,#FF3B1F,#C4320A);background-size:300% 100%;animation:ryHeatBg 1.5s linear infinite,ryBusy .5s ease-in-out infinite;border-bottom:0}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="3"] .ry25-title,html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="4"] .ry25-title{color:#fff!important;text-shadow:0 1px 8px rgba(120,20,0,.55)}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="3"] .ry25-sub,html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="4"] .ry25-sub{color:rgba(255,255,255,.92)!important}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="2"]::after,html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="3"]::after,html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="4"]::after{content:'🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥';position:absolute;left:0;right:0;bottom:-15px;height:22px;overflow:hidden;white-space:nowrap;font-size:15px;line-height:22px;letter-spacing:1px;text-align:center;pointer-events:none;z-index:6;transform-origin:50% 100%;animation:ryFlick .45s ease-in-out infinite alternate}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="2"]::after{opacity:.75;font-size:12px;bottom:-12px}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="4"]::after{font-size:22px;height:30px;line-height:30px;bottom:-21px;animation-duration:.3s}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="3"]::before,html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="4"]::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;opacity:.8;background-image:radial-gradient(circle,#FFF1B8 1.6px,transparent 2.4px),radial-gradient(circle,#FFE08A 1.2px,transparent 2px);background-size:56px 56px,38px 38px;animation:ryEmber 2.4s linear infinite}
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="4"]::before{animation-duration:1.2s}
+@keyframes ryHeatBg{0%{background-position:0 0}100%{background-position:300% 0}}
+@keyframes ryFlick{from{transform:scaleY(.8)}to{transform:scaleY(1.15)}}
+@keyframes ryEmber{from{background-position:0 0,20px 10px}to{background-position:0 -56px,20px -28px}}
+@media(prefers-reduced-motion:reduce){html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat],html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat]::after,html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat]::before{animation:none!important}}
 /* 1112 불타는 헤더 (scHeat) — 오늘 세트 판매가 목표에 가까울수록 */
 .ry25-brand[data-heat] .ry25-mark{position:relative;transition:box-shadow .6s}
 .ry25-brand[data-heat="1"] .ry25-mark{box-shadow:0 0 0 3px rgba(253,176,34,.35),0 0 12px rgba(253,176,34,.45);animation:ryWarm 2.6s ease-in-out infinite}
@@ -4487,7 +4505,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 @media(max-width:600px){#ryHeat{display:none!important}#ryHeatB{display:block}}
 #ryHeat{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:800;line-height:1.5;color:#B54708;background:#FEF0C7;white-space:nowrap}
 .ry25-brand[data-heat="2"] #ryHeat{color:#fff;background:linear-gradient(90deg,#F79009,#FDB022)}
-.ry25-brand[data-heat="3"] #ryHeat,.ry25-brand[data-heat="4"] #ryHeat{color:#fff;background:linear-gradient(90deg,#F04438,#F79009,#FDB022,#F79009,#F04438);background-size:300% 100%;animation:ryFire 1.4s linear infinite}
+.ry25-brand[data-heat="3"] #ryHeat,.ry25-brand[data-heat="4"] #ryHeat{color:#fff;background:#7A2E0E;box-shadow:0 0 0 2px rgba(255,255,255,.85),0 4px 14px rgba(122,46,14,.45)}   /* 1112 불바다 헤더 위에선 진한 갈색 칩으로 또렷하게 */
 @keyframes ryWarm{0%,100%{filter:saturate(1)}50%{filter:saturate(1.5) brightness(1.08)}}
 @keyframes ryFlame{0%{transform:translate(-50%,6px) scale(.6);opacity:0}30%{opacity:1}100%{transform:translate(-50%,-14px) scale(1.15);opacity:0}}
 @keyframes ryFire{0%{background-position:0 0}100%{background-position:300% 0}}
@@ -8308,7 +8326,7 @@ video {
       var D = SC.data, w = D && scUse(), t = D && D.today, sum = 0, goal = 0;
       if (w && t >= w.from && t <= w.to) SC_SETS.forEach(function (s) { var v = scV(t, s.k), g = scGoal(D.cfg, t, s.k); if (v != null) sum += v; if (g > 0) goal += g; });
       var p = goal ? sum / goal : 0, lv = !goal || !sum ? 0 : p >= 1.5 ? 4 : p >= 1 ? 3 : p >= .8 ? 2 : p >= .4 ? 1 : 0;
-      br.setAttribute('data-heat', String(lv));
+      br.setAttribute('data-heat', String(lv)); var hdr = br.closest('.ry25-top'); if (hdr) hdr.setAttribute('data-heat', String(lv));   /* 1112 MJ '이펙트가 약해 · 그냥 보면 바쁜 걸 알 수 있게' → 헤더 전체가 불바다 */
       var up = lv > (SC.heatLv || 0); SC.heatLv = lv; if (lv && up) setTimeout(heatSay, 2500);
       if (!SC.heatT) SC.heatT = setInterval(function () { if (!document.hidden && SC.heatLv) heatSay(); }, 45000);
       var ti = br.querySelector('.ry25-title'), ch = document.getElementById('ryHeat'), mk = br.querySelector('.ry25-mark'), bd = document.getElementById('ryHeatB');
