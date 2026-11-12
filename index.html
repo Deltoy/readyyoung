@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwcvme0t">
+  <meta name="ry-build" content="mwcvrb15">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4468,6 +4468,26 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 .sc-bar{position:relative;height:14px;border-radius:999px;background:var(--ry-sunken);margin:6px 0 5px;overflow:hidden}
 .sc-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:var(--sc);transition:width .8s var(--ry-ease)}
 .sc-wk-s{font-size:13px;color:var(--ry-ink-2);font-weight:600}.sc-wk-s b{color:var(--ry-ink)}
+/* 1112 불타는 헤더 (scHeat) — 오늘 세트 판매가 목표에 가까울수록 */
+.ry25-brand[data-heat] .ry25-mark{position:relative;transition:box-shadow .6s}
+.ry25-brand[data-heat="1"] .ry25-mark{box-shadow:0 0 0 3px rgba(253,176,34,.35),0 0 12px rgba(253,176,34,.45);animation:ryWarm 2.6s ease-in-out infinite}
+.ry25-brand[data-heat="2"] .ry25-mark{box-shadow:0 0 0 3px rgba(247,144,9,.45),0 0 18px rgba(247,144,9,.65);animation:ryWarm 1.6s ease-in-out infinite}
+.ry25-brand[data-heat="3"] .ry25-mark,.ry25-brand[data-heat="4"] .ry25-mark{box-shadow:0 0 0 3px rgba(240,68,56,.5),0 0 24px rgba(247,144,9,.85);animation:ryWarm .9s ease-in-out infinite}
+.ry25-brand[data-heat="2"] .ry25-mark::after,.ry25-brand[data-heat="3"] .ry25-mark::after,.ry25-brand[data-heat="4"] .ry25-mark::after,.ry25-brand[data-heat="3"] .ry25-mark::before,.ry25-brand[data-heat="4"] .ry25-mark::before{content:'🔥';position:absolute;left:50%;bottom:62%;font-size:18px;line-height:1;pointer-events:none;animation:ryFlame 1.3s ease-out infinite}
+.ry25-brand[data-heat="3"] .ry25-mark::before,.ry25-brand[data-heat="4"] .ry25-mark::before{left:12%;font-size:14px;animation-delay:.55s}
+.ry25-brand[data-heat="4"] .ry25-mark::after{font-size:24px}
+.ry25-brand[data-heat="4"]{animation:ryBusy .45s ease-in-out infinite}
+#ryHeatB{display:none;position:absolute;right:-8px;bottom:-6px;padding:0 5px;border-radius:999px;font-size:10.5px;font-weight:900;line-height:16px;color:#fff;background:#F79009;box-shadow:0 0 0 2px #fff;white-space:nowrap;z-index:2}
+.ry25-brand[data-heat="3"] #ryHeatB,.ry25-brand[data-heat="4"] #ryHeatB{background:linear-gradient(90deg,#F04438,#F79009);animation:ryWarm .9s ease-in-out infinite}
+@media(max-width:600px){#ryHeat{display:none!important}#ryHeatB{display:block}}
+#ryHeat{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:800;line-height:1.5;color:#B54708;background:#FEF0C7;white-space:nowrap}
+.ry25-brand[data-heat="2"] #ryHeat{color:#fff;background:linear-gradient(90deg,#F79009,#FDB022)}
+.ry25-brand[data-heat="3"] #ryHeat,.ry25-brand[data-heat="4"] #ryHeat{color:#fff;background:linear-gradient(90deg,#F04438,#F79009,#FDB022,#F79009,#F04438);background-size:300% 100%;animation:ryFire 1.4s linear infinite}
+@keyframes ryWarm{0%,100%{filter:saturate(1)}50%{filter:saturate(1.5) brightness(1.08)}}
+@keyframes ryFlame{0%{transform:translate(-50%,6px) scale(.6);opacity:0}30%{opacity:1}100%{transform:translate(-50%,-14px) scale(1.15);opacity:0}}
+@keyframes ryFire{0%{background-position:0 0}100%{background-position:300% 0}}
+@keyframes ryBusy{0%,100%{transform:translateX(0)}25%{transform:translateX(-1px) rotate(-.3deg)}75%{transform:translateX(1px) rotate(.3deg)}}
+@media(prefers-reduced-motion:reduce){.ry25-brand[data-heat],.ry25-brand[data-heat] .ry25-mark,.ry25-brand[data-heat] .ry25-mark::after,.ry25-brand[data-heat] .ry25-mark::before,#ryHeat{animation:none!important}}
 /* 1112 목표 달성 빵빠레·폭죽 (scFanfare) */
 #scFan{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;background:rgba(16,24,40,.45);animation:scfIn .25s ease-out}#scFan.out{opacity:0;transition:opacity .35s}
 #scFan canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -8259,6 +8279,23 @@ video {
       n.textContent = all ? '★' : ''; n.classList.toggle('done', all);
       b.title = w ? '이번 주 세트 목표 ' + scMd(w.from) + ' ~ ' + scMd(w.to) + (w.note ? ' · ' + w.note : '') : '주 목표 · 판매 달력 · 행사 효과';
       try { scFanfareCheck(); } catch (eF) {}
+      try { scHeat(); } catch (eH) {}
+    }
+    /* 1112 MJ '세트가 잘 팔리면 이 부분(위 로고·약국 이름)이 조금씩 불타오르는 느낌 · 호떡집에 불난 듯 바쁘다는 느낌' — 오늘 세트 판매 합 ÷ 오늘 하루 목표 합
+       0 = 그대로 · 1(40%↑) 로고가 따뜻하게 · 2(80%↑) 불꽃 피어오름 · 3(100%↑) 호떡집에 불났어요 · 4(150%↑) 불이야! 살짝 흔들림 */
+    function scHeat() {
+      var br = document.querySelector('.ry25-brand'); if (!br) return;
+      var D = SC.data, w = D && scUse(), t = D && D.today, sum = 0, goal = 0;
+      if (w && t >= w.from && t <= w.to) SC_SETS.forEach(function (s) { var v = scV(t, s.k), g = scGoal(D.cfg, t, s.k); if (v != null) sum += v; if (g > 0) goal += g; });
+      var p = goal ? sum / goal : 0, lv = !goal || !sum ? 0 : p >= 1.5 ? 4 : p >= 1 ? 3 : p >= .8 ? 2 : p >= .4 ? 1 : 0;
+      br.setAttribute('data-heat', String(lv));
+      var ti = br.querySelector('.ry25-title'), ch = document.getElementById('ryHeat'), mk = br.querySelector('.ry25-mark'), bd = document.getElementById('ryHeatB');
+      if (!lv) { if (bd) bd.remove(); } else if (mk) { if (!bd) { bd = document.createElement('span'); bd.id = 'ryHeatB'; bd.setAttribute('aria-hidden', 'true'); mk.appendChild(bd); } bd.textContent = (lv >= 2 ? '🔥' : '♨️') + sum; }   /* 폰: 이름이 잘려서 로고 위 작은 배지 */
+      if (!lv) { if (ch) ch.remove(); } else if (ti) {
+        if (!ch) { ch = document.createElement('span'); ch.id = 'ryHeat'; ch.setAttribute('role', 'status'); ti.appendChild(ch); }
+        ch.textContent = (lv >= 4 ? '🔥🔥 불이야! ' : lv >= 3 ? '🔥 호떡집에 불났어요 ' : lv >= 2 ? '🔥 ' : '♨️ ') + '세트 ' + sum + '개';
+        ch.title = '오늘 세트 ' + sum + '개 · 하루 목표 합 ' + goal + '개 (' + Math.round(p * 100) + '%)';
+      }
     }
     /* 1112 MJ '판매 목표를 달성하면 물류앱에 목표 달성 빵빠레와 폭죽 터지는 장면을 잠깐' — 오늘 하루 목표를 넘긴 세트가 생기면 앱 어디서든 한 번(기기·세트·날짜마다) 전체 화면 폭죽 + 짧은 빵빠레 · 눌러서 닫기 · 3.8초 뒤 자동 · 움직임 줄이기 설정이면 폭죽 없이 카드만 */
     function scFanfareCheck() {
