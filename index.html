@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwcwzud1">
+  <meta name="ry-build" content="mwcx8kij">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -13294,7 +13294,7 @@ video {
     }
 
     /* 1109 MJ '부외품은 사장님이 직접 가져와서 진열 — 사장님이 직접 입고완료 · 우리 입고 대기에서도 부외품은 따로' → 서버 it.bw(제조사 D열 '부외품') 줄은 맨 아래 접힌 묶음 · 직원도 펼쳐서 입고 가능 · 문준은 사장님 링크(bw.html) 복사·바꾸기 */
-    var BW_OPEN = false;
+    var BW_OPEN = true;   /* 1112 MJ '부외품도 펼쳐진 상태로 · 펼침 안 눌러도' — 처음부터 펼침(접기는 그대로 가능) */
     function bwHeadHtml(n) {
       var adm = '<span class="ry-bwh-adm"><button type="button" onclick="bwLedgerOpen()">📒 입고 내역</button>' + (currentSelectedMember === '문준' ? '<button type="button" onclick="bwAdmin()">사장님 링크</button><a class="ry-bw-go" href="bw.html">부외품 화면 →</a>' : '') + '</span>';   /* 1109b 장부는 누구나 · 링크·기기 승인은 문준 */
       if (!n) return '<span class="ry-bwh-tg"><span><b>📦 부외품 · 사장님이 직접 입고해요</b><small>지금 사장님 입고 대기 없음</small></span></span>' + adm;
