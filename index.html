@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwd6ow1m">
+  <meta name="ry-build" content="mwdbf2yv">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -22774,10 +22774,38 @@ function ntBoot() {
     if (!res || !res.ok) return;
     if (!NT.data || !NT.month) { NT.data = res; NT.recent = res.recent || []; NT.latest = res.latest || null; try { ntRenderLatest(); } catch (e) {} }
     ntNotify();
+    try { rvPraisePop(res); } catch (eRv) {}
   }).withFailureHandler(function () {}).listNotices('', '', '');
 }
 setTimeout(ntBoot, 3000);
 setInterval(function () { if (document.visibilityState === 'visible') ntBoot(); }, 5 * 60000);
+/* 1112 MJ '구글 리뷰에 이름이 나오면 그 사람한테 축하한다고 · 확인해 달라는 창 · 읽을 수 있게'
+   공지 '리뷰'(구글 리뷰 칭찬, ~/bin/reviews 가 올림) 제목 '· ○○님, ○○ 약사님' 에 내 이름이 있으면 → 가운데 축하 창 + 리뷰 전문 + [읽었어요] (7일 안 · 사람마다 한 번 · 이 기기 기억) */
+function rvPraisePop(res) {
+  var me = String(currentSelectedMember || '').trim();
+  if (me.length < 2 || document.getElementById('rvPraise') || document.getElementById('dvGate')) return;
+  var ack = {}; try { ack = JSON.parse(localStorage.getItem('ry_rv_ack') || '{}') || {}; } catch (e) {}
+  var cut = Date.now() - 7 * 864e5, at = function (c) { var t = Date.parse(String(c || '').replace(/\./g, '-').replace(' ', 'T') + ':00+09:00'); return isNaN(t) ? Date.now() : t; };
+  var n = ((res && res.items) || []).filter(function (x) {
+    if (!x || x.tag !== '리뷰' || !x.id || ack[x.id + '|' + me] || at(x.createdAt) < cut) return false;
+    var who = String(x.title || '').split('·').slice(1).join('·');
+    return who.split(/[,·]/).some(function (w) { w = w.replace(/\s*(약사님|님)\s*$/, '').trim(); return w.length >= 2 && (w === me || w.indexOf(me) !== -1 || me.indexOf(w) !== -1); });
+  })[0];
+  if (!n) return;
+  var body = String(n.body || ''), q = (body.match(/"([\s\S]+?)"/) || [])[1] || body, star = (body.match(/⭐\s?(\d)/) || [])[1] || '5', ko = (body.match(/🇰🇷\s*([\s\S]+?)(?:\n\n|$)/) || [])[1] || '';
+  var ph = ((n.items && n.items.photos) || []).slice(0, 4);
+  var el = document.createElement('div'); el.id = 'rvPraise'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-labelledby', 'rvT');
+  el.innerHTML = '<div class="rvp-card"><div class="rvp-burst" aria-hidden="true">🎉</div>'
+    + '<h2 id="rvT">' + escapeHtml(me) + '님, 축하해요!</h2><p class="rvp-sub">손님이 구글 리뷰에 칭찬을 남겼어요 · ' + '⭐'.repeat(Math.max(1, Math.min(5, +star))) + '</p>'
+    + '<blockquote class="rvp-q">' + escapeHtml(q.trim()).replace(/\n/g, '<br>') + '</blockquote>'
+    + (ko ? '<p class="rvp-ko">🇰🇷 ' + escapeHtml(ko.trim()) + '</p>' : '')
+    + (ph.length ? '<div class="rvp-ph">' + ph.map(function (u) { return '<img src="' + escapeHtml(u) + '" alt="리뷰 사진" loading="lazy">'; }).join('') + '</div>' : '')
+    + '<button type="button" class="rvp-ok">읽었어요 🙌</button><p class="rvp-foot">공지 보관함 「리뷰」에서 다시 볼 수 있어요</p></div>';
+  document.body.appendChild(el);
+  var close = function () { ack[n.id + '|' + me] = Date.now(); try { localStorage.setItem('ry_rv_ack', JSON.stringify(ack)); } catch (e) {} el.remove(); };
+  el.querySelector('.rvp-ok').onclick = close; setTimeout(function () { var b = el.querySelector('.rvp-ok'); if (b) b.focus(); }, 50);
+}
+
 /* 앱 열고 조금 뒤 한 번 + 이름을 바꾸면 그 사람 기준으로 다시 (5분마다 새 규칙 확인) */
 setTimeout(function () { rlLoad(); }, 4000);
 setInterval(function () { if (document.visibilityState === 'visible') rlLoad(); }, 5 * 60000);
@@ -22785,6 +22813,18 @@ setInterval(function () { if (document.visibilityState === 'visible') rlLoad(); 
 
 <!-- ==================== 1016 브랜드 이벤트 (공지 '이벤트' + 상품 배지 + 첫 화면 줄) ==================== -->
 <style>
+.rvp-card{width:min(420px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:24px!important;padding:26px 22px 18px;text-align:center;box-shadow:0 24px 60px rgba(16,24,40,.28);animation:rvpIn .35s cubic-bezier(.2,.9,.3,1.2)}
+#rvPraise{position:fixed;inset:0;z-index:2147482000;background:rgba(16,24,40,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.rvp-burst{font-size:52px;line-height:1;animation:rvpPop .6s ease-out}
+#rvPraise h2{margin:10px 0 4px;font-size:22px;font-weight:900;color:#101828}
+.rvp-sub{margin:0 0 14px;font-size:14px;color:#475467}
+.rvp-q{margin:0 0 10px;padding:14px 16px;border-radius:16px!important;background:#FFF8E6;border:1px solid #FDE68A;color:#101828;font-size:16px;line-height:1.6;text-align:left}
+.rvp-ko{margin:0 0 10px;font-size:14px;color:#475467;text-align:left;line-height:1.55}
+.rvp-ph{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:6px;margin:0 0 12px}.rvp-ph img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px!important}
+.rvp-ok{width:100%;min-height:52px;border:0;border-radius:16px!important;background:#155EEF;color:#fff;font-size:17px;font-weight:800;cursor:pointer}
+.rvp-foot{margin:10px 0 0;font-size:12px;color:#98A2B3}
+@keyframes rvpIn{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}@keyframes rvpPop{0%{transform:scale(.4) rotate(-20deg)}70%{transform:scale(1.2) rotate(8deg)}100%{transform:none}}
+@media (prefers-reduced-motion:reduce){.rvp-card,.rvp-burst{animation:none}}
 .ev-b{display:inline-flex;align-items:center;gap:4px;min-height:26px;padding:0 10px;border-radius:999px!important;border:1px solid #FECDCA;background:#FFF1F0;color:#B42318;font-size:12px;font-weight:800;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:middle;margin-left:4px;cursor:pointer}
 .ev-bar{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:8px 14px;border-radius:16px!important;border:1px solid #FECDCA;background:#FFF6F5;text-align:left;cursor:pointer}
 .ev-bar[hidden]{display:none!important}
