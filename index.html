@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwcyquyc">
+  <meta name="ry-build" content="mwd29aa7">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -51,8 +51,18 @@
   var KEY = 'ry_pages_k', q = new URLSearchParams(location.search), k = q.get('k') || '';
   try { if (k) localStorage.setItem(KEY, k); else k = localStorage.getItem(KEY) || ''; } catch (e) {}
   /* 1112 대표 보기 전용 링크 (?me=이름&v=열쇠) — 앱 암호 대신 v · 서버가 읽기만 허락 (쓰기는 __ro) */
-  var VK = 'ry_viewer_v', vv = q.get('v') || '';
-  try { if (vv) localStorage.setItem(VK, vv); else vv = localStorage.getItem(VK) || ''; } catch (e) {}
+  /* 1112 MJ '대표들 거 확인하느라 들어갔더니 내 것도 보기 전용이 됐어' — 직원 암호(k)가 있는 기기는 그 창(sessionStorage)에서만 보기 전용,
+     창을 닫고 다시 열면 원래대로 + 원래 이름 되돌림 · 암호 없는 기기(대표님 폰)만 계속 기억 */
+  var VK = 'ry_viewer_v', VB = 'ry_me_before_view', vv = q.get('v') || '';
+  try {
+    if (vv && k) { sessionStorage.setItem(VK, vv); if (!localStorage.getItem(VB)) localStorage.setItem(VB, localStorage.getItem('s_selected_member') || ''); }
+    else if (vv) localStorage.setItem(VK, vv);
+    else if (k) {
+      localStorage.removeItem(VK); vv = sessionStorage.getItem(VK) || '';
+      var before = localStorage.getItem(VB);
+      if (!vv && before !== null) { localStorage.removeItem(VB); if (before) localStorage.setItem('s_selected_member', before); }
+    } else vv = localStorage.getItem(VK) || '';
+  } catch (e) {}
   window.RY_VIEW = !!vv;
   if (q.has('k') || q.has('v')) {   /* 주소창·홈 화면 링크에 암호가 남지 않게 지운다 (?me= 는 그대로) */
     q.delete('k'); q.delete('v');
@@ -119,6 +129,10 @@
       var b = document.createElement('div'); b.id = 'ryViewBand'; b.setAttribute('role', 'status');
       b.setAttribute('style', 'position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 12px);transform:translateX(-50%);z-index:2147483000;pointer-events:none;background:rgba(16,24,40,.88);color:#fff;font:600 13px/1.3 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",Pretendard,sans-serif;padding:8px 14px;border-radius:999px;white-space:nowrap;box-shadow:0 4px 14px rgba(16,24,40,.2)');
       b.textContent = '👀 보기 전용' + (nm ? ' · ' + nm + '님' : '');   // 누르면 '실제로 바뀌지 않아요' 안내가 따로 뜸
+      if (k) {   // 직원 기기(MJ 가 대표 화면 확인) — 띠를 누르면 원래 내 화면으로
+        b.textContent += ' · 눌러서 나가기'; b.style.pointerEvents = 'auto'; b.style.cursor = 'pointer';
+        b.onclick = function () { try { sessionStorage.removeItem(VK); } catch (e) {} location.href = location.pathname; };
+      }
       document.body.appendChild(b);
     };
     band();
