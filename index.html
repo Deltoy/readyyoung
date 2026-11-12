@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwcvrb15">
+  <meta name="ry-build" content="mwcw2fs5">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4477,6 +4477,11 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 .ry25-brand[data-heat="3"] .ry25-mark::before,.ry25-brand[data-heat="4"] .ry25-mark::before{left:12%;font-size:14px;animation-delay:.55s}
 .ry25-brand[data-heat="4"] .ry25-mark::after{font-size:24px}
 .ry25-brand[data-heat="4"]{animation:ryBusy .45s ease-in-out infinite}
+#ryHeatSay{position:fixed;z-index:2147482000;max-width:min(78vw,260px);padding:8px 12px;border-radius:14px;background:#fff;color:#101828;font-size:13.5px;font-weight:800;line-height:1.4;box-shadow:0 10px 28px rgba(16,24,40,.22);border:2px solid #FDB022;pointer-events:none;opacity:0;transform:translateY(-6px) scale(.9);transform-origin:16px 0}
+#ryHeatSay::before{content:'';position:absolute;left:14px;top:-8px;border:7px solid transparent;border-top:0;border-bottom-color:#FDB022}
+#ryHeatSay.lv3,#ryHeatSay.lv4{border-color:#F04438;background:#FFF6ED}#ryHeatSay.lv3::before,#ryHeatSay.lv4::before{border-bottom-color:#F04438}
+#ryHeatSay.in{opacity:1;transform:none;transition:opacity .25s,transform .35s cubic-bezier(.2,1.5,.4,1)}#ryHeatSay.out{opacity:0;transform:translateY(-4px);transition:opacity .3s,transform .3s}
+@media(prefers-reduced-motion:reduce){#ryHeatSay,#ryHeatSay.in,#ryHeatSay.out{transition:none;transform:none}}
 #ryHeatB{display:none;position:absolute;right:-8px;bottom:-6px;padding:0 5px;border-radius:999px;font-size:10.5px;font-weight:900;line-height:16px;color:#fff;background:#F79009;box-shadow:0 0 0 2px #fff;white-space:nowrap;z-index:2}
 .ry25-brand[data-heat="3"] #ryHeatB,.ry25-brand[data-heat="4"] #ryHeatB{background:linear-gradient(90deg,#F04438,#F79009);animation:ryWarm .9s ease-in-out infinite}
 @media(max-width:600px){#ryHeat{display:none!important}#ryHeatB{display:block}}
@@ -8281,6 +8286,21 @@ video {
       try { scFanfareCheck(); } catch (eF) {}
       try { scHeat(); } catch (eH) {}
     }
+    /* 1112 MJ '로고가 멘트도 하게 · 오늘 사람 많다고 불났다 너무 바쁘다 위트 있는 멘트' — 불타는 단계마다 로고 아래 말풍선(4.5초) · 45초마다 · 단계 오르면 바로 · 사람 외모 놀림 X */
+    var HEAT_SAY = [[],
+      ['손님 발소리가 들려요 👣', '슬슬 몸 풀어 볼까요? 🙆', '오늘 장사 느낌 좋은데요? ✨', '세트 냄새가 솔솔 나요 🧴', '오늘 첫 불씨 지폈어요 🕯️'],
+      ['어? 계산대가 따뜻해지는데요? ♨️', '불붙기 직전이에요, 조금만 더! 🔥', '손님 줄이 슬슬 길어져요 🚶🚶', '세트 몇 개만 더 가면 활활!', '연기 나기 시작했어요 💨'],
+      ['호떡집에 불났어요!! 🔥', '오늘 손님 왜 이렇게 많아요?! 😵', '계산대 쉴 틈이 없어요 💸', '숨 쉴 틈도 없이 바빠요 🏃💨', '물 한 잔 마실 시간도 없어요 💦', '목표 달성! 지금부턴 보너스 판이에요 🎁'],
+      ['불이야!! 소방차 불러야 할 판 🚒', '오늘 문 닫을 틈이 없어요 🔥🔥', '이 정도면 전설의 날이에요 👑', '손이 열 개였으면 좋겠어요 🙌🙌', '재고 창고도 깜짝 놀랐어요 📦😲', '오늘 우리 약국 성수 핫플 등극 🌶️']];
+    function heatSay() {
+      var lv = SC.heatLv || 0, mk = document.querySelector('.ry25-brand .ry25-mark'); if (!lv || !mk) return;
+      var a = HEAT_SAY[lv] || []; if (!a.length) return; SC.heatN = ((SC.heatN || 0) + 1) % 997;
+      var r = mk.getBoundingClientRect(); if (!r.width || r.bottom < 0) return;
+      var b = document.getElementById('ryHeatSay'); if (!b) { b = document.createElement('div'); b.id = 'ryHeatSay'; b.setAttribute('role', 'status'); document.body.appendChild(b); }
+      b.textContent = a[SC.heatN % a.length]; b.className = 'lv' + lv; b.style.left = Math.max(8, r.left) + 'px'; b.style.top = (r.bottom + 10) + 'px';
+      b.hidden = false; b.classList.remove('out'); void b.offsetWidth; b.classList.add('in');
+      clearTimeout(SC.heatHide); SC.heatHide = setTimeout(function () { b.classList.add('out'); setTimeout(function () { b.hidden = true; }, 300); }, 4500);
+    }
     /* 1112 MJ '세트가 잘 팔리면 이 부분(위 로고·약국 이름)이 조금씩 불타오르는 느낌 · 호떡집에 불난 듯 바쁘다는 느낌' — 오늘 세트 판매 합 ÷ 오늘 하루 목표 합
        0 = 그대로 · 1(40%↑) 로고가 따뜻하게 · 2(80%↑) 불꽃 피어오름 · 3(100%↑) 호떡집에 불났어요 · 4(150%↑) 불이야! 살짝 흔들림 */
     function scHeat() {
@@ -8289,6 +8309,8 @@ video {
       if (w && t >= w.from && t <= w.to) SC_SETS.forEach(function (s) { var v = scV(t, s.k), g = scGoal(D.cfg, t, s.k); if (v != null) sum += v; if (g > 0) goal += g; });
       var p = goal ? sum / goal : 0, lv = !goal || !sum ? 0 : p >= 1.5 ? 4 : p >= 1 ? 3 : p >= .8 ? 2 : p >= .4 ? 1 : 0;
       br.setAttribute('data-heat', String(lv));
+      var up = lv > (SC.heatLv || 0); SC.heatLv = lv; if (lv && up) setTimeout(heatSay, 2500);
+      if (!SC.heatT) SC.heatT = setInterval(function () { if (!document.hidden && SC.heatLv) heatSay(); }, 45000);
       var ti = br.querySelector('.ry25-title'), ch = document.getElementById('ryHeat'), mk = br.querySelector('.ry25-mark'), bd = document.getElementById('ryHeatB');
       if (!lv) { if (bd) bd.remove(); } else if (mk) { if (!bd) { bd = document.createElement('span'); bd.id = 'ryHeatB'; bd.setAttribute('aria-hidden', 'true'); mk.appendChild(bd); } bd.textContent = (lv >= 2 ? '🔥' : '♨️') + sum; }   /* 폰: 이름이 잘려서 로고 위 작은 배지 */
       if (!lv) { if (ch) ch.remove(); } else if (ti) {
