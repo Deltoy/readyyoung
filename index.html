@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwef7fz4">
+  <meta name="ry-build" content="mweq183m">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -15753,18 +15753,18 @@ video {
       var d = document.createElement('div'); d.id = 'qinBox'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', '바로 입고');
       d.innerHTML = '<div class="qi-card"><div class="qi-hd"><b>📦 바로 입고</b><span>주문도 명세서도 없이 들어온 상품</span><button type="button" class="qi-x" aria-label="닫기" onclick="qinClose()">✕</button></div>'
         + (it ? '<div class="qi-name">' + escapeHtml(QIN.name) + '</div>' : '<label class="qi-l">🆕 새 상품 이름 (앱에 보일 이름)<input id="qinName" type="text" autocomplete="off" value="' + escapeHtml(q0) + '" placeholder="예: 신신파스 아렉스 소 42매"></label>')
-        + '<label class="qi-l">들어온 수량 (개)<input id="qinQty" type="number" inputmode="numeric" min="1" placeholder="몇 개?"></label>'
-        + (it && parseInt(it.boxUnit, 10) > 1 ? '<div class="inb1-bx" style="padding:0;margin:-4px 0 10px"><button type="button" onclick="qinBox(1)">📦 +1박스 (' + parseInt(it.boxUnit, 10) + '개)</button><button type="button" onclick="qinBox(-1)">−1박스</button></div>' : '')   // 1023 MJ 박스로 오면 박스 수만 누르기
+        + '<label class="qi-l">들어온 수량 (개)<input id="qinQty" type="number" inputmode="numeric" min="1" placeholder="몇 개?" oninput="ryBxDraw(\'qinQty\')"></label>'
+        + (it ? RY_BX_DIV('qinQty') : '')   // 1023 MJ 박스로 오면 박스 수만 누르기 · 1113 공통 ryBxDraw
         + '<div class="qi-l">특별한 이유가 있나요? <small>(있을 때만 고르기 · 안 고르면 그냥 \'주문없이입고\')</small><div class="qi-why" id="qinWhyBox"></div><input id="qinEtc" type="text" maxlength="30" autocomplete="off" placeholder="기타 이유를 적어 주세요 (예: 행사 사은품)" hidden></div>'
         + '<div class="qi-l">사진 <small>(선택 · 상자나 상품)</small><label class="qi-ph"><input id="qinPh" type="file" accept="image/*" capture="environment" onchange="qinPhoto(this)" hidden><span id="qinPhTxt">📷 찍기 / 고르기</span></label></div>'
         + '<button type="button" id="qinGo" class="qi-go" onclick="qinGo()">입고하기</button><p class="qi-note">입고내역에 \'📦 주문 없이 입고\'로 남아요</p></div>';
       d.addEventListener('click', function (e) { if (e.target === d) qinClose(); });
       document.body.appendChild(d);
+      ryBxDraw('qinQty');
       qinWhyRender();
       if (!QIN_EXTRA) google.script.run.withSuccessHandler(function (r) { QIN_EXTRA = (r && r.list) || []; if (QIN && !QIN.why) qinWhyRender(); }).withFailureHandler(function () {}).getQinReasons();
       setTimeout(function () { var f = document.getElementById(it ? 'qinQty' : 'qinName'); if (f) f.focus(); }, 50);
     }
-    function qinBox(d) { var it = QIN && QIN.row ? (lastSearchResults || []).filter(function (x) { return x.rowNumber === QIN.row; })[0] : null, bu = it ? parseInt(it.boxUnit, 10) || 0 : 0, el = document.getElementById('qinQty'); if (!bu || !el) return; el.value = Math.max(0, (parseInt(el.value, 10) || 0) + d * bu) || ''; }
     function qinClose() { var d = document.getElementById('qinBox'); if (d) d.remove(); QIN = null; }
     function qinWhyRender() {
       var box = document.getElementById('qinWhyBox'); if (!box) return;
@@ -15831,12 +15831,33 @@ video {
       var d = document.createElement('div'); d.id = 'qinBox'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', '입고 수정');   // 바로 입고 창과 같은 모양
       d.innerHTML = '<div class="qi-card"><div class="qi-hd"><b>✏️ 입고 수정</b><span>' + escapeHtml(String(it.inboundDate).slice(5) + ' ' + (it.inTime || '').slice(0, 5) + ' · ' + it.inboundManager) + ' · 주문 없이 입고</span><button type="button" class="qi-x" aria-label="닫기" onclick="qeClose()">✕</button></div>'
         + '<div class="qi-name" id="qeName">' + qeNm(it.name) + '</div>'
-        + '<label class="qi-l">들어온 수량 (' + escapeHtml(it.unit || '개') + ')<input id="qeQty" type="number" inputmode="numeric" min="1" value="' + (parseInt(it.targetQty, 10) || '') + '" onkeydown="if(event.key===\'Enter\'&&!event.isComposing){event.preventDefault();qeSave()}"></label>'
+        + '<label class="qi-l">들어온 수량 (' + escapeHtml(it.unit || '개') + ')<input id="qeQty" type="number" inputmode="numeric" min="1" value="' + (parseInt(it.targetQty, 10) || '') + '" oninput="ryBxDraw(\'qeQty\')" onkeydown="if(event.key===\'Enter\'&&!event.isComposing){event.preventDefault();qeSave()}"></label>' + RY_BX_DIV('qeQty')
         + '<label class="qi-l">다른 상품이었나요? <small>(맞으면 비워 두기 · 검색해서 고르기)</small><input id="qeQ" type="text" autocomplete="off" placeholder="맞는 상품 이름 검색" oninput="qeSearch(this.value)"></label><div id="qeR" class="inb1-r"></div>'
         + '<button type="button" class="qi-go" onclick="qeSave()">저장</button><p class="qi-note">고친 내용은 기록으로 남아요</p></div>';
       d.addEventListener('click', function (e) { if (e.target === d) qeClose(); });
       document.body.appendChild(d);
+      ryBxDraw('qeQty');
       setTimeout(function () { var f = document.getElementById('qeQty'); if (f) f.focus(); }, 50);
+    }
+    /* 1113 MJ '박스에 몇 개 들었는지 + 박스로 들어오면 수량 잡아서 수정' (파마티크 홍삼 팩 4박스를 4개로 적음) — 바로 입고·입고 수정 공통:
+       📦 1박스 = N개 · ±1박스 · 'N박스였나요? → N×개' 한 번에 · 1박스 수량 모르면 [적기] → 상품에도 저장(saveBoxRef) */
+    var RY_BX = {};
+    function RY_BX_DIV(id) { return '<div class="inb1-bx" id="' + id + 'Bx" style="padding:0;margin:-4px 0 10px;flex-wrap:wrap"></div>'; }
+    function ryBxRow_(id) { return id === 'qinQty' ? (QIN && QIN.row) : (QE && (QE.to || QE.it).rowNumber); }
+    function ryBxBu(row) { if (RY_BX[row]) return RY_BX[row]; var x = boxItems_().concat(cachedInboundItems || []).filter(function (c) { return c && c.rowNumber === row && parseInt(c.boxUnit, 10) > 1; })[0]; return x ? parseInt(x.boxUnit, 10) : 0; }
+    function ryBxDraw(id) {
+      var box = document.getElementById(id + 'Bx'), el = document.getElementById(id), row = ryBxRow_(id); if (!box || !el) return;
+      if (!row) { box.innerHTML = ''; return; }
+      var bu = ryBxBu(row), v = parseInt(el.value, 10) || 0;
+      box.innerHTML = bu ? '<span style="margin:0 2px 0 0">📦 1박스 = ' + bu + '개</span><button type="button" style="background:#fff;border:1px solid #D0D5DD!important;border-radius:999px!important;padding:0 12px!important" onclick="ryBxAdd(\'' + id + '\',1)">+1박스</button><button type="button" style="background:#fff;border:1px solid #D0D5DD!important;border-radius:999px!important;padding:0 12px!important" onclick="ryBxAdd(\'' + id + '\',-1)">−1박스</button>'
+          + (v > 0 && v < bu ? '<button type="button" id="' + id + 'Fix" style="background:#EEF4FF;color:#155EEF;border:1px solid #155EEF!important;border-radius:999px!important;padding:0 12px!important" onclick="ryBxSet(\'' + id + '\',' + v * bu + ')">' + v + '박스였나요? → ' + v * bu + '개</button>' : '')
+        : '<button type="button" onclick="ryBxAsk(\'' + id + '\')">📦 1박스 몇 개인지 적기</button>';
+    }
+    function ryBxAdd(id, d) { var el = document.getElementById(id), bu = ryBxBu(ryBxRow_(id)); if (!el || !bu) return; el.value = Math.max(0, (parseInt(el.value, 10) || 0) + d * bu) || ''; ryBxDraw(id); }
+    function ryBxSet(id, n) { var el = document.getElementById(id); if (el) { el.value = n; ryBxDraw(id); } }
+    function ryBxAsk(id) {
+      var row = ryBxRow_(id); if (!row) return;
+      ryPrompt('1박스에 몇 개가 들어있나요?\n(숫자로)', '', { num: true }).then(function (v) { var n = parseInt(String(v == null ? '' : v).replace(/[^0-9]/g, ''), 10); if (!(n > 1)) return; RY_BX[row] = n; saveBoxRef(row, { value: String(n) }); ryBxDraw(id); });
     }
     function qeClose() { var d = document.getElementById('qinBox'); if (d) d.remove(); QE = null; }
     function qeSearch(q) {
@@ -15851,6 +15872,7 @@ video {
       QE.to = ryPrKey(x.name) === ryPrKey(QE.it.name) ? null : x;
       document.getElementById('qeName').innerHTML = QE.to ? '<s style="color:#98A2B3;font-weight:600">' + qeNm(QE.it.name) + '</s><br>→ ' + qeNm(x.name) : qeNm(QE.it.name);
       document.getElementById('qeQ').value = ''; document.getElementById('qeR').innerHTML = '';
+      ryBxDraw('qeQty');
     }
     function qeSave() {
       if (!QE) return;
