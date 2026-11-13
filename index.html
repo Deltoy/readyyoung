@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwesdpbu">
+  <meta name="ry-build" content="mweu4bt5">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4563,8 +4563,17 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry25-brand[data-dance] .ry25-mark{pos
 .ry-limbs .hd{fill:#fff;stroke:#0B3FA8;stroke-width:2}.ry-limbs .sh{fill:#0B3FA8}
 .ry-limbs g{transform-box:view-box}.ry-limbs .aL{transform-origin:13px 31px}.ry-limbs .aR{transform-origin:51px 31px}.ry-limbs .lL{transform-origin:25px 50px}.ry-limbs .lR{transform-origin:39px 50px}
 html.ry-closed .ry-limbs,html.ry-closed #ryDzFloat{display:none}
-#ryDzFloat{position:fixed;left:max(18px,env(safe-area-inset-left));bottom:calc(26px + env(safe-area-inset-bottom,0px));z-index:900;opacity:0;transform:translateY(24px) scale(.6);pointer-events:none;transition:opacity .3s,transform .35s cubic-bezier(.2,1.4,.4,1)}
+#ryDzFloat{position:fixed;left:max(18px,env(safe-area-inset-left));bottom:calc(26px + env(safe-area-inset-bottom,0px));z-index:9500;opacity:0;transform:translateY(24px) scale(.6);pointer-events:none;transition:opacity .3s,transform .35s cubic-bezier(.2,1.4,.4,1)}
 #ryDzFloat.on{opacity:1;transform:scale(1.15);pointer-events:auto}#ryDzFloat .ry25-mark{cursor:pointer}
+#ryDzFloat .dz-in{display:block;position:relative}
+#ryDzFloat .dz-door{position:absolute;left:50%;bottom:-16px;width:56px;height:72px;margin-left:-28px;border-radius:9px 9px 2px 2px;background:#1D2939;box-shadow:0 0 0 4px #7A4A1E inset,0 6px 14px rgba(16,24,40,.3);perspective:160px;opacity:0;transform:scale(.4);transform-origin:50% 100%;z-index:-1;pointer-events:none}
+#ryDzFloat .dz-door b{position:absolute;left:4px;right:4px;top:4px;bottom:0;border-radius:6px 6px 1px 1px;background:linear-gradient(90deg,#B7791F,#D69E2E);transform-origin:0 50%;box-shadow:inset -3px 0 0 rgba(0,0,0,.15)}
+#ryDzFloat .dz-door b::after{content:'';position:absolute;right:6px;top:52%;width:6px;height:6px;border-radius:50%;background:#FDE68A}
+#ryDzFloat.door .dz-door{animation:dzDoor 2.2s ease forwards}#ryDzFloat.door .dz-door b{animation:dzLeaf 2.2s ease forwards}#ryDzFloat.door .dz-in{animation:dzOut 2.2s cubic-bezier(.2,1.4,.4,1) forwards}
+@keyframes dzDoor{0%{opacity:0;transform:scale(.4)}12%{opacity:1;transform:scale(1)}78%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.9)}}
+@keyframes dzLeaf{0%,22%{transform:rotateY(0)}46%,100%{transform:rotateY(-105deg)}}
+@keyframes dzOut{0%,40%{opacity:0;transform:translateY(10px) scale(.3)}58%{opacity:1;transform:translateY(-14px) scale(1.12)}70%{transform:translateY(0) scale(1)}100%{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){#ryDzFloat .dz-door{display:none}#ryDzFloat.door .dz-in{animation:none}}
 #ryHeatSay.up::before{top:auto;bottom:-8px;border:7px solid transparent;border-bottom:0;border-top-color:#FDB022}#ryHeatSay.up.lv3::before,#ryHeatSay.up.lv4::before{border-top-color:#F04438}
 @media(prefers-reduced-motion:reduce){html:not(#q):not(#w):not(#e) body:not(#r) .ry25-brand[data-dance] .ry25-mark,.ry-limbs g{animation:none!important}.ry-limbs .aL{transform:rotate(120deg)}.ry-limbs .aR{transform:rotate(-120deg)}}
 /* 1112 목표 달성 빵빠레·폭죽 (scFanfare) */
@@ -8428,7 +8437,7 @@ video {
       var D = SC.data, w = D && scUse(), t = D && D.today, on = !!(w && t >= w.from && t <= w.to), n = on ? SC_SETS.filter(function (s) { return scOk(D.cfg, t, s.k); }).length : 0;
       var g = n, hl = SC.heatLv || 0, all = SC_SETS.length || 4; n = Math.max(n, hl >= 3 ? 4 : hl);   /* 1113 MJ '판매가 잘되면 그냥 브레이킹 댄스' — 오늘 세트 합이 하루 목표 합의 40%↑ 덩실 · 80%↑ 스텝 · 100%↑ 브레이크 (세트 목표 달성 수가 더 높으면 그만큼) */
       if (RY_DZ_PV != null) n = RY_DZ_PV; n = Math.min(n, RY_DZ.length);
-      SC.dzTxt = n ? '오늘 판매 잘되고 있어요! 세트 하루 목표 ' + g + '/' + all + ' 달성 · 로고 춤 ' + n + '단계 💃' : '세트가 잘 팔리면 로고가 춤을 춰요 💃 (하루 목표 ' + g + '/' + all + ' 달성)';
+      SC.dzTxt = n ? '오늘 판매 잘되고 있어요! ' + (g ? '세트 하루 목표 ' + g + '/' + all + ' 달성 · ' : '') + '로고 춤 ' + n + '단계 💃' : '세트가 잘 팔리면 로고가 춤을 춰요 💃 (하루 목표 ' + g + '/' + all + ' 달성)';
       mk.title = SC.dzTxt;
       if (!mk.getAttribute('data-dz')) { mk.setAttribute('data-dz', '1'); mk.style.cursor = 'pointer'; mk.addEventListener('click', function () { heatSay(SC.dz ? ryDzLine() : (SC.dzTxt || '')); }); }
       var lb = document.getElementById('ryLimbs');
@@ -8437,22 +8446,58 @@ video {
       var css = document.getElementById('ryDzCss'); if (!css) { css = document.createElement('style'); css.id = 'ryDzCss'; document.head.appendChild(css); }
       if (css.getAttribute('data-n') !== String(n)) { css.textContent = scRm() ? '' : ryDzCss(n); css.setAttribute('data-n', String(n)); }
       br.setAttribute('data-dance', String(n));
-      if (n > (SC.dz || 0)) setTimeout(function () { heatSay('오늘 판매 잘되고 있어요! 로고 춤 추가: ' + RY_DZ[n - 1][0]); }, 4200);   // 빵빠레(3.8초) 뒤
+      if (n > (SC.dz || 0)) setTimeout(function () { if (Date.now() - (SC.dzDoor || 0) > 5000) heatSay('오늘 판매 잘되고 있어요! 로고 춤 추가: ' + RY_DZ[n - 1][0]); }, 4200);   // 문 열고 등장 멘트가 먼저   // 빵빠레(3.8초) 뒤
       SC.dz = n; ryDzFloat(n);
-      if (!SC.dzT) SC.dzT = setInterval(function () { if (!document.hidden && SC.dz) heatSay(ryDzLine()); }, 9000);   /* 1113 MJ '응원 메시지가 계속' — 춤추는 동안 9초마다 (4.5초씩 보임) */
+      if (!SC.dzT) SC.dzT = setInterval(function () { var ae = document.activeElement; if (!document.hidden && SC.dz && Date.now() - (SC.dzDoor || 0) > 6000 && ryDzCover_() !== 'modal' && !(ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))) heatSay(ryDzLine()); }, 9000);   // 입력 중·작은 창 떠 있을 땐 쉼   /* 1113 MJ '응원 메시지가 계속' — 춤추는 동안 9초마다 (4.5초씩 보임) */
     }
     var DZ_CHEER = ['오늘 판매 잘되고 있어요! 🔥', '세트가 술술 나가요 💃', '신나서 춤이 절로 나와요 🕺', '오늘 우리 팀 최고예요 👏', '이 기세 그대로 가 봐요 🚀', '손님들이 우리 약국을 좋아해요 💙', '오늘 판매 날씨 맑음 ☀️', '계산대가 바빠서 행복해요 😆', '한 세트 한 세트가 모여 대박! 🎉', '다들 고생 많아요, 조금만 더 힘내요 💪', '오늘 우리 약국 분위기 최고! ✨', '판매왕들 여기 다 모였네요 👑'];
     function ryDzLine() { SC.dzN = ((SC.dzN || 0) + 1) % 997; var a = DZ_CHEER.concat(HEAT_SAY[SC.heatLv || 0] || []); return SC.dzN % 6 === 0 ? (SC.dzTxt || a[0]) : a[(SC.dzN * 7) % a.length]; }
-    function ryDzFloat(n) {   /* 1113 MJ '밑으로 내려도 계속 춤추는 게 보이게' — 위 로고가 화면 밖이면 왼쪽 아래에 같은 춤 로고(복사본) · 누르면 응원 말풍선 */
+    function ryDzFloat(n) {   /* 1113 MJ '밑으로 내려도 계속 춤추는 게 보이게' + '판매 목표에 들어오니까 로고가 안 보여 — 페이지를 옮겨도 문 열고 등장해서 날 찾아오게, 재밌는 멘트와 함께'
+                                  위 로고가 화면 밖이거나 다른 화면(판매 목표·시트 등)에 가려지면 왼쪽 아래에 같은 춤 로고 · 화면이 가려져서 나타날 땐 문 열고 '짠' + 멘트(15초에 한 번) */
       var f = document.getElementById('ryDzFloat'), mk = document.querySelector('.ry25-brand .ry25-mark'), top = document.querySelector('.ry25-top');
-      if (!n || !mk || !top) { if (f) f.remove(); if (SC.dzIO) { SC.dzIO.disconnect(); SC.dzIO = null; } return; }
+      if (!n || !mk || !top) { if (f) f.remove(); if (SC.dzIO) { SC.dzIO.disconnect(); SC.dzIO = null; } clearInterval(SC.dzChk); SC.dzChk = 0; return; }
       if (!f) {
         f = document.createElement('div'); f.id = 'ryDzFloat'; f.className = 'ry25-brand';
         var c = mk.cloneNode(true); c.removeAttribute('data-dz'); c.removeAttribute('title'); c.setAttribute('aria-label', '응원 메시지 보기'); c.querySelectorAll('[id]').forEach(function (x) { x.removeAttribute('id'); });
-        c.addEventListener('click', function () { heatSay(ryDzLine()); }); f.appendChild(c); document.body.appendChild(f);
+        c.addEventListener('click', function () { heatSay(ryDzLine()); });
+        var w = document.createElement('span'); w.className = 'dz-in'; w.appendChild(c);
+        f.innerHTML = '<span class="dz-door" aria-hidden="true"><b></b></span>'; f.appendChild(w); document.body.appendChild(f);
       }
       f.setAttribute('data-dance', String(n));
-      if (!SC.dzIO && window.IntersectionObserver) { SC.dzIO = new IntersectionObserver(function (es) { var g2 = document.getElementById('ryDzFloat'); if (g2) g2.classList.toggle('on', !es[0].isIntersecting); }); SC.dzIO.observe(top); }
+      if (!SC.dzIO && window.IntersectionObserver) { SC.dzIO = new IntersectionObserver(function () { ryDzCheck(); }); SC.dzIO.observe(top); }
+      if (!SC.dzChk) SC.dzChk = setInterval(ryDzCheck, 1200);
+      if (!SC.dzClk) { SC.dzClk = 1; document.addEventListener('click', function () { setTimeout(ryDzCheck, 350); setTimeout(ryDzCheck, 1000); }, true); }
+      ryDzCheck();
+    }
+    function ryDzCover_() {   // 위 로고 자리를 덮은 게 '다른 화면'인가 (판매 목표·시트 = 예, 입력 창·확인창 같은 작은 창 = 아니오)
+      var mk = document.querySelector('.ry25-top .ry25-mark'), r = mk && mk.getBoundingClientRect(); if (!r || !r.width) return 'gone';
+      if (r.bottom <= 0 || r.top >= innerHeight) return 'scroll';
+      var els = document.elementsFromPoint(r.left + r.width / 2, r.top + r.height / 2);   // 겹친 것 위에서부터 — 위쪽 알림 카드처럼 작은 건 건너뛰고 그 아래를 봄
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i]; if (el.closest('.ry25-top')) return ''; if (el.closest('#ryDzFloat') || el.closest('#ryHeatSay') || el === document.body || el === document.documentElement) continue;
+        var fx = null; for (var a = el; a && a !== document.body; a = a.parentElement) if (getComputedStyle(a).position === 'fixed') fx = a;
+        if (!fx) return 'page';
+        if ((parseInt(getComputedStyle(fx).zIndex, 10) || 0) >= 9500) return 'modal';
+        if (fx.getBoundingClientRect().height < innerHeight * .6) continue;
+        return 'page';
+      }
+      return '';
+    }
+    function ryDzCheck() {
+      var f = document.getElementById('ryDzFloat'); if (!f || !SC.dz) return;
+      var why = ryDzCover_(); if (why === 'modal') return;   // 작은 창이 떠 있는 동안은 그대로
+      var show = !!why, was = f.classList.contains('on'); if (show === was) return;
+      f.classList.toggle('on', show);
+      if (show && why === 'page' && Date.now() - (SC.dzDoor || 0) > 15000) { SC.dzDoor = Date.now(); ryDzDoor(f); }
+    }
+    var DZ_ENTER = ['똑똑! 저 따라왔어요 🚪', '여기 계셨군요? 찾았다! 👀', '문 열고 짠! 저 없으면 심심하잖아요 😎', '어디 가세요~ 같이 가요! 🏃', '저도 이 화면 궁금했어요 🤭', '숨바꼭질은 제가 이겼죠? 🙈', '노크는 했어요… 아마도? 🚪💃', '춤은 관객이 있어야 신나거든요 🕺', '혼자 두고 가기 있기 없기? 🥺', '어서 오세요~ 아, 제가 손님인가? 😆'];
+    function ryDzDoor(f) {
+      var sl = typeof slIsOpen === 'function' && slIsOpen(), L = sl ? ['판매 목표 보러 오셨어요? 저도 숫자 궁금해요 📊', '목표 확인하러 왔어요! 오늘 몇 개 남았나 볼까요? 🎯', '여기가 판매 목표 방이군요! 춤추기 딱 좋네요 💃'].concat(DZ_ENTER) : DZ_ENTER;
+      SC.dzE = ((SC.dzE || 0) + 1) % 997; var line = L[(SC.dzE * 3) % L.length];
+      if (scRm()) { heatSay(line); return; }
+      f.classList.remove('door'); void f.offsetWidth; f.classList.add('door');
+      clearTimeout(SC.dzDoorT); SC.dzDoorT = setTimeout(function () { f.classList.remove('door'); }, 2300);
+      setTimeout(function () { heatSay(line); }, 1250);
     }
     /* 1112 MJ '판매 목표를 달성하면 물류앱에 목표 달성 빵빠레와 폭죽 터지는 장면을 잠깐' — 오늘 하루 목표를 넘긴 세트가 생기면 앱 어디서든 한 번(기기·세트·날짜마다) 전체 화면 폭죽 + 짧은 빵빠레 · 눌러서 닫기 · 3.8초 뒤 자동 · 움직임 줄이기 설정이면 폭죽 없이 카드만 */
     function scFanfareCheck() {
