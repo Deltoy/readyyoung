@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mweq183m">
+  <meta name="ry-build" content="mwerdfw1">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4556,6 +4556,14 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="4"]::after{height
 @keyframes ryFire{0%{background-position:0 0}100%{background-position:300% 0}}
 @keyframes ryBusy{0%,100%{transform:translateX(0)}25%{transform:translateX(-1px) rotate(-.3deg)}75%{transform:translateX(1px) rotate(.3deg)}}
 @media(prefers-reduced-motion:reduce){.ry25-brand[data-heat],.ry25-brand[data-heat] .ry25-mark,.ry25-brand[data-heat] #ryAura,.ry25-brand[data-heat] #ryAura::before,.ry25-brand[data-heat] #ryAura::after,#ryHeat{animation:none!important}}
+/* 1113 로고 춤 (scDance) — 팔다리 = 로고 뒤 SVG(64칸 = 로고 40칸 + 사방 12) · 회전 중심 = 어깨·엉덩이 */
+html:not(#q):not(#w):not(#e) body:not(#r) .ry25-brand[data-dance] .ry25-mark{position:relative;overflow:visible;margin:0 6px 0 4px}   /* 팔이 약국 이름을 가리지 않게 */
+#ryLimbs{position:absolute;left:-30%;top:-30%;width:160%;height:160%;pointer-events:none;overflow:visible;z-index:-1}
+#ryLimbs .lb{fill:none;stroke:#0B3FA8;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+#ryLimbs .hd{fill:#fff;stroke:#0B3FA8;stroke-width:2}#ryLimbs .sh{fill:#0B3FA8}
+#ryLimbs g{transform-box:view-box}#ryLimbs .aL{transform-origin:13px 31px}#ryLimbs .aR{transform-origin:51px 31px}#ryLimbs .lL{transform-origin:25px 50px}#ryLimbs .lR{transform-origin:39px 50px}
+html.ry-closed #ryLimbs{display:none}
+@media(prefers-reduced-motion:reduce){html:not(#q):not(#w):not(#e) body:not(#r) .ry25-brand[data-dance] .ry25-mark,#ryLimbs g{animation:none!important}#ryLimbs .aL{transform:rotate(120deg)}#ryLimbs .aR{transform:rotate(-120deg)}}
 /* 1112 목표 달성 빵빠레·폭죽 (scFanfare) */
 #scFan{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;background:rgba(16,24,40,.45);animation:scfIn .25s ease-out}#scFan.out{opacity:0;transition:opacity .35s}
 #scFan canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -8358,6 +8366,7 @@ video {
       b.title = w ? '이번 주 세트 목표 ' + scMd(w.from) + ' ~ ' + scMd(w.to) + (w.note ? ' · ' + w.note : '') : '주 목표 · 판매 달력 · 행사 효과';
       try { scFanfareCheck(); } catch (eF) {}
       try { scHeat(); } catch (eH) {}
+      try { scDance(); } catch (eD) {}
     }
     /* 1112 MJ '로고가 멘트도 하게 · 오늘 사람 많다고 불났다 너무 바쁘다 위트 있는 멘트' — 불타는 단계마다 로고 아래 말풍선(4.5초) · 45초마다 · 단계 오르면 바로 · 사람 외모 놀림 X */
     var HEAT_SAY = [[],
@@ -8366,13 +8375,14 @@ video {
       ['호떡집에 불났어요!! 🔥', '오늘 손님 왜 이렇게 많아요?! 😵', '계산대 쉴 틈이 없어요 💸', '숨 쉴 틈도 없이 바빠요 🏃💨', '물 한 잔 마실 시간도 없어요 💦', '목표 달성! 지금부턴 보너스 판이에요 🎁'],
       ['불이야!! 소방차 불러야 할 판 🚒', '오늘 문 닫을 틈이 없어요 🔥🔥', '이 정도면 전설의 날이에요 👑', '손이 열 개였으면 좋겠어요 🙌🙌', '재고 창고도 깜짝 놀랐어요 📦😲', '오늘 우리 약국 성수 핫플 등극 🌶️']];
     function scOpenHr() { var h = new Date().getHours(); return h >= 8 && h < 23; }   /* 1112 MJ '11시에 영업 끝나면 말하는건 그만' — 영업 시간(8~23시)에만 말풍선·로고 멘트 */
-    function heatSay() {
+    function heatSay(txt) {   /* 1113 txt = 로고 춤 안내(누르면 · 단계 오를 때) */
+      if (typeof txt !== 'string') txt = '';
       if (!scOpenHr()) { var ob = document.getElementById('ryHeatSay'); if (ob) ob.hidden = true; return; }
-      var lv = SC.heatLv || 0, mk = document.querySelector('.ry25-brand .ry25-mark'); if (!lv || !mk) return;
-      var a = HEAT_SAY[lv] || []; if (!a.length) return; SC.heatN = ((SC.heatN || 0) + 1) % 997;
+      var lv = SC.heatLv || 0, mk = document.querySelector('.ry25-brand .ry25-mark'); if ((!lv && !txt) || !mk) return;
+      var a = HEAT_SAY[lv] || []; if (!txt && !a.length) return; if (!txt) SC.heatN = ((SC.heatN || 0) + 1) % 997;
       var r = mk.getBoundingClientRect(); if (!r.width || r.bottom < 0) return;
       var b = document.getElementById('ryHeatSay'); if (!b) { b = document.createElement('div'); b.id = 'ryHeatSay'; b.setAttribute('role', 'status'); document.body.appendChild(b); }
-      b.textContent = a[SC.heatN % a.length]; b.className = 'lv' + lv; b.style.left = Math.max(8, r.left) + 'px'; b.style.top = (r.bottom + 10) + 'px';
+      b.textContent = txt || a[SC.heatN % a.length]; b.className = 'lv' + (lv || 1); b.style.left = Math.max(8, r.left) + 'px'; b.style.top = (r.bottom + 10) + 'px';
       b.hidden = false; b.classList.remove('out'); void b.offsetWidth; b.classList.add('in');
       clearTimeout(SC.heatHide); SC.heatHide = setTimeout(function () { b.classList.add('out'); setTimeout(function () { b.hidden = true; }, 300); }, 4500);
     }
@@ -8388,12 +8398,48 @@ video {
       var up = lv > (SC.heatLv || 0); SC.heatLv = lv; if (lv && up) setTimeout(heatSay, 2500);
       if (!SC.heatT) SC.heatT = setInterval(function () { if (!document.hidden && SC.heatLv) heatSay(); }, 45000);
       var ti = br.querySelector('.ry25-title'), ch = document.getElementById('ryHeat'), mk = br.querySelector('.ry25-mark'), bd = document.getElementById('ryHeatB');
-      if (!lv) { if (bd) bd.remove(); } else if (mk) { if (!bd) { bd = document.createElement('span'); bd.id = 'ryHeatB'; bd.setAttribute('aria-hidden', 'true'); mk.appendChild(bd); } bd.textContent = (lv >= 3 ? '● ' : lv >= 2 ? '🔥' : '♨️') + sum; }   /* 폰: 이름이 잘려서 로고 위 작은 배지 (3단계부터 ● LIVE 점) */
+      if (bd) bd.remove();   /* 1113 MJ '로고 숫자(112)가 뭔지 모르겠어' → 폰 숫자 배지 뺌, 대신 로고 춤(scDance) · 누르면 말풍선 · 옛: 폰: 이름이 잘려서 로고 위 작은 배지 (3단계부터 ● LIVE 점) */
       if (!lv) { if (ch) ch.remove(); } else if (ti) {
         if (!ch) { ch = document.createElement('span'); ch.id = 'ryHeat'; ch.setAttribute('role', 'status'); ti.appendChild(ch); }
         if (lv >= 3) ch.innerHTML = '<i class="rlv"></i>LIVE ' + (lv >= 4 ? '불났어요' : '지금 바빠요') + ' · 세트 ' + sum; else ch.textContent = (lv >= 2 ? '🔥 ' : '♨️ ') + '세트 ' + sum + '개';   /* 1112 시안 C */
         ch.title = '오늘 세트 ' + sum + '개 · 하루 목표 합 ' + goal + '개 (' + Math.round(p * 100) + '%)';
       }
+    }
+    /* 1113 MJ '로고에 팔다리가 생겨서 덩실덩실 · 세트 판매 목표 4가지니까 단계마다 춤을 하나씩 추가 · 브레이크 댄스도 신나게' —
+       춤 단계 = 오늘 하루 목표 넘긴 세트 수(0~4) · N단계 = 춤 N개를 차례로 반복(① 덩실덩실 어깨춤 ② 발차기 스텝 ③ 점프 한 바퀴 ④ 브레이크 댄스: 물구나무 헤드스핀 + 다리 윈드밀)
+       키프레임은 아래 춤 함수에서 만들어 넣음(#ryDzCss) · 로고 누르면 말풍선으로 뜻 · 문 닫으면(ry-closed) 쉼 · 움직임 줄이기면 팔다리만 · 미리 보기 ?dance=1~4 (한 번만) */
+    var RY_DZ_PV = (function () { var m = location.search.match(/[?&]dance=([0-4])/); if (m && history.replaceState) { try { history.replaceState(null, '', location.pathname + location.search.replace(/[?&]dance=[0-4]/, '').replace(/^&/, '?') + location.hash); } catch (e) {} } return m ? +m[1] : null; })();
+    var RY_DZ = [   // [길이 초, t(0~1) → 몸 y(px)·회전 r · 팔 올림 aL·aR · 다리 차기 lL·lR, 끝난 뒤 쌓이는 회전]
+      ['덩실덩실 💃', 1.8, function (t) { var s = Math.sin(t * Math.PI * 4); return { y: -2 * Math.abs(s), r: 8 * s, aL: 70 + 45 * s, aR: 70 - 45 * s, lL: 6 * Math.max(0, s), lR: 6 * Math.max(0, -s) }; }, 0],
+      ['발차기 스텝 🦵', 1.8, function (t) { var s = Math.sin(t * Math.PI * 6); return { y: -4 * Math.abs(s), r: -5 * s, aL: 30 + 25 * Math.abs(s), aR: 30 + 25 * Math.abs(s), lL: 35 * Math.max(0, s), lR: 35 * Math.max(0, -s) }; }, 0],
+      ['점프 한 바퀴 🌀', 1.4, function (t) { if (t < .2) return { y: 3 * t / .2, r: 0, aL: 10, aR: 10, lL: 0, lR: 0 }; if (t >= .8) { var k = (t - .8) / .2; return { y: 3 * (1 - k), r: 360, aL: 160 - 90 * k, aR: 160 - 90 * k, lL: 0, lR: 0 }; } var u = (t - .2) / .6; return { y: 3 - 12 * Math.sin(Math.PI * u), r: 360 * u * u * (3 - 2 * u), aL: 160, aR: 160, lL: -15, lR: -15 }; }, 360],
+      ['브레이크 댄스 🕺🔥', 3.2, function (t) { if (t < .15) { var a = t / .15; return { y: -2 * a, r: 180 * a, aL: 70 + 30 * a, aR: 70 + 30 * a, lL: 20 * a, lR: 20 * a }; } if (t >= .85) { var b = (t - .85) / .15; return { y: -2 * (1 - b), r: 900 + 180 * b, aL: 100 + 60 * b, aR: 100 + 60 * b, lL: 20 * (1 - b), lR: 20 * (1 - b) }; } var u = (t - .15) / .7, w = Math.sin(u * Math.PI * 8); return { y: -2 + w, r: 180 + 720 * u, aL: 100, aR: 100, lL: 55 + 45 * w, lR: 55 - 45 * w }; }, 1080]
+    ];
+    function ryDzCss(n) {
+      var sg = RY_DZ.slice(0, n), T = sg.reduce(function (s, d) { return s + d[1]; }, 0), K = { b: [], aL: [], aR: [], lL: [], lR: [] }, at = 0, R = 0, f = function (x) { return Math.round(x * 10) / 10; };
+      var put = function (p, o, R) { var q = f(p * 100) + '%'; K.b.push(q + '{transform:translateY(' + f(o.y) + 'px) rotate(' + f(o.r + R) + 'deg)}'); K.aL.push(q + '{transform:rotate(' + f(o.aL) + 'deg)}'); K.aR.push(q + '{transform:rotate(' + f(-o.aR) + 'deg)}'); K.lL.push(q + '{transform:rotate(' + f(o.lL) + 'deg)}'); K.lR.push(q + '{transform:rotate(' + f(-o.lR) + 'deg)}'); };
+      sg.forEach(function (d) { var m = Math.max(12, Math.round(d[1] * 16)); for (var i = 0; i < m; i++) put((at + d[1] * i / m) / T, d[2](i / m), R); at += d[1]; R += d[3]; });
+      put(1, sg[0][2](0), R);   // 끝 = 첫 자세 (회전은 360 의 배수라 똑같아 보임)
+      return Object.keys(K).map(function (k) { return '@keyframes ryDz' + k + n + '{' + K[k].join('') + '}'; }).join('')
+        + 'html:not(.ry-closed):not(#q):not(#w):not(#e) body:not(#r) .ry25-brand[data-dance="' + n + '"] .ry25-mark{animation:ryDzb' + n + ' ' + T + 's linear infinite!important}'
+        + ['aL', 'aR', 'lL', 'lR'].map(function (k) { return '.ry25-brand[data-dance="' + n + '"] #ryLimbs .' + k + '{animation:ryDz' + k + n + ' ' + T + 's linear infinite}'; }).join('');
+    }
+    function scDance() {
+      var br = document.querySelector('.ry25-brand'), mk = br && br.querySelector('.ry25-mark'); if (!mk) return;
+      var D = SC.data, w = D && scUse(), t = D && D.today, on = !!(w && t >= w.from && t <= w.to), n = on ? SC_SETS.filter(function (s) { return scOk(D.cfg, t, s.k); }).length : 0;
+      if (RY_DZ_PV != null) n = RY_DZ_PV; n = Math.min(n, RY_DZ.length);
+      var sum = on ? SC_SETS.reduce(function (a, s) { return a + (scV(t, s.k) || 0); }, 0) : 0, all = SC_SETS.length || 4;
+      SC.dzTxt = '오늘 세트 ' + sum + '개 팔렸어요 · 하루 목표 ' + n + '/' + all + ' 달성' + (n ? ' → 로고 춤 ' + n + '개 (새 춤: ' + RY_DZ[n - 1][0] + ')' : ' · 목표 하나 넘길 때마다 로고가 춤을 하나씩 배워요 💃');
+      mk.title = SC.dzTxt;
+      if (!mk.getAttribute('data-dz')) { mk.setAttribute('data-dz', '1'); mk.style.cursor = 'pointer'; mk.addEventListener('click', function () { heatSay(SC.dzTxt || ''); }); }
+      var lb = document.getElementById('ryLimbs');
+      if (!n) { br.removeAttribute('data-dance'); if (lb) lb.remove(); SC.dz = 0; return; }
+      if (!lb) mk.insertAdjacentHTML('beforeend', '<svg id="ryLimbs" viewBox="0 0 64 64" aria-hidden="true"><g class="lL"><polyline class="lb" points="25,50 24,57 23,61"/><ellipse class="sh" cx="21.5" cy="61.6" rx="3.6" ry="2"/></g><g class="lR"><polyline class="lb" points="39,50 40,57 41,61"/><ellipse class="sh" cx="42.5" cy="61.6" rx="3.6" ry="2"/></g><g class="aL"><polyline class="lb" points="13,31 7,36 4,43"/><circle class="hd" cx="4" cy="43" r="2.8"/></g><g class="aR"><polyline class="lb" points="51,31 57,36 60,43"/><circle class="hd" cx="60" cy="43" r="2.8"/></g></svg>');
+      var css = document.getElementById('ryDzCss'); if (!css) { css = document.createElement('style'); css.id = 'ryDzCss'; document.head.appendChild(css); }
+      if (css.getAttribute('data-n') !== String(n)) { css.textContent = scRm() ? '' : ryDzCss(n); css.setAttribute('data-n', String(n)); }
+      br.setAttribute('data-dance', String(n));
+      if (n > (SC.dz || 0)) setTimeout(function () { heatSay('세트 목표 ' + n + '/' + all + ' 달성! 로고 춤 추가: ' + RY_DZ[n - 1][0]); }, 4200);   // 빵빠레(3.8초) 뒤
+      SC.dz = n;
     }
     /* 1112 MJ '판매 목표를 달성하면 물류앱에 목표 달성 빵빠레와 폭죽 터지는 장면을 잠깐' — 오늘 하루 목표를 넘긴 세트가 생기면 앱 어디서든 한 번(기기·세트·날짜마다) 전체 화면 폭죽 + 짧은 빵빠레 · 눌러서 닫기 · 3.8초 뒤 자동 · 움직임 줄이기 설정이면 폭죽 없이 카드만 */
     function scFanfareCheck() {
@@ -15848,8 +15894,8 @@ video {
     function ryBxDraw(id) {
       var box = document.getElementById(id + 'Bx'), el = document.getElementById(id), row = ryBxRow_(id); if (!box || !el) return;
       if (!row) { box.innerHTML = ''; return; }
-      var bu = ryBxBu(row), v = parseInt(el.value, 10) || 0;
-      box.innerHTML = bu ? '<span style="margin:0 2px 0 0">📦 1박스 = ' + bu + '개</span><button type="button" style="background:#fff;border:1px solid #D0D5DD!important;border-radius:999px!important;padding:0 12px!important" onclick="ryBxAdd(\'' + id + '\',1)">+1박스</button><button type="button" style="background:#fff;border:1px solid #D0D5DD!important;border-radius:999px!important;padding:0 12px!important" onclick="ryBxAdd(\'' + id + '\',-1)">−1박스</button>'
+      var bu = ryBxBu(row), v = parseInt(el.value, 10) || 0, nb = bu ? Math.floor(v / bu) : 0, rest = bu ? v % bu : 0;
+      box.innerHTML = bu ? (v >= bu ? '<b id="' + id + 'Cnt" style="flex:1 0 100%;font-size:14px;font-weight:800;color:#155EEF;margin:0 0 2px">= ' + nb + '박스' + (rest ? ' + ' + rest + '개' : '') + '</b>' : '') + '<span style="margin:0 2px 0 0">📦 1박스 = ' + bu + '개</span><button type="button" style="background:#fff;border:1px solid #D0D5DD!important;border-radius:999px!important;padding:0 12px!important" onclick="ryBxAdd(\'' + id + '\',1)">+1박스</button><button type="button" style="background:#fff;border:1px solid #D0D5DD!important;border-radius:999px!important;padding:0 12px!important" onclick="ryBxAdd(\'' + id + '\',-1)">−1박스</button>'
           + (v > 0 && v < bu ? '<button type="button" id="' + id + 'Fix" style="background:#EEF4FF;color:#155EEF;border:1px solid #155EEF!important;border-radius:999px!important;padding:0 12px!important" onclick="ryBxSet(\'' + id + '\',' + v * bu + ')">' + v + '박스였나요? → ' + v * bu + '개</button>' : '')
         : '<button type="button" onclick="ryBxAsk(\'' + id + '\')">📦 1박스 몇 개인지 적기</button>';
     }
