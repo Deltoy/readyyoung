@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mweal648">
+  <meta name="ry-build" content="mwebjzxp">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -17508,7 +17508,7 @@ video {
     function s15SameSize(a, b) { return ['n', 'v'].every(function (c) { return !a[c].length || !b[c].length || a[c].some(function (v) { return b[c].indexOf(v) !== -1; }); }); }
     function s15Match(xs, links) {
       var byName = {}, byKey = {}, groups = {}, byStem = {};
-      xs.forEach(function (x) { byName[x.n] = x; var k = s15Key(x.n); byKey[k] = byKey[k] ? 'dup' : x; var st = s15Stem(x.n); if (st.k.length >= 3) { x.stem = st; (byStem[st.k] = byStem[st.k] || []).push(x); } });   /* 괄호(맛·성분)까지 똑같은 이름은 바로 */
+      xs.forEach(function (x) { x.tk = 0; byName[x.n] = x; var k = s15Key(x.n); byKey[k] = byKey[k] ? 'dup' : x; var st = s15Stem(x.n); if (st.k.length >= 3) { x.stem = st; (byStem[st.k] = byStem[st.k] || []).push(x); } });   /* 괄호(맛·성분)까지 똑같은 이름은 바로 */
       [[cachedReviewItems, 1], [cachedOrderItems, 1], [cachedInboundItems, 1], [cachedStockCheckItems, 1], [cachedHistoryItems, 0], [(typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) || [], 0]].forEach(function (p) {   /* 1001 폰 상품 목록(RY_CAT)도 넣어 주문 흐름에 없는 상품까지 맞춘다 — 전엔 안 맞춰진 상품에 옛 숫자가 남았음 */
         (p[0] || []).forEach(function (it) {
           if (!it || !it.rowNumber || !it.name) return;
@@ -17521,17 +17521,21 @@ video {
       });
       var stemOwners = {}; Object.keys(groups).forEach(function (k) { var sk = s15Stem(groups[k].name).k; stemOwners[sk] = (stemOwners[sk] || 0) + 1; });   /* 앱 쪽에도 같은 꼬리 뗀 이름이 하나뿐일 때만 */
       var oldN = {}; Object.keys(groups).forEach(function (k) { oldN[groups[k].old] = (oldN[groups[k].old] || 0) + 1; });
-      return Object.keys(groups).map(function (k) {
+      var lnK = {}; Object.keys(groups).forEach(function (k) {
         var g = groups[k], ln = links[k];
         if (ln == null && g.old !== k && oldN[g.old] === 1) ln = links[g.old];   /* 1017 줄바꿈 고치기 전 연결(첫 줄 이름)도 — 다른 상품과 겹치지 않을 때만 */
+        lnK[k] = ln; var own = ln === '-' ? null : (ln && byName[ln]) || (byKey[k] !== 'dup' && byKey[k]); if (own) own.tk = 1;   /* 1113 같은 이름·연결로 주인이 있는 POS 줄 = tk → 다른 앱 상품에겐 확인 추천·AI 후보로 안 줌 — 당케어프로가 '생유산균 락토핏 당케어' 줄을, 캐니스킨이 카네스텐 줄을 추천받아 매일 확인에 뜨던 것 */
+      });
+      return Object.keys(groups).map(function (k) {
+        var g = groups[k], ln = lnK[k];
         if (ln === '-') { g.st = 'skip'; return g; }
         if (ln && byName[ln]) { g.x = byName[ln]; g.st = 'auto'; g.linked = true; return g; }
         if (byKey[k] && byKey[k] !== 'dup') { g.x = byKey[k]; g.st = 'auto'; return g; }
         if (ln && ln !== '-') { g.x = { n: ln, q: 0, zero: true }; g.st = 'auto'; g.linked = true; return g; }   // 1027 연결된 상품이 이 엑셀(그날)에 없음 = 0개 — 비슷한 다른 줄(모발아 레드↔블랙)을 대신 잡던 것
         var gs = s15Stem(g.name), cand = gs.k.length >= 3 ? byStem[gs.k] : null;   /* 용량 꼬리만 다르고 엑셀에 그 이름이 하나뿐 → 자동. 둘 다 용량이 있는데 다르면(100정 ≠ 600정) 확인으로 */
-        if (cand && cand.length === 1 && stemOwners[gs.k] === 1) { var cx = cand[0], same = s15SameSize(gs.sz, cx.stem.sz); g.x = cx; g.score = same ? 1 : .8; g.st = same ? 'auto' : 'check'; return g; }
-        var a = s15Prep(g.name), best = null, bs = 0, sec = 0;
-        xs.forEach(function (x) { var s = s15Score(a, x); if (s > bs) { sec = bs; bs = s; best = x; } else if (s > sec) sec = s; });
+        if (cand && cand.length === 1 && stemOwners[gs.k] === 1) { var cx = cand[0], same = s15SameSize(gs.sz, cx.stem.sz); if (same || !cx.tk) { g.x = cx; g.score = same ? 1 : .8; g.st = same ? 'auto' : 'check'; return g; } }
+        var a = s15Prep(g.name), best = null, bs = 0, sec = 0, top = function (free) { best = null; bs = sec = 0; xs.forEach(function (x) { if (free && x.tk) return; var s = s15Score(a, x); if (s > bs) { sec = bs; bs = s; best = x; } else if (s > sec) sec = s; }); };
+        top(); if (best && best.tk && !(bs >= .9 && bs - sec >= .05)) top(true);   /* 1113 주인 있는 줄은 확실할 때(같은 상품 다른 이름·앞부분 같음 = 자동)만 같이 씀 — 애매한 확인 추천으로는 안 줌 */
         g.x = best; g.score = bs;
         g.st = bs >= .9 && bs - sec >= .05 ? 'auto' : bs >= .6 ? 'check' : 'none';
         return g;
@@ -17693,13 +17697,13 @@ video {
       var gs = S15.groups || [], chk = gs.filter(function (g) {
         if (g.st !== 'check' && g.st !== 'none') return false;
         var m = String(mem['a:' + g.key] || '');
-        if (/^x\|/.test(m)) { var mx = S15.xs.filter(function (y) { return y.n === m.slice(2); })[0]; if (mx) { g.x = mx; g.st = 'check'; g.aiSug = true; return false; } }
+        if (/^x\|/.test(m)) { var mx = S15.xs.filter(function (y) { return y.n === m.slice(2); })[0]; if (mx && !mx.tk) { g.x = mx; g.st = 'check'; g.aiSug = true; return false; } }
         if (/^0\|/.test(m) && (Date.parse(td) - Date.parse(m.slice(2))) / 864e5 <= 7) { if (g.st === 'check') { g.st = 'none'; g.ai = true; } return false; }
         return true;
       });
       var allG = (S15.groups || []).filter(function (g) { return g.st !== 'skip'; });   // 엑셀에만 있는 이름은 앱 상품 전체에서 후보 (이미 이어진 상품이면 = 같은 상품의 다른 줄 → 새로 등록 안 함)
       var tasks = chk.map(function (g) {   // 앱 상품 → 엑셀 후보 5개
-        var a = s15Prep(g.name), top = S15.xs.map(function (x) { return [s15Score(a, x), x]; }).sort(function (p, r) { return r[0] - p[0]; }).slice(0, 5).map(function (p) { return p[1]; });
+        var a = s15Prep(g.name), top = S15.xs.filter(function (x) { return !x.tk; }).map(function (x) { return [s15Score(a, x), x]; }).sort(function (p, r) { return r[0] - p[0]; }).slice(0, 5).map(function (p) { return p[1]; });
         if (g.x && top.indexOf(g.x) === -1) top.unshift(g.x);
         return { kind: 'app', g: g, cands: top.slice(0, 6) };
       });
