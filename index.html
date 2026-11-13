@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwebjzxp">
+  <meta name="ry-build" content="mwef7fz4">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -6275,6 +6275,10 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(217 119 6 / var(--tw-bg-opacity, 1));
 }
+.hover\:bg-blue-100:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(219 234 254 / var(--tw-bg-opacity, 1));
+}
 .hover\:bg-blue-100\/70:hover {
   background-color: rgb(219 234 254 / 0.7);
 }
@@ -6803,7 +6807,8 @@ video {
             언제, 어떤 상품이 들어왔고 누가 최종 확인했는지 날짜별로 봅니다. 스크롤해도 날짜 줄이 위에 붙어 있습니다.<br>
             • <b>[📆 날짜 골라서 보기]</b>를 누르면 달력이 열려요. 입고된 날에 건수가 표시되고, 누르면 그날 내역만 보여요. 검색칸에 상품명을 치면 그 상품의 기록만<br>
             • <b class="text-emerald-700">[🔁 재주문]</b>: 같은 상품을 다시 주문 요청 (이 기록은 그대로 남음)<br>
-            • <b class="text-rose-600">[⏪ 되돌리기]</b>: 실수로 입고완료를 눌렀을 때 📦 입고 대기로 복구
+            • <b class="text-rose-600">[⏪ 되돌리기]</b>: 실수로 입고완료를 눌렀을 때 📦 입고 대기로 복구<br>
+            • <b class="text-blue-700">[수정]</b> · <b class="text-rose-600">[삭제]</b>: '📦 주문 없이 입고' 줄을 잘못 넣었을 때 — 수량·상품 고치기 / 지우기 (추정 재고도 같이) · 입고한 본인은 그날만, 관리약사·팀장·물류관리자는 언제나
           </div>
         </details>
       </div>
@@ -12364,7 +12369,12 @@ video {
                   </div>
                 </div>
 
-                ${item.isLog ? `
+                ${item.isLog && qeCan(item) ? `
+                <div class="flex items-center gap-1.5 flex-shrink-0 ml-auto">
+                  <button type="button" onclick="qeOpen(${item.logRow})" class="px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-300 rounded-xl text-[11px] font-black transition whitespace-nowrap flex items-center gap-1 shadow-xs" title="수량이나 상품을 잘못 넣었을 때 고쳐요"><span>${RYI.pen}수정</span></button>
+                  <button type="button" onclick="qeDel(${item.logRow})" class="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 rounded-xl text-[11px] font-black transition whitespace-nowrap flex items-center gap-1 shadow-xs" title="잘못 넣은 입고를 지워요 (추정 재고에서도 빠져요)"><span>${RYI.x}삭제</span></button>
+                </div>
+                ` : item.isLog ? `
                 <span class="px-2 py-1 bg-slate-100 text-slate-500 border border-slate-200 rounded-lg text-[10px] font-black whitespace-nowrap flex-shrink-0 ml-auto" title="재주문되어 기록으로 남은 지난 입고 건입니다">${RYI.folder} 지난 기록</span>
                 ` : item.activeCycle ? `
                 <span class="px-2 py-1 bg-blue-50 text-blue-800 border border-blue-200 rounded-lg text-[10px] font-black whitespace-nowrap flex-shrink-0 ml-auto" title="시트에서 다시 발주(체크)되어 지금 최종 발주/입고 대기에 올라가 있는 상품입니다. 이 기록은 새 입고가 완료되면 지난 기록으로 보관돼요">${RYI.refresh} 새 주문 진행 중</span>
@@ -14554,7 +14564,7 @@ video {
           .partialInbound(r, nm0, g, currentSelectedMember); };
       var INB1G = {}, nmOf0 = {}; diff.forEach(function (r) { INB1G[r] = INB1.got[r]; nmOf0[r] = nmOf(r); });
       if (diff.length) { pNext(); setTimeout(function () { try { loadAllData(true, true, true); } catch (e) {} }, 4000 + diff.length * 1500); }
-      adds.forEach(function (a) { google.script.run.withSuccessHandler(function (r) { if (!r || !r.success) showToast('입고 안 됨: ' + a.name + ' · ' + ((r && r.message) || ''), 3500); }).withFailureHandler(function (e) { showToast('입고 오류: ' + a.name, 3000); }).quickInbound({ name: a.name, qty: a.qty, reason: '', custom: false, photo: '', isNew: !!a.isNew, prodPhoto: a.isNew ? a.photo || '' : '' }, currentSelectedMember); });   // 1023 ③ 주문 안 한 것 (명세서 없음) = 바로 입고와 같은 길
+      adds.forEach(function (a) { google.script.run.withSuccessHandler(function (r) { if (!r || !r.success) showToast('입고 안 됨: ' + a.name + ' · ' + ((r && r.message) || ''), 3500); }).withFailureHandler(function (e) { showToast('입고 오류: ' + a.name, 3000); }).quickInbound({ name: a.name, row: a.row || 0, qty: a.qty, reason: '', custom: false, photo: '', isNew: !!a.isNew, prodPhoto: a.isNew ? a.photo || '' : '' }, currentSelectedMember); });   // 1023 ③ 주문 안 한 것 (명세서 없음) = 바로 입고와 같은 길
       adds.forEach(function (a) { if (!a.isNew && a.row && a.photo) google.script.run.withFailureHandler(function () {}).uploadProductPhoto(a.row, a.photo, a.name); });   // 사진 없던 기존 상품에 찍은 사진
       if (adds.length) RY_IVL = null;
       INB1.pick = {}; INB1.add = []; INB1.got = {}; inb1Save();
@@ -15791,7 +15801,67 @@ video {
         try { if (!q.row) ryCatLoad(true); } catch (e) {}
         try { loadAllData(true, true, true); } catch (e) {}
       }).withFailureHandler(function (e) { alert('[' + name + '] ' + n + '개 입고가 저장되지 않았어요: ' + (e && e.message ? e.message : e) + '\n검색해서 [📦 바로 입고]를 다시 눌러 주세요.'); })
-        .quickInbound({ name: name, qty: n, reason: why, custom: custom, photo: q.photo, isNew: !q.row, prodPhoto: q.row ? '' : q.photo }, currentSelectedMember);   /* 1109 새 상품은 찍은 사진을 상품 사진으로도 (듀얼소닉 알토 사진 빠짐 → 사진 넣으려다 입고 3번) */
+        .quickInbound({ name: name, row: q.row || 0, qty: n, reason: why, custom: custom, photo: q.photo, isNew: !q.row, prodPhoto: q.row ? '' : q.photo }, currentSelectedMember);   /* 1109 새 상품은 찍은 사진을 상품 사진으로도 (듀얼소닉 알토 사진 빠짐 → 사진 넣으려다 입고 3번) */
+    }
+    /* ═══ 1113 MJ '입고를 잘못했을 때 삭제하거나 수정할 수 있게' — 입고내역 '📦 주문 없이 입고' 줄 [수정]·[삭제] → 서버 editQuickInbound
+       누가: 입고한 본인(그날만) · 관리약사·팀장·물류관리자(언제나 · 서버 dutyAdm_ 가 최종 판단) · 주문 입고는 그대로 [⏪ 되돌리기]
+       수정 = 수량 + (상품을 잘못 골랐으면) 검색해서 맞는 상품으로 · 삭제 = 입고내역·추정 재고에서 빠짐 · 모두 서버 '_입고수정기록_' 에 원래 줄과 함께 남음 ═══ */
+    var QE = null;
+    function qeItem(lr) { return (cachedHistoryItems || []).filter(function (h) { return h.isLog && h.logRow === lr; })[0]; }
+    function qeCan(it) { return !!it && /^주문없이입고/.test(it.requester || '') && (scAdm() || sdCanEdit() || (it.inboundManager === currentSelectedMember && daysSince(it.inboundDate) === 0)); }
+    function qeRef(it) { return { logRow: it.logRow, name: it.name, day: it.inboundDate, t: it.inTime || '', by: it.inboundManager || '', qty: it.targetQty }; }
+    function qeNm(n) { return escapeHtml(String(n || '').replace(/\s*\n\s*/g, ' ')); }   // 두 줄 이름은 한 줄로 다 (첫 줄만 보이면 '…100ml → …100ml' 처럼 같아 보임)
+    function qeSend(ref, ch, msg) {
+      showToast(msg, 2600);
+      google.script.run.withSuccessHandler(function (r) {
+        if (!r || !r.success) ryAlert('입고 ' + (ch.del ? '삭제' : '수정') + '가 안 됐어요\n' + ((r && r.message) || '다시 눌러 주세요'));
+        RY_IVL = null; loadAllData(true, true, true);
+      }).withFailureHandler(function (e) { ryAlert('입고 ' + (ch.del ? '삭제' : '수정') + '가 안 됐어요\n' + (e && e.message ? e.message : e)); loadAllData(true, false, true); })
+        .editQuickInbound(currentSelectedMember, ref, ch);
+    }
+    function qeDel(lr) {
+      var it = qeItem(lr); if (!it) return;
+      ryConfirm({ title: '이 입고를 지울까요?', items: [{ t: 'bad', h: String(it.name).split('\n')[0].slice(0, 28), d: it.targetQty + (it.unit || '개') + ' · ' + String(it.inboundDate).slice(5) + ' ' + (it.inTime || '').slice(0, 5) + ' · ' + it.inboundManager + ' 입고' }], note: '입고내역과 추정 재고에서 빠져요', ok: '삭제', danger: true })
+        .then(function (y) { if (!y) return; var ref = qeRef(it), i = cachedHistoryItems.indexOf(it); if (i >= 0) cachedHistoryItems.splice(i, 1); renderAllViews(); qeSend(ref, { del: true }, '입고를 지웠어요'); });
+    }
+    function qeOpen(lr) {
+      var it = qeItem(lr); if (!it) return;
+      if (!RY_CAT || !RY_CAT.items) try { ryCatLoad(true); } catch (e) {}
+      QE = { it: it, to: null };
+      var d = document.createElement('div'); d.id = 'qinBox'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', '입고 수정');   // 바로 입고 창과 같은 모양
+      d.innerHTML = '<div class="qi-card"><div class="qi-hd"><b>✏️ 입고 수정</b><span>' + escapeHtml(String(it.inboundDate).slice(5) + ' ' + (it.inTime || '').slice(0, 5) + ' · ' + it.inboundManager) + ' · 주문 없이 입고</span><button type="button" class="qi-x" aria-label="닫기" onclick="qeClose()">✕</button></div>'
+        + '<div class="qi-name" id="qeName">' + qeNm(it.name) + '</div>'
+        + '<label class="qi-l">들어온 수량 (' + escapeHtml(it.unit || '개') + ')<input id="qeQty" type="number" inputmode="numeric" min="1" value="' + (parseInt(it.targetQty, 10) || '') + '" onkeydown="if(event.key===\'Enter\'&&!event.isComposing){event.preventDefault();qeSave()}"></label>'
+        + '<label class="qi-l">다른 상품이었나요? <small>(맞으면 비워 두기 · 검색해서 고르기)</small><input id="qeQ" type="text" autocomplete="off" placeholder="맞는 상품 이름 검색" oninput="qeSearch(this.value)"></label><div id="qeR" class="inb1-r"></div>'
+        + '<button type="button" class="qi-go" onclick="qeSave()">저장</button><p class="qi-note">고친 내용은 기록으로 남아요</p></div>';
+      d.addEventListener('click', function (e) { if (e.target === d) qeClose(); });
+      document.body.appendChild(d);
+      setTimeout(function () { var f = document.getElementById('qeQty'); if (f) f.focus(); }, 50);
+    }
+    function qeClose() { var d = document.getElementById('qinBox'); if (d) d.remove(); QE = null; }
+    function qeSearch(q) {
+      var box = document.getElementById('qeR'); if (!box) return; q = String(q || '').replace(/\s+/g, '').toLowerCase();
+      if (q.length < 2) { box.innerHTML = ''; return; }
+      if (!RY_CAT || !RY_CAT.items) { try { ryCatLoad(true); } catch (e) {} box.innerHTML = '<div class="inv-n">상품 목록 불러오는 중… 다시 쳐 주세요</div>'; return; }
+      var hit = RY_CAT.items.filter(function (x) { return String(x.name).replace(/\s+/g, '').toLowerCase().indexOf(q) >= 0 && !/취급안함/.test(String(x.note || '')); }).slice(0, 8);
+      box.innerHTML = hit.length ? hit.map(function (x) { return '<button type="button" data-r="' + x.rowNumber + '" onclick="qePick(+this.dataset.r)"><span>' + qeNm(x.name) + '</span><b>＋</b></button>'; }).join('') : '<div class="inv-n">앱에 없는 상품이에요</div>';
+    }
+    function qePick(row) {
+      var x = (RY_CAT && RY_CAT.items || []).filter(function (c) { return c.rowNumber === row; })[0]; if (!x || !QE) return;
+      QE.to = ryPrKey(x.name) === ryPrKey(QE.it.name) ? null : x;
+      document.getElementById('qeName').innerHTML = QE.to ? '<s style="color:#98A2B3;font-weight:600">' + qeNm(QE.it.name) + '</s><br>→ ' + qeNm(x.name) : qeNm(QE.it.name);
+      document.getElementById('qeQ').value = ''; document.getElementById('qeR').innerHTML = '';
+    }
+    function qeSave() {
+      if (!QE) return;
+      var it = QE.it, to = QE.to, u = it.unit || '개', q0 = parseInt(it.targetQty, 10) || 0, n = parseInt(String((document.getElementById('qeQty') || {}).value || '').replace(/[^0-9]/g, ''), 10);
+      if (!(n > 0 && n < 100000)) { ryAlert('들어온 수량을 숫자로 적어 주세요'); return; }
+      if (n === q0 && !to) { qeClose(); return; }
+      ryConfirm({ title: '이렇게 고칠까요?', icon: 'box', ok: '고치기', note: '추정 재고도 같이 바뀌어요', items: [{ h: String(it.name).replace(/\s*\n\s*/g, ' ').slice(0, 40), d: (to ? '→ ' + String(to.name).replace(/\s*\n\s*/g, ' ').slice(0, 40) + '\n' : '') + (n !== q0 ? q0 + u + ' → ' + n + u : n + u + ' 그대로') }] }).then(function (y) {
+        if (!y) return; var ref = qeRef(it); qeClose();
+        it.targetQty = String(n); if (to) { it.name = to.name; it.rowNumber = to.rowNumber; } renderAllViews();
+        qeSend(ref, to ? { qty: n, to: to.name, toRow: to.rowNumber } : { qty: n }, '입고를 고쳤어요');
+      });
     }
     /* 1105 MJ '검색창 하나에서 다 — 상태가 입고 대기면 바로 입고완료' : 검색 결과의 입고 대기 상품에 [입고 완료] (입고 대기 탭과 같은 completeInbound → 확인창 · 근무 확인(문준 면제) · ⏪ 되돌리기 그대로) */
     function rySrInbInfo(item) {
