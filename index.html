@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mweu4bt5">
+  <meta name="ry-build" content="mwezz0x6">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4560,7 +4560,9 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry25-top[data-heat="4"]::after{height
 html:not(#q):not(#w):not(#e) body:not(#r) .ry25-brand[data-dance] .ry25-mark{position:relative;overflow:visible;margin:0 6px 0 4px}   /* 팔이 약국 이름을 가리지 않게 */
 .ry-limbs{position:absolute;left:-30%;top:-30%;width:160%;height:160%;pointer-events:none;overflow:visible;z-index:-1}
 .ry-limbs .lb{fill:none;stroke:#0B3FA8;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
-.ry-limbs .hd{fill:#fff;stroke:#0B3FA8;stroke-width:2}.ry-limbs .sh{fill:#0B3FA8}
+.ry-limbs .hd{fill:#A4C2FF;stroke:#0B3FA8;stroke-width:2}
+.ry-props{position:absolute;left:-30%;top:-30%;width:160%;height:160%;pointer-events:none;overflow:visible;z-index:2}
+.ry-props .spot{opacity:.2;animation:rySpot 1.6s ease-in-out infinite}@keyframes rySpot{50%{opacity:.34}}@media(prefers-reduced-motion:reduce){.ry-props .spot{animation:none}}.ry-limbs .sh{fill:#0B3FA8}
 .ry-limbs g{transform-box:view-box}.ry-limbs .aL{transform-origin:13px 31px}.ry-limbs .aR{transform-origin:51px 31px}.ry-limbs .lL{transform-origin:25px 50px}.ry-limbs .lR{transform-origin:39px 50px}
 html.ry-closed .ry-limbs,html.ry-closed #ryDzFloat{display:none}
 #ryDzFloat{position:fixed;left:max(18px,env(safe-area-inset-left));bottom:calc(26px + env(safe-area-inset-bottom,0px));z-index:9500;opacity:0;transform:translateY(24px) scale(.6);pointer-events:none;transition:opacity .3s,transform .35s cubic-bezier(.2,1.4,.4,1)}
@@ -8423,35 +8425,123 @@ video {
       ['점프 한 바퀴 🌀', 1.4, function (t) { if (t < .2) return { y: 3 * t / .2, r: 0, aL: 10, aR: 10, lL: 0, lR: 0 }; if (t >= .8) { var k = (t - .8) / .2; return { y: 3 * (1 - k), r: 360, aL: 160 - 90 * k, aR: 160 - 90 * k, lL: 0, lR: 0 }; } var u = (t - .2) / .6; return { y: 3 - 12 * Math.sin(Math.PI * u), r: 360 * u * u * (3 - 2 * u), aL: 160, aR: 160, lL: -15, lR: -15 }; }, 360],
       ['브레이크 댄스 🕺🔥', 3.2, function (t) { if (t < .15) { var a = t / .15; return { y: -2 * a, r: 180 * a, aL: 70 + 30 * a, aR: 70 + 30 * a, lL: 20 * a, lR: 20 * a }; } if (t >= .85) { var b = (t - .85) / .15; return { y: -2 * (1 - b), r: 900 + 180 * b, aL: 100 + 60 * b, aR: 100 + 60 * b, lL: 20 * (1 - b), lR: 20 * (1 - b) }; } var u = (t - .15) / .7, w = Math.sin(u * Math.PI * 8); return { y: -2 + w, r: 180 + 720 * u, aL: 100, aR: 100, lL: 55 + 45 * w, lR: 55 - 45 * w }; }, 1080]
     ];
-    function ryDzCss(n) {
-      var sg = RY_DZ.slice(0, n), T = sg.reduce(function (s, d) { return s + d[1]; }, 0), K = { b: [], aL: [], aR: [], lL: [], lR: [] }, at = 0, R = 0, f = function (x) { return Math.round(x * 10) / 10; };
-      var put = function (p, o, R) { var q = f(p * 100) + '%'; K.b.push(q + '{transform:translateY(' + f(o.y) + 'px) rotate(' + f(o.r + R) + 'deg)}'); K.aL.push(q + '{transform:rotate(' + f(o.aL) + 'deg)}'); K.aR.push(q + '{transform:rotate(' + f(-o.aR) + 'deg)}'); K.lL.push(q + '{transform:rotate(' + f(o.lL) + 'deg)}'); K.lR.push(q + '{transform:rotate(' + f(-o.lR) + 'deg)}'); };
+    function ryDzMoves(n, si) { var S = RY_SING[si]; return [[S.mn[0]].concat(S.m[0]), [S.mn[1]].concat(S.m[1]), RY_DZ[2], RY_DZ[3]].slice(0, n); }   // 1113 가수 춤 2개 + 점프 한 바퀴(공연) + 브레이크
+    function ryDzCss(n, si) {
+      var sg = ryDzMoves(n, si), T = sg.reduce(function (s, d) { return s + d[1]; }, 0), K = { b: [], aL: [], aR: [], lL: [], lR: [] }, at = 0, R = 0, f = function (x) { return Math.round(x * 10) / 10; }, id = n + '_' + si;
+      var put = function (p, o, R) { var q = f(p * 100) + '%'; K.b.push(q + '{transform:translate(' + f(o.x || 0) + 'px,' + f(o.y) + 'px) rotate(' + f(o.r + R) + 'deg)}'); K.aL.push(q + '{transform:rotate(' + f(o.aL) + 'deg)}'); K.aR.push(q + '{transform:rotate(' + f(-o.aR) + 'deg)}'); K.lL.push(q + '{transform:rotate(' + f(o.lL) + 'deg)}'); K.lR.push(q + '{transform:rotate(' + f(-o.lR) + 'deg)}'); };
       sg.forEach(function (d) { var m = Math.max(12, Math.round(d[1] * 16)); for (var i = 0; i < m; i++) put((at + d[1] * i / m) / T, d[2](i / m), R); at += d[1]; R += d[3]; });
       put(1, sg[0][2](0), R);   // 끝 = 첫 자세 (회전은 360 의 배수라 똑같아 보임)
-      return Object.keys(K).map(function (k) { return '@keyframes ryDz' + k + n + '{' + K[k].join('') + '}'; }).join('')
-        + 'html:not(.ry-closed):not(#q):not(#w):not(#e) body:not(#r) .ry25-brand[data-dance="' + n + '"] .ry25-mark{animation:ryDzb' + n + ' ' + T + 's linear infinite!important}'
-        + ['aL', 'aR', 'lL', 'lR'].map(function (k) { return '.ry25-brand[data-dance="' + n + '"] .ry-limbs .' + k + '{animation:ryDz' + k + n + ' ' + T + 's linear infinite}'; }).join('');
+      return Object.keys(K).map(function (k) { return '@keyframes ryDz' + k + id + '{' + K[k].join('') + '}'; }).join('')
+        + 'html:not(.ry-closed):not(#q):not(#w):not(#e) body:not(#r) .ry25-brand[data-dance="' + n + '"] .ry25-mark{animation:ryDzb' + id + ' ' + T + 's linear infinite!important}'
+        + ['aL', 'aR', 'lL', 'lR'].map(function (k) { return '.ry25-brand[data-dance="' + n + '"] .ry-limbs .' + k + '{animation:ryDz' + k + id + ' ' + T + 's linear infinite}'; }).join('');
+    }
+    /* 1113 MJ '로고가 월~일 요일마다 오마주하는 가수를 한 명씩 — 1단계 신발 신고 그 가수 춤, 2단계 흰 장갑, 3단계 반짝이 재킷 입고 공연 · 문워크도' + '구글 리뷰 칭찬받은 사람·발주왕 칭찬·조금만 더 힘내라는 응원'
+       RY_SING[요일(0=일)] = { n 이름, d 요일 소개, mn 춤 이름 2, m 춤 2개 [길이, t→자세, 회전], p 소품 4개 [이름, [[붙는 곳, svg]…]] (단계만큼 입음), say 가수 멘트 } · 3단계부터 무대 조명 · 4단계 = 브레이크 피날레 · 미리 보기 ?sing=0~6 (한 번만)
+       사람 얼굴·노래 가사·음원은 쓰지 않음 (소품·춤 동작만 오마주) */
+    var DZ_SPOT = '<path class="pp spot" fill-rule="evenodd" d="M27 -30H37L64 66H0ZM13 13H51V51H13Z" fill="#FFF3B0"/>';   // 몸통 자리는 비워서 로고 색이 안 바램
+    var DZ_PANEL = function (c, dots) { var d = ''; if (dots) [[15, 33], [17, 40], [14, 46], [47, 33], [49, 40], [46, 47]].forEach(function (q) { d += '<circle class="pp" cx="' + q[0] + '" cy="' + q[1] + '" r=".9" fill="' + dots + '"/>'; }); return '<path class="pp" d="M12 28H20V52Q12 52 12 44Z" fill="' + c + '"/><path class="pp" d="M44 28H52V44Q52 52 44 52Z" fill="' + c + '"/>' + d; };
+    var DZ_SHADES = function (c) { return '<rect class="pp" x="18" y="21" width="12" height="7.5" rx="3.2" fill="' + c + '"/><rect class="pp" x="34" y="21" width="12" height="7.5" rx="3.2" fill="' + c + '"/><rect class="pp" x="29" y="23" width="6" height="1.8" fill="' + c + '"/>'; };
+    var DZ_FEDORA = function (c, band) { return '<path class="pp" d="M21 13C22 3 42 3 43 13Z" fill="' + c + '"/><rect class="pp" x="21" y="9.5" width="22" height="2.6" fill="' + band + '"/><rect class="pp" x="14" y="11.5" width="36" height="3.2" rx="1.6" fill="' + c + '"/>'; };
+    var RY_SING = [
+      { n: '비틀스', d: '일요일', e: '🎸', mn: ['머리 흔들며 기타 🎸', '나란히 스텝 👞'],
+        m: [[2, function (t) { var s = Math.sin(t * Math.PI * 8); return { y: -1.5 * Math.abs(s), r: 7 * s, aL: 75, aR: 40 + 25 * Math.sin(t * Math.PI * 16), lL: 6 * Math.max(0, s), lR: 6 * Math.max(0, -s) }; }, 0],
+            [2, function (t) { var w = Math.sin(t * Math.PI * 4); return { x: 4 * w, y: -2 * Math.abs(w), r: 2 * w, aL: 75, aR: 40 + 25 * Math.sin(t * Math.PI * 16), lL: 14 * Math.max(0, w), lR: 14 * Math.max(0, -w) }; }, 0]],
+        p: [['바가지 머리', [['body', '<path class="pp" d="M11 23C8 4 56 4 53 23C50 16 14 16 11 23Z" fill="#4A2C17"/>']]],
+            ['얇은 넥타이', [['body', '<path class="pp" d="M31 40h2l1.2 9-2.2 2.4-2.2-2.4z" fill="#111"/>']]],
+            ['검은 정장', [['body', DZ_PANEL('#1D2939')]]],
+            ['기타', [['body', '<g class="pp"><rect x="30" y="37" width="20" height="2.6" rx="1" transform="rotate(-28 30 38)" fill="#7A2E0E"/><ellipse cx="25" cy="46" rx="7.5" ry="5.8" fill="#C4570A"/><circle cx="25" cy="46" r="1.8" fill="#3B1D0A"/></g>']]]],
+        say: ['일요일은 비틀스 오마주! 머리 흔들 준비 됐나요? 🎸', '바가지 머리 잘 어울리나요? 😆', '오늘도 손님들과 함께 노래하듯 일해요 🎶'] },
+      { n: '마이클 잭슨', d: '월요일', e: '🕺', mn: ['문워크 🌙', '흰 장갑 흔들며 뒤로 기울기 🧤'],
+        m: [[2.4, function (t) { var s = (t * 2) % 1, k = Math.sin(t * Math.PI * 8), x = s < .85 ? -12 * s / .85 : -12 * (1 - (s - .85) / .15); return { x: x, y: 0, r: -3, aL: 25 + 6 * k, aR: 25 - 6 * k, lL: 12 * Math.max(0, k), lR: 12 * Math.max(0, -k) }; }, 0],
+            [2, function (t) { var e = Math.sin(Math.PI * t); return { y: -2 * e, r: -14 * e, aL: 20, aR: 160 + 15 * Math.sin(t * Math.PI * 12), lL: 8, lR: -8 }; }, 0]],
+        p: [['검은 로퍼 + 흰 양말', [['lL', '<rect class="pp" x="21.4" y="56.3" width="3.6" height="3.2" rx="1" fill="#fff"/><ellipse class="pp" cx="21.5" cy="61.6" rx="4.4" ry="2.4" fill="#111"/>'], ['lR', '<rect class="pp" x="39.2" y="56.3" width="3.6" height="3.2" rx="1" fill="#fff"/><ellipse class="pp" cx="42.5" cy="61.6" rx="4.4" ry="2.4" fill="#111"/>']]],
+            ['반짝이 흰 장갑', [['aR', '<circle class="pp" cx="60" cy="43" r="3.6" fill="#fff" stroke="#D0D5DD" stroke-width="1"/><path class="pp" d="M56.6 39.6l1.3 1.3M62.8 39.2l-.8 1.5M64 45.4l-1.5-.6M58 47l.6-1.4" stroke="#FDB022" stroke-width="1.1" stroke-linecap="round"/>']]],
+            ['반짝이 재킷', [['body', DZ_PANEL('#1D2939', '#F5F5F5')]]],
+            ['페도라', [['body', DZ_FEDORA('#111', '#fff')]]]],
+        say: ['월요일은 팝의 황제 오마주! 문워크 갑니다 🌙', '흰 장갑 한 짝, 반짝 ✨', '월요병? 문워크로 뒤로 미끄러져 보내요 🕺'] },
+      { n: '싸이', d: '화요일', e: '🐎', mn: ['말춤 🐎', '올가미 돌리기 말춤 🤠'],
+        m: [[2, function (t) { var s = Math.sin(t * Math.PI * 8); return { y: -4 * Math.abs(s), r: 2 * s, aL: 55, aR: 55, lL: 30 * Math.max(0, s), lR: 30 * Math.max(0, -s) }; }, 0],
+            [2, function (t) { var s = Math.sin(t * Math.PI * 8); return { y: -4 * Math.abs(s), r: 3 * s, aL: 55, aR: 150 + 25 * Math.sin(t * Math.PI * 12), lL: 30 * Math.max(0, s), lR: 30 * Math.max(0, -s) }; }, 0]],
+        p: [['선글라스', [['body', DZ_SHADES('#111')]]],
+            ['나비넥타이', [['body', '<path class="pp" d="M26.5 44.5l5.5 3.3-5.5 3.3zM37.5 44.5L32 47.8l5.5 3.3z" fill="#111"/><circle class="pp" cx="32" cy="47.8" r="1.6" fill="#111"/>']]],
+            ['하늘색 턱시도', [['body', DZ_PANEL('#7CC4F5')]]],
+            ['무대 조명 + 꽃가루', [['body', '<g class="pp"><circle cx="8" cy="6" r="1.4" fill="#F63D68"/><circle cx="56" cy="4" r="1.4" fill="#FDB022"/><circle cx="50" cy="12" r="1.2" fill="#12B76A"/><circle cx="12" cy="14" r="1.2" fill="#155EEF"/></g>']]]],
+        say: ['화요일은 싸이 오마주! 말 타러 갑니다 🐎', '선글라스 끼니까 자신감 두 배 😎', '말춤 추듯 세트도 두두두 팔려요 🏇'] },
+      { n: '엘비스 프레슬리', d: '수요일', e: '🎤', mn: ['다리 떨기 🦵', '엉덩이 흔들기 💃'],
+        m: [[2, function (t) { var w = Math.sin(t * Math.PI * 20); return { y: 0, r: 2 * w, aL: 35, aR: 95, lL: 18 * w, lR: 0 }; }, 0],
+            [2, function (t) { var w = Math.sin(t * Math.PI * 10); return { x: 3 * w, y: -Math.abs(w), r: 7 * w, aL: 40, aR: 100, lL: 10 * w, lR: -10 * w }; }, 0]],
+        p: [['올백 머리', [['body', '<path class="pp" d="M13 17C12 4 30 0 47 5C53 7 54 13 51 17C45 11 30 10 13 17Z" fill="#1D1D1D"/>']]],
+            ['높은 흰 깃', [['body', '<path class="pp" d="M15 27L22 37L25 27ZM49 27L42 37L39 27Z" fill="#fff" stroke="#D0D5DD" stroke-width=".8"/>']]],
+            ['반짝 흰 점프수트', [['body', DZ_PANEL('#F9FAFB', '#F5C451')]]],
+            ['마이크', [['aR', '<rect class="pp" x="59" y="35.5" width="2.4" height="7" rx="1" fill="#111"/><circle class="pp" cx="60.2" cy="34.6" r="2.7" fill="#98A2B3"/>']]]],
+        say: ['수요일은 엘비스 오마주! 다리 떨기 시작 🦵', '땡큐, 땡큐 베리 머치~ 🎤', '수요일 반 왔어요, 흔들어 봐요 💃'] },
+      { n: '프레디 머큐리', d: '목요일', e: '✊', mn: ['주먹 하늘 찌르기 ✊', '마이크 스탠드 번쩍 🎤'],
+        m: [[2, function (t) { var q = Math.max(0, Math.sin(t * Math.PI * 6)); return { y: -3 * q, r: -4 * q, aL: 30, aR: 60 + 110 * q, lL: 12, lR: 12 }; }, 0],
+            [2, function (t) { var e = Math.sin(Math.PI * t); return { y: -2 * e, r: -10 * e, aL: 50, aR: 120 + 50 * e, lL: 25, lR: 25 }; }, 0]],
+        p: [['콧수염', [['body', '<path class="pp" d="M23.5 38q4.2-3.4 8.5 0q4.3-3.4 8.5 0q-4.2 3.6-8.5 1q-4.3 2.6-8.5-1z" fill="#1D1D1D"/>']]],
+            ['반쪽 마이크 스탠드', [['aR', '<path class="pp" d="M60 43L67 24" stroke="#98A2B3" stroke-width="1.9" stroke-linecap="round"/><circle class="pp" cx="67.3" cy="23" r="2.2" fill="#111"/>']]],
+            ['노란 재킷', [['body', DZ_PANEL('#FDB022')]]],
+            ['무대 조명 + 관중 함성', [['body', '<g class="pp"><text x="2" y="4" font-size="7" font-weight="900" fill="#F79009">에-오!</text></g>']]]],
+        say: ['목요일은 프레디 머큐리 오마주! 주먹 들어 ✊', '콧수염 붙였더니 목소리가 커졌어요 🎤', '우리는 챔피언~ 오늘 판매 챔피언 🏆'] },
+      { n: '브루노 마스', d: '금요일', e: '🕶️', mn: ['펑키 사이드 스텝 🕺', '어깨 들썩 🎶'],
+        m: [[2, function (t) { var w = Math.sin(t * Math.PI * 4), s8 = Math.sin(t * Math.PI * 16); return { x: 5 * w, y: -1.5 * Math.abs(s8), r: 3 * w, aL: 45 + 15 * s8, aR: 45 - 15 * s8, lL: 15 * Math.max(0, w), lR: 15 * Math.max(0, -w) }; }, 0],
+            [2, function (t) { var s = Math.sin(t * Math.PI * 20); return { y: -1.5 * Math.abs(s), r: 4 * Math.sin(t * Math.PI * 4), aL: 70 + 10 * s, aR: 70 - 10 * s, lL: 8, lR: 8 }; }, 0]],
+        p: [['금목걸이', [['body', '<path class="pp" d="M22 43Q32 52 42 43" stroke="#F5C451" stroke-width="1.8" fill="none"/>']]],
+            ['금테 선글라스', [['body', '<path class="pp" d="M18.5 22h11.5c0 5-2.4 7-5.8 7s-5.7-2-5.7-7zM34 22h11.5c0 5-2.3 7-5.7 7S34 27 34 22z" fill="#3D2B1F" stroke="#F5C451" stroke-width="1"/><path class="pp" d="M30 23h4" stroke="#F5C451" stroke-width="1.2"/>']]],
+            ['하와이안 셔츠', [['body', DZ_PANEL('#F97066', '#FFF')]]],
+            ['밀짚 페도라', [['body', DZ_FEDORA('#E9C46A', '#7A2E0E')]]]],
+        say: ['금요일은 브루노 마스 오마주! 펑키하게 가요 🕶️', '금요일 밤엔 사이드 스텝이죠 🕺', '금목걸이 반짝, 판매도 반짝 ✨'] },
+      { n: '엘튼 존', d: '토요일', e: '🎹', mn: ['피아노 손가락 🎹', '발 차기 연주 🦶'],
+        m: [[2, function (t) { var s = Math.sin(t * Math.PI * 24); return { y: -Math.abs(Math.sin(t * Math.PI * 4)), r: 0, aL: 75 + 8 * s, aR: 75 - 8 * s, lL: 0, lR: 30 * Math.max(0, Math.sin(t * Math.PI * 4)) }; }, 0],
+            [2, function (t) { var k = Math.sin(t * Math.PI * 6); return { y: -3 * Math.abs(k), r: 4 * k, aL: 120, aR: 120, lL: 35 * Math.max(0, k), lR: 35 * Math.max(0, -k) }; }, 0]],
+        p: [['하트 안경', [['body', '<path class="pp" d="M18 23.5c0-3 4-4.3 6-1.6c2-2.7 6-1.4 6 1.6c0 3.3-6 6.6-6 6.6s-6-3.3-6-6.6zM34 23.5c0-3 4-4.3 6-1.6c2-2.7 6-1.4 6 1.6c0 3.3-6 6.6-6 6.6s-6-3.3-6-6.6z" fill="#F63D68"/><path class="pp" d="M30 24h4" stroke="#F63D68" stroke-width="1.4"/>']]],
+            ['깃털 목도리', [['body', '<g class="pp" fill="#FDA4D0"><circle cx="14" cy="47" r="3"/><circle cx="19" cy="49.5" r="3"/><circle cx="25" cy="50.5" r="3"/><circle cx="32" cy="51" r="3"/><circle cx="39" cy="50.5" r="3"/><circle cx="45" cy="49.5" r="3"/><circle cx="50" cy="47" r="3"/></g>']]],
+            ['반짝 보라 정장', [['body', DZ_PANEL('#7A5AF8', '#FDE68A')]]],
+            ['피아노', [['body', '<g class="pp"><rect x="6" y="51" width="52" height="8" rx="1.5" fill="#fff" stroke="#111" stroke-width="1"/><path d="M13 51v5M20 51v5M27 51v5M37 51v5M44 51v5M51 51v5" stroke="#111" stroke-width="2"/></g>']]]],
+        say: ['토요일은 엘튼 존 오마주! 피아노 칩니다 🎹', '하트 안경 끼니까 손님이 다 예뻐 보여요 💗', '주말 무대 시작! 박수 주세요 👏'] }
+    ];
+    var RY_SING_PV = (function () { var m = location.search.match(/[?&]sing=([0-6])/); if (m && history.replaceState) { try { history.replaceState(null, '', location.pathname + location.search.replace(/[?&]sing=[0-6]/, '').replace(/^&/, '?') + location.hash); } catch (e) {} } return m ? +m[1] : null; })();
+    function ryDzSi() { return RY_SING_PV != null ? RY_SING_PV : new Date().getDay(); }
+    function ryDzDress(n, si) {   // 단계만큼 소품 입히기 — 위 로고와 따라오는 로고 둘 다
+      var S = RY_SING[si];
+      document.querySelectorAll('.ry25-top .ry25-mark, #ryDzFloat .ry25-mark').forEach(function (mk) {
+        mk.querySelectorAll('.pp').forEach(function (x) { x.remove(); });
+        var lb = mk.querySelector('.ry-limbs'); if (!lb || !n) return;
+        var pr = mk.querySelector('.ry-props'); if (!pr) { mk.insertAdjacentHTML('beforeend', '<svg class="ry-props" viewBox="0 0 64 64" aria-hidden="true"></svg>'); pr = mk.querySelector('.ry-props'); }
+        var add = function (where, svg) { var g = where === 'body' ? pr : lb.querySelector('.' + where); if (g) g.insertAdjacentHTML('beforeend', svg); };
+        if (n >= 3) add('body', DZ_SPOT);
+        S.p.slice(0, n).forEach(function (pp) { pp[1].forEach(function (q) { add(q[0], q[1]); }); });
+      });
     }
     function scDance() {
       var br = document.querySelector('.ry25-brand'), mk = br && br.querySelector('.ry25-mark'); if (!mk) return;
       var D = SC.data, w = D && scUse(), t = D && D.today, on = !!(w && t >= w.from && t <= w.to), n = on ? SC_SETS.filter(function (s) { return scOk(D.cfg, t, s.k); }).length : 0;
       var g = n, hl = SC.heatLv || 0, all = SC_SETS.length || 4; n = Math.max(n, hl >= 3 ? 4 : hl);   /* 1113 MJ '판매가 잘되면 그냥 브레이킹 댄스' — 오늘 세트 합이 하루 목표 합의 40%↑ 덩실 · 80%↑ 스텝 · 100%↑ 브레이크 (세트 목표 달성 수가 더 높으면 그만큼) */
       if (RY_DZ_PV != null) n = RY_DZ_PV; n = Math.min(n, RY_DZ.length);
-      SC.dzTxt = n ? '오늘 판매 잘되고 있어요! ' + (g ? '세트 하루 목표 ' + g + '/' + all + ' 달성 · ' : '') + '로고 춤 ' + n + '단계 💃' : '세트가 잘 팔리면 로고가 춤을 춰요 💃 (하루 목표 ' + g + '/' + all + ' 달성)';
+      var si = ryDzSi(), S = RY_SING[si];
+      SC.dzTxt = n ? '오늘은 ' + S.d + ' ' + S.n + ' 오마주 ' + S.e + ' · ' + (g ? '세트 하루 목표 ' + g + '/' + all + ' 달성 · ' : '판매 잘되고 있어요! · ') + '소품 ' + n + '개: ' + S.p.slice(0, n).map(function (q) { return q[0]; }).join(', ') : '세트가 잘 팔리면 로고가 ' + S.n + ' 오마주로 춤을 춰요 ' + S.e + ' (하루 목표 ' + g + '/' + all + ' 달성)';
       mk.title = SC.dzTxt;
       if (!mk.getAttribute('data-dz')) { mk.setAttribute('data-dz', '1'); mk.style.cursor = 'pointer'; mk.addEventListener('click', function () { heatSay(SC.dz ? ryDzLine() : (SC.dzTxt || '')); }); }
       var lb = document.getElementById('ryLimbs');
-      if (!n) { br.removeAttribute('data-dance'); if (lb) lb.remove(); SC.dz = 0; ryDzFloat(0); return; }
+      if (!n) { br.removeAttribute('data-dance'); if (lb) lb.remove(); SC.dz = 0; ryDzFloat(0); ryDzDress(0, si); return; }
       if (!lb) mk.insertAdjacentHTML('beforeend', '<svg id="ryLimbs" class="ry-limbs" viewBox="0 0 64 64" aria-hidden="true"><g class="lL"><polyline class="lb" points="25,50 24,57 23,61"/><ellipse class="sh" cx="21.5" cy="61.6" rx="3.6" ry="2"/></g><g class="lR"><polyline class="lb" points="39,50 40,57 41,61"/><ellipse class="sh" cx="42.5" cy="61.6" rx="3.6" ry="2"/></g><g class="aL"><polyline class="lb" points="13,31 7,36 4,43"/><circle class="hd" cx="4" cy="43" r="2.8"/></g><g class="aR"><polyline class="lb" points="51,31 57,36 60,43"/><circle class="hd" cx="60" cy="43" r="2.8"/></g></svg>');
       var css = document.getElementById('ryDzCss'); if (!css) { css = document.createElement('style'); css.id = 'ryDzCss'; document.head.appendChild(css); }
-      if (css.getAttribute('data-n') !== String(n)) { css.textContent = scRm() ? '' : ryDzCss(n); css.setAttribute('data-n', String(n)); }
+      if (css.getAttribute('data-n') !== n + '_' + si) { css.textContent = scRm() ? '' : ryDzCss(n, si); css.setAttribute('data-n', n + '_' + si); }
       br.setAttribute('data-dance', String(n));
-      if (n > (SC.dz || 0)) setTimeout(function () { if (Date.now() - (SC.dzDoor || 0) > 5000) heatSay('오늘 판매 잘되고 있어요! 로고 춤 추가: ' + RY_DZ[n - 1][0]); }, 4200);   // 문 열고 등장 멘트가 먼저   // 빵빠레(3.8초) 뒤
-      SC.dz = n; ryDzFloat(n);
+      if (n > (SC.dz || 0)) setTimeout(function () { if (Date.now() - (SC.dzDoor || 0) > 5000) heatSay(n <= 2 ? '목표 달성! ' + S.p[n - 1][0] + ' 장착 · ' + S.mn[n - 1] : n === 3 ? '공연 시작! ' + S.p[2][0] + ' 입고 무대 조명 ON 🎤' : '전부 달성! ' + S.p[3][0] + '까지 풀세트 · 피날레 브레이크 댄스 🔥'); }, 4200);   // 문 열고 등장 멘트가 먼저   // 빵빠레(3.8초) 뒤
+      SC.dz = n; ryDzFloat(n); ryDzDress(n, si);
+      try { var ik = 'ry_sing_' + new Date().toDateString(); if (!localStorage.getItem(ik)) { localStorage.setItem(ik, '1'); setTimeout(function () { heatSay('오늘은 ' + S.d + ' — ' + S.n + ' 오마주 데이! ' + S.e + ' 목표 넘길 때마다 소품이 하나씩 늘어요'); }, 8000); } } catch (eI) {}
       if (!SC.dzT) SC.dzT = setInterval(function () { var ae = document.activeElement; if (!document.hidden && SC.dz && Date.now() - (SC.dzDoor || 0) > 6000 && ryDzCover_() !== 'modal' && !(ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))) heatSay(ryDzLine()); }, 9000);   // 입력 중·작은 창 떠 있을 땐 쉼   /* 1113 MJ '응원 메시지가 계속' — 춤추는 동안 9초마다 (4.5초씩 보임) */
     }
     var DZ_CHEER = ['오늘 판매 잘되고 있어요! 🔥', '세트가 술술 나가요 💃', '신나서 춤이 절로 나와요 🕺', '오늘 우리 팀 최고예요 👏', '이 기세 그대로 가 봐요 🚀', '손님들이 우리 약국을 좋아해요 💙', '오늘 판매 날씨 맑음 ☀️', '계산대가 바빠서 행복해요 😆', '한 세트 한 세트가 모여 대박! 🎉', '다들 고생 많아요, 조금만 더 힘내요 💪', '오늘 우리 약국 분위기 최고! ✨', '판매왕들 여기 다 모였네요 👑'];
-    function ryDzLine() { SC.dzN = ((SC.dzN || 0) + 1) % 997; var a = DZ_CHEER.concat(HEAT_SAY[SC.heatLv || 0] || []); return SC.dzN % 6 === 0 ? (SC.dzTxt || a[0]) : a[(SC.dzN * 7) % a.length]; }
+    function ryDzPraise_() {   /* 1113 MJ '구글 리뷰에 나온 사람들 칭찬 · 발주왕에 물건 잘 찾는 사람들 칭찬 · 조금만 더 힘내라고 응원' */
+      var a = [], seen = {};
+      try { var since = Date.now() - 7 * 864e5; ((typeof NT !== 'undefined' && NT.data && NT.data.items) || []).concat((typeof NT !== 'undefined' && NT.recent) || []).forEach(function (x) { if (!x || x.tag !== '리뷰') return; var m = String(x.title || '').match(/칭찬 · (.+)$/), t = Date.parse(String(x.createdAt || '').replace(/\./g, '-')) || 0; if (!m || (t && t < since)) return; var who = m[1].trim(); if (seen[who]) return; seen[who] = 1; a.push(who === '우리 팀 모두' ? '구글 리뷰에서 우리 팀 모두 칭찬받았어요! 👏' : '구글 리뷰 칭찬 주인공 ' + who + '! 박수 👏👏'); }); } catch (e) {}
+      try { ((typeof cachedMonthlyRanking !== 'undefined' && cachedMonthlyRanking && cachedMonthlyRanking.rankingList) || []).slice(0, 3).forEach(function (r, i) { if (r && r.name) a.push(i === 0 ? '이달의 발주왕 ' + r.name + ' 님! 물건 찾는 눈이 매서워요 👑' : '발주 ' + (i + 1) + '위 ' + r.name + ' 님, 척척 찾아 줘서 고마워요 🙌'); }); } catch (e) {}
+      try { var D = SC.data, t = D && D.today; if (t) SC_SETS.forEach(function (s) { var v = scV(t, s.k), g = scGoal(D.cfg, t, s.k); if (v != null && g > 0 && v < g && g - v <= 15) a.push(s.label + ' ' + (g - v) + '개만 더! 조금만 힘내요 💪'); }); } catch (e) {}
+      return a;
+    }
+    function ryDzLine() { SC.dzN = ((SC.dzN || 0) + 1) % 997; var S = RY_SING[ryDzSi()], P = ryDzPraise_(), a = S.say.concat(P, P, DZ_CHEER, HEAT_SAY[SC.heatLv || 0] || []); return SC.dzN % 6 === 0 ? (SC.dzTxt || a[0]) : a[(SC.dzN * 7) % a.length]; }   // 칭찬·응원은 두 번 넣어 자주
     function ryDzFloat(n) {   /* 1113 MJ '밑으로 내려도 계속 춤추는 게 보이게' + '판매 목표에 들어오니까 로고가 안 보여 — 페이지를 옮겨도 문 열고 등장해서 날 찾아오게, 재밌는 멘트와 함께'
                                   위 로고가 화면 밖이거나 다른 화면(판매 목표·시트 등)에 가려지면 왼쪽 아래에 같은 춤 로고 · 화면이 가려져서 나타날 땐 문 열고 '짠' + 멘트(15초에 한 번) */
       var f = document.getElementById('ryDzFloat'), mk = document.querySelector('.ry25-brand .ry25-mark'), top = document.querySelector('.ry25-top');
@@ -8493,6 +8583,7 @@ video {
     var DZ_ENTER = ['똑똑! 저 따라왔어요 🚪', '여기 계셨군요? 찾았다! 👀', '문 열고 짠! 저 없으면 심심하잖아요 😎', '어디 가세요~ 같이 가요! 🏃', '저도 이 화면 궁금했어요 🤭', '숨바꼭질은 제가 이겼죠? 🙈', '노크는 했어요… 아마도? 🚪💃', '춤은 관객이 있어야 신나거든요 🕺', '혼자 두고 가기 있기 없기? 🥺', '어서 오세요~ 아, 제가 손님인가? 😆'];
     function ryDzDoor(f) {
       var sl = typeof slIsOpen === 'function' && slIsOpen(), L = sl ? ['판매 목표 보러 오셨어요? 저도 숫자 궁금해요 📊', '목표 확인하러 왔어요! 오늘 몇 개 남았나 볼까요? 🎯', '여기가 판매 목표 방이군요! 춤추기 딱 좋네요 💃'].concat(DZ_ENTER) : DZ_ENTER;
+      var S = RY_SING[ryDzSi()]; L = L.concat([S.n + ' 오마주로 따라왔어요 ' + S.e, '오늘은 ' + S.n + '! 여기서도 공연할게요 🎤']);
       SC.dzE = ((SC.dzE || 0) + 1) % 997; var line = L[(SC.dzE * 3) % L.length];
       if (scRm()) { heatSay(line); return; }
       f.classList.remove('door'); void f.offsetWidth; f.classList.add('door');
