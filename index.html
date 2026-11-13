@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwezz0x6">
+  <meta name="ry-build" content="mwf0n14y">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8394,11 +8394,22 @@ video {
       if (!scOpenHr()) { var ob = document.getElementById('ryHeatSay'); if (ob) ob.hidden = true; return; }
       var fl = document.getElementById('ryDzFloat'), useF = !!(fl && fl.classList.contains('on')), lv = SC.heatLv || 0, mk = useF ? fl.querySelector('.ry25-mark') : document.querySelector('.ry25-brand .ry25-mark'); if ((!lv && !txt) || !mk) return;   // 1113 아래로 내렸으면 따라오는 춤 로고 위에
       var a = HEAT_SAY[lv] || []; if (!txt && !a.length) return; if (!txt) SC.heatN = ((SC.heatN || 0) + 1) % 997;
-      var r = mk.getBoundingClientRect(); if (!r.width || (!useF && r.bottom < 0)) return;
+      var r = mk.getBoundingClientRect(); if (!r.width) return;
       var b = document.getElementById('ryHeatSay'); if (!b) { b = document.createElement('div'); b.id = 'ryHeatSay'; b.setAttribute('role', 'status'); document.body.appendChild(b); }
-      b.textContent = txt || a[SC.heatN % a.length]; b.className = 'lv' + (lv || 1) + (useF ? ' up' : ''); b.style.left = Math.max(8, r.left) + 'px'; b.style.top = (r.bottom + 10) + 'px';
-      b.hidden = false; if (useF) b.style.top = Math.max(8, r.top - b.offsetHeight - 14) + 'px'; b.classList.remove('out'); void b.offsetWidth; b.classList.add('in');
+      b.textContent = txt || a[SC.heatN % a.length]; b.className = 'lv' + (lv || 1);
+      b.hidden = false; cancelAnimationFrame(SC.saySync); heatSayPlace_(); b.classList.remove('out'); void b.offsetWidth; b.classList.add('in');
       clearTimeout(SC.heatHide); SC.heatHide = setTimeout(function () { b.classList.add('out'); setTimeout(function () { b.hidden = true; }, 300); }, 4500);
+    }
+    function heatSayPlace_() {   /* 1113 MJ '로고는 밑에 있고 말은 위에 있어 — 따라다니게' : 말풍선이 떠 있는 동안 매 프레임 로고 자리를 다시 봄
+       (위 로고가 보이면 그 아래, 아래로 내려서 따라오는 로고가 나와 있으면 그 위) · 춤으로 흔들리는 로고 말고 움직이지 않는 칸(이름 줄·따라오는 로고 상자)에 붙여 덜 떨리게 */
+      var b = document.getElementById('ryHeatSay'); if (!b || b.hidden) return;
+      var fl = document.getElementById('ryDzFloat'), useF = !!(fl && fl.classList.contains('on')), box = useF ? fl : document.querySelector('.ry25-top .ry25-brand'), mk = !useF && box && box.querySelector('.ry25-mark'), r = box && box.getBoundingClientRect(), m = mk ? mk.getBoundingClientRect() : r;
+      if (r && r.width && (useF || r.bottom > 0)) {
+        b.classList.toggle('up', useF); b.style.visibility = '';
+        b.style.left = Math.max(8, Math.min(useF ? r.left : m.left, innerWidth - b.offsetWidth - 8)) + 'px';
+        b.style.top = (useF ? Math.max(8, r.top - b.offsetHeight - 14) : r.bottom + 10) + 'px';
+      } else b.style.visibility = 'hidden';   // 위 로고는 화면 밖인데 따라오는 로고가 아직이면 잠깐 숨김
+      SC.saySync = requestAnimationFrame(heatSayPlace_);
     }
     /* 1112 MJ '세트가 잘 팔리면 이 부분(위 로고·약국 이름)이 조금씩 불타오르는 느낌 · 호떡집에 불난 듯 바쁘다는 느낌' — 오늘 세트 판매 합 ÷ 오늘 하루 목표 합
        0 = 그대로 · 1(40%↑) 로고가 따뜻하게 · 2(80%↑) 불꽃 피어오름 · 3(100%↑) 호떡집에 불났어요 · 4(150%↑) 불이야! 살짝 흔들림 */
