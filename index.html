@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwhblgiy">
+  <meta name="ry-build" content="mwhd8ywv">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -18772,6 +18772,8 @@ video {
       if (!b) return;
       var RV = /^🎉 구글 리뷰 칭찬/, yd = new Date(Date.now() + 9 * 3600000 - 864e5).toISOString().slice(0, 10), seen = {};
       var L = [NT.latest].concat(NT.recent || []).filter(function (n) { if (!n || seen[n.id] || !RV.test(n.title) || String(n.date) < yd) return false; seen[n.id] = 1; return true; });
+      /* 1115 MJ '입사 1주년·2주년 축하 · 신입 오면 환영' — 서버 cel(오늘 기념일·입사 7일 안)을 같은 줄에 먼저 */
+      L = ((NT.data && NT.data.cel) || []).map(function (c) { return { id: 'cel_' + c.k + c.name, cel: c }; }).concat(L);
       b.hidden = !L.length; b.classList.toggle('rv', !!L.length);
       if (!L.length) { clearInterval(NT.rvT); NT.rvT = 0; NT.rvSig = ''; return; }
       var sig = L.map(function (n) { return n.id; }).join(','); if (NT.rvT && NT.rvSig === sig) return;   // 같은 목록이면 돌리던 것 그대로
@@ -18782,7 +18784,12 @@ video {
         var m = body.match(/^칭찬:\s*(.+)$/m) || body.match(/^🇰🇷\s*(.+)$/m) || body.match(/— "([^"]{3,})"/) || body.match(/"([^"]{6,})"/);
         return m ? m[1].trim() : '';
       };
-      var show = function () { var n = L[i % L.length], g = gist(n); b.onclick = function () { ntShowCard(n.id, '리뷰'); };
+      var show = function () { var n = L[i % L.length], c = n.cel, cnt = '<span class="nt-date">' + (L.length > 1 ? (i % L.length + 1) + '/' + L.length : '') + '</span>';
+        if (c) {   /* 축하·환영 줄 — 누르면 기념일은 공지, 신입은 숙지사항 '물류앱 사용법'으로 */
+          b.onclick = c.k === 'new' ? function () { rlOpen('x'); RL.topic = '물류앱 사용법'; rlRender(); } : function () { ntOpen(); };
+          document.getElementById('ntLatestT').innerHTML = '<span class="nt-rv-row"><span class="nt-rv-k">' + (c.k === 'ann' ? '🎉 입사 ' + c.n + '주년' : '👋 새 식구') + '</span><b class="nt-rv-roll">' + escapeHtml(c.name) + '님' + (c.k === 'ann' ? ' 축하해요!' : ' 환영해요!') + '</b>' + cnt + '</span><span class="nt-rv-line">' + (c.k === 'ann' ? c.n + '년 동안 함께해 줘서 고마워요 🎂' : '처음이면 여기 눌러 \'물류앱 사용법\'부터 봐요 📘') + '</span>';
+          return; }
+        var g = gist(n); b.onclick = function () { ntShowCard(n.id, '리뷰'); };
         document.getElementById('ntLatestT').innerHTML = '<span class="nt-rv-row"><span class="nt-rv-k">⭐ 구글 리뷰 칭찬글 등장!</span><b class="nt-rv-roll">' + escapeHtml(n.title.replace(/^🎉 구글 리뷰 칭찬\s*·?\s*/, '')) + '</b><span class="nt-date">' + (L.length > 1 ? (i % L.length + 1) + '/' + L.length : escapeHtml(ntMD(n.date))) + '</span></span>' + (g ? '<span class="nt-rv-line">“' + escapeHtml(g) + '”</span>' : ''); };   /* 1107 MJ '밑에 한 줄 더 써도 돼' — 1줄: 칩·이름·순서 / 2줄: 어떤 칭찬인지 */
       show(); NT.rvT = L.length > 1 ? setInterval(function () { if (document.visibilityState === 'visible') { i++; show(); } }, 4000) : -1;
     }
