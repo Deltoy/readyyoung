@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwhkn5v9">
+  <meta name="ry-build" content="mwhkqiqe">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -2798,6 +2798,31 @@ input,textarea,select,[contenteditable="true"]{-webkit-user-select:text;user-sel
 #inb1R{max-height:min(48vh,400px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}.inb1-rw{position:relative}#inb1R{padding-right:10px}.inb1-bar{position:absolute;right:1px;width:6px;border-radius:3px;background:#98A2B3;pointer-events:none;transition:top .05s linear}.inb1-cnt{position:sticky;top:0;z-index:1;background:#fff;margin:0 0 6px;padding:4px 2px;font-size:13px;font-weight:600;color:#475467}/* 1109 입고하기 검색 결과 40개까지 · 상자 안 스크롤 */
 
 html:not(#q):not(#w):not(#e) body:not(#r) .s15-pick:not(.sub),html:not(#q):not(#w):not(#e) body:not(#r) .s15-pick:not(.sub) span{color:#fff!important} /* 1115 대비: 버튼 글씨는 버튼 색 그대로(파란 버튼 위 회색 1.1:1 고침) */
+
+/* 1115 주간 리포트 화면 */
+#wkSheet{position:fixed;inset:0;z-index:9000;background:#f5f6f8;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#wkSheet[hidden]{display:none}
+#wkSheet .wk-in{max-width:640px;margin:0 auto;padding:16px 16px 48px}
+#wkSheet .wk-top{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;padding:12px 16px;background:#fff;border-bottom:1px solid #eaecf0}
+#wkSheet .wk-top b{flex:1;font-size:18px;color:#101828}
+#wkSheet .wk-x{min-width:44px;min-height:44px;border:0;background:#f2f4f7;border-radius:12px;font-size:20px;color:#344054}
+#wkSheet .wk-per{font-size:14px;color:#5f6672;margin:4px 0 12px}
+#wkSheet .wk-sum{background:#fff;border:1px solid #eaecf0;border-radius:16px;padding:14px 16px;margin-bottom:12px}
+#wkSheet .wk-sum h3,#wkSheet .wk-box h3{margin:0 0 8px;font-size:15px;color:#101828}
+#wkSheet .wk-sum p{margin:6px 0;font-size:15px;line-height:1.55;color:#344054}
+#wkSheet .wk-g{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+#wkSheet .wk-c{background:#fff;border:1px solid #eaecf0;border-radius:14px;padding:12px 14px}
+#wkSheet .wk-c small{display:block;font-size:13px;color:#5f6672}
+#wkSheet .wk-c strong{display:block;font-size:24px;color:#101828;margin-top:2px}
+#wkSheet .wk-c em{display:block;font-style:normal;font-size:13px;color:#5f6672;margin-top:2px}
+#wkSheet .wk-c em.up{color:#1f7a35}#wkSheet .wk-c em.down{color:#b42318}
+#wkSheet .wk-box{background:#fff;border:1px solid #eaecf0;border-radius:16px;padding:14px 16px;margin-bottom:12px}
+#wkSheet .wk-row{display:flex;align-items:center;gap:10px;font-size:14px;color:#344054;margin:7px 0}
+#wkSheet .wk-row span{flex:0 0 42%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#wkSheet .wk-bar{flex:1;height:10px;background:#f2f4f7;border-radius:6px;overflow:hidden}
+#wkSheet .wk-bar i{display:block;height:100%;background:#155EEF;border-radius:6px}
+#wkSheet .wk-row b{min-width:48px;text-align:right;color:#101828}
+#wkSheet .wk-msg{padding:40px 8px;text-align:center;color:#5f6672;font-size:15px;line-height:1.6}
 </style>
 <style id="ry25-design">
 /* ═══════════ 0925 디자인 시스템 — 밝은 머리 · 파이프라인 · 카드 (맨 마지막에 둬서 이전 규칙을 덮는다) ═══════════
@@ -19026,6 +19051,7 @@ video {
       .concat([{ k: 'sets', g: 1, ic: RYI.gift, n: '세트 상품 · 박스 재고', v: '세트 구성 · 아크릴박스', kw: '세트 박스 재고 아크릴 용도' }])
       .concat([
         { k: 'rejstats', g: 2, ic: RYI.ban, n: '반려 분석', v: k.rejstats + tlTopRej(), kw: '재고 있음 반려 과재고 반려율' },
+        { k: 'weekly', g: 2, ic: RYI.bars, n: '주간 리포트', v: '매주 월요일 · 지난주 한 장', kw: '주간 리포트 보고 발주 입고 대표 이번주 지난주' },   /* 1115 MJ '리포트를 물류앱 내에서 볼 수 있게' */
         { k: 'ranking', g: 2, ic: RYI.trophy, n: '발주왕', v: k.ranking, kw: '순위 랭킹 직원 성공' },
         { k: 'srcard', g: 2, ic: RYI.search, n: '자주 찾는 상품', v: '검색 순위 · 결과 없음', kw: '검색 순위 수요 결과없음 새상품' },
         { k: 'trcard', g: 2, ic: RYI.bars, n: '판매 추이', v: '판매 증가 · 감소 · 상위', kw: '추이 그래프 트렌드 증가 감소 인기 판매량 기록' },
@@ -19398,6 +19424,7 @@ video {
       if (k === 'setduty') { sdOpenWeek(); return; }
       if (k === 'notices') { ntOpen(); return; }
       if (k === 'rejstats') { rjaOpen(); return; }
+      if (k === 'weekly') { wkOpen(); return; }
       if (k === 'missed') { moOpen(); return; }
       if (k === 'sets') { openSetPage(); return; }
       if (k === 'brief') { mbOpenArchive(); return; }
@@ -22054,6 +22081,37 @@ function eduInterView() {
   document.getElementById('eduBody').innerHTML = '<p class="edu-lead">약국에서 자주 나오는 조합이에요. 손님이 다른 약을 드시는지 꼭 여쭤보고, 판단은 약사가 해요.</p>' + EDU_AI_CHK + eduInterBlock(rows.map(function (r, i) { return i; }), '');
 }
 /* ── 통역 단어장: 검색칸은 한 번만 그리고 목록만 다시 (한글 조합 안 깨짐) ── */
+
+/* 1115 MJ '리포트를 물류앱 내에서 볼 수 있게' — 맥이 매주 월요일 서버에 올린 요약(getWeeklyReport)을 그대로 그림 */
+function wkOpen() {
+  var el = document.getElementById('wkSheet');
+  if (!el) { el = document.createElement('div'); el.id = 'wkSheet'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', '주간 리포트'); document.body.appendChild(el); }
+  el.hidden = false; el.innerHTML = '<div class="wk-top"><b>📊 주간 리포트</b><button type="button" class="wk-x" aria-label="닫기" onclick="wkClose()">✕</button></div><div class="wk-in"><div class="wk-msg">불러오는 중…</div></div>';
+  if (typeof google === 'undefined' || !google.script || !google.script.run) { wkMsg('지금은 불러올 수 없어요.'); return; }
+  google.script.run.withSuccessHandler(function (res) { if (res && res.ok && res.r) wkRender(res.r); else wkMsg(res && res.ok ? '아직 올라온 리포트가 없어요. 매주 월요일 아침에 새로 올라와요.' : '리포트를 불러오지 못했어요. <button type="button" class="wk-x" onclick="wkOpen()">다시</button>'); })
+    .withFailureHandler(function () { wkMsg('리포트를 불러오지 못했어요. <button type="button" class="wk-x" onclick="wkOpen()">다시</button>'); }).getWeeklyReport();
+}
+function wkClose() { var el = document.getElementById('wkSheet'); if (el) el.hidden = true; }
+function wkMsg(h) { var b = document.querySelector('#wkSheet .wk-in'); if (b) b.innerHTML = '<div class="wk-msg">' + h + '</div>'; }
+function wkRender(r) {
+  var E = escapeHtml, md = function (d) { return String(d || '').slice(5).replace('-', '/'); };
+  var cmp = function (now, prev, unit, goodUp) { if (prev == null || prev === '') return ''; var d = Math.round((now - prev) * 10) / 10; if (!d) return '<em>지난주와 같아요</em>'; var up = d > 0; return '<em class="' + ((up === !!goodUp) ? 'up' : 'down') + '">지난주 ' + prev + unit + ' → ' + (up ? '+' : '') + d + unit + '</em>'; };
+  var card = function (lab, v, unit, sub) { return '<div class="wk-c"><small>' + lab + '</small><strong>' + E(String(v)) + (unit || '') + '</strong>' + (sub || '') + '</div>'; };
+  var bars = function (title, rows) { if (!rows || !rows.length) return ''; var mx = Math.max.apply(null, rows.map(function (x) { return x[1]; })) || 1; return '<div class="wk-box"><h3>' + title + '</h3>' + rows.map(function (x) { return '<div class="wk-row"><span>' + E(String(x[0])) + '</span><div class="wk-bar"><i style="width:' + Math.round(x[1] / mx * 100) + '%"></i></div><b>' + E(String(x[2] != null ? x[2] : x[1])) + '</b></div>'; }).join('') + '</div>'; };
+  var h = '<div class="wk-per">' + md(r.W && r.W.from) + ' ~ ' + md(r.W && r.W.to) + ' · 지난주(' + md(r.P && r.P.from) + '~' + md(r.P && r.P.to) + ')와 비교</div>';
+  h += '<div class="wk-sum"><h3>이번 주 3줄 요약</h3>' + (r.lines || []).map(function (l) { return '<p>' + E(l) + '</p>'; }).join('') + '</div>';
+  h += '<div class="wk-g">' + card('입고 완료', r.arrived, '건', cmp(r.arrived, r.arrivedP, '건', true)) + card('새 주문', r.ordered, '건', cmp(r.ordered, r.orderedP, '건', true))
+    + card('평균 입고까지', r.lt, '일', cmp(r.lt, r.ltP, '일', false)) + card('반려', r.rejects, '건', cmp(r.rejects, r.rejectsP, '건', false))
+    + card('지금 1차 검토', r.review, '건') + card('지금 최종 발주', r.order, '건') + card('입고 대기', r.waiting, '건') + card('7일 넘은 지연 · 품절', (r.late || 0) + ' · ' + (r.soldout || 0), '건') + '</div>';
+  h += bars('🏆 입고 처리 (발주왕)', (r.kingIn || []).map(function (x) { return [x[0], x[1], x[1] + '건']; }));
+  h += bars('🙋 주문 요청', (r.kingReq || []).map(function (x) { return [x[0], x[1], x[1] + '건']; }));
+  h += bars('🔥 15일 판매 TOP', (r.top || []).slice(0, 10).map(function (x) { return [x.name, x.s, x.s + '개']; }));
+  h += bars('🎁 세트 목표', (r.sets || []).map(function (x) { var p = x.goal ? Math.round(x.done / x.goal * 100) : 0; return [x.label, Math.min(p, 150), p + '%']; }));
+  h += bars('⏰ 지연 많은 분류', (r.lateCat || []).map(function (x) { return [x[0], x[1], x[1] + '건']; }));
+  if (r.surge && r.surge.length) h += '<div class="wk-box"><h3>📈 급상승</h3>' + r.surge.map(function (n) { return '<div class="wk-row">' + E(n) + '</div>'; }).join('') + '</div>';
+  h += '<div class="wk-per">PDF 원본: 드라이브 01 레디영약국 / 물류앱_주간리포트 / ' + E(r.wk || '') + '</div>';
+  var b = document.querySelector('#wkSheet .wk-in'); if (b) b.innerHTML = h;
+}
 /* 1115 MJ '직원 교육 카드 TOP 30 — 교육 탭에 넣어줘': Pages 의 edu_top30.json (매달 1일 ~/bin/edu-top30/run.mjs 가 15일 판매 순으로 새로 올림 → 앱 배포 없이 갱신) */
 function eduTop30Load(cb) {
   if (EDU._t30) { cb(EDU._t30); return; }
