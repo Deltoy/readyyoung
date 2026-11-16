@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwip2uok">
+  <meta name="ry-build" content="mwip63xn">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4672,7 +4672,7 @@ html.ry-closed .ry-limbs,html.ry-closed #ryDzFloat{display:none}
 .sc-tip[open] summary::after,.sc-adm[open] summary::after{transform:rotate(-135deg) translateY(-2px)}
 .sc-tip ul{margin:12px 0 0;padding-left:18px;display:grid;gap:6px;font-size:13.5px;line-height:1.55;color:var(--ry-ink-2)}
 .sc-tip li{list-style:disc}.sc-tip li::marker{color:var(--ry-ink-3)}
-.sc-fhelp{margin:0 0 10px;font-size:13px;line-height:1.5;color:var(--ry-ink-2,#475467)}.sc-own{align-items:flex-end}.sc-f label.sc-ownck{flex:0 0 100%;flex-direction:row;align-items:center;gap:8px;font-size:14px;font-weight:700;min-height:44px;color:var(--ry-ink)}.sc-f .sc-ownck input{width:22px;height:22px;min-height:0;padding:0;accent-color:#155EEF;flex:none}.sc-pk:has(.sc-mul){grid-template-columns:minmax(0,1fr) auto auto}.sc-mul{display:flex;align-items:center;gap:2px;font-weight:700;color:var(--ry-ink-2,#475467)}.sc-pk .sc-mul input{width:52px;min-width:0;text-align:center;padding:0 4px}.sc-fresh{display:inline-block;margin-right:6px;padding:2px 8px;border-radius:999px;background:#ECFDF3;color:#067647;font-weight:700}
+.sc-fhelp{margin:0 0 10px;font-size:13px;line-height:1.5;color:var(--ry-ink-2,#475467)}.sc-own{align-items:flex-end}.sc-f label.sc-ownck{flex:0 0 100%;flex-direction:row;align-items:center;gap:8px;font-size:14px;font-weight:700;min-height:44px;color:var(--ry-ink)}.sc-f .sc-ownck input{width:22px;height:22px;min-height:0;padding:0;accent-color:#155EEF;flex:none}.sc-pk:has(.sc-mul){grid-template-columns:minmax(0,1fr) auto auto}.sc-mul{display:flex;align-items:center;gap:2px;font-weight:700;color:var(--ry-ink-2,#475467)}.sc-pk .sc-mul input{width:52px;min-width:0;text-align:center;padding:0 4px}.sc-set .sc-wk-s .sc-fresh{white-space:normal}.sc-fresh{display:inline-block;max-width:100%;box-sizing:border-box;margin:0 6px 4px 0;padding:2px 8px;border-radius:999px;background:#ECFDF3;color:#067647;font-weight:700}
 .sc-f{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;margin-top:12px}
 .sc-f label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:700;color:var(--ry-ink-2);flex:1 1 140px}
 .sc-f input,.sc-f select{min-height:44px;border:1px solid var(--ry-line);border-radius:12px;padding:0 10px;font-size:16px;background:#fff;color:var(--ry-ink);width:100%}
@@ -4700,6 +4700,7 @@ html.ry-closed .ry-limbs,html.ry-closed #ryDzFloat{display:none}
 .sc-set{position:relative;padding:14px 16px}
 .sc-set-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px}
 .sc-set .sc-nm{font-size:16px;min-width:0;overflow-wrap:anywhere}
+.sc-hdr{flex:none;display:flex;align-items:center;gap:6px}.sc-pen{width:36px;height:36px;border-radius:10px;border:1px solid var(--ry-line);background:#fff;font-size:15px;line-height:1;display:grid;place-items:center}.sc-fr-hi{outline:2px solid #155EEF;outline-offset:2px}
 .sc-pct{flex:none;font-style:normal;font-size:13px;font-weight:800;color:var(--sc);background:var(--sc-soft);border-radius:999px;padding:4px 10px;font-variant-numeric:tabular-nums}
 .sc-set-bd{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:center}
 .sc-mini{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--sc-soft);border-radius:16px;padding:8px 6px 6px}
@@ -8707,8 +8708,8 @@ video {
           var tv = dS.indexOf(t) >= 0 ? scV(t, s.k) : null, pv = SC.prev[s.k] != null ? SC.prev[s.k] : 0, need = lS ? Math.ceil(Math.max(0, G - sumB) / lS) : 0, win = G > 0 && sum >= G, tdone = tv != null && dg > 0 && tv >= dg;
           if (win) SC.totWin.push(s.k);
           mob.push({ s: s, G: G, dg: dg, sum: sum, tv: tv, need: need, win: win, tdone: tdone });
-          var msg = (fresh ? '<span class="sc-fresh">🔄 새 주 시작 · 지난주 <b>' + pr.p + '%</b> ' + (pr.p >= 100 ? '달성 🏆' : '') + '</span> ' : '') + (!G ? '주 목표 없음' + (s.k === 'jelly' || /젤리/.test(s.label) ? ' · 14포 = 1개 · 28포 = 2개로 셈' : '') : win ? '🏆 주 목표 달성!' + (sum > G ? ' <b>+' + (sum - G) + '개</b>' : '') : '<span>남은 <b>' + (G - sum) + '개</b></span> · <span>남은 ' + lS + '일 하루 평균 <b>' + need + '개</b> 필요</span>');
-          return '<section class="sc-card sc-set' + (win ? ' win' : '') + '" id="scTot-' + s.k + '" style="--sc:' + s.c + ';--sc-soft:' + s.soft + '"><div class="sc-set-hd"><div class="sc-nm">' + escapeHtml(s.label) + (s.sub || s.from ? '<small>' + escapeHtml([s.sub, scPer(s)].filter(String).join(' · ')) + '</small>' : '') + '<span class="sc-sts">' + scStamp(tv, dg, rySeason(), s.kind === 'item') + scCheer(sum, G) + '</span></div>' + (G ? '<em class="sc-pct">' + Math.round(sum / G * 100) + '%</em>' : '') + '</div>'
+          var msg = (fresh ? '<span class="sc-fresh">🔄 지난주 <b>' + pr.p + '%</b>' + (pr.p >= 100 ? ' 🏆' : '') + '</span> ' : '') + (!G ? '주 목표 없음' + (s.k === 'jelly' || /젤리/.test(s.label) ? ' · 14포 = 1개 · 28포 = 2개로 셈' : '') : win ? '🏆 주 목표 달성!' + (sum > G ? ' <b>+' + (sum - G) + '개</b>' : '') : '<span>남은 <b>' + (G - sum) + '개</b></span> · <span>남은 ' + lS + '일 하루 평균 <b>' + need + '개</b> 필요</span>');
+          return '<section class="sc-card sc-set' + (win ? ' win' : '') + '" id="scTot-' + s.k + '" style="--sc:' + s.c + ';--sc-soft:' + s.soft + '"><div class="sc-set-hd"><div class="sc-nm">' + escapeHtml(s.label) + (s.sub || s.from ? '<small>' + escapeHtml([s.sub, scPer(s)].filter(String).join(' · ')) + '</small>' : '') + '<span class="sc-sts">' + scStamp(tv, dg, rySeason(), s.kind === 'item') + scCheer(sum, G) + '</span></div>' + '<span class="sc-hdr">' + (G ? '<em class="sc-pct">' + Math.round(sum / G * 100) + '%</em>' : '') + (boss ? '<button type="button" class="sc-pen" onclick="scFormOpen(null, false, \'' + s.k + '\')" aria-label="' + escapeHtml(s.label) + ' 목표 수정">✏️</button>' : '') + '</span></div>'
             + '<div class="sc-set-bd"><div class="sc-mini' + (tdone ? ' done' : '') + '" id="scT-' + s.k + '"><div class="sc-rw">' + scRing(s, tv, dg, pv) + '<div class="sc-num"><b data-n="' + (tv || 0) + '" data-p="' + pv + '">' + (tv == null ? '–' : pv) + '</b><span>/ ' + (dg || '–') + '</span></div></div><small>' + (tdone ? '오늘 🎉 달성' : '오늘') + '</small></div>'
             + '<div><div class="sc-big"><b>' + sum + '</b><span>' + (G ? '/ ' + G + '개' : '개') + '</span></div>' + (G ? '<div class="sc-bar"><i style="width:' + Math.min(100, sum / G * 100).toFixed(1) + '%"></i></div>' : '') + '<div class="sc-wk-s">' + msg + '</div></div></div></section>';
         }).join('') + '</div>';
@@ -8933,7 +8934,7 @@ video {
     /* 1116 MJ '하나씩 추가해서 목표를 넣을 수 있게 · 세트 전체는 기간 따로 · 젤리 28포는 14포 2개로' → 지금 진행 중·다음 목표를 모두 한 화면에서: 기본 기간(같이 도는 목표) + 줄마다 '기간 따로' + POS 이름마다 ×개수
        진행 중인 목표가 없으면 지난 목표 줄을 다음 기간으로 복사 · 저장하면 같은 목표가 다른 기간과 겹치는 날은 이 저장이 이김 · 뺀 목표는 자동으로 다시 안 생김(drop) */
     function scPk(s) { return (s.pos || []).map(function (x, j) { var m = String(x).match(/^(.*?)\s*×\s*(\d+)$/); return { n: (s.app && s.app[j]) || '', pos: m ? m[1] : x, m: m ? +m[2] : 1 }; }); }
-    function scFormOpen(from, addRow) {
+    function scFormOpen(from, addRow, focusK) {
       var c = SC.data.cfg, t = SC.data.today, p = t.split('-'), rows = [], seen = {}, cnt = {};
       c.weeks.slice().reverse().forEach(function (w) { (w.sets || []).forEach(function (s) { var f = s.from || w.from, z = s.to || w.to; if (z < t || seen[s.k]) return; seen[s.k] = 1;
         var G = (w.goal && w.goal[s.k]) || '', dd = (w.day && w.day[s.k]) || '', n = scDays({ from: f, to: z }).length; if (dd && G && Math.round(G / n) !== dd) G = dd * n;
@@ -8948,6 +8949,7 @@ video {
       if (!rows.length || addRow) rows.push(scFormRow());
       SC.form = { from: f0, to: z0, note: note, ex: !!top, rows: rows, keys0: rows.map(function (r) { return r.k; }).filter(String) };
       SC.pickRes = []; scRender(); var bd = document.getElementById('slBody'); if (bd) bd.scrollTop = 0;
+      if (focusK) setTimeout(function () { var x = document.querySelector('#slBody .sc-fr[data-k="' + focusK + '"]'); if (x) { x.scrollIntoView({ block: 'start' }); x.classList.add('sc-fr-hi'); } }, 50);   /* 1116 MJ 카드의 ✏️ → 그 목표 줄로 */
       if (addRow) setTimeout(function () { var r = document.querySelectorAll('#slBody .sc-fr'), x = r[r.length - 1]; if (x) { x.scrollIntoView({ block: 'center' }); x.querySelector('input[data-f="label"]').focus(); } }, 50);
     }
     function scFormRow() { return { k: '', label: '', kind: 'set', picks: [], goal: '', day: '', own: false, from: '', to: '' }; }
