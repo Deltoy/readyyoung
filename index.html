@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwjhqyh9">
+  <meta name="ry-build" content="mwji3z6p">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -6544,7 +6544,7 @@ video {
           <div class="ry-more-menu" id="toolMoreMenu" role="menu" hidden>
             <button type="button" role="menuitem" id="bwEntry" hidden onclick="closeToolMore(); location.href='https://deltoy.github.io/readyyoung/bw.html'">📦 부외품 화면</button>
             <button type="button" role="menuitem" onclick="closeToolMore(); holOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>휴무 대비 계산</button>
-            <button type="button" role="menuitem" onclick="closeToolMore(); slowOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="10"/></svg>느린 상품</button>
+            <button type="button" role="menuitem" onclick="closeToolMore(); slowOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="10"/></svg>부진 상품</button>
             <button type="button" role="menuitem" onclick="closeToolMore(); openCatBrowse()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>카테고리별 보기<small>분류가 비었거나 기타인 상품 고치기</small></button>
             <button type="button" role="menuitem" onclick="closeToolMore(); ntOpen()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>공지 보관함<small>카톡 공지 모아보기 · 증정품 변경 한눈에</small></button>
             <button type="button" role="menuitem" onclick="closeToolMore(); mbOpenArchive()"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>뷰티 브리핑 모아보기<small>날짜별 목록 · 첫 화면 카드는 10시~23시엔 숨김</small></button>
@@ -7577,7 +7577,7 @@ video {
       holCalc(); var L = HOL.rows, sel = L.filter(function (x) { return x.on; }).length;
       h += '<p class="slow-sum">' + (L.length ? HOL.mk + ' · ' + HOL.days + '일 버티려면 ' + L.filter(function (x) { return !x.flow; }).length + '개 상품을 더 시켜야 해요' : HOL.mk + ' · ' + HOL.days + '일은 지금 재고로 버텨요 👍') + '</p>';
       h += '<ol class="slow-l hol-l">' + L.map(function (x, i) { var nm = String(x.it.name).split('\n')[0];
-        return '<li class="' + (x.flow ? 'off' : '') + '"><label class="hol-ck">' + (x.flow ? '' : '<input type="checkbox"' + (x.on ? ' checked' : '') + ' onchange="HOL.rows[' + i + '].on=this.checked;holBtn()">') + '<span class="slow-n"><b>' + escapeHtml(nm) + (x.slow ? ' <span class="ry-slow">느림</span>' : '') + '</b><small>하루 ' + (Math.round(x.daily * 10) / 10) + '개 · 추정 재고 ' + stkN(x.est) + '개' + (x.flow ? ' · 이미 주문 중' : '') + '</small></span></label>'
+        return '<li class="' + (x.flow ? 'off' : '') + '"><label class="hol-ck">' + (x.flow ? '' : '<input type="checkbox"' + (x.on ? ' checked' : '') + ' onchange="HOL.rows[' + i + '].on=this.checked;holBtn()">') + '<span class="slow-n"><b>' + escapeHtml(nm) + (x.slow ? ' <span class="ry-slow">부진</span>' : '') + '</b><small>하루 ' + (Math.round(x.daily * 10) / 10) + '개 · 추정 재고 ' + stkN(x.est) + '개' + (x.flow ? ' · 이미 주문 중' : '') + '</small></span></label>'
           + (x.flow ? '<span class="hol-q off">주문 중</span>' : '<input class="hol-q" type="number" inputmode="numeric" min="1" value="' + x.q + '" aria-label="' + escapeHtml(nm) + ' 요청 수량" onchange="HOL.rows[' + i + '].q=Math.max(1,Math.round(+this.value||1))">') + '</li>'; }).join('') + '</ol>'
         + (L.some(function (x) { return !x.flow; }) ? '<button type="button" class="sc-btn hol-go" id="holGo" onclick="holGo()">선택한 ' + sel + '개 한 번에 요청</button>' : '');
       sh.innerHTML = h;
@@ -7606,8 +7606,8 @@ video {
       var sh = document.getElementById('slowSheet'); if (!sh) return;
       var all = slowList(), cats = {}; all.forEach(function (x) { cats[x.cat] = (cats[x.cat] || 0) + 1; });
       var L = SLOW.cat ? all.filter(function (x) { return x.cat === SLOW.cat; }) : all, tot = L.reduce(function (a, x) { return a + x.est; }, 0);
-      sh.innerHTML = '<div class="ava-head"><div><b id="slowT">느린 상품 ' + all.length + '</b><small>15일 판매 1개 이하인데 창고에 남은 상품 · 자리 차지 순</small></div><button type="button" class="slow-x" onclick="slowClose()" aria-label="닫기">' + RYI.x + '</button></div>'
-        + '<p class="slow-sum">' + (L.length ? '지금 ' + L.length + '개 상품이 창고 ' + tot.toLocaleString('ko-KR') + '개를 차지해요 → 유통기한 확인 · 진열 바꾸기 · 행사 · 다음 주문 줄이기' : '느린 상품이 없어요') + '</p>'
+      sh.innerHTML = '<div class="ava-head"><div><b id="slowT">부진 상품 ' + all.length + '</b><small>15일 판매 1개 이하인데 창고에 남은 상품 · 자리 차지 순</small></div><button type="button" class="slow-x" onclick="slowClose()" aria-label="닫기">' + RYI.x + '</button></div>'
+        + '<p class="slow-sum">' + (L.length ? '지금 ' + L.length + '개 상품이 창고 ' + tot.toLocaleString('ko-KR') + '개를 차지해요 → 유통기한 확인 · 진열 바꾸기 · 행사 · 다음 주문 줄이기' : '부진 상품이 없어요') + '</p>'
         + '<label class="slow-f">분류 <select onchange="SLOW.cat=this.value;slowRender()"><option value="">전체 ' + all.length + '</option>' + Object.keys(cats).sort(function (a, b) { return cats[b] - cats[a]; }).map(function (c) { return '<option value="' + escapeHtml(c) + '"' + (SLOW.cat === c ? ' selected' : '') + '>' + escapeHtml(c) + ' ' + cats[c] + '</option>'; }).join('') + '</select></label>'
         + '<ol class="slow-l">' + L.slice(0, 300).map(function (x) {
           var nm = String(x.it.name).split('\n')[0];
@@ -7639,7 +7639,7 @@ video {
       var cls = s.est < 0 || (s.sure && s.est === 0) ? 'red' : '';   // 1020 MJ: 예상 날짜는 빼고 '추정 재고 N개'만, 눈에 띄게
       var txt = !s.sure && s.est === 0 ? '📦 추정 재고 확인 필요' : '📦 추정 재고 <b>' + stkN(s.est) + '</b>개' + (!s.sure && s.est < 0 ? ' · 확인 필요' : '');
       var sl = ryIsSlow(item);
-      return ' <button type="button" class="ry-stk ' + cls + '" data-n="' + escapeHtml(item.name) + '" onclick="event.stopPropagation(); stkShow(this)" title="추정 재고">' + txt + '</button>' + (sl ? ' <span class="ry-slow" title="15일 판매 ' + sl.q + '개 · 창고에 ' + stkN(sl.est) + '개 — 느린 상품">느림</span>' : '');
+      return ' <button type="button" class="ry-stk ' + cls + '" data-n="' + escapeHtml(item.name) + '" onclick="event.stopPropagation(); stkShow(this)" title="추정 재고">' + txt + '</button>' + (sl ? ' <span class="ry-slow" title="15일 판매 ' + sl.q + '개 · 창고에 ' + stkN(sl.est) + '개 — 부진 상품">부진</span>' : '');
     }
     function bxChip(k) {
       var r = SP.box && (SP.box.rows || []).filter(function (x) { return x.box === k; })[0];
