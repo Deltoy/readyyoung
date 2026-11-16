@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwiognlw">
+  <meta name="ry-build" content="mwip2uok">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4735,6 +4735,7 @@ html.ry-closed .ry-limbs,html.ry-closed #ryDzFloat{display:none}
 .sc-pk-h{font-size:12.5px;font-weight:700;color:var(--ry-ink-3)}
 .sc-pk{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 6px;align-items:center}
 .sc-pk small{grid-column:1/-1;font-size:11.5px;color:var(--ry-ink-3);font-weight:600;overflow-wrap:anywhere}
+.sc-pk textarea{min-height:44px;border:1px solid var(--ry-line);border-radius:12px;padding:8px 10px;font-size:15px;line-height:1.35;background:#fff;color:var(--ry-ink);width:100%;min-width:0;resize:none;font-family:inherit;overflow-wrap:anywhere}
 .sc-pk input,.sc-pf input{min-height:44px;border:1px solid var(--ry-line);border-radius:12px;padding:0 10px;font-size:16px;background:#fff;color:var(--ry-ink);width:100%;min-width:0}
 .sc-pf input{border-style:dashed;border-color:#B2CCFF;background:#F5F8FF}
 .sc-pr{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.sc-pr:empty{display:none}
@@ -8706,7 +8707,7 @@ video {
           var tv = dS.indexOf(t) >= 0 ? scV(t, s.k) : null, pv = SC.prev[s.k] != null ? SC.prev[s.k] : 0, need = lS ? Math.ceil(Math.max(0, G - sumB) / lS) : 0, win = G > 0 && sum >= G, tdone = tv != null && dg > 0 && tv >= dg;
           if (win) SC.totWin.push(s.k);
           mob.push({ s: s, G: G, dg: dg, sum: sum, tv: tv, need: need, win: win, tdone: tdone });
-          var msg = (fresh ? '<span class="sc-fresh">🔄 새 주 시작 · 지난 기간 <b>' + pr.p + '%</b>' + (pr.p >= 100 ? ' 달성 🏆' : '') + '</span> ' : '') + (!G ? '주 목표 없음' + (s.k === 'jelly' || /젤리/.test(s.label) ? ' · 14포 = 1개 · 28포 = 2개로 셈' : '') : win ? '🏆 주 목표 달성!' + (sum > G ? ' <b>+' + (sum - G) + '개</b>' : '') : '<span>남은 <b>' + (G - sum) + '개</b></span> · <span>남은 ' + lS + '일 하루 평균 <b>' + need + '개</b> 필요</span>');
+          var msg = (fresh ? '<span class="sc-fresh">🔄 새 주 시작 · 지난주 <b>' + pr.p + '%</b> ' + (pr.p >= 100 ? '달성 🏆' : '') + '</span> ' : '') + (!G ? '주 목표 없음' + (s.k === 'jelly' || /젤리/.test(s.label) ? ' · 14포 = 1개 · 28포 = 2개로 셈' : '') : win ? '🏆 주 목표 달성!' + (sum > G ? ' <b>+' + (sum - G) + '개</b>' : '') : '<span>남은 <b>' + (G - sum) + '개</b></span> · <span>남은 ' + lS + '일 하루 평균 <b>' + need + '개</b> 필요</span>');
           return '<section class="sc-card sc-set' + (win ? ' win' : '') + '" id="scTot-' + s.k + '" style="--sc:' + s.c + ';--sc-soft:' + s.soft + '"><div class="sc-set-hd"><div class="sc-nm">' + escapeHtml(s.label) + (s.sub || s.from ? '<small>' + escapeHtml([s.sub, scPer(s)].filter(String).join(' · ')) + '</small>' : '') + '<span class="sc-sts">' + scStamp(tv, dg, rySeason(), s.kind === 'item') + scCheer(sum, G) + '</span></div>' + (G ? '<em class="sc-pct">' + Math.round(sum / G * 100) + '%</em>' : '') + '</div>'
             + '<div class="sc-set-bd"><div class="sc-mini' + (tdone ? ' done' : '') + '" id="scT-' + s.k + '"><div class="sc-rw">' + scRing(s, tv, dg, pv) + '<div class="sc-num"><b data-n="' + (tv || 0) + '" data-p="' + pv + '">' + (tv == null ? '–' : pv) + '</b><span>/ ' + (dg || '–') + '</span></div></div><small>' + (tdone ? '오늘 🎉 달성' : '오늘') + '</small></div>'
             + '<div><div class="sc-big"><b>' + sum + '</b><span>' + (G ? '/ ' + G + '개' : '개') + '</span></div>' + (G ? '<div class="sc-bar"><i style="width:' + Math.min(100, sum / G * 100).toFixed(1) + '%"></i></div>' : '') + '<div class="sc-wk-s">' + msg + '</div></div></div></section>';
@@ -8952,9 +8953,9 @@ video {
     function scFormRow() { return { k: '', label: '', kind: 'set', picks: [], goal: '', day: '', own: false, from: '', to: '' }; }
     function scFormHtml() {
       var f = SC.form, n = f.rows.length;
-      return '<section class="sc-card sc-form"><h3>🎯 판매 목표 정하기 <span>' + (f.ex ? '진행 중인 목표 고치기 · 아래 ＋로 하나씩 추가' : '새 목표') + '</span></h3>'
-        + '<p class="sc-fhelp">① 같이 도는 목표의 기간 → ② 목표마다 이름·POS 이름·주 목표 → ③ 기간이 다른 목표(예: 세트 전체)는 그 줄의 <b>기간 따로</b> · 기간이 끝나면 같은 목표로 다음 기간이 자동으로 시작돼요</p>'
-        + '<div class="sc-f"><label>시작 <small>같이 도는 목표</small><input type="date" id="scFFrom" value="' + f.from + '" onchange="scFormFrom(this.value)"></label><label>끝<input type="date" id="scFTo" value="' + f.to + '"></label></div>'
+      return '<section class="sc-card sc-form"><h3>🎯 판매 목표 정하기 <span>' + (f.ex ? '목표 수정 · 아래 [+ 목표 추가]' : '새 목표') + '</span></h3>'
+        + '<p class="sc-fhelp">① 이번 주 기간 정하기 → ② 목표마다 이름·상품·목표 수량 → ③ 기간이 다른 목표는 <b>기간 설정</b> 체크 · 기간이 끝나면 같은 목표로 다음 주가 자동 시작</p>'
+        + '<div class="sc-f"><label>시작 <small>공통 기간</small><input type="date" id="scFFrom" value="' + f.from + '" onchange="scFormFrom(this.value)"></label><label>끝<input type="date" id="scFTo" value="' + f.to + '"></label></div>'
         + scFormRowsHtml(f, false)
         + '<div class="sc-f"><label class="sc-wide">직원 공지 <small>목표 위에 보여요</small><textarea id="scFNote" rows="3" maxlength="500" placeholder="예: 신규 제품 반응이 좋아요 · 제품 설명 숙지해 주세요">' + escapeHtml(f.note) + '</textarea></label></div>'
         + '<div class="sc-f sc-fbtn"><button type="button" class="sc-btn sc-btn2" onclick="scFormClose()">취소</button><button type="button" class="sc-btn" id="scFSave" onclick="scFormSave()">저장</button></div></section>';
@@ -8966,16 +8967,16 @@ video {
           return '<div class="sc-fr" data-i="' + i + '" data-k="' + escapeHtml(r.k || '') + '" data-kind="' + (it ? 'item' : 'set') + '"><div class="sc-fr-hd"><b>' + (ev ? '상품 ' : '목표 ') + (i + 1) + '</b>'
             + '<span class="sc-kind" role="group" aria-label="종류"><button type="button" aria-pressed="' + !it + '" onclick="scFormKind(' + i + ', \'set\')">세트</button><button type="button" aria-pressed="' + it + '" onclick="scFormKind(' + i + ', \'item\')">상품</button></span>'
             + (n > 1 ? '<button type="button" class="sc-x" onclick="scFormDel(' + i + ')" aria-label="' + (ev ? '상품 ' : '목표 ') + (i + 1) + ' 빼기">×</button>' : '') + '</div><div class="sc-f">'
-            + '<label class="sc-wide">표시 이름<input data-f="label" maxlength="40" value="' + escapeHtml(r.label) + '" placeholder="' + (it ? '예: 리쥬올 베리어 4종' : '예: Total skin care') + '"></label></div>'
-            + '<div class="sc-picks">' + (r.picks.length ? '<small class="sc-pk-h">POS 이름 · ' + (r.picks.length > 1 ? r.picks.length + '개 합산' : '앱 이름과 다르면 고쳐 주세요') + '</small>' : '')
-            + r.picks.map(function (pk, j) { return '<div class="sc-pk" data-n="' + escapeHtml(pk.n || '') + '">' + (pk.n && pk.n !== pk.pos ? '<small>앱 · ' + escapeHtml(pk.n) + '</small>' : '') + '<input data-p="pos" value="' + escapeHtml(pk.pos) + '" aria-label="POS 이름" placeholder="POS 에 나오는 이름 그대로">' + (ev ? '' : '<label class="sc-mul" title="1개 팔리면 몇 개로 셀지 (예: 28포 = 14포 2개)">×<input type="number" inputmode="numeric" min="1" max="20" data-p="m" value="' + (pk.m || 1) + '" aria-label="몇 개로 셀지"></label>') + '<button type="button" class="sc-x" onclick="scPickDel(' + i + ', ' + j + ')" aria-label="빼기">×</button></div>'; }).join('')
-            + '<div class="sc-pf"><input type="search" enterkeyhint="search" placeholder="' + (it ? '상품 이름으로 찾아 고르기' : '세트 이름으로 찾아 고르기') + '" oninput="scPickFind(this, ' + i + ')"><div class="sc-pr" id="scPr-' + i + '"></div></div>'
-            + '<button type="button" class="sc-link" onclick="scPickAdd(' + i + ', -1)">＋ POS 이름 직접 적기</button></div>'
-            + (ev ? '</div>' : '<div class="sc-f sc-own"><label class="sc-ownck"><input type="checkbox" data-f="own"' + (r.own ? ' checked' : '') + ' onchange="scFormOwn(' + i + ', this.checked)"> 기간 따로</label>' + (r.own ? '<label>시작<input type="date" data-f="from" value="' + escapeHtml(r.from || '') + '"></label><label>끝<input type="date" data-f="to" value="' + escapeHtml(r.to || '') + '"></label>' : '') + '</div>'
-            + '<div class="sc-f"><label>주 목표<input type="number" inputmode="numeric" min="0" data-f="goal" value="' + escapeHtml(r.goal) + '" oninput="scFormDay(this)"></label>'
+            + '<label class="sc-wide">목표 이름<input data-f="label" maxlength="40" value="' + escapeHtml(r.label) + '" placeholder="' + (it ? '예: 리쥬올 베리어 4종' : '예: Total skin care') + '"></label></div>'
+            + '<div class="sc-picks">' + (r.picks.length ? '<small class="sc-pk-h">' + (r.picks.length > 1 ? '판매 상품 ' + r.picks.length + '개 (합쳐서 셈)' : '판매 상품 · POS 이름과 다르면 고쳐 주세요') + '</small>' : '')
+            + r.picks.map(function (pk, j) { return '<div class="sc-pk" data-n="' + escapeHtml(pk.n || '') + '">' + (pk.n && pk.n !== pk.pos ? '<small>앱 · ' + escapeHtml(pk.n) + '</small>' : '') + '<textarea data-p="pos" rows="2" aria-label="판매 상품 이름" placeholder="POS 에 나오는 이름 그대로">' + escapeHtml(pk.pos) + '</textarea>' + (ev ? '' : '<label class="sc-mul" title="1개 팔리면 몇 개로 셀지 (예: 28포 = 14포 2개)">×<input type="number" inputmode="numeric" min="1" max="20" data-p="m" value="' + (pk.m || 1) + '" aria-label="몇 개로 셀지"></label>') + '<button type="button" class="sc-x" onclick="scPickDel(' + i + ', ' + j + ')" aria-label="빼기">×</button></div>'; }).join('')
+            + '<div class="sc-pf"><input type="search" enterkeyhint="search" placeholder="' + (it ? '상품 검색' : '세트 검색') + '" oninput="scPickFind(this, ' + i + ')"><div class="sc-pr" id="scPr-' + i + '"></div></div>'
+            + '<button type="button" class="sc-link" onclick="scPickAdd(' + i + ', -1)">+ 상품 이름 직접 입력</button></div>'
+            + (ev ? '</div>' : '<div class="sc-f sc-own"><label class="sc-ownck"><input type="checkbox" data-f="own"' + (r.own ? ' checked' : '') + ' onchange="scFormOwn(' + i + ', this.checked)"> 기간 설정</label>' + (r.own ? '<label>시작<input type="date" data-f="from" value="' + escapeHtml(r.from || '') + '"></label><label>끝<input type="date" data-f="to" value="' + escapeHtml(r.to || '') + '"></label>' : '') + '</div>'
+            + '<div class="sc-f"><label>주간 목표<input type="number" inputmode="numeric" min="0" data-f="goal" value="' + escapeHtml(r.goal) + '" oninput="scFormDay(this)"></label>'
             + '<label>하루 목표<input type="number" inputmode="numeric" min="0" data-f="day" value="' + escapeHtml(r.day) + '" placeholder="' + dp + '" oninput="scFormDay(this)"></label></div></div>');
         }).join('')
-        + (n < (ev ? 20 : 8) ? '<button type="button" class="sc-add" onclick="scFormAdd()">＋ ' + (ev ? '상품' : '목표') + ' 줄 추가</button>' : '');
+        + (n < (ev ? 20 : 8) ? '<button type="button" class="sc-add" onclick="scFormAdd()">+ ' + (ev ? '상품' : '목표') + ' 추가</button>' : '');
     }
     function scFormRead() {
       var f = scF(); if (!f) return; var nm = document.getElementById('efFName'); if (nm) f.name = nm.value; var a = document.getElementById('scFFrom'), z = document.getElementById('scFTo'), nt = document.getElementById('scFNote');
@@ -8984,7 +8985,7 @@ video {
         var g = function (k) { var x = el.querySelector('[data-f="' + k + '"]'); return x ? x.value : ''; };
         var ow = el.querySelector('[data-f="own"]');
         return { k: el.getAttribute('data-k') || '', kind: el.getAttribute('data-kind') || 'set', label: g('label'), goal: g('goal'), day: g('day'), own: !!(ow && ow.checked), from: g('from'), to: g('to'),
-          picks: [].map.call(el.querySelectorAll('.sc-pk'), function (pe) { var mi = pe.querySelector('[data-p="m"]'); return { n: pe.getAttribute('data-n') || '', pos: pe.querySelector('input').value, m: mi ? Math.max(1, Math.round(+mi.value || 1)) : 1 }; }) };
+          picks: [].map.call(el.querySelectorAll('.sc-pk'), function (pe) { var mi = pe.querySelector('[data-p="m"]'); return { n: pe.getAttribute('data-n') || '', pos: pe.querySelector('[data-p="pos"]').value, m: mi ? Math.max(1, Math.round(+mi.value || 1)) : 1 }; }) };
       });
     }
     function scFormDay(el) {   /* 1109 주 목표 ↔ 하루 목표 서로 맞춤 (날 수 = 시작~끝) */
@@ -9008,7 +9009,7 @@ video {
       scFormRead(); var r = scF().rows[i], nm = j < 0 ? '' : SC.pickRes[j] || ''; if (!r) return;
       if (!nm || !r.picks.some(function (p) { return p.n === nm; })) r.picks.push({ n: nm, pos: nm });
       if (!String(r.label).trim() && nm && r.picks.length === 1) r.label = nm;
-      scFRe(); var el = document.querySelector('#slBody .sc-fr[data-i="' + i + '"]'); if (el) { var ins = el.querySelectorAll(j < 0 ? '.sc-pk input' : '.sc-pf input'); if (ins.length) ins[ins.length - 1].focus(); }
+      scFRe(); var el = document.querySelector('#slBody .sc-fr[data-i="' + i + '"]'); if (el) { var ins = el.querySelectorAll(j < 0 ? '.sc-pk [data-p="pos"]' : '.sc-pf input'); if (ins.length) ins[ins.length - 1].focus(); }
     }
     function scPickDel(i, j) { scFormRead(); scF().rows[i].picks.splice(j, 1); scFRe(); }
     function scFormFrom(v) { scFormRead(); if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) return; SC.form.from = v; SC.form.to = scAdd(v, 6); scRender(); }   /* 1116 시작을 바꾸면 끝 = +6일 (기간 따로 줄은 그대로) */
@@ -9024,7 +9025,7 @@ video {
       }).filter(function (s) { return s.label; });
       var lo = sets.reduce(function (a, s) { return s.from < a ? s.from : a; }, f.from), hi = sets.reduce(function (a, s) { return s.to > a ? s.to : a; }, f.to);
       var drop = (f.keys0 || []).filter(function (k) { return !sets.some(function (s) { return s.k === k; }); });
-      if (!sets.length) { showToast('목표 줄을 하나 이상 적어 주세요', 2400); return; }
+      if (!sets.length) { showToast('목표를 하나 이상 적어 주세요', 2400); return; }
       var none = sets.filter(function (s) { return !s.pos.length; })[0]; if (none) { showToast(none.label + ' · 세트나 상품을 골라 주세요', 2800); return; }
       var btn = document.getElementById('scFSave'); if (btn) { btn.disabled = true; btn.textContent = '저장 중…'; }
       SC.rev++;
