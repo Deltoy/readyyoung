@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwipj1uo">
+  <meta name="ry-build" content="mwipl4oq">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8971,7 +8971,7 @@ video {
           if (!ev && f.mode === 'edit' && r.k !== f.fk) return '';
           if (!ev && f.mode === 'add' && i < f.n0) return '';
           var dp = +r.goal > 0 ? '주÷7 = ' + Math.round(r.goal / 7) : '주÷7', it = r.kind === 'item';
-          return '<div class="sc-fr" data-i="' + i + '" data-k="' + escapeHtml(r.k || '') + '" data-kind="' + (it ? 'item' : 'set') + '"><div class="sc-fr-hd"><b>' + (ev ? '상품 ' : '목표 ') + (i + 1) + '</b>'
+          return '<div class="sc-fr" data-i="' + i + '" data-k="' + escapeHtml(r.k || '') + '" data-kind="' + (it ? 'item' : 'set') + '"><div class="sc-fr-hd"><b>' + (ev ? '상품 ' + (i + 1) : f.mode === 'add' ? '새 목표' : f.mode === 'edit' ? '목표' : '목표 ' + (i + 1)) + '</b>'
             + '<span class="sc-kind" role="group" aria-label="종류"><button type="button" aria-pressed="' + !it + '" onclick="scFormKind(' + i + ', \'set\')">세트</button><button type="button" aria-pressed="' + it + '" onclick="scFormKind(' + i + ', \'item\')">상품</button></span>'
             + (n > 1 && (ev || f.mode === 'all') ? '<button type="button" class="sc-x" onclick="scFormDel(' + i + ')" aria-label="' + (ev ? '상품 ' : '목표 ') + (i + 1) + ' 빼기">×</button>' : '') + '</div><div class="sc-f">'
             + '<label class="sc-wide">목표 이름<input data-f="label" maxlength="40" value="' + escapeHtml(r.label) + '" placeholder="' + (it ? '예: 리쥬올 베리어 4종' : '예: Total skin care') + '"></label></div>'
