@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwip92ew">
+  <meta name="ry-build" content="mwipdpmi">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4700,7 +4700,7 @@ html.ry-closed .ry-limbs,html.ry-closed #ryDzFloat{display:none}
 .sc-set{position:relative;padding:14px 16px}
 .sc-set-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px}
 .sc-set .sc-nm{font-size:16px;min-width:0;overflow-wrap:anywhere}
-.sc-del{display:block;width:100%;min-height:44px;margin-top:12px;border-radius:12px;border:1px solid #FDA29B;background:#FEF3F2;color:#B42318;font-weight:800;font-size:15px}.sc-back{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;margin:0 0 8px;border-radius:12px;border:1px solid var(--ry-line);background:#fff;color:#155EEF;font-weight:800;font-size:15px}.sc-hdr{flex:none;display:flex;align-items:center;gap:6px}.sc-pen{width:36px;height:36px;border-radius:10px;border:1px solid var(--ry-line);background:#fff;font-size:15px;line-height:1;display:grid;place-items:center}.sc-fr-hi{outline:2px solid #155EEF;outline-offset:2px}
+.sc-del{display:block;width:100%;min-height:44px;margin-top:12px;border-radius:12px;border:1px solid #FDA29B;background:#FEF3F2;color:#B42318;font-weight:800;font-size:15px}.sc-back{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;margin:0 0 8px;border-radius:12px;border:1px solid var(--ry-line);background:#fff;color:#155EEF;font-weight:800;font-size:15px}.sc-pen-m{width:32px;height:32px;margin-left:4px;font-size:13px;flex:none}.sc-hdr{flex:none;display:flex;align-items:center;gap:6px}.sc-pen{width:36px;height:36px;border-radius:10px;border:1px solid var(--ry-line);background:#fff;font-size:15px;line-height:1;display:grid;place-items:center}.sc-fr-hi{outline:2px solid #155EEF;outline-offset:2px}
 .sc-pct{flex:none;font-style:normal;font-size:13px;font-weight:800;color:var(--sc);background:var(--sc-soft);border-radius:999px;padding:4px 10px;font-variant-numeric:tabular-nums}
 .sc-set-bd{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:center}
 .sc-mini{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--sc-soft);border-radius:16px;padding:8px 6px 6px}
@@ -8717,7 +8717,7 @@ video {
         var seS = rySeason(), hitN = mob.filter(function (m) { return m.tv != null && m.dg && m.tv >= m.dg; }).length;
         h += '<section class="sc-card sc-mob' + (seS ? ' sc-' + seS : '') + '"><div class="sc-mh"><b>이번 주 진행' + scCombo(hitN) + '</b><span>' + (seS === 'xmas' ? '오늘 눈사람 <em class="sc-snowman">' + (hitN ? Array(hitN + 1).join('⛄') : '❄️') + '</em> ' + hitN + '/' + mob.length : seS === 'newyear' ? '🎍 새해 복 많이 받으세요 · 오늘 달성 ' + hitN + '/' + mob.length : '오늘/하루 목표 · 이번 주/주 목표') + '</span></div>' + mob.map(function (m) {
           var p = m.G ? Math.min(100, m.sum / m.G * 100) : 0;
-          return '<div class="sc-mr' + (m.win ? ' win' : '') + '" style="--sc:' + m.s.c + '"><div class="sc-mr1"><span class="sc-mn"><i></i>' + escapeHtml(m.s.label) + '</span><span class="sc-mtd' + (m.tdone ? ' done' : '') + '">오늘 <b>' + (m.tv == null ? '–' : m.tv) + '</b>/' + (m.dg || '–') + '</span><span class="sc-mw"><b>' + m.sum + '</b>/' + (m.G || '–') + '</span></div>'
+          return '<div class="sc-mr' + (m.win ? ' win' : '') + '" style="--sc:' + m.s.c + '"><div class="sc-mr1"><span class="sc-mn"><i></i>' + escapeHtml(m.s.label) + '</span><span class="sc-mtd' + (m.tdone ? ' done' : '') + '">오늘 <b>' + (m.tv == null ? '–' : m.tv) + '</b>/' + (m.dg || '–') + '</span><span class="sc-mw"><b>' + m.sum + '</b>/' + (m.G || '–') + '</span>' + (boss ? '<button type="button" class="sc-pen sc-pen-m" onclick="scFormOpen(null, false, \'' + m.s.k + '\')" aria-label="' + escapeHtml(m.s.label) + ' 목표 수정">✏️</button>' : '') + '</div>'
             + (m.G ? '<div class="sc-mbw"><div class="sc-mbar"><i style="width:' + p.toFixed(1) + '%"></i></div>' + scPc(m.sum / m.G * 100) + '</div>' : '')   // 1111 MJ '주간 목표 퍼센트를 좀 더 강조 · 눈에 띄게' — 막대 오른쪽 큰 % (75%↑ 🔥 · 100%↑ 🏆 금색)
             + '<div class="sc-mr3">' + scChip(m) + '<span>' + (m.s.from ? '<b class="sc-per">' + scPer(m.s) + '</b> · ' : '') + (m.win ? '🏆 주 목표 달성!' + (m.sum > m.G ? ' +' + (m.sum - m.G) + '개' : '') : m.G ? '주 남은 ' + (m.G - m.sum) + ' · 하루 평균 ' + m.need + ' 필요' : '주 목표 없음') + '</span>' + (m.G ? scCheer(m.sum, m.G) : '') + '</div></div>';
         }).join('') + '</section>';
