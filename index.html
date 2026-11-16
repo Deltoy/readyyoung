@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwj430z0">
+  <meta name="ry-build" content="mwjbhr0o">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -2181,7 +2181,8 @@ body.sp-open #appToast{bottom:auto!important;top:calc(68px + env(safe-area-inset
 .bxv-b{position:relative;width:100%;max-width:110px;height:84px;border:2.5px solid #D0D5DD;border-radius:12px;overflow:hidden;background:#fff;margin-bottom:6px}.bxv-b i{position:absolute;left:0;right:0;bottom:0;opacity:.85}.bxv-b s{position:absolute;left:0;right:0;bottom:33.3%;border-top:2px dashed rgba(16,24,40,.4)}
 .bxv-b b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:850;color:#101828}
 .bxv-d{font-size:18px;font-weight:850;font-variant-numeric:tabular-nums}.bxv-m{font-size:12px;color:#475467;font-variant-numeric:tabular-nums}.bxv-m2{font-size:11px;color:#98A2B3}
-.bxv-ship{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:999px;background:#EFF4FF;color:#155EEF;font-size:11.5px;font-weight:750;white-space:nowrap;margin-top:4px}.bxv-fl{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:999px;background:#F2F4F7;color:#475467;font-size:11.5px;font-weight:700;white-space:nowrap;margin-top:4px}
+.bxv-ship{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:999px;background:#EFF4FF;color:#155EEF;font-size:11.5px;font-weight:750;white-space:nowrap;margin-top:4px}.bxv-so{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;margin-right:4px;border-radius:999px;background:#FEF3F2;color:#B42318;font-size:12px;font-weight:700;white-space:nowrap}.bxv-so .ry-i{width:13px;height:13px}
+.bxv-fl{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:999px;background:#F2F4F7;color:#475467;font-size:11.5px;font-weight:700;white-space:nowrap;margin-top:4px}
 .bxv-rest{background:#fff;border:1px solid #EAECF0;border-radius:16px;overflow:hidden}
 .bxv-r{appearance:none;font:inherit;color:inherit;background:none;border:0;border-top:1px solid #EAECF0;width:100%;display:grid;grid-template-columns:44px minmax(0,1fr) 60px;align-items:center;gap:10px;padding:13px 14px;min-height:48px;cursor:pointer;text-align:left}.bxv-r:first-child{border-top:0}.bxv-r b{font-size:15px}
 .bxv-g{position:relative;height:14px;border-radius:999px;background:#F2F4F7}.bxv-g i{position:absolute;left:0;top:0;bottom:0;border-radius:999px}.bxv-g s{position:absolute;left:33.3%;top:-4px;bottom:-4px;width:2px;background:#101828;opacity:.4}
@@ -9981,7 +9982,8 @@ video {
         var nu = function (r) { return !(r.month > 0); };   /* 1101 판매 기록 전 박스: 회색 통 + '아직 판매 없음' */
         var col = function (r) { return nu(r) ? '#98A2B3' : r.status === 'red' ? '#D92D20' : r.status === 'yellow' ? '#DC6803' : '#079455'; }, P = function (r) { return nu(r) ? 100 : Math.max(5, Math.min(100, (r.days || 0) / 30 * 100)); }, dT = function (d) { return d == null ? '–' : d > 99 ? '99+' : d; };
         var od = function (r) { return r.odate && r.odate !== '-' ? String(r.odate).replace(/^\d{4}[-.\/]\s*/, '').replace(/[-.]\s*/, '/') : ''; };
-        var fl = function (r, short) { return r.flow === 'ship' ? '<span class="bxv-ship">🚚 배송중' + (short || !od(r) ? '' : ' · ' + escapeHtml(od(r)) + ' 발주') + '</span>' : r.flow === 'order' ? '<span class="bxv-fl">약사 발주 목록</span>' : r.flow === 'review' ? '<span class="bxv-fl">1차 검토 중</span>' : r.order && !nu(r) ? '<span class="bxv-fl">자동 발주 ' + (r.nBox || 1) + '박스 예정</span>' : ''; };   /* 1101 판매 기록 전(nodata)은 서버도 자동 발주 안 함 */
+        var fl = function (r, short) { return (r.so ? '<span class="bxv-so">' + RYI.alert + '박스 품절로 배송 지연' + (r.so !== '-' && !short ? ' · ' + escapeHtml(r.so) + ' 품절' : '') + '</span>' : '') + fl0(r, short); };   /* 1116 MJ '3번 박스가 품절이면 여기도 박스 품절로 배송 지연' */
+        var fl0 = function (r, short) { return r.flow === 'ship' ? '<span class="bxv-ship">🚚 배송중' + (short || !od(r) ? '' : ' · ' + escapeHtml(od(r)) + ' 발주') + '</span>' : r.flow === 'order' ? '<span class="bxv-fl">약사 발주 목록</span>' : r.flow === 'review' ? '<span class="bxv-fl">1차 검토 중</span>' : r.order && !nu(r) ? '<span class="bxv-fl">자동 발주 ' + (r.nBox || 1) + '박스 예정</span>' : ''; };   /* 1101 판매 기록 전(nodata)은 서버도 자동 발주 안 함 */
         var L10 = Math.min(90, Math.round(((SP.box && SP.box.cal10) || 10) / 30 * 1000) / 10);   /* 1019 점선 = 영업일 10일 (달력으로 12~14일) */
         var act = function (r) { return (r.sets || []).length ? ' data-b="' + escapeHtml(r.box) + '" onclick="bxSetPop(this.dataset.b)"' : ''; };
         /* 1019 MJ: 실제로 보니 시안 ④ — 박스를 옆으로 눕힌 통(안에 남은 개수) + 오른쪽 큰 '며칠' · 한 목록 */
