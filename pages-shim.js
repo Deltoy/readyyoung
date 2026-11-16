@@ -181,7 +181,8 @@
   var meta = document.querySelector('meta[name="ry-build"]'), cur = meta && meta.content, fresh = false, lastAct = Date.now();
   if (!cur) return;
   ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(function (ev) { addEventListener(ev, function () { lastAct = Date.now(); }, { capture: true, passive: true }); });
-  function busy() { var a = document.activeElement; return (window.__ryInflight > 0) || (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) || document.body.style.position === 'fixed' || Date.now() - lastAct < 120000; }
+  function hold() { try { return !!localStorage.getItem('ry_np_pending') || !!document.querySelector('#npSheet.on, #invDim, #qinBox'); } catch (e) { return false; } }   /* 1116 새 상품 등록 중(사진 찍으러 카메라 갔다 와도) · 입고하기 창이 열려 있으면 새로고침 안 함 */
+  function busy() { var a = document.activeElement; return hold() || (window.__ryInflight > 0) || (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) || document.body.style.position === 'fixed' || Date.now() - lastAct < 120000; }
   function check() {
     if (fresh) return;
     /* 1109 점검: ?ryv 로 새 판을 보고 새로고침했는데 정작 새로고침은 캐시된 옛 판을 받아 다시 '새 판' → 성수 폰 세트 화면에서 30분에 6번 튕김. 새로고침이 받을 주소 그대로 확인 */
@@ -192,7 +193,7 @@
   setInterval(function () { if (fresh && !busy()) location.reload(); }, 15000);
   setInterval(check, 600000); setTimeout(check, 60000);
   var hidAt = 0;   /* 1109 점검: 1초 알림창만 내려도 새로고침돼 보던 화면이 처음으로 → 30초 넘게 나갔다 올 때만 */
-  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') { hidAt = Date.now(); return; } if (fresh && Date.now() - hidAt > 30000 && !(window.__ryInflight > 0)) location.reload(); else check(); });
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') { hidAt = Date.now(); return; } if (fresh && Date.now() - hidAt > 30000 && !(window.__ryInflight > 0) && !hold()) location.reload(); else check(); });
 })();
 /* 1023 MJ '이름 설정과 설치를 바로' — 크롬이 설치할 수 있다고 알려 주면(beforeinstallprompt) 이름을 고른 뒤 아래에 [📲 앱으로 설치] 한 번
    아이폰 사파리는 설치 버튼을 웹에서 띄울 수 없어 '공유 → 홈 화면에 추가' 안내만. 이미 설치된 앱 안 · [나중에] 누른 날은 안 띄움 */
