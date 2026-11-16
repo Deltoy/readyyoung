@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwiuddrk">
+  <meta name="ry-build" content="mwixrry4">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -16287,12 +16287,12 @@ video {
           <td class="p-3 text-center">
             ${item.status === 'IDLE' ? `
               <div class="flex items-center justify-center gap-1">
-                <input type="number" id="s-qty-${item.rowNumber}" value="${item.targetQty || '1'}" class="w-10 text-center font-black text-xs border rounded py-1">${rySUnitBtn(item, '')}
+                <input type="number" id="s-qty-${item.rowNumber}" value="${ryBoxDef(item)}" class="w-10 text-center font-black text-xs border rounded py-1">${rySUnitBtn(item, '')}
                 <button onclick="handleSearchOrderRequest(${item.rowNumber}, false, this)" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-black shadow-xs transition">+ 요청</button>
               </div>
             ` : item.status === 'DONE' ? `
               <div class="flex items-center justify-center gap-1" onclick="event.stopPropagation()">
-                <input type="number" id="s-qty-${item.rowNumber}" value="${item.targetQty || '1'}" class="w-10 text-center font-black text-xs border rounded py-1">${rySUnitBtn(item, '')}
+                <input type="number" id="s-qty-${item.rowNumber}" value="${ryBoxDef(item)}" class="w-10 text-center font-black text-xs border rounded py-1">${rySUnitBtn(item, '')}
                 <button onclick="handleSearchReorder(${item.rowNumber}, false, this)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-black shadow-xs transition whitespace-nowrap">🔁 재주문</button>
                 <button type="button" onclick="goToItem(${item.rowNumber}, 'DONE')" class="text-[10px] text-blue-600 font-black whitespace-nowrap underline underline-offset-2 px-1" title="입고내역에서 이 상품의 기록 보기">기록 →</button>
               </div>${moSnoozeBtn(item)}
@@ -16307,7 +16307,7 @@ video {
         const card = document.createElement('div');
         const canAct = item.status === 'IDLE' || item.status === 'DONE';
         card.className = 'ry25-pc' + (item.justRequested ? ' is-req' : '') + (canAct ? '' : ' is-go') + (isEnded(item) ? ' ry-endrow' : '') + (isHiddenItem(item) ? ' is-hid' : ''); card.setAttribute('data-r', item.rowNumber);
-        const qtyVal = escapeHtml(String(item.targetQty || '1').replace(/[^0-9]/g, '') || '1');
+        const qtyVal = escapeHtml(String(ryBoxDef(item)));
         const boxTxt = String(item.boxUnit == null ? '' : item.boxUnit).trim();
         card.innerHTML = `
           <div class="ry25-pc-img">${ry25DotHtml(item)}${mImgHtml}</div>
@@ -16955,6 +16955,8 @@ video {
     /* 1008 MJ '검색했을 때 박스로 요청하는 건 박스로': 검색 결과에서도 개/박스를 고른다. 기본 = 상품에 저장된 단위(박스 상품은 박스) · 추천 n박스가 n개로 들어가던 것 막음 */
     function rySItem(row) { return (lastSearchResults || []).find(function (x) { return x.rowNumber === row; }) || null; }
     function rySUnit(row) { var b = document.getElementById('m-s-unit-btn-' + row) || document.getElementById('s-unit-btn-' + row); if (b && b.dataset.u) return b.dataset.u; var it = rySItem(row); return it && it.unit === '박스' ? '박스' : '개'; }
+    /* 1116 MJ '1박스 수량이 있으면 처음 수량을 1박스에 맞게 · 숫자가 들쭉날쭉' — 낱개(개) 주문 기본값을 박스 배수로 올림 (최소 1박스) · 직원이 직접 고친 숫자는 그대로 */
+    function ryBoxDef(item) { var q = parseInt(String(item && item.targetQty || '').replace(/[^0-9]/g, ''), 10) || 1, per = rySPer(item); return item && item.unit !== '박스' && per > 1 ? Math.max(1, Math.ceil(q / per)) * per : q; }
     function rySPer(item) { return parseInt((String(item && item.boxUnit || '').match(/\d{1,5}/) || ['0'])[0], 10) || 0; }
     function rySUnitBtn(item, pre) {
       var u = item.unit === '박스' ? '박스' : '개', per = rySPer(item);
