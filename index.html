@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwj2zdtn">
+  <meta name="ry-build" content="mwj32j1g">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -13173,6 +13173,7 @@ video {
         var st4a = stkOf(it); if (st4a && st4a.left != null && st4a.left >= RY_AUTO_DAYS) return;   /* 1110 창고 여력: 자주 찾아도 7일치 넘게 있으면 안 올림(재고 모르면 올림) */
         srch.push({ it: it, p: p, st: st4a });
       });
+      srch = [];   /* 1116 MJ '자주 찾는 상품은 1차 검토에 올리는 거 하지 말아줘 · 자주 찾는 것만으로 검토는 필요 없어' → 자주찾음 자동 요청 끔 (검색 순위 표시는 그대로) */
       for (var q = 0; q < srch.length; q++) {
         var it4 = srch[q].it, st4 = srch[q].st, p4 = srch[q].p, k4 = ryPrKey(it4.name), bu4 = parseFloat(it4.boxUnit) || 0, last4 = parseInt(String(it4.targetQty || '').replace(/[^0-9]/g, ''), 10) || 0, d4 = (st4 && st4.daily) || 0;
         var unit4 = it4.unit === '박스' && bu4 > 1 ? '박스' : '개', qty4 = unit4 === '박스' ? Math.max(1, Math.ceil(d4 * RY_AUTO_DAYS / bu4)) : Math.max(1, Math.ceil(d4 * RY_AUTO_DAYS));   /* 1110 7일치 */
