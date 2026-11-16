@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwj1tz8q">
+  <meta name="ry-build" content="mwj2qb08">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -8604,7 +8604,7 @@ video {
       try { var D = SC.data, t = D && D.today; if (t) SC_SETS.forEach(function (s) { var v = scV(t, s.k), g = scGoal(D.cfg, t, s.k); if (v != null && g > 0 && v < g && g - v <= 15) a.push(s.label + ' ' + (g - v) + '개만 더! 조금만 힘내요 💪'); }); } catch (e) {}
       return a;
     }
-    function ryDzLine() { SC.dzN = ((SC.dzN || 0) + 1) % 997; var S = RY_SING[ryDzSi()], P = ryDzPraise_(), a = S.say.concat(P, P, DZ_CHEER, HEAT_SAY[SC.heatLv || 0] || []); return SC.dzN % 6 === 0 ? (SC.dzTxt || a[0]) : a[(SC.dzN * 7) % a.length]; }   // 칭찬·응원은 두 번 넣어 자주
+    function ryDzLine() { SC.dzN = ((SC.dzN || 0) + 1) % 997; var S = RY_SING[ryDzSi()], P = ryDzPraise_(), a = S.say.concat(P, P, DZ_CHEER, HEAT_SAY[SC.heatLv || 0] || []); return SC.dzN % 6 === 0 ? (SC.dzTxt || a[0]) : (function () { var i = Math.floor(Math.random() * a.length); if (a.length > 1 && a[i] === SC.dzLast) i = (i + 1) % a.length; return (SC.dzLast = a[i]); })(); }   /* 1116 MJ '왜 3위 서온 님만 칭찬해?' — 7칸씩 건너뛰기라 멘트 수가 7의 배수면 같은 말만 나옴 → 무작위(바로 전 말 빼고) */   // 칭찬·응원은 두 번 넣어 자주
     function ryDzFloat(n) {   /* 1113 MJ '밑으로 내려도 계속 춤추는 게 보이게' + '판매 목표에 들어오니까 로고가 안 보여 — 페이지를 옮겨도 문 열고 등장해서 날 찾아오게, 재밌는 멘트와 함께'
                                   위 로고가 화면 밖이거나 다른 화면(판매 목표·시트 등)에 가려지면 왼쪽 아래에 같은 춤 로고 · 화면이 가려져서 나타날 땐 문 열고 '짠' + 멘트(15초에 한 번) */
       var f = document.getElementById('ryDzFloat'), mk = document.querySelector('.ry25-brand .ry25-mark'), top = document.querySelector('.ry25-top');
