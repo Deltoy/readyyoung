@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwjhog8o">
+  <meta name="ry-build" content="mwjhqyh9">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -7607,11 +7607,11 @@ video {
       var all = slowList(), cats = {}; all.forEach(function (x) { cats[x.cat] = (cats[x.cat] || 0) + 1; });
       var L = SLOW.cat ? all.filter(function (x) { return x.cat === SLOW.cat; }) : all, tot = L.reduce(function (a, x) { return a + x.est; }, 0);
       sh.innerHTML = '<div class="ava-head"><div><b id="slowT">느린 상품 ' + all.length + '</b><small>15일 판매 1개 이하인데 창고에 남은 상품 · 자리 차지 순</small></div><button type="button" class="slow-x" onclick="slowClose()" aria-label="닫기">' + RYI.x + '</button></div>'
-        + '<p class="slow-sum">' + (L.length ? '지금 ' + L.length + '개 상품이 창고 ' + tot.toLocaleString('ko-KR') + '개를 차지해요 → 진열 위치 바꾸기 · 행사 · 다음 주문 줄이기' : '느린 상품이 없어요') + '</p>'
+        + '<p class="slow-sum">' + (L.length ? '지금 ' + L.length + '개 상품이 창고 ' + tot.toLocaleString('ko-KR') + '개를 차지해요 → 유통기한 확인 · 진열 바꾸기 · 행사 · 다음 주문 줄이기' : '느린 상품이 없어요') + '</p>'
         + '<label class="slow-f">분류 <select onchange="SLOW.cat=this.value;slowRender()"><option value="">전체 ' + all.length + '</option>' + Object.keys(cats).sort(function (a, b) { return cats[b] - cats[a]; }).map(function (c) { return '<option value="' + escapeHtml(c) + '"' + (SLOW.cat === c ? ' selected' : '') + '>' + escapeHtml(c) + ' ' + cats[c] + '</option>'; }).join('') + '</select></label>'
         + '<ol class="slow-l">' + L.slice(0, 300).map(function (x) {
           var nm = String(x.it.name).split('\n')[0];
-          return '<li><div class="slow-n"><b>' + escapeHtml(nm) + '</b><small>' + escapeHtml(x.cat) + (x.ago != null ? ' · 마지막 입고 ' + x.ago + '일 전' : ' · 입고 기록 없음') + '</small></div><div class="slow-v"><b>' + stkN(x.est) + '개</b><small>15일 ' + x.q + '개</small></div><p class="slow-a">재고 ' + stkN(x.est) + '개 · 15일 판매 ' + x.q + ' → ' + (x.est >= 20 ? '진열 위치 바꾸기 · 행사 고려' : '다음 주문은 줄이기') + '</p></li>';
+          return '<li><div class="slow-n"><b>' + escapeHtml(nm) + '</b><small>' + escapeHtml(x.cat) + (x.ago != null ? ' · 마지막 입고 ' + x.ago + '일 전' : ' · 입고 기록 없음') + '</small></div><div class="slow-v"><b>' + stkN(x.est) + '개</b><small>15일 ' + x.q + '개</small></div><p class="slow-a">재고 ' + stkN(x.est) + '개 · 15일 판매 ' + x.q + ' → 유통기한 확인 · ' + (x.est >= 20 ? '진열 바꾸기/행사 고려' : '다음 주문은 줄이기') + '</p></li>';
         }).join('') + '</ol>';
     }
     function lastInOf(item) {
