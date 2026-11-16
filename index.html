@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwip63xn">
+  <meta name="ry-build" content="mwip92ew">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4700,7 +4700,7 @@ html.ry-closed .ry-limbs,html.ry-closed #ryDzFloat{display:none}
 .sc-set{position:relative;padding:14px 16px}
 .sc-set-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px}
 .sc-set .sc-nm{font-size:16px;min-width:0;overflow-wrap:anywhere}
-.sc-hdr{flex:none;display:flex;align-items:center;gap:6px}.sc-pen{width:36px;height:36px;border-radius:10px;border:1px solid var(--ry-line);background:#fff;font-size:15px;line-height:1;display:grid;place-items:center}.sc-fr-hi{outline:2px solid #155EEF;outline-offset:2px}
+.sc-del{display:block;width:100%;min-height:44px;margin-top:12px;border-radius:12px;border:1px solid #FDA29B;background:#FEF3F2;color:#B42318;font-weight:800;font-size:15px}.sc-back{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;margin:0 0 8px;border-radius:12px;border:1px solid var(--ry-line);background:#fff;color:#155EEF;font-weight:800;font-size:15px}.sc-hdr{flex:none;display:flex;align-items:center;gap:6px}.sc-pen{width:36px;height:36px;border-radius:10px;border:1px solid var(--ry-line);background:#fff;font-size:15px;line-height:1;display:grid;place-items:center}.sc-fr-hi{outline:2px solid #155EEF;outline-offset:2px}
 .sc-pct{flex:none;font-style:normal;font-size:13px;font-weight:800;color:var(--sc);background:var(--sc-soft);border-radius:999px;padding:4px 10px;font-variant-numeric:tabular-nums}
 .sc-set-bd{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:center}
 .sc-mini{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--sc-soft);border-radius:16px;padding:8px 6px 6px}
@@ -8696,7 +8696,7 @@ video {
         h += '<section class="sc-card sc-first' + (boss && !nx ? ' sc-next' : '') + '"><b>' + (nx ? '다음 목표는 ' + scMd(nx.from) + '부터예요' : boss ? '다음 목표를 정해 주세요' : '다음 목표 준비 중이에요') + '</b><p>' + (nx ? '시작하면 여기서 보여요' : boss ? (c.weeks.some(function (x) { return x.to < t; }) ? '지난 목표가 끝났어요 · 지난 목표 줄을 그대로 채워 둘게요' : '목표를 정하면 직원 모두에게 보여요') : '목표가 정해지면 여기서 보여요') + '</p>' + (boss ? '<button type="button" class="sc-btn" onclick="scFormOpen(' + (nx ? '\'' + nx.from + '\'' : '') + ')">🎯 ' + (nx ? '다음 목표 고치기' : '다음 목표 정하기') + '</button>' : '') + '</section>';   /* 1109 MJ 기간이 끝나면 정하는 사람에게 '다음 목표 정하기' · 직원은 '준비 중' */
       } else {
         var days = scDays({ from: w.hf, to: w.ht }), left = days.filter(function (d) { return d >= t; }).length, nth = days.indexOf(t) + 1;
-        h += '<section class="sc-card sc-head"><div class="sc-hd"><div><b>🎯 이번 주 목표</b><span>' + scMd(w.hf) + ' ~ ' + scMd(w.ht) + (nth > 0 ? ' · ' + nth + '일째 · 오늘 포함 ' + left + '일 남음' : '') + '</span></div>' + (boss ? '<button type="button" class="sc-edit" onclick="scFormOpen()">목표 정하기 · ＋추가</button>' : '') + '</div>'
+        h += '<section class="sc-card sc-head"><div class="sc-hd"><div><b>🎯 이번 주 목표</b><span>' + scMd(w.hf) + ' ~ ' + scMd(w.ht) + (nth > 0 ? ' · ' + nth + '일째 · 오늘 포함 ' + left + '일 남음' : '') + '</span></div>' + (boss ? '<button type="button" class="sc-edit" onclick="scFormOpen()">＋ 목표 추가</button>' : '') + '</div>'
           + (w.note ? '<p class="sc-memo">📣 ' + escapeHtml(w.note) + '</p>' : '') + '</section>';
         /* 1109 MJ '판매 넣기 칸 필요해? POS로 자동으로 올라가잖아' → 평소엔 숨김(POS 30분마다 자동) · POS 로그인이 풀린 날 고치기용 작은 버튼만 */
         if (scAdm()) h += SC.inOpen ? scInHtml(c, w, t) : '<button type="button" class="sc-fixbtn" onclick="SC.inOpen=1;scRender()">✏️ 판매량 직접 입력 <small>평소엔 POS에서 30분마다 자동</small></button>';
@@ -8946,29 +8946,34 @@ video {
         if (lastW) rows = (lastW.sets || []).map(function (s) { return { k: s.k, label: s.label, kind: s.kind || 'set', picks: scPk(s), goal: (lastW.goal && lastW.goal[s.k]) || '', day: (lastW.day && lastW.day[s.k]) || '', from: f0, to: z0 }; }); }
       rows.forEach(function (r) { r.own = r.from !== f0 || r.to !== z0; });
       var note = (rows.filter(function (r) { return !r.own && r.note; })[0] || rows[0] || {}).note || '';
-      if (!rows.length || addRow) rows.push(scFormRow());
-      SC.form = { from: f0, to: z0, note: note, ex: !!top, rows: rows, keys0: rows.map(function (r) { return r.k; }).filter(String) };
+      /* 1116 MJ '여기는 새로 정해야 하는 것만 · 기존 목표는 각자 수정 칸에서' → 모드: add = 빈 새 목표 1줄만 보임(기존 목표는 숨긴 채 같이 저장) · edit = 카드 ✏️ 그 목표 1줄 + 삭제 · all = 진행 중 목표가 없을 때(지난 목표 복사) */
+      var mode = focusK && rows.some(function (r) { return r.k === focusK; }) ? 'edit' : top ? 'add' : 'all';
+      if (mode !== 'edit') rows.push(scFormRow());
+      SC.form = { from: f0, to: z0, note: note, ex: !!top, rows: rows, keys0: rows.map(function (r) { return r.k; }).filter(String), mode: mode, fk: focusK || '', n0: rows.length - 1 };
       SC.pickRes = []; scRender(); var bd = document.getElementById('slBody'); if (bd) bd.scrollTop = 0;
-      if (focusK) setTimeout(function () { var x = document.querySelector('#slBody .sc-fr[data-k="' + focusK + '"]'); if (x) { x.scrollIntoView({ block: 'start' }); x.classList.add('sc-fr-hi'); } }, 50);   /* 1116 MJ 카드의 ✏️ → 그 목표 줄로 */
-      if (addRow) setTimeout(function () { var r = document.querySelectorAll('#slBody .sc-fr'), x = r[r.length - 1]; if (x) { x.scrollIntoView({ block: 'center' }); x.querySelector('input[data-f="label"]').focus(); } }, 50);
+      if (mode === 'add') setTimeout(function () { var r = document.querySelectorAll('#slBody .sc-fr'), x = r[r.length - 1]; if (x) { x.scrollIntoView({ block: 'center' }); x.querySelector('input[data-f="label"]').focus(); } }, 50);
     }
     function scFormRow() { return { k: '', label: '', kind: 'set', picks: [], goal: '', day: '', own: false, from: '', to: '' }; }
     function scFormHtml() {
-      var f = SC.form, n = f.rows.length;
-      return '<section class="sc-card sc-form"><h3>🎯 판매 목표 정하기 <span>' + (f.ex ? '목표 수정 · 아래 [+ 목표 추가]' : '새 목표') + '</span></h3>'
-        + '<p class="sc-fhelp">① 이번 주 기간 정하기 → ② 목표마다 이름·상품·목표 수량 → ③ 기간이 다른 목표는 <b>기간 설정</b> 체크 · 기간이 끝나면 같은 목표로 다음 주가 자동 시작</p>'
-        + '<div class="sc-f"><label>시작 <small>공통 기간</small><input type="date" id="scFFrom" value="' + f.from + '" onchange="scFormFrom(this.value)"></label><label>끝<input type="date" id="scFTo" value="' + f.to + '"></label></div>'
+      var f = SC.form, n = f.rows.length, ed = f.mode === 'edit', er = ed ? f.rows.filter(function (r) { return r.k === f.fk; })[0] : null;
+      return '<button type="button" class="sc-back" onclick="scFormClose()">← 목표 현황으로</button><section class="sc-card sc-form"><h3>' + (ed ? '✏️ 목표 수정 <span>' + escapeHtml(er ? er.label : '') + '</span>' : '🎯 새 판매 목표 추가 <span>기존 목표는 카드의 ✏️ 에서 고쳐요</span>') + '</h3>'
+        + (ed ? '<p class="sc-fhelp">상품·×개수·목표 수량·기간을 고치고 저장 · 이 목표를 그만하려면 아래 <b>목표 삭제</b> (지난 결과는 남아요)</p>'
+          : '<p class="sc-fhelp">① 공통 기간 확인 → ② 세트/상품 · 목표 이름 → ③ 상품 검색해서 고르기 (×칸 = 1개를 몇 개로 셀지) → ④ 주간 목표 → 저장 · 기간이 다른 목표는 <b>기간 설정</b> 체크 · 기간이 끝나면 같은 목표로 다음 주가 자동 시작</p>')
+        + '<div class="sc-f"' + (ed ? ' hidden' : '') + '><label>시작 <small>공통 기간</small><input type="date" id="scFFrom" value="' + f.from + '" onchange="scFormFrom(this.value)"></label><label>끝<input type="date" id="scFTo" value="' + f.to + '"></label></div>'
         + scFormRowsHtml(f, false)
-        + '<div class="sc-f"><label class="sc-wide">직원 공지 <small>목표 위에 보여요</small><textarea id="scFNote" rows="3" maxlength="500" placeholder="예: 신규 제품 반응이 좋아요 · 제품 설명 숙지해 주세요">' + escapeHtml(f.note) + '</textarea></label></div>'
+        + (ed ? '<button type="button" class="sc-del" onclick="scFormDelGoal()">🗑 목표 삭제</button>' : '')
+        + '<div class="sc-f"' + (ed ? ' hidden' : '') + '><label class="sc-wide">직원 공지 <small>목표 위에 보여요</small><textarea id="scFNote" rows="3" maxlength="500" placeholder="예: 신규 제품 반응이 좋아요 · 제품 설명 숙지해 주세요">' + escapeHtml(f.note) + '</textarea></label></div>'
         + '<div class="sc-f sc-fbtn"><button type="button" class="sc-btn sc-btn2" onclick="scFormClose()">취소</button><button type="button" class="sc-btn" id="scFSave" onclick="scFormSave()">저장</button></div></section>';
     }
     function scFormRowsHtml(f, ev) {   /* 줄마다 [세트]/[상품] → POS 이름 · ev = 행사 등록(주 목표·하루 목표 칸 없음, 20줄) */
       var n = f.rows.length;
       return f.rows.map(function (r, i) {
+          if (!ev && f.mode === 'edit' && r.k !== f.fk) return '';
+          if (!ev && f.mode === 'add' && i < f.n0) return '';
           var dp = +r.goal > 0 ? '주÷7 = ' + Math.round(r.goal / 7) : '주÷7', it = r.kind === 'item';
           return '<div class="sc-fr" data-i="' + i + '" data-k="' + escapeHtml(r.k || '') + '" data-kind="' + (it ? 'item' : 'set') + '"><div class="sc-fr-hd"><b>' + (ev ? '상품 ' : '목표 ') + (i + 1) + '</b>'
             + '<span class="sc-kind" role="group" aria-label="종류"><button type="button" aria-pressed="' + !it + '" onclick="scFormKind(' + i + ', \'set\')">세트</button><button type="button" aria-pressed="' + it + '" onclick="scFormKind(' + i + ', \'item\')">상품</button></span>'
-            + (n > 1 ? '<button type="button" class="sc-x" onclick="scFormDel(' + i + ')" aria-label="' + (ev ? '상품 ' : '목표 ') + (i + 1) + ' 빼기">×</button>' : '') + '</div><div class="sc-f">'
+            + (n > 1 && (ev || f.mode === 'all') ? '<button type="button" class="sc-x" onclick="scFormDel(' + i + ')" aria-label="' + (ev ? '상품 ' : '목표 ') + (i + 1) + ' 빼기">×</button>' : '') + '</div><div class="sc-f">'
             + '<label class="sc-wide">목표 이름<input data-f="label" maxlength="40" value="' + escapeHtml(r.label) + '" placeholder="' + (it ? '예: 리쥬올 베리어 4종' : '예: Total skin care') + '"></label></div>'
             + '<div class="sc-picks">' + (r.picks.length ? '<small class="sc-pk-h">' + (r.picks.length > 1 ? '판매 상품 ' + r.picks.length + '개 (합쳐서 셈)' : '판매 상품 · POS 이름과 다르면 고쳐 주세요') + '</small>' : '')
             + r.picks.map(function (pk, j) { return '<div class="sc-pk" data-n="' + escapeHtml(pk.n || '') + '">' + (pk.n && pk.n !== pk.pos ? '<small>앱 · ' + escapeHtml(pk.n) + '</small>' : '') + '<textarea data-p="pos" rows="2" aria-label="판매 상품 이름" placeholder="POS 에 나오는 이름 그대로">' + escapeHtml(pk.pos) + '</textarea>' + (ev ? '' : '<label class="sc-mul" title="1개 팔리면 몇 개로 셀지 (예: 28포 = 14포 2개)">×<input type="number" inputmode="numeric" min="1" max="20" data-p="m" value="' + (pk.m || 1) + '" aria-label="몇 개로 셀지"></label>') + '<button type="button" class="sc-x" onclick="scPickDel(' + i + ', ' + j + ')" aria-label="빼기">×</button></div>'; }).join('')
@@ -8978,17 +8983,19 @@ video {
             + '<div class="sc-f"><label>주간 목표<input type="number" inputmode="numeric" min="0" data-f="goal" value="' + escapeHtml(r.goal) + '" oninput="scFormDay(this)"></label>'
             + '<label>하루 목표<input type="number" inputmode="numeric" min="0" data-f="day" value="' + escapeHtml(r.day) + '" placeholder="' + dp + '" oninput="scFormDay(this)"></label></div></div>');
         }).join('')
-        + (n < (ev ? 20 : 8) ? '<button type="button" class="sc-add" onclick="scFormAdd()">+ ' + (ev ? '상품' : '목표') + ' 추가</button>' : '');
+        + (n < (ev ? 20 : 8) && (ev || f.mode === 'all') ? '<button type="button" class="sc-add" onclick="scFormAdd()">+ ' + (ev ? '상품' : '목표') + ' 추가</button>' : '');
     }
     function scFormRead() {
       var f = scF(); if (!f) return; var nm = document.getElementById('efFName'); if (nm) f.name = nm.value; var a = document.getElementById('scFFrom'), z = document.getElementById('scFTo'), nt = document.getElementById('scFNote');
       if (a) f.from = a.value; if (z) f.to = z.value; if (nt) f.note = nt.value;
-      f.rows = [].map.call(document.querySelectorAll('#slBody .sc-fr'), function (el) {
+      var vis = [].map.call(document.querySelectorAll('#slBody .sc-fr'), function (el) {
         var g = function (k) { var x = el.querySelector('[data-f="' + k + '"]'); return x ? x.value : ''; };
         var ow = el.querySelector('[data-f="own"]');
         return { k: el.getAttribute('data-k') || '', kind: el.getAttribute('data-kind') || 'set', label: g('label'), goal: g('goal'), day: g('day'), own: !!(ow && ow.checked), from: g('from'), to: g('to'),
-          picks: [].map.call(el.querySelectorAll('.sc-pk'), function (pe) { var mi = pe.querySelector('[data-p="m"]'); return { n: pe.getAttribute('data-n') || '', pos: pe.querySelector('[data-p="pos"]').value, m: mi ? Math.max(1, Math.round(+mi.value || 1)) : 1 }; }) };
+          picks: [].map.call(el.querySelectorAll('.sc-pk'), function (pe) { var mi = pe.querySelector('[data-p="m"]'); return { n: pe.getAttribute('data-n') || '', pos: pe.querySelector('[data-p="pos"]').value, m: mi ? Math.max(1, Math.round(+mi.value || 1)) : 1 }; }), i: +el.getAttribute('data-i') };
       });
+      if (f.mode === 'add' || f.mode === 'edit') vis.forEach(function (r) { var o = f.rows[r.i]; if (o) Object.keys(r).forEach(function (x) { if (x !== 'i') o[x] = r[x]; }); });   /* 1116 숨긴 기존 목표는 그대로, 보이는 줄만 바꿈 */
+      else f.rows = vis;
     }
     function scFormDay(el) {   /* 1109 주 목표 ↔ 하루 목표 서로 맞춤 (날 수 = 시작~끝) */
       var fr = el.closest('.sc-fr'), g = fr.querySelector('[data-f="goal"]'), d = fr.querySelector('[data-f="day"]'), a = document.getElementById('scFFrom'), z = document.getElementById('scFTo');
@@ -9015,11 +9022,17 @@ video {
     }
     function scPickDel(i, j) { scFormRead(); scF().rows[i].picks.splice(j, 1); scFRe(); }
     function scFormFrom(v) { scFormRead(); if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) return; SC.form.from = v; SC.form.to = scAdd(v, 6); scRender(); }   /* 1116 시작을 바꾸면 끝 = +6일 (기간 따로 줄은 그대로) */
+    function scFormDelGoal() {   /* 1116 MJ '판매 목표를 없앨 수 있게' — 지난 기간 결과는 지난 목표 달성 현황에 남음 */
+      scFormRead(); var f = SC.form, i = -1; f.rows.forEach(function (r, j) { if (r.k === f.fk) i = j; }); if (i < 0) return;
+      if (!confirm('「' + f.rows[i].label + '」 목표를 삭제할까요?\n지난 기간 결과는 지난 목표 달성 현황에 남아요.')) return;
+      f.rows.splice(i, 1); f.mode = 'all'; scFormSave(true);
+    }
     function scFormOwn(i, on) { scFormRead(); var r = scF().rows[i]; r.own = on; if (on && !r.from) { r.from = scAdd(SC.form.from, 1); r.to = scAdd(SC.form.to, 1); } scFRe(); }
     function scFormClose() { SC.form = null; scRender(); }
-    function scFormSave() {
-      scFormRead(); var f = SC.form;
+    function scFormSave(del) {
+      if (del !== true) scFormRead(); var f = SC.form;
       if (!f.from || !f.to || f.from > f.to) { showToast('기간을 확인해 주세요', 2400); return; }
+      if (f.mode === 'add') { var nr = f.rows[f.n0]; if (!nr || (!String(nr.label).trim() && !nr.picks.length)) { showToast('새 목표 이름과 상품을 넣어 주세요', 2600); return; } }
       var badP = f.rows.filter(function (r) { return r.own && (!r.from || !r.to || r.from > r.to); })[0]; if (badP) { showToast((badP.label || '목표') + ' · 따로 정한 기간을 확인해 주세요', 2800); return; }
       var sets = f.rows.map(function (r) {
         var pk = r.picks.filter(function (p) { return String(p.pos).trim(); }), label = String(r.label).trim() || (pk[0] ? pk[0].n || pk[0].pos : '');
@@ -9034,7 +9047,7 @@ video {
       google.script.run.withSuccessHandler(function (r) {
         if (!r || !r.success) { showToast((r && r.message) || '저장 안 됨', 3000); if (btn) { btn.disabled = false; btn.textContent = '저장'; } return; }
         SC.data = r; SC.t = Date.now(); SC.form = null; try { localStorage.setItem('ry_sc', JSON.stringify(r)); } catch (e) {}
-        scRender(); scQuick(); spSegSync(); showToast(scMd(f.from) + ' ~ ' + scMd(f.to) + ' 목표 저장했어요', 2400);
+        scRender(); scQuick(); spSegSync(); showToast(del === true ? '목표를 삭제했어요' : f.mode === 'edit' ? '목표를 고쳤어요' : '새 목표를 추가했어요', 2400);
       }).withFailureHandler(function () { showToast('저장 안 됨 · 인터넷 확인 후 다시 눌러 주세요', 3000); if (btn) { btn.disabled = false; btn.textContent = '저장'; } }).setWeekTargets(currentSelectedMember, { from: lo, to: hi, note: f.note, sets: sets, drop: drop });
     }
     function scChart(s, c, days, t) {
@@ -10574,7 +10587,7 @@ video {
       var sp = document.getElementById('setPage');
       if (sp && sp.classList.contains('on')) { L.push('setpage'); if (typeof SP !== 'undefined' && SP.view === 'detail') L.push('setdetail'); }
       var dp = document.getElementById('dshPage'); if (dp && dp.classList.contains('on')) L.push('dsh');   /* 1029 대시보드 */
-      var slp = document.getElementById('slPage'); if (slp && slp.classList.contains('on')) { L.push('sl'); if (typeof SL !== 'undefined' && SL.tab === 'ev' && (SL.sel || SL.form)) L.push('slsub'); }   /* 1109 판매 목표 · 행사 자세히/등록 */
+      var slp = document.getElementById('slPage'); if (slp && slp.classList.contains('on')) { L.push('sl'); if (typeof SL !== 'undefined' && ((SL.tab === 'ev' && (SL.sel || SL.form)) || (SL.tab === 'goal' && typeof SC !== 'undefined' && SC.form))) L.push('slsub'); }   /* 1116 MJ '목표 정하기에서 뒤로가기 = 목표 현황' */   /* 1109 판매 목표 · 행사 자세히/등록 */
       var cf = document.getElementById('ryCf'); if (cf && !cf._done) L.push('cf');   /* 1029 앱 확인창 — 뒤로가기 = 취소 */
       if (ryShown('ryLaunch')) L.push('launch');
       if (ryShown('mbReader')) { L.push('mb'); if (typeof MB !== 'undefined' && MB.view === 'archive' && MB.cur) L.push('mb'); }
@@ -10628,7 +10641,7 @@ video {
         else if (top === 'setdetail' || top === 'setpage') spBack();
         else if (top === 'dsh') dshClose();
         else if (top === 'sl') slClose();
-        else if (top === 'slsub') efBack();
+        else if (top === 'slsub') { if (SL.tab === 'goal') scFormClose(); else efBack(); }
         else if (top === 'cf') { var cfe = document.getElementById('ryCf'); if (cfe && cfe._res) cfe._res(false); }
         else if (top === 'search') clearGlobalSearch();
         else if (top === 'tab') { RY_NAV.tabs = [RY_NAV.tabs[0]]; RY_NAV._sw(RY_NAV.tabs[0]); window.scrollTo(0, 0); }
