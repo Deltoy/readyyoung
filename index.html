@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwiu4nqo">
+  <meta name="ry-build" content="mwiuddrk">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -13639,7 +13639,16 @@ video {
     /* 1109 MJ '1차 검토 와 최종발주에서 부외품은 분리해서' — 서버 it.bw(제조사 '부외품') 줄은 일반 상품 아래 '📦 부외품' 구분 줄 아래 (접기 없음) */
     function bwSplitAppend(items, type, tbody, cards) {
       var add = function (it) { if (tbody) tbody.appendChild(createItemTableRow(it, type)); if (cards) cards.appendChild(createItemMobileCard(it, type)); };
-      var bw = items.filter(function (it) { return it.bw; }); items.filter(function (it) { return !it.bw; }).forEach(add);
+      var bw = items.filter(function (it) { return it.bw; }), rest = items.filter(function (it) { return !it.bw; });
+      var head = function (h) { if (tbody) { var tr = document.createElement('tr'); tr.className = 'ry-bwh-tr ry-grp-tr'; var th = tbody.closest('table'), nc = th && th.tHead && th.tHead.rows[0] ? th.tHead.rows[0].cells.length : 6; tr.innerHTML = '<td colspan="' + nc + '"><div class="ry-bwh ry-grp">' + h + '</div></td><td hidden></td>'; tbody.appendChild(tr); } if (cards) { var d = document.createElement('div'); d.className = 'ry-bwh ry-grp'; d.innerHTML = h; cards.appendChild(d); } };
+      if (type === 'review') {   /* 1116 MJ '재고부족과 사람들이 주문 요청한 걸 나눠서 · 사람이 요청한 걸 먼저 처리' — 직원 요청 위, 자동(재고부족·급상승 등) 아래 · 묶음 안 순서는 그대로 */
+        var autoRx = /^(재고부족|재고마이너스|급상승|자주찾음|검색급증|자동)/, isAuto = function (it) { return autoRx.test(String(it.requester || '').trim()); };
+        var man = rest.filter(function (it) { return !isAuto(it); }), auto = rest.filter(isAuto);
+        if (man.length && auto.length) {
+          head('<span class="ry-bwh-tg" style="cursor:default"><span><b>👤 직원 요청</b><small>사람이 요청한 것 · 먼저 처리해요</small></span><span class="ry-bwh-n">' + man.length + '건</span></span>'); man.forEach(add);
+          head('<span class="ry-bwh-tg" style="cursor:default"><span><b>📦 재고부족 자동</b><small>판매량·재고로 앱이 올린 것</small></span><span class="ry-bwh-n">' + auto.length + '건</span></span>'); auto.forEach(add);
+        } else rest.forEach(add);
+      } else rest.forEach(add);
       if (!bw.length) return;
       var h = '<span class="ry-bwh-tg" style="cursor:default"><span><b>📦 부외품</b><small>부외품 사장님 상품 · 일반 발주와 나눠서 봐요</small></span><span class="ry-bwh-n">' + bw.length + '건</span></span>';   /* 1109 MJ '숨길 필요 없이 나뉘어서' → 접기 없음 */
       if (tbody) { var tr = document.createElement('tr'); tr.className = 'ry-bwh-tr'; var th = tbody.closest('table'), nc = th && th.tHead && th.tHead.rows[0] ? th.tHead.rows[0].cells.length : 6; tr.innerHTML = '<td colspan="' + nc + '"><div class="ry-bwh">' + h + '</div></td><td hidden></td>';   /* 1109 colspan 20 → 표가 가짜 칸 생겨 찌그러짐 · 진짜 칸 수 */ tbody.appendChild(tr); }
