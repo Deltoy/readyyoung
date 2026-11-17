@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwk3z0jw">
+  <meta name="ry-build" content="mwk8k90a">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -6517,12 +6517,12 @@ video {
 
     <div class="ry25-search">
       <span class="ry25-s-ic"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
-      <input type="text" id="globalSearchInput" oninput="handleSearchDebounced()" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"
-             onkeydown="if(event.key==='Enter' && !event.isComposing && event.keyCode !== 229){this.blur();}"
+      <input type="text" id="globalSearchInput" lang="ko" oninput="handleSearchDebounced()" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"
+             onkeydown="if(event.key==='Enter' && !event.isComposing && event.keyCode !== 229){if(matchMedia('(pointer:coarse)').matches)this.blur();} else if(event.key==='Escape' && !event.isComposing && this.value){event.preventDefault();event.stopPropagation();clearGlobalSearch(true);this.focus();}"
              aria-label="약국 전체 품목 검색"
              placeholder="품목 검색 · 예: 용각산, 타이레놀, 판콜">
       <div class="ry25-s-right">
-        <button id="clearSearchBtn" type="button" onclick="clearGlobalSearch()" class="hidden ry25-clear" aria-label="검색어 지우기"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+        <button id="clearSearchBtn" type="button" onmousedown="event.preventDefault()" onclick="var g=document.getElementById('globalSearchInput');var pc=!matchMedia('(pointer:coarse)').matches;clearGlobalSearch(pc);if(pc&&g)g.focus();" class="hidden ry25-clear" aria-label="검색어 지우기"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
         <kbd class="ry25-kbd" id="ry25Kbd" title="단축키로 검색창 열기">⌘K</kbd>
       </div>
     </div>
