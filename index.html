@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwk2y3ux">
+  <meta name="ry-build" content="mwk39ln3">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9149,11 +9149,20 @@ video {
       var none = sets.filter(function (s) { return !s.pos.length; })[0]; if (none) { showToast(none.label + ' · 세트나 상품을 골라 주세요', 2800); return; }
       var btn = document.getElementById('scFSave'); if (btn) { btn.disabled = true; btn.textContent = '저장 중…'; }
       SC.rev++;
+      if (del !== true) {   /* 1117 MJ '추가하면 바로 추가되는 거지' — 추가·수정도 서버를 기다리지 않고 카드에 바로 (서버 setWeekTargets 와 같은 규칙: 같은 목표가 겹치는 다른 기간에서 빠지고 이 기간으로) · 실패하면 되돌림 */
+        SC._snap = JSON.parse(JSON.stringify(SC.data)); var tdy = SC.data.today, nk = 0;
+        var ws = sets.map(function (x) { return { k: x.k || ('new' + (++nk)), label: x.label, kind: x.kind, pos: x.pos, app: x.app, from: x.from, to: x.to, g: x.goal, d: x.day }; });
+        var nw = { from: lo, to: hi, note: f.note, sets: ws.map(function (x) { return { k: x.k, label: x.label, kind: x.kind, pos: x.pos, app: x.app, from: x.from, to: x.to }; }), goal: {}, day: {} };
+        ws.forEach(function (x) { if (x.g > 0) { nw.goal[x.k] = x.g; nw.day[x.k] = x.d > 0 ? x.d : Math.round(x.g / scDays({ from: x.from, to: x.to }).length); } });
+        SC.data.cfg.weeks = (SC.data.cfg.weeks || []).filter(function (w) { return w.from !== lo; }).map(function (w) { if (!w.sets) return w;
+          w.sets = w.sets.filter(function (q) { var a = q.from || w.from, z = q.to || w.to; return !(ws.some(function (x) { return x.k === q.k && a <= x.to && z >= x.from; }) || (drop.indexOf(q.k) >= 0 && z >= tdy)); }); return w; }).filter(function (w) { return !w.sets || w.sets.length; }).concat([nw]).sort(function (a, b) { return a.from < b.from ? -1 : 1; });
+        SC._form = f; SC.form = null; scRender(); try { scQuick(); } catch (e) {}
+      }
       google.script.run.withSuccessHandler(function (r) {
-        if (!r || !r.success) { if (del === true && SC._snap) { SC.data = SC._snap; SC._snap = null; scRender(); } showToast((r && r.message) || '저장 안 됨', 3000); if (btn) { btn.disabled = false; btn.textContent = '저장'; } return; }
-        SC._snap = null; SC.data = r; SC.t = Date.now(); SC.form = null; try { localStorage.setItem('ry_sc', JSON.stringify(r)); } catch (e) {}
+        if (!r || !r.success) { if (SC._snap) { SC.data = SC._snap; SC._snap = null; if (del !== true && SC._form) SC.form = SC._form; SC._form = null; scRender(); } showToast((r && r.message) || '저장 안 됨', 3000); if (btn) { btn.disabled = false; btn.textContent = '저장'; } return; }
+        SC._snap = null; SC._form = null; SC.data = r; SC.t = Date.now(); SC.form = null; try { localStorage.setItem('ry_sc', JSON.stringify(r)); } catch (e) {}
         scRender(); scQuick(); spSegSync(); showToast(del === true ? '목표를 삭제했어요' : f.mode === 'edit' ? '목표를 고쳤어요' : '새 목표를 추가했어요', 2400);
-      }).withFailureHandler(function () { if (del === true && SC._snap) { SC.data = SC._snap; SC._snap = null; scRender(); } showToast(del === true ? '삭제 안 됨 · 되돌렸어요 · 인터넷 확인 후 다시 눌러 주세요' : '저장 안 됨 · 인터넷 확인 후 다시 눌러 주세요', 3500); if (btn) { btn.disabled = false; btn.textContent = '저장'; } }).setWeekTargets(currentSelectedMember, { from: lo, to: hi, note: f.note, sets: sets, drop: drop });
+      }).withFailureHandler(function () { if (SC._snap) { SC.data = SC._snap; SC._snap = null; if (del !== true && SC._form) SC.form = SC._form; SC._form = null; scRender(); } showToast(del === true ? '삭제 안 됨 · 되돌렸어요 · 인터넷 확인 후 다시 눌러 주세요' : '저장 안 됨 · 인터넷 확인 후 다시 눌러 주세요', 3500); if (btn) { btn.disabled = false; btn.textContent = '저장'; } }).setWeekTargets(currentSelectedMember, { from: lo, to: hi, note: f.note, sets: sets, drop: drop });
     }
     function scChart(s, c, days, t) {
       var W = days.length <= 7 ? 40 : 24, ox = (W - 24) / 2, vals = days.map(function (d) { return d <= t ? scV(d, s.k) : null; }), goals = days.map(function (d) { return scGoal(c, d, s.k); });   /* 1109 한 주(7일)면 칸을 넓혀 글자가 너무 커지지 않게 */
