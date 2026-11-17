@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwjihey3">
+  <meta name="ry-build" content="mwk2y3ux">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -9035,7 +9035,7 @@ video {
        기본 = 이번 주 월~일 · 이번 주가 있으면 그 주 고치기 · 없으면 지난 목표 줄(세트·POS·수량)을 복사 */
     /* 1116 MJ '하나씩 추가해서 목표를 넣을 수 있게 · 세트 전체는 기간 따로 · 젤리 28포는 14포 2개로' → 지금 진행 중·다음 목표를 모두 한 화면에서: 기본 기간(같이 도는 목표) + 줄마다 '기간 따로' + POS 이름마다 ×개수
        진행 중인 목표가 없으면 지난 목표 줄을 다음 기간으로 복사 · 저장하면 같은 목표가 다른 기간과 겹치는 날은 이 저장이 이김 · 뺀 목표는 자동으로 다시 안 생김(drop) */
-    function scPk(s) { return (s.pos || []).map(function (x, j) { var m = String(x).match(/^(.*?)\s*×\s*(\d+)$/); return { n: (s.app && s.app[j]) || '', pos: m ? m[1] : x, m: m ? +m[2] : 1 }; }); }
+    function scPk(s) { return (s.pos || []).map(function (x, j) { var m = String(x).match(/^(.*?)\s*×\s*(\d+)$/); return { n: x === '*' ? '모든 세트 합계 (종류 상관없이 · 지우지 마세요)' : (s.app && s.app[j]) || '', pos: m ? m[1] : x, m: m ? +m[2] : 1 }; }); }   /* 1117 '*' = 세트 전체(모든 세트 판매 합) 표시 */
     function scFormOpen(from, addRow, focusK) {
       var c = SC.data.cfg, t = SC.data.today, p = t.split('-'), rows = [], seen = {}, cnt = {};
       c.weeks.slice().reverse().forEach(function (w) { (w.sets || []).forEach(function (s) { var f = s.from || w.from, z = s.to || w.to; if (z < t || seen[s.k]) return; seen[s.k] = 1;
@@ -9127,7 +9127,10 @@ video {
     function scFormDelGoal() {   /* 1116 MJ '판매 목표를 없앨 수 있게' — 지난 기간 결과는 지난 목표 달성 현황에 남음 */
       scFormRead(); var f = SC.form, i = -1; f.rows.forEach(function (r, j) { if (r.k === f.fk) i = j; }); if (i < 0) return;
       if (!confirm('「' + f.rows[i].label + '」 목표를 삭제할까요?\n지난 기간 결과는 지난 목표 달성 현황에 남아요.')) return;
-      f.rows.splice(i, 1); f.mode = 'all'; scFormSave(true);
+      var dk = f.fk; f.rows.splice(i, 1); f.mode = 'all'; SC._snap = JSON.parse(JSON.stringify(SC.data)); scFormSave(true);
+      /* 1117 MJ '목표 삭제 누르면 바로바로 적용' — 서버를 기다리지 않고 카드에서 바로 뺌 (진행 중·앞으로의 기간만, 끝난 결과는 그대로) · 실패하면 되돌림 */
+      var t = SC.data.today; (SC.data.cfg.weeks || []).forEach(function (w) { if (!w.sets) return; w.sets = w.sets.filter(function (q) { return !(q.k === dk && (q.to || w.to) >= t); }); });
+      SC.form = null; scRender(); try { scQuick(); } catch (e) {}
     }
     function scFormOwn(i, on) { scFormRead(); var r = scF().rows[i]; r.own = on; if (on && !r.from) { r.from = scAdd(SC.form.from, 1); r.to = scAdd(SC.form.to, 1); } scFRe(); }
     function scFormClose() { SC.form = null; scRender(); }
@@ -9147,10 +9150,10 @@ video {
       var btn = document.getElementById('scFSave'); if (btn) { btn.disabled = true; btn.textContent = '저장 중…'; }
       SC.rev++;
       google.script.run.withSuccessHandler(function (r) {
-        if (!r || !r.success) { showToast((r && r.message) || '저장 안 됨', 3000); if (btn) { btn.disabled = false; btn.textContent = '저장'; } return; }
-        SC.data = r; SC.t = Date.now(); SC.form = null; try { localStorage.setItem('ry_sc', JSON.stringify(r)); } catch (e) {}
+        if (!r || !r.success) { if (del === true && SC._snap) { SC.data = SC._snap; SC._snap = null; scRender(); } showToast((r && r.message) || '저장 안 됨', 3000); if (btn) { btn.disabled = false; btn.textContent = '저장'; } return; }
+        SC._snap = null; SC.data = r; SC.t = Date.now(); SC.form = null; try { localStorage.setItem('ry_sc', JSON.stringify(r)); } catch (e) {}
         scRender(); scQuick(); spSegSync(); showToast(del === true ? '목표를 삭제했어요' : f.mode === 'edit' ? '목표를 고쳤어요' : '새 목표를 추가했어요', 2400);
-      }).withFailureHandler(function () { showToast('저장 안 됨 · 인터넷 확인 후 다시 눌러 주세요', 3000); if (btn) { btn.disabled = false; btn.textContent = '저장'; } }).setWeekTargets(currentSelectedMember, { from: lo, to: hi, note: f.note, sets: sets, drop: drop });
+      }).withFailureHandler(function () { if (del === true && SC._snap) { SC.data = SC._snap; SC._snap = null; scRender(); } showToast(del === true ? '삭제 안 됨 · 되돌렸어요 · 인터넷 확인 후 다시 눌러 주세요' : '저장 안 됨 · 인터넷 확인 후 다시 눌러 주세요', 3500); if (btn) { btn.disabled = false; btn.textContent = '저장'; } }).setWeekTargets(currentSelectedMember, { from: lo, to: hi, note: f.note, sets: sets, drop: drop });
     }
     function scChart(s, c, days, t) {
       var W = days.length <= 7 ? 40 : 24, ox = (W - 24) / 2, vals = days.map(function (d) { return d <= t ? scV(d, s.k) : null; }), goals = days.map(function (d) { return scGoal(c, d, s.k); });   /* 1109 한 주(7일)면 칸을 넓혀 글자가 너무 커지지 않게 */
