@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwk93wzh">
+  <meta name="ry-build" content="mwkbk9ck">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -18047,11 +18047,18 @@ video {
       var lnK = {}; Object.keys(groups).forEach(function (k) {
         var g = groups[k], ln = links[k];
         if (ln == null && g.old !== k && oldN[g.old] === 1) ln = links[g.old];   /* 1017 줄바꿈 고치기 전 연결(첫 줄 이름)도 — 다른 상품과 겹치지 않을 때만 */
-        lnK[k] = ln; var own = ln === '-' ? null : (ln && byName[ln]) || (byKey[k] !== 'dup' && byKey[k]); if (own) own.tk = 1;   /* 1113 같은 이름·연결로 주인이 있는 POS 줄 = tk → 다른 앱 상품에겐 확인 추천·AI 후보로 안 줌 — 당케어프로가 '생유산균 락토핏 당케어' 줄을, 캐니스킨이 카네스텐 줄을 추천받아 매일 확인에 뜨던 것 */
+        lnK[k] = ln; if (ln && ln.indexOf('||') > 0) { ln.split('||').forEach(function (n) { if (byName[n]) byName[n].tk = 1; }); return; }   /* 1117 POS 이름 여러 개 합산 연결 */
+        var own = ln === '-' ? null : (ln && byName[ln]) || (byKey[k] !== 'dup' && byKey[k]); if (own) own.tk = 1;   /* 1113 같은 이름·연결로 주인이 있는 POS 줄 = tk → 다른 앱 상품에겐 확인 추천·AI 후보로 안 줌 — 당케어프로가 '생유산균 락토핏 당케어' 줄을, 캐니스킨이 카네스텐 줄을 추천받아 매일 확인에 뜨던 것 */
       });
       return Object.keys(groups).map(function (k) {
         var g = groups[k], ln = lnK[k];
         if (ln === '-') { g.st = 'skip'; return g; }
+        if (ln && ln.indexOf('||') > 0) {   /* 1117 MJ '닥터리쥬올 토너 판매량이 POS와 안 맞아' — POS에 같은 상품이 이름 둘로 찍힘(닥터리쥬올 311 베리어 토너 + 리쥬올 어드밴스드 311 베리어 토너) → 연결 값 'A||B' = 두 줄 합 */
+          var hs = ln.split('||').map(function (n) { return byName[n]; }).filter(Boolean), sx = { n: ln, q: 0, multi: true };
+          hs.forEach(function (h) { Object.keys(h).forEach(function (f) { if (typeof h[f] === 'number' && f !== 'tk') sx[f] = (sx[f] || 0) + h[f]; }); });
+          sx.q = hs.reduce(function (a, h) { return a + (+h.q || 0); }, 0); if (!hs.length) sx.zero = true;
+          g.x = sx; g.st = 'auto'; g.linked = true; return g;
+        }
         if (ln && byName[ln]) { g.x = byName[ln]; g.st = 'auto'; g.linked = true; return g; }
         if (byKey[k] && byKey[k] !== 'dup') { g.x = byKey[k]; g.st = 'auto'; return g; }
         if (ln && ln !== '-') { g.x = { n: ln, q: 0, zero: true }; g.st = 'auto'; g.linked = true; return g; }   // 1027 연결된 상품이 이 엑셀(그날)에 없음 = 0개 — 비슷한 다른 줄(모발아 레드↔블랙)을 대신 잡던 것
