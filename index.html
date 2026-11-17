@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwk8k90a">
+  <meta name="ry-build" content="mwk93wzh">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -10728,7 +10728,8 @@ video {
       var want = ryLayers().length;
       try {
         while (RY_NAV.pushed < want) { RY_NAV.pushed++; history.pushState({ ry: RY_NAV.pushed }, ''); }
-        if (RY_NAV.pushed > want) { RY_NAV.goAt = Date.now(); history.go(want - RY_NAV.pushed); RY_NAV.pushed = want; }
+        var gIn = document.activeElement && document.activeElement.id === 'globalSearchInput';   /* 1117 MJ '한글이었다가 지우고 다시 치면 영어로' — 검색어를 다 지우면 '검색' 단계가 닫히면서 history.go(-1)(뒤로 이동)이 일어났고, 윈도 크롬은 그때 한글 입력기를 영어로 되돌림 → 검색칸에 커서가 있는 동안엔 기록을 줄이지 않음(커서가 나가면 그때 맞춤) */
+        if (RY_NAV.pushed > want && !gIn) { RY_NAV.goAt = Date.now(); history.go(want - RY_NAV.pushed); RY_NAV.pushed = want; }
       } catch (e) { RY_NAV.ok = false; }
     }
     function ryCloseTop() {
