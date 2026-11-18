@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwlw3bdp">
+  <meta name="ry-build" content="mwlwaqe1">
   <!-- 1118 카톡 미리보기 (공유 링크) --><meta property="og:type" content="website"><meta property="og:site_name" content="성수레디영"><meta property="og:title" content="성수레디영 물류앱"><meta property="og:description" content="숙지사항 · 발주 · 입고를 한 곳에서 — 눌러서 물류앱으로 바로 열기 (직원 전용)"><meta property="og:image" content="https://deltoy.github.io/readyyoung/ry-icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:url" content="https://deltoy.github.io/readyyoung/"><meta name="description" content="성수레디영 물류앱 (직원 전용)">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
@@ -18832,8 +18832,8 @@ video {
     function sdSeatTeam(d, slot, team) { return (d && d.seat && d.seat[slot] && d.seat[slot][team]) || team; }   /* 0928 9/29부터 오전 두 번째 칸(jp)도 중국어 */
     function sdTeamOf(n) { var s = (SD.data && SD.data.staff) || []; for (var i = 0; i < s.length; i++) if (s[i].name === n) return s[i].team; return ''; }
     function sdIsSp(d, slot, team) { return !!(d && d.special && d.special[slot] && d.special[slot][team]); }
-    function sdShort(d, slot, team) { return !!(d && d.short && d.short[slot] && d.short[slot][team]) && !(d[slot] && d[slot][team]); }   /* 1118 MJ '인원이 적으면 일본어·중국어 한 명씩은 응대' — 응대할 사람을 남기려고 비운 칸 */
-    var SD_SHORT = '인원 부족 · 응대 우선';
+    function sdShort(d, slot, team) { return !!(d && d.short && d.short[slot] && d.short[slot][team]) && !(d[slot] && d[slot][team]); }   /* 1118 넣을 사람이 없는 칸 */
+    var SD_SHORT = '후보 없음';
     function sdSeatLab(d, slot, team) { var stm = sdSeatTeam(d, slot, team), oth = sdSeatTeam(d, slot, team === 'cn' ? 'jp' : 'cn'); return sdTeamLabel(stm) + (stm === oth ? (team === 'cn' ? ' 1' : ' 2') : ''); }   /* 1118 두 칸이 같은 언어면 '일본어 1 · 일본어 2' */
     function sdName(n, team, sp, c12, by, short) {
       var me = n && n === currentSelectedMember, real = (n && sdTeamOf(n)) || team;   /* 다른 팀 사람이면 본인 팀 표시 */
@@ -18877,7 +18877,7 @@ video {
       var lk = slot === 'am' ? t.amLocked : t.pmLocked;
       return '<span class="sd-ln-g' + sdNowCls(slot) + '">' + (lead ? sdSt(lk) : '') + '<span class="sd-ln-s">' + (slot === 'am' ? '오전' : '오후') + '</span>' + (withSt ? sdSt(lk) : '') + ['cn', 'jp'].map(function (tm) {
         var n = t[slot][tm], sp = sdIsSp(t, slot, tm), c12 = slot === 'pm' && sdC12(t, tm), by = sdBy(t, slot, tm);
-        return (n ? '<span class="sd-ln-n' + (n === currentSelectedMember ? ' me' : '') + '">' + escapeHtml(n) + '</span>' : '<span class="sd-ln-e">' + (sp ? '비움' : sdShort(t, slot, tm) ? '응대 우선' : '없음') + '</span>')
+        return (n ? '<span class="sd-ln-n' + (n === currentSelectedMember ? ' me' : '') + '">' + escapeHtml(n) + '</span>' : '<span class="sd-ln-e">' + (sp ? '비움' : '없음') + '</span>')
           + (sp || by ? '<i class="sd-dot" title="' + escapeHtml(by ? by + ' 님이 바꿨어요' : '근무표와 다르게 지정') + '" aria-label="' + escapeHtml(by ? by + ' 변경' : '변경') + '"></i>' : '') + (c12 ? '<i class="sd-dot" title="12:00 변경" aria-label="12:00 변경"></i>' : '');
       }).join('<span class="sd-ln-sep">·</span>') + '</span>';
     }
@@ -18940,7 +18940,7 @@ video {
       var admin = sdCanEdit(), d = SD.data;
       var r2 = d.days.some(function (x) { return x.seat; });
       var r4 = d.days.some(function (x) { return x.short; });
-      var h = '<p class="sd-rule"><b>담당 시간: 오전 ' + SD_HOURS.am + ' · 오후 ' + SD_HOURS.pm + '</b><br>' + (r4 ? '배정 기준 (11/19부터): 오전·오후 각각 중국어·일본어 한 명씩은 꼭 응대로 남겨요 · 일본어가 더 많으면 일본어 2명(중국어가 더 많으면 중국어 2명), 아니면 중국어 1 + 일본어 1 · 남길 사람이 없으면 그 칸은 \'' + SD_SHORT + '\' (그 외 직원으로 채울 수 있어요) · 이틀 연속 없음 · 주 2~3일 근무자 먼저 · 이번 달 적게 한 사람 우선' : r2 ? '배정 기준 (9/29부터): 오전(10시) 출근 — 중국어가 일본어보다 많으면 중국어 2명, 같거나 적으면 중국어 1 + 일본어 1 · 오후(13시) 출근 중국어 1 + 일본어 1 · 이틀 연속 없음 (모자라면 다른 팀 오전 근무자를 섞고, 그래도 없으면 주 2~3일 근무자가 연속) · 그 주 2~3일 나오는 사람 먼저 · 이번 달 적게 한 사람 우선'
+      var h = '<p class="sd-rule"><b>담당 시간: 오전 ' + SD_HOURS.am + ' · 오후 ' + SD_HOURS.pm + '</b><br>' + (r4 ? '배정 기준 (11/19부터): 오전·오후 각각 중국어 1 + 일본어 1 · 한 언어가 3명 이상이고 더 많을 때만 그 언어 2명 (다른 언어는 응대로 남겨요) · 한 언어가 아무도 없으면 다른 언어 2명 · 이틀 연속 없음 · 주 2~3일 근무자 먼저 · 이번 달 적게 한 사람 우선' : r2 ? '배정 기준 (9/29부터): 오전(10시) 출근 — 중국어가 일본어보다 많으면 중국어 2명, 같거나 적으면 중국어 1 + 일본어 1 · 오후(13시) 출근 중국어 1 + 일본어 1 · 이틀 연속 없음 (모자라면 다른 팀 오전 근무자를 섞고, 그래도 없으면 주 2~3일 근무자가 연속) · 그 주 2~3일 나오는 사람 먼저 · 이번 달 적게 한 사람 우선'
           : '배정 기준: 근무표 오전(10시)·오후(13시) 출근자 중 중국어 1 + 일본어 1, 이번 달 적게 한 사람 우선') + '</p>' + (admin ? sdGapHint(d) : '') + sdLiveHint()
         + (admin ? '<button type="button" class="sd-reread" onclick="sdReread(this)">' + RYI.refresh + '근무표 다시 읽기</button>' : '')
         + '<h4 class="sd-h">이번 주</h4>' + sdTblHtml(d.days.slice(0, 7), false, admin);
@@ -18961,7 +18961,7 @@ video {
       d.days.forEach(function (x) {
         if (x.date < d.today || x.noRecord || x.noSched) return;
         [['am', 'cn'], ['am', 'jp'], ['pm', 'cn'], ['pm', 'jp']].forEach(function (p) {
-          if (x[p[0]][p[1]] || sdIsSp(x, p[0], p[1]) || sdShort(x, p[0], p[1])) return;   /* 1118 응대 우선으로 비운 칸은 빠진 칸이 아님 */
+          if (x[p[0]][p[1]] || sdIsSp(x, p[0], p[1]) ) return;
           var st = sdSeatTeam(x, p[0], p[1]), busy = [x.am.cn, x.am.jp, x.pm.cn, x.pm.jp];
           var can = (((p[0] === 'am' ? x.amCands : x.pmCands) || {})[p[1]] || []).filter(function (n) { return busy.indexOf(n) === -1; });   /* 오전은 일본어 근무자도 후보 */
           g.push(sdMD(x.date) + ' ' + (p[0] === 'am' ? '오전' : '오후') + ' ' + sdTeamLabel(st) + (st !== p[1] ? ' 2' : '') + (can.length ? ' (넣을 수 있는 사람: ' + can.join(', ') + ')' : ''));
