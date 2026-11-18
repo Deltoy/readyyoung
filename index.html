@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwln1qr3">
+  <meta name="ry-build" content="mwlnngrh">
   <!-- 1118 카톡 미리보기 (공유 링크) --><meta property="og:type" content="website"><meta property="og:site_name" content="성수레디영"><meta property="og:title" content="성수레디영 물류앱"><meta property="og:description" content="숙지사항 · 발주 · 입고를 한 곳에서 — 눌러서 물류앱으로 바로 열기 (직원 전용)"><meta property="og:image" content="https://deltoy.github.io/readyyoung/ry-icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:url" content="https://deltoy.github.io/readyyoung/"><meta name="description" content="성수레디영 물류앱 (직원 전용)">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
@@ -23791,29 +23791,37 @@ function rlShare(id, tp) {
   else copy();
 }
 (function () {
-  var K = 'ry_rl_go', q = new URLSearchParams(location.search), id = q.get('rule'), tp = q.get('rules');
-  if (id || tp) {
+  var K = 'ry_rl_go', t0 = Date.now(), lastLoad = 0, timer = 0;
+  var grab = function () {   /* 주소의 ?rule= · ?rules= 를 이 기기에 기억하고 주소에서 지움 (뒤로가기 캐시로 돌아온 화면 · 새 주소로 다시 열린 경우도) */
+    var q = new URLSearchParams(location.search), id = q.get('rule'), tp = q.get('rules');
+    if (!id && !tp) return;
     try { localStorage.setItem(K, JSON.stringify({ id: id || '', tp: tp || '', lg: q.get('lang') || '', at: Date.now() })); } catch (e) {}
-    q.delete('rule'); q.delete('rules'); q.delete('lang');   /* 주소에서 지움 → 새로고침·홈 화면 추가해도 다시 안 뜀 */
+    q.delete('rule'); q.delete('rules'); q.delete('lang');   /* 새로고침·홈 화면 추가해도 다시 안 뜀 */
     try { history.replaceState(history.state, '', location.pathname + (q.toString() ? '?' + q.toString() : '') + location.hash); } catch (e) {}
-  }
-  var t0 = Date.now(), asked = false;
+  };
+  /* 1118 MJ 폰 '링크로 들어가면 홈 화면만' → 규칙 목록이 늦게 오거나 한 번 실패해도 10초마다 다시 받고, 들어갈 수 있게 되면 숙지사항 화면부터 바로 연다 */
   var tick = function () {
+    clearTimeout(timer); timer = 0;
     var g = null; try { g = JSON.parse(localStorage.getItem(K) || 'null'); } catch (e) {}
     if (!g || Date.now() - g.at > 18e5) { try { localStorage.removeItem(K); } catch (e) {} return; }
     var dv = typeof DV !== 'undefined' ? DV.st : 'ok';
     var ok = rlMe() && !document.getElementById('ryGate') && !document.getElementById('ryKx') && !document.documentElement.classList.contains('dv-lock') && (dv === 'ok' || (!dv && Date.now() - t0 > 15000));
-    if (ok && !RL.data && !asked) { asked = true; rlLoad(); }
-    if (!ok || !RL.data) { setTimeout(tick, 700); return; }
+    if (ok && !RL.data) {
+      if (document.getElementById('rlView').hidden) { rlOpen(); lastLoad = Date.now(); }   /* '불러오는 중…' 으로 먼저 열어 둠 */
+      else if (Date.now() - lastLoad > 10000) { lastLoad = Date.now(); rlLoad(); }
+    }
+    if (!ok || !RL.data) { timer = setTimeout(tick, 700); return; }
     try { localStorage.removeItem(K); } catch (e) {}
     rlGo(g);
   };
-  setTimeout(tick, 500);
+  grab(); timer = setTimeout(tick, 500);
+  window.addEventListener('pageshow', function () { grab(); if (!timer) tick(); });
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') { grab(); if (!timer) tick(); } });
 })();
 function rlGo(g) {
   if (/^(ko|ja|zh)$/.test(g.lg)) RL.lang = g.lg === 'ko' ? '' : g.lg;   /* 이번에만 그 언어로 (내 기기 언어 설정은 그대로) */
   var r = g.id ? RL.data.rules.filter(function (x) { return x.id === g.id; })[0] : null;
-  rlOpen();
+  if (document.getElementById('rlView').hidden) rlOpen();
   if (r) {
     RL.topic = r.archived ? '__arch' : r.topic; RL.hit = r.id; rlShow(r.id);   /* 링크로 온 규칙 = 잠깐 파란 테두리 (rlShow 가 맨 위로) */
     setTimeout(function () { RL.hit = ''; var h = document.querySelector('#rlView .rl-hit'); if (h) h.classList.remove('rl-hit'); }, 3000);
