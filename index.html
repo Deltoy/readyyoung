@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwlo07hl">
+  <meta name="ry-build" content="mwlo2e68">
   <!-- 1118 카톡 미리보기 (공유 링크) --><meta property="og:type" content="website"><meta property="og:site_name" content="성수레디영"><meta property="og:title" content="성수레디영 물류앱"><meta property="og:description" content="숙지사항 · 발주 · 입고를 한 곳에서 — 눌러서 물류앱으로 바로 열기 (직원 전용)"><meta property="og:image" content="https://deltoy.github.io/readyyoung/ry-icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:url" content="https://deltoy.github.io/readyyoung/"><meta name="description" content="성수레디영 물류앱 (직원 전용)">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
@@ -4966,6 +4966,17 @@ html:not(#q):not(#w):not(#e) body:not(#r) #globalSearchInput{padding-right:168px
 #searchSummaryText.ry-bc-on>span:last-child{display:none}#searchSummaryText.ry-bc-on #searchResultCount{flex:1 1 100%}
 .ry-bc-fix,.ry-bc-put{min-height:44px;padding:0 14px;border-radius:999px;border:1px solid #D0D5DD;background:#fff;color:#344054;font-size:13.5px;font-weight:700;margin-left:4px;cursor:pointer}
 .ry-bc-put{margin:0;border-color:#155EEF;color:#155EEF}
+/* 1118 MJ '바코드 줄 앱 디자인에 맞게' — 결과 카드 */
+.ry-bc-card{display:flex;align-items:center;gap:12px;width:100%;box-sizing:border-box;padding:12px 14px;border-radius:20px;background:#fff;border:1px solid #E4E7EC;box-shadow:0 1px 2px rgba(16,24,40,.05)}
+.ry-bc-card .ry-bc-ic{flex:0 0 36px;height:36px;border-radius:12px;display:grid;place-items:center;background:#ECFDF3;color:#067647;font-weight:800;font-size:17px}
+.ry-bc-card.is-multi .ry-bc-ic{background:#FFFAEB;color:#B54708}
+.ry-bc-card .ry-bc-tx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:4px}
+.ry-bc-card .ry-bc-tx>b{font-size:14.5px;color:#101828;line-height:1.3}.ry-bc-card.is-multi .ry-bc-tx>b{color:#B54708}
+.ry-bc-card .ry-bc-tx>span{font-size:12.5px;color:#667085;line-height:1.4}
+.ry-bc-card .ry-bc-code{background:#F2F4F7;color:#344054}
+.ry-bc-card .ry-bc-fix{flex:0 0 auto;margin:0;min-height:40px;padding:0 14px;border-radius:12px;border:1px solid #D0D5DD;background:#F9FAFB;color:#344054;font-size:13px;font-weight:700}
+.ry-bc-card .ry-bc-fix:hover{background:#F2F4F7}.ry-bc-card .ry-bc-fix:focus-visible{outline:3px solid rgba(21,94,239,.35);outline-offset:2px}
+@media (max-width:380px){.ry-bc-card{flex-wrap:wrap}.ry-bc-card .ry-bc-fix{flex:1 1 100%}}
 /* 1118 MJ '바코드 찍으면 없으면 바로 새 상품 등록' */
 .ry-bc-new{margin:8px 0 0;min-height:44px;padding:0 16px;border-radius:12px;border:0;background:#155EEF;color:#fff;font-size:14px;font-weight:700;cursor:pointer}
 .np-bc-row{display:flex;gap:8px;align-items:stretch}.np-bc-row input{flex:1;min-width:0}
@@ -16023,8 +16034,8 @@ video {
         rc.innerHTML = '<span class="ry-bc-miss"><b>등록 안 된 바코드예요</b> <span class="ry-bc-code">' + escapeHtml(code) + '</span></span><br><button type="button" class="ry-bc-new" data-c="' + escapeHtml(code) + '" onclick="openNewProduct(\'\', this.dataset.c)">+ 새 상품으로 등록</button><br><small class="ry-bc-or">이미 있는 상품이면 이름으로 찾아 [수정]에서 바코드를 넣어 주세요</small>';
         return;
       }
-      rc.innerHTML = '<span class="ry-bc-hit"><span class="ry-bc-code">바코드 ' + escapeHtml(code) + '</span>' + (hits.length > 1 ? ' <b>같은 바코드 상품이 ' + hits.length + '개예요 — 맞는 상품을 골라 주세요</b>' : '') + '</span>'
-        + (hits.length === 1 ? ' <button type="button" class="ry-bc-fix" onclick="ryBcFix(' + hits[0].rowNumber + ')">다른 상품이에요</button>' : '');
+      rc.innerHTML = '<div class="ry-bc-card' + (hits.length > 1 ? ' is-multi' : '') + '"><span class="ry-bc-ic" aria-hidden="true">' + (hits.length > 1 ? '⚠' : '✓') + '</span><div class="ry-bc-tx"><b>' + (hits.length > 1 ? '같은 바코드 상품이 ' + hits.length + '개예요' : '바코드로 찾았어요') + '</b><span>' + (hits.length > 1 ? '아래에서 맞는 상품을 골라 주세요 · ' : '') + '<span class="ry-bc-code">' + escapeHtml(code) + '</span></span></div>'
+        + (hits.length === 1 ? '<button type="button" class="ry-bc-fix" onclick="ryBcFix(' + hits[0].rowNumber + ')">다른 상품이에요</button>' : '') + '</div>';   /* 1118 MJ '바코드 숫자랑 다른 상품이에요 너무 없어 보여 — 앱 디자인에 맞게' → 카드 */
     }
     function ryBcFix(row) {
       var it = (lastSearchResults || []).filter(function (x) { return x.rowNumber === row; })[0]; if (!it) return;
