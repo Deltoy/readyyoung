@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwllkhd7">
+  <meta name="ry-build" content="mwln1qr3">
+  <!-- 1118 카톡 미리보기 (공유 링크) --><meta property="og:type" content="website"><meta property="og:site_name" content="성수레디영"><meta property="og:title" content="성수레디영 물류앱"><meta property="og:description" content="숙지사항 · 발주 · 입고를 한 곳에서 — 눌러서 물류앱으로 바로 열기 (직원 전용)"><meta property="og:image" content="https://deltoy.github.io/readyyoung/ry-icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:url" content="https://deltoy.github.io/readyyoung/"><meta name="description" content="성수레디영 물류앱 (직원 전용)">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -23439,6 +23440,14 @@ html:not(#q):not(#w):not(#e) body:not(#r) #dvGate .dv-link{width:100%;min-height
 #rlView .rl-chev{flex:none;font-size:22px;line-height:1;color:#C0C5CD}
 #rlView .rl-tolist{align-self:flex-start;min-height:44px;padding:0 14px;border-radius:999px!important;border:1px solid #E4E7EC;background:#fff;color:#344054;font-size:14px;font-weight:700}
 #rlView .rl-next{min-height:52px;border-radius:14px!important;border:0;background:#101828;color:#fff;font-size:15px;font-weight:800}
+/* 1118 MJ '이 페이지를 카톡으로 공유 → 누르면 물류앱 그 규칙으로' — 공유 버튼 · 링크로 들어왔을 때 잠깐 파란 테두리 */
+#rlView .rl-share{display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:0 12px;border-radius:999px!important;border:1px solid #E4E7EC;background:#fff;color:#344054;font-size:13px;font-weight:700;flex:none;cursor:pointer;position:relative}
+#rlView .rl-share::after{content:'';position:absolute;inset:-4px}
+#rlView .rl-share:active{background:#F2F4F7}
+#rlView .rl-ghr{display:flex;align-items:center}#rlView .rl-ghr .rl-gh{flex:1}#rlView .rl-ghr .rl-share{border:0;background:transparent;width:36px;padding:0;justify-content:center;margin:0 4px 8px 0}
+#rlView .rl-card.rl-hit{animation:rlHit 2.6s ease-out}
+@keyframes rlHit{0%,40%{box-shadow:0 0 0 4px #155EEF}100%{box-shadow:0 0 0 4px rgba(21,94,239,0)}}
+@media (prefers-reduced-motion:reduce){#rlView .rl-card.rl-hit{animation:none;box-shadow:0 0 0 3px #155EEF!important}}
 @media(min-width:900px){#rlView .rl-wrap{max-width:1080px}#rlView .rl-list:not(.rl-detail){display:grid;grid-template-columns:repeat(2,1fr);align-items:start;column-gap:16px}#rlView .rl-list.rl-detail{max-width:760px;margin-left:auto;margin-right:auto}#rlView .rl-empty{grid-column:1/-1}}
 </style>
 <div id="rlView" hidden role="dialog" aria-modal="true" aria-label="숙지사항">
@@ -23506,8 +23515,8 @@ var RL = { data: null, topic: '', q: '', edit: null, busy: false, popShown: '', 
 /* 1021 MJ: 일본인 · 중국인 직원용 — 숙지사항을 日本語 · 中文 으로 골라 보기 (고른 언어는 이 기기가 기억 · 번역은 서버 '_숙지번역_') */
 try { RL.lang = /^(ja|zh)$/.test(localStorage.getItem('ry_rl_lang') || '') ? localStorage.getItem('ry_rl_lang') : ''; } catch (e) {}
 var RL_TR = {
-  ja: { '구글리뷰': 'Google口コミ', '물류앱 사용법': '物流アプリの使い方', '진열': '陳列', '세트': 'セット', '스티커·POP': 'ステッカー・POP', '발주·입고': '発注・入荷', '계산대·응대': 'レジ・接客', '근무·근태': '勤務・勤怠', '기타': 'その他', '전체': 'すべて', '안 읽은 것': '未読', '보관함': '保管', '숙지했어요': '確認しました', '숙지함': '確認済み', '목록으로': '一覧へ', '새 규칙': '新しい', '새': '新', '모두 숙지했어요': 'すべて確認しました', '안 읽은 규칙': '未読のルール', '개가 있어요': '件あります', '새 숙지사항': '新しいルール', '보기': '見る', '다음 안 읽은 규칙': '次の未読', '공지': 'お知らせ', '증정': 'プレゼント', '품절': '品切れ', '업무': '業務', '일정': '日程', '이벤트': 'イベント', '번역 중…': '翻訳中…' },
-  zh: { '구글리뷰': '谷歌评论', '물류앱 사용법': '物流APP使用方法', '진열': '陈列', '세트': '套装', '스티커·POP': '贴纸・POP', '발주·입고': '订货・入库', '계산대·응대': '收银・接待', '근무·근태': '工作・考勤', '기타': '其他', '전체': '全部', '안 읽은 것': '未读', '보관함': '存档', '숙지했어요': '我已了解', '숙지함': '已了解', '목록으로': '返回列表', '새 규칙': '新规则', '새': '新', '모두 숙지했어요': '全部已了解', '안 읽은 규칙': '未读规则', '개가 있어요': '条', '새 숙지사항': '新规则', '보기': '查看', '다음 안 읽은 규칙': '下一条未读', '공지': '通知', '증정': '赠品', '품절': '缺货', '업무': '业务', '일정': '日程', '이벤트': '活动', '번역 중…': '翻译中…' }
+  ja: { '구글리뷰': 'Google口コミ', '물류앱 사용법': '物流アプリの使い方', '진열': '陳列', '세트': 'セット', '스티커·POP': 'ステッカー・POP', '발주·입고': '発注・入荷', '계산대·응대': 'レジ・接客', '근무·근태': '勤務・勤怠', '기타': 'その他', '전체': 'すべて', '안 읽은 것': '未読', '보관함': '保管', '숙지했어요': '確認しました', '숙지함': '確認済み', '목록으로': '一覧へ', '새 규칙': '新しい', '새': '新', '모두 숙지했어요': 'すべて確認しました', '안 읽은 규칙': '未読のルール', '개가 있어요': '件あります', '새 숙지사항': '新しいルール', '보기': '見る', '다음 안 읽은 규칙': '次の未読', '공지': 'お知らせ', '증정': 'プレゼント', '품절': '品切れ', '업무': '業務', '일정': '日程', '이벤트': 'イベント', '번역 중…': '翻訳中…', '공유': '共有', '공유받은 규칙이에요': '共有されたルールです', '공유받은 규칙이에요 · 지금은 보관함에 있어요': '共有されたルールです · 現在は保管中', '공유받은 주제예요': '共有されたテーマです', '이 규칙은 지워졌어요 · 목록을 열었어요': 'このルールは削除されました · 一覧を開きました', '이 주제는 없어졌어요 · 목록을 열었어요': 'このテーマはありません · 一覧を開きました', '링크를 복사했어요 · 카톡에 붙여 넣으세요': 'リンクをコピーしました · カカオトークに貼り付けてください' },
+  zh: { '구글리뷰': '谷歌评论', '물류앱 사용법': '物流APP使用方法', '진열': '陈列', '세트': '套装', '스티커·POP': '贴纸・POP', '발주·입고': '订货・入库', '계산대·응대': '收银・接待', '근무·근태': '工作・考勤', '기타': '其他', '전체': '全部', '안 읽은 것': '未读', '보관함': '存档', '숙지했어요': '我已了解', '숙지함': '已了解', '목록으로': '返回列表', '새 규칙': '新规则', '새': '新', '모두 숙지했어요': '全部已了解', '안 읽은 규칙': '未读规则', '개가 있어요': '条', '새 숙지사항': '新规则', '보기': '查看', '다음 안 읽은 규칙': '下一条未读', '공지': '通知', '증정': '赠品', '품절': '缺货', '업무': '业务', '일정': '日程', '이벤트': '活动', '번역 중…': '翻译中…', '공유': '分享', '공유받은 규칙이에요': '这是分享给你的规则', '공유받은 규칙이에요 · 지금은 보관함에 있어요': '这是分享给你的规则 · 已存档', '공유받은 주제예요': '这是分享给你的主题', '이 규칙은 지워졌어요 · 목록을 열었어요': '该规则已删除 · 已打开列表', '이 주제는 없어졌어요 · 목록을 열었어요': '该主题已不存在 · 已打开列表', '링크를 복사했어요 · 카톡에 붙여 넣으세요': '已复制链接 · 请粘贴到 KakaoTalk' }
 };
 function rlW(k) { var d = RL.lang && RL_TR[RL.lang]; return (d && d[k]) || k; }
 function rlTx(r) { var t = RL.lang && r.tr && r.tr[RL.lang], n = rlOrd(r); return t && t.title ? (n && !/^\d+\./.test(t.title) ? { title: n + '. ' + t.title, body: t.body } : t) : { title: r.title, body: r.body }; }
@@ -23585,7 +23594,7 @@ function rlRender() {
     return;
   }
   var grp = !RL.topic && !q, html = '';
-  if (grp) rlTopics().forEach(function (t) { var xs = list.filter(function (r) { return r.topic === t; }); if (xs.length) html += '<section class="rl-g"><h3 class="rl-gh">' + escapeHtml(rlW(t)) + '<small>' + xs.length + '</small></h3><div class="rl-rows">' + xs.map(rlRowHtml).join('') + '</div></section>'; });
+  if (grp) rlTopics().forEach(function (t) { var xs = list.filter(function (r) { return r.topic === t; }); if (xs.length) html += '<section class="rl-g"><div class="rl-ghr"><h3 class="rl-gh">' + escapeHtml(rlW(t)) + '<small>' + xs.length + '</small></h3><button type="button" class="rl-share" data-t="' + escapeHtml(t) + '" onclick="rlShare(\'\', this.dataset.t)" aria-label="' + escapeHtml(rlW('공유') + ' · ' + rlW(t)) + '"><span aria-hidden="true">🔗</span></button></div><div class="rl-rows">' + xs.map(rlRowHtml).join('') + '</div></section>'; });
   else html = '<section class="rl-g"><div class="rl-rows">' + list.map(rlRowHtml).join('') + '</div></section>';
   box.innerHTML = html;
 }
@@ -23603,8 +23612,8 @@ function rlCardHtml(r) {
   var me = rlMe(), read = (r.reads || []).indexOf(me) !== -1, mem = rlMembers(), done = mem.filter(function (n) { return (r.reads || []).indexOf(n) !== -1; }), not = mem.filter(function (n) { return (r.reads || []).indexOf(n) === -1; });
   var can = me && (me === r.author || me === '문준'), id = escapeHtml(r.id), ph = rlPhs(r), tx = rlTx(r);
   var vids = ph.filter(function (p) { return p.v; }); ph = ph.filter(function (p) { return !p.v; });   /* 1024 사용법 영상 — 글 맨 위에서 바로 재생 */
-  return '<article class="rl-card' + (!read && !r.archived ? ' new' : '') + '" data-rl="' + id + '">'
-    + '<div class="rl-h"><span class="rl-t">' + escapeHtml(rlW(r.topic)) + '</span>' + (!read && !r.archived ? '<span class="rl-new">' + rlW('새 규칙') + '</span>' : '') + (r.archived ? '<span class="rl-arch">보관</span>' : '') + '<span class="rl-meta">' + escapeHtml(r.author) + ' · ' + escapeHtml(String(r.updatedAt).slice(5, 10).replace('.', '/')) + (r.updatedAt !== r.createdAt ? ' 고침' : '') + '</span></div>'
+  return '<article class="rl-card' + (!read && !r.archived ? ' new' : '') + (RL.hit === r.id ? ' rl-hit' : '') + '" data-rl="' + id + '">'
+    + '<div class="rl-h"><span class="rl-t">' + escapeHtml(rlW(r.topic)) + '</span>' + (!read && !r.archived ? '<span class="rl-new">' + rlW('새 규칙') + '</span>' : '') + (r.archived ? '<span class="rl-arch">보관</span>' : '') + '<span class="rl-meta">' + escapeHtml(r.author) + ' · ' + escapeHtml(String(r.updatedAt).slice(5, 10).replace('.', '/')) + (r.updatedAt !== r.createdAt ? ' 고침' : '') + '</span><button type="button" class="rl-share" data-id="' + id + '" onclick="rlShare(this.dataset.id)" aria-label="' + escapeHtml(rlW('공유') + ' · ' + tx.title) + '"><span aria-hidden="true">🔗</span> ' + rlW('공유') + '</button></div>'
     + '<h3' + (RL.lang ? ' lang="' + RL.lang + '"' : '') + '>' + escapeHtml(tx.title) + '</h3>'
     + vids.map(function (p) { return '<video class="rl-vid" controls playsinline preload="none" poster="' + escapeHtml(p.u) + '" src="' + escapeHtml(p.v) + '"></video>'; }).join('')
     + (ph.length ? '<div class="rl-ph n' + (ph.length === 3 ? 3 : Math.min(ph.length, 2)) + '">' + ph.map(function (p) { return '<a class="' + (p.m || '') + '" href="' + escapeHtml(p.u) + '" target="_blank" rel="noopener" aria-label="사진 크게 보기"><img src="' + escapeHtml(p.u) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' + (p.m ? '<span class="rl-mk ' + p.m + '">' + (p.m === 'o' ? '✓ 이렇게' : '✕ 이렇게 말고') + '</span>' : '') + '</a>'; }).join('') + '</div>' : '')
@@ -23767,6 +23776,50 @@ function rvPraisePop(res) {
   document.body.appendChild(el);
   var close = function () { ack[n.id + '|' + me] = Date.now(); try { localStorage.setItem('ry_rv_ack', JSON.stringify(ack)); } catch (e) {} el.remove(); };
   el.querySelector('.rvp-ok').onclick = close; setTimeout(function () { var b = el.querySelector('.rvp-ok'); if (b) b.focus(); }, 50);
+}
+
+/* 1118 MJ '숙지사항을 공유 가능하게 — 카톡으로 공유하면 물류앱으로 바로' : 링크 = deltoy.github.io/readyyoung/?rule=규칙ID&lang=ko|ja|zh (주제 전체는 ?rules=주제)
+   폰 = 공유 창(카톡이 보임) · 컴퓨터 = 링크 복사. 링크로 열면 평소처럼 암호·이름·기기 승인을 다 거친 뒤에 그 규칙을 연다 (이 기기에 30분 기억 → 승인 기다리다 다시 열어도 됨 · 그보다 늦으면 하던 일 방해 안 하게 버림) */
+var RL_URL = 'https://deltoy.github.io/readyyoung/';
+function rlLink(id, tp) { return RL_URL + '?' + (id ? 'rule=' + encodeURIComponent(id) : 'rules=' + encodeURIComponent(tp)) + '&lang=' + (RL.lang || 'ko'); }
+function rlShare(id, tp) {
+  var r = id ? ((RL.data && RL.data.rules) || []).filter(function (x) { return x.id === id; })[0] : null;
+  var url = rlLink(id, tp), title = r ? rlTx(r).title : rlW(tp), text = '📘 성수레디영 숙지사항 · ' + title + '\n눌러서 확인하고 [숙지했어요] 눌러 주세요';
+  var copy = function () { var all = text + '\n' + url, done = function () { showToast(rlW('링크를 복사했어요 · 카톡에 붙여 넣으세요'), 2400); }; try { navigator.clipboard.writeText(all).then(done, function () { fallbackCopy(all, done); }); } catch (e) { fallbackCopy(all, done); } };
+  /* 폰(손가락)일 때만 공유 창 — 윈도우 공유 창에는 카톡 PC 가 없어서 컴퓨터는 바로 복사 */
+  if (navigator.share && window.matchMedia && matchMedia('(pointer:coarse)').matches) navigator.share({ title: title, text: text, url: url }).catch(function (e) { if (!e || e.name !== 'AbortError') copy(); });
+  else copy();
+}
+(function () {
+  var K = 'ry_rl_go', q = new URLSearchParams(location.search), id = q.get('rule'), tp = q.get('rules');
+  if (id || tp) {
+    try { localStorage.setItem(K, JSON.stringify({ id: id || '', tp: tp || '', lg: q.get('lang') || '', at: Date.now() })); } catch (e) {}
+    q.delete('rule'); q.delete('rules'); q.delete('lang');   /* 주소에서 지움 → 새로고침·홈 화면 추가해도 다시 안 뜀 */
+    try { history.replaceState(history.state, '', location.pathname + (q.toString() ? '?' + q.toString() : '') + location.hash); } catch (e) {}
+  }
+  var t0 = Date.now(), asked = false;
+  var tick = function () {
+    var g = null; try { g = JSON.parse(localStorage.getItem(K) || 'null'); } catch (e) {}
+    if (!g || Date.now() - g.at > 18e5) { try { localStorage.removeItem(K); } catch (e) {} return; }
+    var dv = typeof DV !== 'undefined' ? DV.st : 'ok';
+    var ok = rlMe() && !document.getElementById('ryGate') && !document.getElementById('ryKx') && !document.documentElement.classList.contains('dv-lock') && (dv === 'ok' || (!dv && Date.now() - t0 > 15000));
+    if (ok && !RL.data && !asked) { asked = true; rlLoad(); }
+    if (!ok || !RL.data) { setTimeout(tick, 700); return; }
+    try { localStorage.removeItem(K); } catch (e) {}
+    rlGo(g);
+  };
+  setTimeout(tick, 500);
+})();
+function rlGo(g) {
+  if (/^(ko|ja|zh)$/.test(g.lg)) RL.lang = g.lg === 'ko' ? '' : g.lg;   /* 이번에만 그 언어로 (내 기기 언어 설정은 그대로) */
+  var r = g.id ? RL.data.rules.filter(function (x) { return x.id === g.id; })[0] : null;
+  rlOpen();
+  if (r) {
+    RL.topic = r.archived ? '__arch' : r.topic; RL.hit = r.id; rlShow(r.id);   /* 링크로 온 규칙 = 잠깐 파란 테두리 (rlShow 가 맨 위로) */
+    setTimeout(function () { RL.hit = ''; var h = document.querySelector('#rlView .rl-hit'); if (h) h.classList.remove('rl-hit'); }, 3000);
+    showToast(rlW(r.archived ? '공유받은 규칙이에요 · 지금은 보관함에 있어요' : '공유받은 규칙이에요'), 2400);
+  } else if (g.tp && rlTopics().indexOf(g.tp) !== -1) { RL.topic = g.tp; rlRender(); showToast(rlW('공유받은 주제예요'), 2400); }
+  else showToast(rlW(g.id ? '이 규칙은 지워졌어요 · 목록을 열었어요' : '이 주제는 없어졌어요 · 목록을 열었어요'), 2600);
 }
 
 /* 앱 열고 조금 뒤 한 번 + 이름을 바꾸면 그 사람 기준으로 다시 (5분마다 새 규칙 확인) */
