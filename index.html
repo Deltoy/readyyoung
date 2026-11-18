@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwlu3kdp">
+  <meta name="ry-build" content="mwlvo162">
   <!-- 1118 카톡 미리보기 (공유 링크) --><meta property="og:type" content="website"><meta property="og:site_name" content="성수레디영"><meta property="og:title" content="성수레디영 물류앱"><meta property="og:description" content="숙지사항 · 발주 · 입고를 한 곳에서 — 눌러서 물류앱으로 바로 열기 (직원 전용)"><meta property="og:image" content="https://deltoy.github.io/readyyoung/ry-icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:url" content="https://deltoy.github.io/readyyoung/"><meta name="description" content="성수레디영 물류앱 (직원 전용)">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
@@ -8624,20 +8624,20 @@ video {
     /* 1116 MJ '토탈·스마트·리쥬올·젤리는 같은 기간 · 세트 전체는 기간 따로' → 기간끼리 날짜가 겹칠 수 있음 · 그날의 주 = 그날을 포함하는 목표만 모은 것 (서버 scWeekOf_ 와 같음)
        hf~ht = 가장 많은 목표가 쓰는 기간(머리 줄 '이번 주 목표' 날짜) */
     function scWk(c, d) {
-      var sets = [], seen = {}, goal = {}, day = {}, any = false, lo = '', hi = '', cnt = {}, note = '';
+      var sets = [], seen = {}, goal = {}, day = {}, any = false, lo = '', hi = '', cnt = {}, notes = [];   /* 1118 MJ '세트 삭제하면 적었던 것도 삭제' → 직원 공지 = 목표마다(s.note) · 그날 목표의 공지만 모음 */
       c.weeks.slice().reverse().forEach(function (w) { ((w.sets) || c.sets || []).forEach(function (s) { var f = s.from || w.from, z = s.to || w.to; if (d < f || d > z || seen[s.k]) return; seen[s.k] = 1;
-        sets.push({ k: s.k, label: s.label, kind: s.kind, pos: s.pos, app: s.app, from: f, to: z }); if (!note && w.note) note = w.note;
+        sets.push({ k: s.k, label: s.label, kind: s.kind, pos: s.pos, app: s.app, from: f, to: z, note: s.note || '' }); if (s.note && notes.indexOf(s.note) < 0) notes.push(s.note);
         if (w.goal && w.goal[s.k]) { goal[s.k] = w.goal[s.k]; any = true; } if (w.day && w.day[s.k]) day[s.k] = w.day[s.k];
         if (!lo || f < lo) lo = f; if (!hi || z > hi) hi = z; cnt[f + '~' + z] = (cnt[f + '~' + z] || 0) + 1; }); });
       if (!sets.length) return null;
       var top = Object.keys(cnt).sort(function (a, b) { return cnt[b] - cnt[a] || (a < b ? 1 : -1); })[0].split('~');
       sets.sort(function (a, b) { var A = SC_ORD.indexOf(a.k), B = SC_ORD.indexOf(b.k); return (A < 0 ? 99 : A) - (B < 0 ? 99 : B); });
-      return { from: lo, to: hi, hf: top[0], ht: top[1], sets: sets, goal: any ? goal : null, day: any ? day : null, note: note };
+      return { from: lo, to: hi, hf: top[0], ht: top[1], sets: sets, goal: any ? goal : null, day: any ? day : null, note: notes.join(' · '), notes: notes };
     }
     var SC_ORD = ['s1', 'total', 'smart', 'barrier'];
     function scCur() { var D = SC.data; if (!D || !D.cfg || !D.cfg.weeks) return null; return scWk(D.cfg, D.today || scYmd(new Date())); }
     /* 1116 지난 기간 결과 (같은 목표의 바로 전 기간) — 카드에 '새 주 시작 · 지난주 116%' */
-    function scPeriods(c) { var out = []; c.weeks.forEach(function (w) { ((w.sets) || c.sets || []).forEach(function (s) { var f = s.from || w.from, z = s.to || w.to, G = (w.goal && w.goal[s.k]) || 0, dd = (w.day && w.day[s.k]) || 0, n = scDays({ from: f, to: z }).length; if (dd && Math.round(G / n) !== dd) G = dd * n; out.push({ k: s.k, label: s.label, from: f, to: z, G: G, w: w }); }); }); return out; }
+    function scPeriods(c) { var out = []; c.weeks.forEach(function (w) { ((w.sets) || c.sets || []).forEach(function (s) { var f = s.from || w.from, z = s.to || w.to, G = (w.goal && w.goal[s.k]) || 0, dd = (w.day && w.day[s.k]) || 0, n = scDays({ from: f, to: z }).length; if (dd && Math.round(G / n) !== dd) G = dd * n; out.push({ k: s.k, label: s.label, from: f, to: z, G: G, w: w, note: s.note || w.note || '' }); }); }); return out; }   // w.note = 1118 전 옛 주 공지(지난 기록만)
     function scPrevOf(c, k, from) { var L = scPeriods(c).filter(function (p) { return p.k === k && p.to < from && p.G; }).sort(function (a, b) { return a.to < b.to ? 1 : -1; })[0]; if (!L) return null; var sum = scDays(L).reduce(function (a, d) { return a + (scV(d, k) || 0); }, 0); return { p: Math.round(sum / L.G * 100), sum: sum, G: L.G }; }
     function scShown() { if (scCur() || scBoss()) return true; var D = SC.data, t = D && D.today, l = t && D.cfg && D.cfg.weeks ? D.cfg.weeks.filter(function (w) { return w.to < t; }).slice(-1)[0] : null; return !!l && scAdd(l.to, 7) >= t; }   /* 1109 이번 주 목표가 있으면 모두 · 정하는 사람은 늘 · 끝나고 일주일은 '다음 목표 준비 중' */
     function scSetsOf(c, w) { var L0 = (w && w.sets) || c.sets || [], used = L0.map(function (s) { return (SC_LOOK[s.k] || {}).c; }).filter(Boolean); return L0.map(function (s, i) { var L = SC_LOOK[s.k] || {}, p = L.c ? SC_PAL[0] : (SC_PAL.filter(function (q) { return used.indexOf(q[0]) < 0; })[0] || SC_PAL[i % SC_PAL.length]); if (!L.c) used.push(p[0]); return { k: s.k, label: s.label, pos: s.pos || [], c: L.c || p[0], soft: L.soft || p[1], leg: L.leg || 0, sub: L.sub || '', from: s.from || '', to: s.to || '', kind: s.kind || 'set' }; }); }
@@ -8942,7 +8942,7 @@ video {
       } else {
         var days = scDays({ from: w.hf, to: w.ht }), left = days.filter(function (d) { return d >= t; }).length, nth = days.indexOf(t) + 1;
         h += '<section class="sc-card sc-head"><div class="sc-hd"><div><b>🎯 이번 주 목표</b><span>' + scMd(w.hf) + ' ~ ' + scMd(w.ht) + (nth > 0 ? ' · ' + nth + '일째 · 오늘 포함 ' + left + '일 남음' : '') + '</span></div>' + (boss ? '<button type="button" class="sc-edit" onclick="scFormOpen()">' + RYI.plus + '목표 추가</button>' : '') + '</div>'
-          + (w.note ? '<p class="sc-memo">📣 ' + escapeHtml(w.note) + '</p>' : '') + '</section>';
+          + w.notes.map(function (x) { return '<p class="sc-memo">📣 ' + escapeHtml(x) + '</p>'; }).join('') + '</section>';
         /* 1109 MJ '판매 넣기 칸 필요해? POS로 자동으로 올라가잖아' → 평소엔 숨김(POS 30분마다 자동) · POS 로그인이 풀린 날 고치기용 작은 버튼만 */
         if (scAdm()) h += SC.inOpen ? scInHtml(c, w, t) : '<button type="button" class="sc-fixbtn" onclick="SC.inOpen=1;scRender()">✏️ 판매량 직접 입력 <small>평소엔 POS에서 30분마다 자동</small></button>';
         var mob = [];   /* 1111 MJ '폰에서 너무 커 · 한눈에' → ≤600px 는 아래 간단판(sc-mob) */
@@ -8984,7 +8984,7 @@ video {
     }
     function scInKey(e, el) { if (e.key !== 'Enter') return; e.preventDefault(); var all = [].slice.call(document.querySelectorAll('#slBody .sc-in input[data-k]')), i = all.indexOf(el); if (i < all.length - 1) all[i + 1].focus(); else scSave(); }
     function scHistHtml(c, t) {   /* 📂 지난 목표 달성 현황 (1116 MJ '저번 주에 했던 건 지난 목표 달성 현황에서') — 기간마다 접어서: 목표별 실적 · 목표 · 달성률 · 최근 기간이 위, 맨 위는 펼쳐 둠 */
-      var by = {}; scPeriods(c).filter(function (p) { return p.to < t; }).forEach(function (p) { var key = p.from + '~' + p.to; (by[key] = by[key] || { from: p.from, to: p.to, rows: [], note: p.w.note }).rows.push(p); });
+      var by = {}; scPeriods(c).filter(function (p) { return p.to < t; }).forEach(function (p) { var key = p.from + '~' + p.to; var P0 = by[key] = by[key] || { from: p.from, to: p.to, rows: [], notes: [] }; P0.rows.push(p); if (p.note && P0.notes.indexOf(p.note) < 0) P0.notes.push(p.note); });
       var past = Object.keys(by).map(function (x) { return by[x]; }).sort(function (a, b) { return a.to < b.to ? 1 : a.to > b.to ? -1 : a.from < b.from ? 1 : -1; }); if (!past.length) return '';
       var col = {}; scSetsOf(c, { sets: c.weeks.reduce(function (a, w) { return a.concat((w.sets || []).filter(function (s) { return !a.some(function (q) { return q.k === s.k; }); })); }, []) }).forEach(function (s) { col[s.k] = s.c; });
       return '<section class="sc-card sc-hist"><h3>📂 지난 목표 달성 현황 <span>' + past.length + '기간</span></h3>' + past.map(function (P, ix) {
@@ -8992,7 +8992,7 @@ video {
         var withG = rows.filter(function (x) { return x.r.G; }), won = withG.filter(function (x) { return x.sum >= x.r.G; }).length, all = withG.length && won === withG.length;
         return '<details class="sc-hw"' + (ix === 0 ? ' open' : '') + '><summary><b>' + scMd(P.from) + ' ~ ' + scMd(P.to) + '</b><em' + (all ? ' class="all"' : '') + '>' + (!withG.length ? '실적만' : all ? '🏆 모두 달성' : won + '/' + withG.length + ' 달성') + '</em></summary><div class="sc-hrows">'
           + rows.map(function (x) { return '<div class="sc-hr" style="--sc:' + (col[x.r.k] || '#155EEF') + '"><span class="sc-hn">' + escapeHtml(x.r.label) + '</span><span class="sc-hv"><b>' + x.sum + '</b>' + (x.r.G ? ' / ' + x.r.G + '개' : '개') + '</span><span class="sc-hp' + (x.r.G && x.p >= 100 ? ' ok' : '') + '">' + (x.r.G ? (x.p >= 100 ? '🏆 ' : '') + x.p + '%' : '목표 없음') + '</span>' + (x.r.G ? '<div class="sc-bar"><i style="width:' + Math.min(100, x.p) + '%"></i></div>' : '') + '</div>'; }).join('')
-          + (P.note ? '<p class="sc-hnote">📣 ' + escapeHtml(P.note) + '</p>' : '') + '</div></details>';
+          + P.notes.map(function (x) { return '<p class="sc-hnote">📣 ' + escapeHtml(x) + '</p>'; }).join('') + '</div></details>';
       }).join('') + '</section>';
     }
     /* ══ 1109 MJ '직원들이 지난 날짜 중 어느 날 잘 팔렸는지 · 안 팔렸는지' → 📅 날짜별 판매: 달력(세트 칩 · 그날 하루 목표 대비 색) + 날씨(Open-Meteo, 기기에 저장) + 요일 평균 + 한 줄 정리 + 최고·최저 + 날짜 메모(목표 정하는 사람만 적음, 서버 setSetMemo)
@@ -9183,22 +9183,21 @@ video {
       var c = SC.data.cfg, t = SC.data.today, p = t.split('-'), rows = [], seen = {}, cnt = {};
       c.weeks.slice().reverse().forEach(function (w) { (w.sets || []).forEach(function (s) { var f = s.from || w.from, z = s.to || w.to; if (z < t || seen[s.k]) return; seen[s.k] = 1;
         var G = (w.goal && w.goal[s.k]) || '', dd = (w.day && w.day[s.k]) || '', n = scDays({ from: f, to: z }).length; if (dd && G && Math.round(G / n) !== dd) G = dd * n;
-        rows.push({ k: s.k, label: s.label, kind: s.kind || 'set', picks: scPk(s), goal: G, day: dd, from: f, to: z, note: w.note || '' });
+        rows.push({ k: s.k, label: s.label, kind: s.kind || 'set', picks: scPk(s), goal: G, day: dd, from: f, to: z, note: s.note || '' });
         cnt[f + '~' + z] = (cnt[f + '~' + z] || 0) + 1; }); });
       var top = Object.keys(cnt).sort(function (a, b) { return cnt[b] - cnt[a]; })[0], f0, z0;
       if (top) { f0 = top.split('~')[0]; z0 = top.split('~')[1]; }
       else { f0 = scAdd(t, -((new Date(+p[0], +p[1] - 1, +p[2]).getDay() + 6) % 7)); var lastW = c.weeks.slice(-1)[0]; if (lastW && f0 <= lastW.to) f0 = scAdd(lastW.to, 1); z0 = scAdd(f0, 6);
-        if (lastW) rows = (lastW.sets || []).map(function (s) { return { k: s.k, label: s.label, kind: s.kind || 'set', picks: scPk(s), goal: (lastW.goal && lastW.goal[s.k]) || '', day: (lastW.day && lastW.day[s.k]) || '', from: f0, to: z0 }; }); }
+        if (lastW) rows = (lastW.sets || []).map(function (s) { return { k: s.k, label: s.label, kind: s.kind || 'set', picks: scPk(s), goal: (lastW.goal && lastW.goal[s.k]) || '', day: (lastW.day && lastW.day[s.k]) || '', from: f0, to: z0, note: s.note || '' }; }); }
       rows.forEach(function (r) { r.own = r.from !== f0 || r.to !== z0; });
-      var note = (rows.filter(function (r) { return !r.own && r.note; })[0] || rows[0] || {}).note || '';
       /* 1116 MJ '여기는 새로 정해야 하는 것만 · 기존 목표는 각자 수정 칸에서' → 모드: add = 빈 새 목표 1줄만 보임(기존 목표는 숨긴 채 같이 저장) · edit = 카드 ✏️ 그 목표 1줄 + 삭제 · all = 진행 중 목표가 없을 때(지난 목표 복사) */
       var mode = focusK && rows.some(function (r) { return r.k === focusK; }) ? 'edit' : top ? 'add' : 'all';
       if (mode !== 'edit') rows.push(scFormRow());
-      SC.form = { from: f0, to: z0, note: note, ex: !!top, rows: rows, keys0: rows.map(function (r) { return r.k; }).filter(String), mode: mode, fk: focusK || '', n0: rows.length - 1 };
+      SC.form = { from: f0, to: z0, ex: !!top, rows: rows, keys0: rows.map(function (r) { return r.k; }).filter(String), mode: mode, fk: focusK || '', n0: rows.length - 1 };
       SC.pickRes = []; scRender(); var bd = document.getElementById('slBody'); if (bd) bd.scrollTop = 0;
       if (mode === 'add') setTimeout(function () { var r = document.querySelectorAll('#slBody .sc-fr'), x = r[r.length - 1]; if (x) { x.scrollIntoView({ block: 'center' }); x.querySelector('input[data-f="label"]').focus(); } }, 50);
     }
-    function scFormRow() { return { k: '', label: '', kind: 'set', picks: [], goal: '', day: '', own: false, from: '', to: '' }; }
+    function scFormRow() { return { k: '', label: '', kind: 'set', picks: [], goal: '', day: '', own: false, from: '', to: '', note: '' }; }
     function scFormHtml() {
       var f = SC.form, n = f.rows.length, ed = f.mode === 'edit', er = ed ? f.rows.filter(function (r) { return r.k === f.fk; })[0] : null;
       return '<button type="button" class="sc-back" onclick="scFormClose()">' + RYI.arrowleft + '목표 현황으로</button><section class="sc-card sc-form"><h3>' + (ed ? '목표 수정 <span>' + escapeHtml(er ? er.label : '') + '</span>' : '새 판매 목표 추가 <span>기존 목표는 카드의 연필 버튼에서 고쳐요</span>') + '</h3>'
@@ -9207,7 +9206,6 @@ video {
         + '<div class="sc-f"' + (ed ? ' hidden' : '') + '><label>시작 <small>공통 기간</small><input type="date" id="scFFrom" value="' + f.from + '" onchange="scFormFrom(this.value)"></label><label>끝<input type="date" id="scFTo" value="' + f.to + '"></label></div>'
         + scFormRowsHtml(f, false)
         + (ed ? '<button type="button" class="sc-del" onclick="scFormDelGoal()">' + RYI.trash + '목표 삭제</button>' : '')
-        + '<div class="sc-f"' + (ed ? ' hidden' : '') + '><label class="sc-wide">직원 공지 <small>목표 위에 보여요</small><textarea id="scFNote" rows="3" maxlength="500" placeholder="예: 신규 제품 반응이 좋아요 · 제품 설명 숙지해 주세요">' + escapeHtml(f.note) + '</textarea></label></div>'
         + '<div class="sc-f sc-fbtn"><button type="button" class="sc-btn sc-btn2" onclick="scFormClose()">취소</button><button type="button" class="sc-btn" id="scFSave" onclick="scFormSave()">저장</button></div></section>';
     }
     function scFormRowsHtml(f, ev) {   /* 줄마다 [세트]/[상품] → POS 이름 · ev = 행사 등록(주 목표·하루 목표 칸 없음, 20줄) */
@@ -9226,7 +9224,8 @@ video {
             + '<button type="button" class="sc-link" onclick="scPickAdd(' + i + ', -1)">+ 상품 이름 직접 입력</button></div>'
             + (ev ? '</div>' : '<div class="sc-f sc-own"><label class="sc-ownck"><input type="checkbox" data-f="own"' + (r.own ? ' checked' : '') + ' onchange="scFormOwn(' + i + ', this.checked)"> 기간 설정</label>' + (r.own ? '<label>시작<input type="date" data-f="from" value="' + escapeHtml(r.from || '') + '"></label><label>끝<input type="date" data-f="to" value="' + escapeHtml(r.to || '') + '"></label>' : '') + '</div>'
             + '<div class="sc-f"><label>주간 목표<input type="number" inputmode="numeric" min="0" data-f="goal" value="' + escapeHtml(r.goal) + '" oninput="scFormDay(this)"></label>'
-            + '<label>하루 목표<input type="number" inputmode="numeric" min="0" data-f="day" value="' + escapeHtml(r.day) + '" placeholder="' + dp + '" oninput="scFormDay(this)"></label></div></div>');
+            + '<label>하루 목표<input type="number" inputmode="numeric" min="0" data-f="day" value="' + escapeHtml(r.day) + '" placeholder="' + dp + '" oninput="scFormDay(this)"></label></div>'
+            + '<div class="sc-f"><label class="sc-wide">직원 공지 <small>이 목표 위에 보여요 · 목표를 지우면 같이 사라져요</small><textarea data-f="note" rows="2" maxlength="500" placeholder="예: 신규 제품 반응이 좋아요 · 제품 설명 숙지해 주세요">' + escapeHtml(r.note || '') + '</textarea></label></div></div>');
         }).join('')
         + (n < (ev ? 20 : 8) && (ev || f.mode === 'all') ? '<button type="button" class="sc-add" onclick="scFormAdd()">+ ' + (ev ? '상품' : '목표') + ' 추가</button>' : '');
     }
@@ -9236,7 +9235,7 @@ video {
       var vis = [].map.call(document.querySelectorAll('#slBody .sc-fr'), function (el) {
         var g = function (k) { var x = el.querySelector('[data-f="' + k + '"]'); return x ? x.value : ''; };
         var ow = el.querySelector('[data-f="own"]');
-        return { k: el.getAttribute('data-k') || '', kind: el.getAttribute('data-kind') || 'set', label: g('label'), goal: g('goal'), day: g('day'), own: !!(ow && ow.checked), from: g('from'), to: g('to'),
+        return { k: el.getAttribute('data-k') || '', kind: el.getAttribute('data-kind') || 'set', label: g('label'), goal: g('goal'), day: g('day'), note: g('note'), own: !!(ow && ow.checked), from: g('from'), to: g('to'),
           picks: [].map.call(el.querySelectorAll('.sc-pk'), function (pe) { var mi = pe.querySelector('[data-p="m"]'); return { n: pe.getAttribute('data-n') || '', pos: pe.querySelector('[data-p="pos"]').value, m: mi ? Math.max(1, Math.round(+mi.value || 1)) : 1 }; }), i: +el.getAttribute('data-i') };
       });
       if (f.mode === 'add' || f.mode === 'edit') vis.forEach(function (r) { var o = f.rows[r.i]; if (o) Object.keys(r).forEach(function (x) { if (x !== 'i') o[x] = r[x]; }); });   /* 1116 숨긴 기존 목표는 그대로, 보이는 줄만 바꿈 */
@@ -9284,7 +9283,7 @@ video {
       var badP = f.rows.filter(function (r) { return r.own && (!r.from || !r.to || r.from > r.to); })[0]; if (badP) { showToast((badP.label || '목표') + ' · 따로 정한 기간을 확인해 주세요', 2800); return; }
       var sets = f.rows.map(function (r) {
         var pk = r.picks.filter(function (p) { return String(p.pos).trim(); }), label = String(r.label).trim() || (pk[0] ? pk[0].n || pk[0].pos : '');
-        return { k: r.k, label: label, kind: r.kind, pos: pk.map(function (p) { return String(p.pos).trim() + (p.m > 1 ? ' ×' + p.m : ''); }), app: pk.map(function (p) { return p.n; }), goal: +r.goal || 0, day: +r.day || 0, from: r.own ? r.from : f.from, to: r.own ? r.to : f.to };
+        return { k: r.k, label: label, kind: r.kind, pos: pk.map(function (p) { return String(p.pos).trim() + (p.m > 1 ? ' ×' + p.m : ''); }), app: pk.map(function (p) { return p.n; }), goal: +r.goal || 0, day: +r.day || 0, from: r.own ? r.from : f.from, to: r.own ? r.to : f.to, note: String(r.note || '').trim() };
       }).filter(function (s) { return s.label; });
       var lo = sets.reduce(function (a, s) { return s.from < a ? s.from : a; }, f.from), hi = sets.reduce(function (a, s) { return s.to > a ? s.to : a; }, f.to);
       var drop = (f.keys0 || []).filter(function (k) { return !sets.some(function (s) { return s.k === k; }); });
@@ -9294,8 +9293,8 @@ video {
       SC.rev++;
       if (del !== true) {   /* 1117 MJ '추가하면 바로 추가되는 거지' — 추가·수정도 서버를 기다리지 않고 카드에 바로 (서버 setWeekTargets 와 같은 규칙: 같은 목표가 겹치는 다른 기간에서 빠지고 이 기간으로) · 실패하면 되돌림 */
         SC._snap = JSON.parse(JSON.stringify(SC.data)); var tdy = SC.data.today, nk = 0;
-        var ws = sets.map(function (x) { return { k: x.k || ('new' + (++nk)), label: x.label, kind: x.kind, pos: x.pos, app: x.app, from: x.from, to: x.to, g: x.goal, d: x.day }; });
-        var nw = { from: lo, to: hi, note: f.note, sets: ws.map(function (x) { return { k: x.k, label: x.label, kind: x.kind, pos: x.pos, app: x.app, from: x.from, to: x.to }; }), goal: {}, day: {} };
+        var ws = sets.map(function (x) { return { k: x.k || ('new' + (++nk)), label: x.label, kind: x.kind, pos: x.pos, app: x.app, from: x.from, to: x.to, g: x.goal, d: x.day, note: x.note }; });
+        var nw = { from: lo, to: hi, sets: ws.map(function (x) { return { k: x.k, label: x.label, kind: x.kind, pos: x.pos, app: x.app, from: x.from, to: x.to, note: x.note }; }), goal: {}, day: {} };
         ws.forEach(function (x) { if (x.g > 0) { nw.goal[x.k] = x.g; nw.day[x.k] = x.d > 0 ? x.d : Math.round(x.g / scDays({ from: x.from, to: x.to }).length); } });
         SC.data.cfg.weeks = (SC.data.cfg.weeks || []).filter(function (w) { return w.from !== lo; }).map(function (w) { if (!w.sets) return w;
           w.sets = w.sets.filter(function (q) { var a = q.from || w.from, z = q.to || w.to; return !(ws.some(function (x) { return x.k === q.k && a <= x.to && z >= x.from; }) || (drop.indexOf(q.k) >= 0 && z >= tdy)); }); return w; }).filter(function (w) { return !w.sets || w.sets.length; }).concat([nw]).sort(function (a, b) { return a.from < b.from ? -1 : 1; });
@@ -9305,7 +9304,7 @@ video {
         if (!r || !r.success) { if (SC._snap) { SC.data = SC._snap; SC._snap = null; if (del !== true && SC._form) SC.form = SC._form; SC._form = null; scRender(); } showToast((r && r.message) || '저장 안 됨', 3000); if (btn) { btn.disabled = false; btn.textContent = '저장'; } return; }
         SC._snap = null; SC._form = null; SC.data = r; SC.t = Date.now(); SC.form = null; try { localStorage.setItem('ry_sc', JSON.stringify(r)); } catch (e) {}
         scRender(); scQuick(); spSegSync(); showToast(del === true ? '목표를 삭제했어요' : f.mode === 'edit' ? '목표를 고쳤어요' : '새 목표를 추가했어요', 2400);
-      }).withFailureHandler(function () { if (SC._snap) { SC.data = SC._snap; SC._snap = null; if (del !== true && SC._form) SC.form = SC._form; SC._form = null; scRender(); } showToast(del === true ? '삭제 안 됨 · 되돌렸어요 · 인터넷 확인 후 다시 눌러 주세요' : '저장 안 됨 · 인터넷 확인 후 다시 눌러 주세요', 3500); if (btn) { btn.disabled = false; btn.textContent = '저장'; } }).setWeekTargets(currentSelectedMember, { from: lo, to: hi, note: f.note, sets: sets, drop: drop });
+      }).withFailureHandler(function () { if (SC._snap) { SC.data = SC._snap; SC._snap = null; if (del !== true && SC._form) SC.form = SC._form; SC._form = null; scRender(); } showToast(del === true ? '삭제 안 됨 · 되돌렸어요 · 인터넷 확인 후 다시 눌러 주세요' : '저장 안 됨 · 인터넷 확인 후 다시 눌러 주세요', 3500); if (btn) { btn.disabled = false; btn.textContent = '저장'; } }).setWeekTargets(currentSelectedMember, { from: lo, to: hi, sets: sets, drop: drop });
     }
     function scChart(s, c, days, t) {
       var W = days.length <= 7 ? 40 : 24, ox = (W - 24) / 2, vals = days.map(function (d) { return d <= t ? scV(d, s.k) : null; }), goals = days.map(function (d) { return scGoal(c, d, s.k); });   /* 1109 한 주(7일)면 칸을 넓혀 글자가 너무 커지지 않게 */
