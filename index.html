@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwlgxk3m">
+  <meta name="ry-build" content="mwlh43xx">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -16024,6 +16024,7 @@ video {
       ryBcBeep(true);
       if (e) {
         if (e.st === 'done') { ryScanMsg('✓ ' + nm + ' 은(는) 이미 입고 완료했어요'); bciDraw(); return; }
+        if (e.kind === 'wait') { e.bump = Date.now(); BCI.order = [row].concat(BCI.order.filter(function (r) { return r !== row; })); ryScanMsg(nm + ' — 이미 목록에 있어요 · 수량이 다르면 숫자만 고쳐 주세요'); bciDraw(); return; }   // 1118 MJ '추천대로' — 대기 상품은 다시 찍어도 주문 수량 그대로 (상자마다 찍어도 안 틀어지게)
         e.q += 1; e.bump = Date.now(); BCI.order = [row].concat(BCI.order.filter(function (r) { return r !== row; }));
         ryScanMsg(nm + ' +1 → ' + e.q + e.u); bciDraw(); return;
       }
