@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwlitzlb">
+  <meta name="ry-build" content="mwllkhd7">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -11216,7 +11216,7 @@ video {
     }
 
     function openNewProduct(prefill, bc, o) {
-      var q = prefill || (document.getElementById('globalSearchInput') ? document.getElementById('globalSearchInput').value.trim() : '');
+      var q = prefill || (!bc && document.getElementById('globalSearchInput') ? document.getElementById('globalSearchInput').value.trim() : '');   /* 1118 MJ '새 등록 누르면 이름이 바로 나와야' — 바코드로 열 땐 검색창에 남은 글자를 이름에 넣지 않음(그게 있으면 POS 이름 채우기가 '직원이 적은 이름'으로 보고 건너뜀) */
       if (ryIsBc(q)) { bc = bc || q; q = ''; }   /* 1118 검색창에 바코드가 있으면 이름 대신 바코드 칸으로 */
       document.getElementById('npName').value = q || '';
       document.getElementById('npBc').value = bc ? ryGtin(bc) : ''; document.getElementById('npBcH').textContent = ''; document.getElementById('npNameH').textContent = ''; NP_DUP = null;
@@ -11242,7 +11242,7 @@ video {
       NP_AI = { name: '', cat: '' }; npPrefetchCat();   /* 1002 폼 채우는 동안 자동 분류를 미리 받아 둔다 → 등록 때 기다리지 않음 */
       var _nn = document.getElementById('npName'); _nn.oninput = function () { clearTimeout(NP_AI_T); NP_AI_T = setTimeout(npPrefetchCat, 700); };
       if (bc) npBcCheck(bc);
-      setTimeout(function () { document.getElementById('npName').focus(); }, 120);
+      setTimeout(function () { if (bc) { var pb = document.getElementById('npPhotoCamBtn'); if (pb) { pb.scrollIntoView({ block: 'center' }); pb.focus(); } } else document.getElementById('npName').focus(); }, 120);   /* 1118 바코드로 열면 이름은 POS 가 채우니 다음 할 일 = 📷 사진 */
     }
     /* 1118 MJ '바코드 찍으면 없으면 바로 등록 · 바로 사진도' — 바코드로 열면: 바코드 → 이름·제조사(POS 에 있으면 채움) → 📷 사진 → 등록 */
     var NP_DUP = null, NP_ORD = null;
