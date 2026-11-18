@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwlnngrh">
+  <meta name="ry-build" content="mwlo07hl">
   <!-- 1118 카톡 미리보기 (공유 링크) --><meta property="og:type" content="website"><meta property="og:site_name" content="성수레디영"><meta property="og:title" content="성수레디영 물류앱"><meta property="og:description" content="숙지사항 · 발주 · 입고를 한 곳에서 — 눌러서 물류앱으로 바로 열기 (직원 전용)"><meta property="og:image" content="https://deltoy.github.io/readyyoung/ry-icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:url" content="https://deltoy.github.io/readyyoung/"><meta name="description" content="성수레디영 물류앱 (직원 전용)">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
@@ -1721,6 +1721,71 @@ html body:not(#_):not(#_) .st-opt.dis{color:var(--ry-bad)!important}
 /* 1109 📊 판매 목표 전체 화면 (#slPage) — 세트 화면과 같은 틀 · 🎉 행사 효과 */
 #slPage{position:fixed;inset:0;z-index:60;background:var(--ry-canvas);display:none;flex-direction:column}
 #slPage.on{display:flex}
+/* 1118 MJ 직원가 탭 (#stfPage) — 대시보드와 같은 전체 화면 틀 · 아래 고정 합계 (할인 합계가 제일 큼) */
+#stfPage{position:fixed;inset:0;z-index:60;background:var(--ry-canvas);display:none;flex-direction:column}
+#stfPage.on{display:flex}
+#stfPage .sp-head>button:last-child{justify-self:end}
+#stfPage .sp-head button:disabled{opacity:.45}
+.stf-body{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.stf-wrap{max-width:600px;margin:0 auto;padding:12px 16px 20px}
+.stf-find{display:flex;gap:8px}
+.stf-find input{flex:1;min-width:0;min-height:52px;border:1px solid var(--ry-line);border-radius:14px;padding:0 14px;font-size:16px;background:#fff;color:var(--ry-ink)}
+.stf-find input:focus{outline:2px solid var(--ry-brand);outline-offset:-1px}
+.stf-find button{flex:none;min-height:52px;padding:0 14px;border-radius:14px;border:1px solid var(--ry-line);background:#fff;color:var(--ry-brand);font-size:15px;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+.stf-find button svg{width:20px;height:20px}
+.stf-hits{margin-top:8px;background:#fff;border-radius:14px;border:1px solid var(--ry-line);overflow:hidden}
+.stf-hits:empty{display:none}
+.stf-hit{display:flex;align-items:center;gap:10px;width:100%;min-height:56px;padding:8px 12px;border:0;border-bottom:1px solid var(--ry-line);background:#fff;text-align:left;font-size:15px;color:var(--ry-ink)}
+.stf-hit:last-child{border-bottom:0}
+.stf-hit:active{background:var(--ry-sunken)}
+.stf-ph{flex:none;width:40px;height:40px;border-radius:8px;object-fit:cover;background:var(--ry-sunken)}
+.stf-hit span{flex:1;min-width:0;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.35}
+.stf-hit b{flex:none;color:var(--ry-brand);font-size:14px;font-weight:700}
+.stf-note{margin:0;padding:14px 12px;font-size:14px;line-height:1.5;color:var(--ry-ink-3)}
+.stf-list{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.stf-row{background:#fff;border-radius:14px;border:1px solid var(--ry-line);padding:12px}
+.stf-top{display:flex;align-items:flex-start;gap:10px}
+.stf-nm{flex:1;min-width:0;font-size:15px;font-weight:600;line-height:1.35;color:var(--ry-ink);overflow-wrap:anywhere}
+.stf-x{flex:none;width:44px;height:44px;margin:-8px -8px -8px 0;border:0;background:none;color:var(--ry-ink-4);font-size:18px;border-radius:999px}
+.stf-mid{display:flex;align-items:flex-end;gap:10px;margin-top:10px}
+.stf-nums{flex:1;min-width:0;display:grid;grid-template-columns:repeat(3,auto);justify-content:start;column-gap:24px;row-gap:6px}
+.stf-nums div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.stf-nums small{font-size:13px;color:var(--ry-ink-3);white-space:nowrap}
+.stf-nums b{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ry-ink);white-space:nowrap}
+.stf-nums .o b{color:var(--ry-ink-2)}
+.stf-nums .s b{color:var(--ry-brand)}
+.stf-nums .d b{color:var(--ry-ok)}
+.stf-per{margin-top:6px;font-size:13px;color:var(--ry-ink-3)}
+.stf-qty{flex:none;display:flex;align-items:center;border:1px solid var(--ry-line);border-radius:999px;background:#fff}
+.stf-qty button{width:44px;height:44px;border:0;background:none;font-size:22px;line-height:1;color:var(--ry-brand);border-radius:999px}
+.stf-qty button:disabled{color:var(--ry-ink-4)}
+.stf-qty span{min-width:30px;text-align:center;font-size:17px;font-weight:700;font-variant-numeric:tabular-nums}
+.stf-miss{flex:1;min-width:0;padding:10px 12px;border-radius:10px;background:var(--ry-warn-soft);color:var(--ry-warn);font-size:14px;font-weight:600;line-height:1.4}
+.stf-wait{flex:1;font-size:14px;color:var(--ry-ink-3)}
+.stf-empty{padding:32px 12px 12px;text-align:center;color:var(--ry-ink-3);font-size:15px;line-height:1.6}
+.stf-empty b{display:block;font-size:17px;color:var(--ry-ink);margin-bottom:6px}
+.stf-foot{flex:none;background:#fff;border-top:1px solid var(--ry-line);padding:10px 16px calc(12px + env(safe-area-inset-bottom))}
+.stf-foot-in{max-width:568px;margin:0 auto}
+.stf-sub{display:flex;gap:8px;font-size:14px;color:var(--ry-ink-2)}
+.stf-sub div{flex:1;display:flex;flex-direction:column;gap:2px;padding:4px 2px}.stf-sub span{font-size:13px;color:var(--ry-ink-3)}
+.stf-sub b{font-size:17px;font-variant-numeric:tabular-nums;color:var(--ry-ink)}
+.stf-big{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;padding:12px 14px;border-radius:14px;background:var(--ry-brand);color:#fff}
+.stf-big span{display:flex;flex-direction:column;gap:2px;font-size:15px;font-weight:700}
+.stf-big small{font-size:13px;font-weight:600;opacity:.9}
+.stf-big b{font-size:30px;font-weight:800;letter-spacing:-.5px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.stf-big.pop b{animation:stfPop .32s cubic-bezier(.2,.8,.2,1)}
+@keyframes stfPop{0%{transform:scale(.92)}60%{transform:scale(1.06)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.stf-big.pop b{animation:none}}
+.stf-foot-note{margin:8px 2px 0;font-size:13px;line-height:1.45;color:var(--ry-warn);font-weight:600}
+.stf-foot-note:empty{display:none}
+@media (max-width:440px){.stf-nums{column-gap:14px}}
+@media (max-width:360px){.stf-big b{font-size:26px}.stf-nums b{font-size:14px}.stf-nums{column-gap:10px}}
+.stf-big.warn{background:var(--ry-warn)}
+.stf-big.zero{background:var(--ry-sunken);color:var(--ry-ink-3)}.stf-big.zero span{font-weight:600}
+.stf-done{width:100%;min-height:48px;margin-top:8px;border-radius:14px;border:1px solid var(--ry-line);background:#fff;color:var(--ry-brand);font-size:15px;font-weight:700}
+.stf-row.new{animation:stfFlash .7s ease-out}@keyframes stfFlash{0%{background:#EFF4FF}100%{background:#fff}}
+@media (prefers-reduced-motion:reduce){.stf-row.new{animation:none}}
+.stf-retry{min-height:44px;margin-left:6px;padding:0 12px;border:1px solid var(--ry-line);border-radius:999px;background:#fff;color:var(--ry-brand);font-size:14px;font-weight:700}
 #slPage .sp-seg button{white-space:nowrap}
 /* 1110 MJ '하나로 합쳐줘' — 🧺 지금 만들 세트를 📝 만든 세트 탭 맨 위로 · 줄마다 매대 N개 */
 .ssh-start{display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 8px 8px;text-align:center}
@@ -7262,6 +7327,7 @@ video {
         camera: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
         bars: '<path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>',
         flame: '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+        tag: '<path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/>',
         gift: '<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/>',
         listcheck: '<path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/>',
         history: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>',
@@ -10765,7 +10831,8 @@ video {
       var sv = document.getElementById('searchResultView'); if (sv && !sv.classList.contains('hidden')) L.push('search');   /* 검색 결과 · 놓친 주문 */
       var sp = document.getElementById('setPage');
       if (sp && sp.classList.contains('on')) { L.push('setpage'); if (typeof SP !== 'undefined' && SP.view === 'detail') L.push('setdetail'); }
-      var dp = document.getElementById('dshPage'); if (dp && dp.classList.contains('on')) L.push('dsh');   /* 1029 대시보드 */
+      var dp = document.getElementById('dshPage'); if (dp && dp.classList.contains('on')) L.push('dsh');
+      if (typeof stfIsOpen === 'function' && stfIsOpen()) L.push('stf');   /* 1118 직원가 */   /* 1029 대시보드 */
       var slp = document.getElementById('slPage'); if (slp && slp.classList.contains('on')) { L.push('sl'); if (typeof SL !== 'undefined' && ((SL.tab === 'ev' && (SL.sel || SL.form)) || (SL.tab === 'goal' && typeof SC !== 'undefined' && SC.form))) L.push('slsub'); }   /* 1116 MJ '목표 정하기에서 뒤로가기 = 목표 현황' */   /* 1109 판매 목표 · 행사 자세히/등록 */
       var cf = document.getElementById('ryCf'); if (cf && !cf._done) L.push('cf');   /* 1029 앱 확인창 — 뒤로가기 = 취소 */
       if (ryShown('ryLaunch')) L.push('launch');
@@ -10820,6 +10887,7 @@ video {
         else if (top === 'launch') ryLaunchClose();
         else if (top === 'setdetail' || top === 'setpage') spBack();
         else if (top === 'dsh') dshClose();
+        else if (top === 'stf') stfClose();
         else if (top === 'sl') slClose();
         else if (top === 'slsub') { if (SL.tab === 'goal') scFormClose(); else efBack(); }
         else if (top === 'cf') { var cfe = document.getElementById('ryCf'); if (cfe && cfe._res) cfe._res(false); }
@@ -15992,10 +16060,10 @@ video {
     /* ── 카메라·스캐너 창 (mode 'find' = 검색 · 'inb' = 바코드로 입고) ── */
     var RY_SCAN = { mode: '', stream: null, det: null, timer: 0, last: '', lastT: 0 };
     function ryScanOpen(mode) {
-      RY_SCAN.mode = mode === 'inb' || mode === 'np' ? mode : 'find';   /* 1118 'np' = 새 상품 창의 [바코드 찍기] */
+      RY_SCAN.mode = mode === 'inb' || mode === 'np' || mode === 'stf' ? mode : 'find';   /* 1118 'stf' = 직원가 탭 (찍으면 바로 담기, 창은 열린 채) */   /* 1118 'np' = 새 상품 창의 [바코드 찍기] */
       document.getElementById('scanSheet').classList.toggle('np', mode === 'np'); document.getElementById('scanDim').classList.toggle('np', mode === 'np');
       if (RY_SCAN.mode === 'inb') { if (!checkMemberSelectedOrAlert()) return; try { dutyGate(null); } catch (eD) {} BCI.items = {}; BCI.order = []; BCI.done = 0; BCI.pick = null; }
-      document.getElementById('scanTitle').textContent = RY_SCAN.mode === 'inb' ? '📷 바코드로 입고' : '바코드 찍기';
+      document.getElementById('scanTitle').textContent = RY_SCAN.mode === 'inb' ? '📷 바코드로 입고' : RY_SCAN.mode === 'stf' ? '직원가 · 바코드로 담기' : '바코드 찍기';
       document.getElementById('scanSheet').classList.toggle('inb', RY_SCAN.mode === 'inb');
       document.getElementById('scanDim').classList.add('on'); document.getElementById('scanSheet').classList.add('on'); ryLockScroll(true);
       ryScanMsg(RY_SCAN.mode === 'inb' ? '상품 바코드를 하나씩 찍어 주세요 · 수량이 다르면 숫자만 고쳐 주세요' : '상품 바코드를 네모 안에 비춰 주세요');
@@ -16053,6 +16121,7 @@ video {
       RY_SCAN.last = code; RY_SCAN.lastT = now;
       if (RY_SCAN.mode === 'inb') return bciScan(code);
       if (RY_SCAN.mode === 'np') { ryScanClose(); npBcCheck(code); return; }
+      if (RY_SCAN.mode === 'stf' || (!RY_SCAN.mode && stfIsOpen())) return stfScan(code);   /* 1118 직원가 탭 (스캐너는 창 없이도) */
       var sheetOn = !!RY_SCAN.mode; if (sheetOn) { RY_SCAN.mode = ''; ryScanStop(); document.getElementById('scanDim').classList.remove('on'); document.getElementById('scanSheet').classList.remove('on'); ryLockScroll(false); }
       var g = document.getElementById('globalSearchInput'); if (!g) return;
       g.value = code; clearTimeout(searchDebounceTimer); executeServerSearch(code);
@@ -19606,6 +19675,7 @@ video {
         { k: 'srcard', g: 2, ic: RYI.search, n: '자주 찾는 상품', v: '검색 순위 · 결과 없음', kw: '검색 순위 수요 결과없음 새상품' },
         { k: 'trcard', g: 2, ic: RYI.bars, n: '판매 추이', v: '판매 증가 · 감소 · 상위', kw: '추이 그래프 트렌드 증가 감소 인기 판매량 기록' },
         { k: 'mscard', g: 2, ic: RYI.cal, n: '계절별 판매', v: MS.data && MS.data.ok ? MS.data.months.length + '/12개월 올림' : '월별 엑셀로 계절 배수', kw: '계절 시즌 성수기 여름 겨울 봄 가을 월별 판매 발주량' },
+        { k: 'staff', g: 3, ic: RYI.tag, n: '직원가 계산', v: STF.items.length ? '담은 상품 ' + STF.items.length + '개' : '판매가 · 직원가 · 할인 금액', kw: '직원가 직원 구매 할인 계산 계산기 POS 사기' },   /* 1118 MJ 직원가 탭 */
         { k: 'notices', g: 3, ic: NT_ICON.mega, n: '공지 보관함', v: '카톡 공지 · 증정품', kw: '카톡 공지 증정품 변경' },
         { k: 'setduty', g: 3, ic: RYI.cal, n: '세트 담당표', v: am.length ? '오늘 오전 ' + am[0] + (am.length > 1 ? ' 외 ' + (am.length - 1) : '') : '이번 주', kw: '세트 담당 오전 오후 반차 주간 횟수' },
         { k: 'roster', g: 3, ic: RYI.user, n: '근무표', v: '새 창으로 열기', kw: '근무 스케줄 시간표' },
@@ -19966,10 +20036,118 @@ video {
       var t = document.getElementById('dshTitleSub'); if (t) t.textContent = d && d.last ? dshMd(d.last) + '까지 · 매일 아침 8시 반영' : '';
     }
     window.addEventListener('resize', function () { if (!dshIsOpen()) return; clearTimeout(DSH.rzT); DSH.rzT = setTimeout(function () { DSH.chartW = 0; dshRender(); }, 200); });
+    /* ═══ 1118 MJ 직원가 탭 — 직원이 사고 싶은 상품을 담으면 판매가 · 직원가 · 할인액, 아래 '할인 합계'만 POS 에 넣으면 끝
+       가격은 서버 getStaffPrices → 상품마다 [판매가, 직원가] 두 숫자만 (사입가·계산식은 화면·폰 어디에도 없음) · 없으면 '가격 정보 없음' (추측 X, 합계에서 뺌)
+       담은 목록은 이 폰에만 이름·수량 (가격은 열 때마다 새로 받음) ═══ */
+    var STF = { items: [], pr: {}, q: '', back: null, err: false, last: -1, KEY: 'ry_stf_v1' };
+    function stfSave() { try { localStorage.setItem(STF.KEY, JSON.stringify({ t: Date.now(), items: STF.items })); } catch (e) {} }
+    function stfLoadSaved() {   /* 검수: 공용 폰에 앞사람 목록이 남으면 틀린 금액을 넣을 수 있음 → 2시간 지났거나 다른 날이면 비움 */
+      try { var o = JSON.parse(localStorage.getItem(STF.KEY) || 'null'); if (!o || !Array.isArray(o.items)) return 0; var old = Date.now() - (o.t || 0) > 2 * 3600e3 || new Date(o.t || 0).toDateString() !== new Date().toDateString(); if (old) { localStorage.removeItem(STF.KEY); return o.items.length; } STF.items = o.items.filter(function (x) { return x && x.n && x.q > 0; }).slice(0, 100); } catch (e) {} return 0;
+    }
+    function stfIsOpen() { var p = document.getElementById('stfPage'); return !!p && p.classList.contains('on'); }
+    function stfWon(v) { return Number(v || 0).toLocaleString('ko-KR'); }
+    function stfOpen() {
+      var pg = document.getElementById('stfPage'); pg.classList.add('on'); pg.setAttribute('aria-hidden', 'false'); document.body.classList.add('sp-open');
+      STF.back = document.activeElement; STF.pr = {}; STF.last = -1; STF.items = []; var gone = stfLoadSaved(); if (gone) setTimeout(function () { showToast('전에 담아 둔 ' + gone + '개는 비웠어요', 2400); }, 300);
+      if (!RY_CAT || !RY_CAT.items || !RY_CAT.items.length) { try { ryCatLoad(false); } catch (e) {} }
+      stfFetch(); stfHits(); stfRender();
+      try { rySync(); } catch (e) {}
+      if (!(window.matchMedia && matchMedia('(pointer:coarse)').matches)) setTimeout(function () { var q = document.getElementById('stfQ'); if (q) q.focus(); }, 60);
+    }
+    function stfClose() {
+      var pg = document.getElementById('stfPage'); if (!pg || !pg.classList.contains('on')) return;
+      if (RY_SCAN.mode === 'stf') ryScanClose();
+      pg.classList.remove('on'); pg.setAttribute('aria-hidden', 'true'); document.body.classList.remove('sp-open');
+      try { if (STF.back && STF.back.focus) STF.back.focus({ preventScroll: true }); } catch (e) {}
+      try { rySync(); } catch (e) {}
+    }
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && stfIsOpen() && !document.querySelector('.ava-sheet.on') && !document.getElementById('ryCf')) stfClose(); });
+    function stfFetch() {   /* 아직 안 받은 상품 가격만 */
+      var ks = []; STF.items.forEach(function (x) { var k = ryPrKey(x.n); if (!(k in STF.pr) && ks.indexOf(k) === -1) ks.push(k); });
+      if (!ks.length) return;
+      ks.forEach(function (k) { STF.pr[k] = null; });
+      google.script.run.withSuccessHandler(function (r) {
+        if (!(r && r.success)) { ks.forEach(function (k) { if (STF.pr[k] === null) delete STF.pr[k]; }); stfRender(); return; }   /* 서버 오류는 '가격 없음'이 아님 → [다시] */
+        ks.forEach(function (k) { STF.pr[k] = Array.isArray(r.map[k]) ? r.map[k] : [0, 0]; }); stfRender();
+      }).withFailureHandler(function () { ks.forEach(function (k) { if (STF.pr[k] === null) delete STF.pr[k]; }); stfRender(); }).getStaffPrices(ks);
+    }
+    function stfAdd(it) {
+      if (!it || !it.name) return;
+      var k = ryPrKey(it.name), i = -1; STF.items.forEach(function (x, j) { if (ryPrKey(x.n) === k) i = j; });
+      if (i >= 0) { STF.items[i].q = Math.min(99, STF.items[i].q + 1); var x = STF.items.splice(i, 1)[0]; STF.items.unshift(x); }
+      else STF.items.unshift({ n: String(it.name), q: 1, img: it.imgUrl || '' });
+      STF.items = STF.items.slice(0, 100); stfSave(); stfFetch(); stfRender();
+      var nr = document.querySelector('#stfList .stf-row'); if (nr) nr.classList.add('new');
+      return STF.items[0];
+    }
+    function stfPick(i) {
+      var it = (STF.hits || [])[i]; if (!it) return; stfAdd(it);
+      var q = document.getElementById('stfQ'); STF.q = ''; if (q) { q.value = ''; if (!(window.matchMedia && matchMedia('(pointer:coarse)').matches)) q.focus(); else q.blur(); }
+      stfHits(); var b = document.getElementById('stfBody'); if (b) b.scrollTop = 0;
+    }
+    function stfKey(e) {
+      if (e.key !== 'Enter' || e.isComposing) return; e.preventDefault();
+      var v = e.target.value.trim(); if (!v) return;
+      if (ryIsBc(v)) { e.target.value = ''; STF.q = ''; stfHits(); stfScan(ryGtin(v)); return; }
+      if ((STF.hits || []).length === 1) stfPick(0);
+    }
+    function stfScan(code) {   /* 카메라 · 스캐너 · 칸에 숫자+엔터 → 바로 담음 (같은 상품이면 +1) */
+      var sheet = RY_SCAN.mode === 'stf', say = function (t, bad) { if (sheet) ryScanMsg(t, bad); else if (bad) showToast(t, 2400); };   /* 담기 성공은 맨 위 줄 반짝임 (알림이 검색칸을 가리지 않게) */
+      var hits = ryBcFind(code);
+      if (!hits) { say('상품 목록 받는 중이에요 · 잠시 뒤 다시 찍어 주세요', true); try { ryCatLoad(true); } catch (e) {} return; }
+      if (!hits.length) { ryBcBeep(false); say('등록 안 된 바코드예요 (' + code + ') · 이름으로 찾아 주세요', true); return; }
+      ryBcBeep(true);
+      if (hits.length > 1) {   /* 같은 바코드 상품 여러 개 → 창을 닫고 골라 담기 */
+        if (sheet) ryScanClose();
+        var q = document.getElementById('stfQ'); if (q) q.value = code; STF.q = code; stfHits(); showToast('같은 바코드 상품이 ' + hits.length + '개예요 · 맞는 상품을 눌러 주세요', 2600); return;
+      }
+      var x = stfAdd(hits[0]); say('담았어요 · ' + String(x.n).split('\n')[0].slice(0, 24) + ' ' + x.q + '개' + (sheet ? ' · 다음 상품을 찍어 주세요' : ''));
+    }
+    function stfHits() {
+      var el = document.getElementById('stfHits'); if (!el) return;
+      var q = STF.q.trim(), lst = document.getElementById('stfList'); STF.hits = []; if (lst) lst.hidden = !!(q && !STF.items.length); if (!q) { el.innerHTML = ''; return; }
+      var hits = ryIsBc(q) ? ryBcFind(q) : ryCatSearch(q);
+      if (!hits) { el.innerHTML = '<p class="stf-note">상품 목록 받는 중이에요 · 잠시만요</p>'; try { ryCatLoad(true); } catch (e) {} return; }
+      STF.hits = hits.slice(0, 8);
+      el.innerHTML = STF.hits.length ? STF.hits.map(function (it, i) {
+        return '<button type="button" class="stf-hit" onclick="stfPick(' + i + ')">' + (it.imgUrl ? '<img class="stf-ph" src="' + escapeHtml(it.imgUrl) + '" alt="" loading="lazy">' : '<i class="stf-ph" aria-hidden="true"></i>') + '<span>' + escapeHtml(String(it.name).split('\n')[0]) + '</span><b>+ 담기</b></button>';
+      }).join('') : '<p class="stf-note">\'' + escapeHtml(q) + '\' 상품을 못 찾았어요 · 짧게 (예: 탁센) 찾아 보세요</p>';
+    }
+    function stfQty(i, d) { var x = STF.items[i]; if (!x) return; x.q = Math.max(1, Math.min(99, x.q + d)); stfSave(); stfRender(); }
+    function stfDel(i) { STF.items.splice(i, 1); stfSave(); stfRender(); }
+    function stfClear() {
+      if (!STF.items.length) return;
+      ryConfirm({ title: '담은 상품을 다 비울까요?', items: [{ h: STF.items.length + '개 상품', d: '다음 사람이 새로 담을 때 눌러요' }], ok: '비우기', danger: true }).then(function (y) { if (!y) return; STF.items = []; stfSave(); stfRender(); });
+    }
+    function stfDone() { var d = STF.dc || 0; STF.items = []; stfSave(); stfRender(); showToast('이번에 ' + stfWon(d) + '원 아꼈어요 🎉', 2600); }   /* 다음 사람을 위해 비우기 + 작은 축하 */
+    function stfRender() {
+      var L = document.getElementById('stfList'), F = document.getElementById('stfFoot'); if (!L || !F) return;
+      var sp = 0, ss = 0, miss = 0, wait = 0, n = 0;
+      L.innerHTML = STF.items.length ? STF.items.map(function (x, i) {
+        var p = STF.pr[ryPrKey(x.n)], nm = escapeHtml(String(x.n).split('\n')[0]), body;
+        if (p === null || p === undefined) { wait++; body = '<span class="stf-wait">' + (p === undefined ? '가격을 못 불러왔어요 · <button type="button" class="stf-retry" onclick="stfFetch(); stfRender()">다시</button>' : '가격 불러오는 중…') + '</span>'; }
+        else if (!(p[0] > 0 && p[1] > 0)) { miss++; body = '<span class="stf-miss">가격 정보 없음 — 약사님께 확인</span>'; }
+        else {
+          var o = p[0] * x.q, s = p[1] * x.q; sp += o; ss += s; n += x.q;
+          body = '<div class="stf-nums"><div class="o"><small>판매가</small><b>' + stfWon(o) + '</b></div><div class="s"><small>직원가</small><b>' + stfWon(s) + '</b></div><div class="d"><small>할인</small><b>−' + stfWon(o - s) + '</b></div></div>';
+        }
+        return '<div class="stf-row"><div class="stf-top">' + (x.img ? '<img class="stf-ph" src="' + escapeHtml(x.img) + '" alt="" loading="lazy">' : '') + '<div class="stf-nm">' + nm + '</div><button type="button" class="stf-x" onclick="stfDel(' + i + ')" aria-label="' + nm + ' 빼기">✕</button></div>'
+          + '<div class="stf-mid">' + body + '<div class="stf-qty" role="group" aria-label="수량"><button type="button" onclick="stfQty(' + i + ', -1)" aria-label="하나 빼기"' + (x.q <= 1 ? ' disabled' : '') + '>−</button><span>' + x.q + '</span><button type="button" onclick="stfQty(' + i + ', 1)" aria-label="하나 더">+</button></div></div>'
+          + (p && p[0] > 0 && p[1] > 0 && x.q > 1 ? '<div class="stf-per">1개 직원가 ' + stfWon(p[1]) + '원 · 판매가 ' + stfWon(p[0]) + '원</div>' : '') + '</div>';
+      }).join('') : '<div class="stf-empty"><b>사고 싶은 상품을 담아 주세요</b>이름으로 찾거나 [바코드]로 찍으면<br>판매가 · 직원가 · 할인 금액이 바로 나와요</div>';
+      var cb = document.getElementById('stfClearBtn'); if (cb) cb.disabled = !STF.items.length;
+      if (!STF.items.length) { F.innerHTML = '<div class="stf-big zero" role="status"><span>상품을 담으면 할인 금액이 여기 나와요</span></div>'; STF.last = 0; STF.dc = 0; return; }
+      var dc = sp - ss; STF.dc = dc; var note = wait ? '가격 불러오는 중 ' + wait + '개 — 다 나오면 합계가 맞아요' : miss ? '가격 정보 없는 ' + miss + '개는 합계에서 빠졌어요 · 약사님께 확인해 주세요' : '';
+      F.innerHTML = '<div class="stf-sub"><div class="o"><span>판매가 합계</span><b>' + stfWon(sp) + '</b></div><div><span>직원가 합계</span><b>' + stfWon(ss) + '</b></div></div>'
+        + '<div class="stf-big' + (miss || wait ? ' warn' : '') + (dc !== STF.last && STF.last >= 0 && dc > 0 && !wait ? ' pop' : '') + '" role="status"><span>할인 합계' + (miss ? ' (' + miss + '개 빠짐)' : '') + '<small>POS에 이 금액만 넣으세요' + (n ? ' · ' + n + '개 기준' : '') + '</small></span><b>' + (wait ? '계산 중' : stfWon(dc) + '원') + '</b></div>'
+        + '<p class="stf-foot-note">' + note + '</p>' + (dc > 0 && !wait ? '<button type="button" class="stf-done" onclick="stfDone()">POS에 넣었어요 · 비우기</button>' : '');
+      STF.last = dc;
+    }
     function ryLaunchGo(k) {
       tlPushRecent(k); TL_Q = '';
       ryLaunchClose();
       if (k === 'dash') { dshOpen(); return; }
+      if (k === 'staff') { stfOpen(); return; }   // 1118 직원가 탭
       if (k === 'stale') { openStale(); return; }
       if (k === 'setduty') { sdOpenWeek(); return; }
       if (k === 'notices') { ntOpen(); return; }
@@ -20111,6 +20289,22 @@ video {
     <button type="button" onclick="dshRefresh()" aria-label="판매 · 미션 다시 불러오기">새로고침</button>
   </header>
   <main id="dshBody"></main>
+</div>
+<div id="stfPage" class="sp" role="dialog" aria-modal="true" aria-label="직원가 계산" aria-hidden="true">
+  <header class="sp-head">
+    <button type="button" class="sp-back" onclick="stfClose()">✕ 닫기</button>
+    <b>직원가 계산</b>
+    <button type="button" id="stfClearBtn" onclick="stfClear()">비우기</button>
+  </header>
+  <main class="stf-body" id="stfBody"><div class="stf-wrap">
+    <div class="stf-find">
+      <input type="search" id="stfQ" placeholder="상품 이름 · 바코드" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search" aria-label="상품 이름이나 바코드로 찾기" oninput="STF.q = this.value; stfHits()" onkeydown="stfKey(event)">
+      <button type="button" onclick="ryScanOpen('stf')" aria-label="바코드 찍어서 담기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M8 7v10"/><path d="M12 7v10"/><path d="M17 7v10"/></svg>바코드</button>
+    </div>
+    <div class="stf-hits" id="stfHits"></div>
+    <div class="stf-list" id="stfList"></div>
+  </div></main>
+  <footer class="stf-foot"><div class="stf-foot-in" id="stfFoot"></div></footer>
 </div>
 <div id="slPage" class="sp" role="dialog" aria-modal="true" aria-label="판매 목표" aria-hidden="true">
   <header class="sp-head">
