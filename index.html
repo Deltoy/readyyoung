@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwlhlb18">
+  <meta name="ry-build" content="mwlhpqak">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -15892,7 +15892,7 @@ video {
     /* 검색 결과 위 한 줄: 찍은 바코드(작게) + 틀렸을 때 고치는 버튼 */
     function ryBcShow(query, hits, onResults) {
       var rc = document.getElementById('searchResultCount'), em = document.getElementById('searchEmptyMessage'), code = ryGtin(query), sm = document.getElementById('searchSummaryText');
-      if (sm) sm.classList.add('ry-bc-on');   /* 바코드 줄은 한 줄 전체 (옆 안내 숨김) · 다음 이름 검색 때 되돌림 */
+      if (sm) { sm.classList.add('ry-bc-on'); sm.classList.remove('hidden'); }   /* 1118 카메라로 찍으면 요약 줄이 숨겨진 채라 바코드·[다른 상품이에요]가 안 보였음 · 바코드 줄은 한 줄 전체 (옆 안내 숨김) · 다음 이름 검색 때 되돌림 */
       setTimeout(function () { var v = document.getElementById('searchResultView'); if (v && v.scrollIntoView) v.scrollIntoView({ block: 'start', behavior: 'smooth' }); }, 60);
       if (!hits) { renderSearchResults([]); if (em) em.classList.add('hidden'); if (rc) rc.textContent = '상품 목록 받는 중… 잠시만요'; try { ryCatLoad(true); } catch (e) {} return; }
       RY_BC_LAST = { code: code, n: hits.length, t: Date.now() };
