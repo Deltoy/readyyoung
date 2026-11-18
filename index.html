@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwlvo162">
+  <meta name="ry-build" content="mwlvs35k">
   <!-- 1118 카톡 미리보기 (공유 링크) --><meta property="og:type" content="website"><meta property="og:site_name" content="성수레디영"><meta property="og:title" content="성수레디영 물류앱"><meta property="og:description" content="숙지사항 · 발주 · 입고를 한 곳에서 — 눌러서 물류앱으로 바로 열기 (직원 전용)"><meta property="og:image" content="https://deltoy.github.io/readyyoung/ry-icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:url" content="https://deltoy.github.io/readyyoung/"><meta name="description" content="성수레디영 물류앱 (직원 전용)">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
@@ -8637,7 +8637,7 @@ video {
     var SC_ORD = ['s1', 'total', 'smart', 'barrier'];
     function scCur() { var D = SC.data; if (!D || !D.cfg || !D.cfg.weeks) return null; return scWk(D.cfg, D.today || scYmd(new Date())); }
     /* 1116 지난 기간 결과 (같은 목표의 바로 전 기간) — 카드에 '새 주 시작 · 지난주 116%' */
-    function scPeriods(c) { var out = []; c.weeks.forEach(function (w) { ((w.sets) || c.sets || []).forEach(function (s) { var f = s.from || w.from, z = s.to || w.to, G = (w.goal && w.goal[s.k]) || 0, dd = (w.day && w.day[s.k]) || 0, n = scDays({ from: f, to: z }).length; if (dd && Math.round(G / n) !== dd) G = dd * n; out.push({ k: s.k, label: s.label, from: f, to: z, G: G, w: w, note: s.note || w.note || '' }); }); }); return out; }   // w.note = 1118 전 옛 주 공지(지난 기록만)
+    function scPeriods(c) { var out = []; c.weeks.forEach(function (w) { ((w.sets) || c.sets || []).forEach(function (s) { var f = s.from || w.from, z = s.to || w.to, G = (w.goal && w.goal[s.k]) || 0, dd = (w.day && w.day[s.k]) || 0, n = scDays({ from: f, to: z }).length; if (dd && Math.round(G / n) !== dd) G = dd * n; out.push({ k: s.k, label: s.label, from: f, to: z, G: G, w: w, note: s.note || '' }); }); }); return out; }   // 1118 공지 = 목표마다(s.note) · 옛 주 공지(w.note)는 안 씀
     function scPrevOf(c, k, from) { var L = scPeriods(c).filter(function (p) { return p.k === k && p.to < from && p.G; }).sort(function (a, b) { return a.to < b.to ? 1 : -1; })[0]; if (!L) return null; var sum = scDays(L).reduce(function (a, d) { return a + (scV(d, k) || 0); }, 0); return { p: Math.round(sum / L.G * 100), sum: sum, G: L.G }; }
     function scShown() { if (scCur() || scBoss()) return true; var D = SC.data, t = D && D.today, l = t && D.cfg && D.cfg.weeks ? D.cfg.weeks.filter(function (w) { return w.to < t; }).slice(-1)[0] : null; return !!l && scAdd(l.to, 7) >= t; }   /* 1109 이번 주 목표가 있으면 모두 · 정하는 사람은 늘 · 끝나고 일주일은 '다음 목표 준비 중' */
     function scSetsOf(c, w) { var L0 = (w && w.sets) || c.sets || [], used = L0.map(function (s) { return (SC_LOOK[s.k] || {}).c; }).filter(Boolean); return L0.map(function (s, i) { var L = SC_LOOK[s.k] || {}, p = L.c ? SC_PAL[0] : (SC_PAL.filter(function (q) { return used.indexOf(q[0]) < 0; })[0] || SC_PAL[i % SC_PAL.length]); if (!L.c) used.push(p[0]); return { k: s.k, label: s.label, pos: s.pos || [], c: L.c || p[0], soft: L.soft || p[1], leg: L.leg || 0, sub: L.sub || '', from: s.from || '', to: s.to || '', kind: s.kind || 'set' }; }); }
