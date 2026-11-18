@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwlhpqak">
+  <meta name="ry-build" content="mwlitzlb">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -4900,6 +4900,14 @@ html:not(#q):not(#w):not(#e) body:not(#r) #globalSearchInput{padding-right:168px
 #searchSummaryText.ry-bc-on>span:last-child{display:none}#searchSummaryText.ry-bc-on #searchResultCount{flex:1 1 100%}
 .ry-bc-fix,.ry-bc-put{min-height:44px;padding:0 14px;border-radius:999px;border:1px solid #D0D5DD;background:#fff;color:#344054;font-size:13.5px;font-weight:700;margin-left:4px;cursor:pointer}
 .ry-bc-put{margin:0;border-color:#155EEF;color:#155EEF}
+/* 1118 MJ '바코드 찍으면 없으면 바로 새 상품 등록' */
+.ry-bc-new{margin:8px 0 0;min-height:44px;padding:0 16px;border-radius:12px;border:0;background:#155EEF;color:#fff;font-size:14px;font-weight:700;cursor:pointer}
+.np-bc-row{display:flex;gap:8px;align-items:stretch}.np-bc-row input{flex:1;min-width:0}
+.np-bc-scan{flex:none;min-height:44px;padding:0 14px;border-radius:12px;border:1px solid #155EEF;background:#fff;color:#155EEF;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.np-bc-h{font-size:12.5px;color:var(--ry-ink-3,#667085);margin-top:6px;line-height:1.5}.np-bc-h:empty{display:none}.np-bc-dup{color:#B42318;font-weight:700;font-size:14px}.np-bc-h .ry-bc-fix{margin:8px 0 0}
+.ry-bc-or{display:inline-block;margin-top:6px;font-size:12.5px;font-weight:500;color:#667085}
+#npSheet.np-bcmode #npSave{position:sticky;bottom:0;z-index:2;box-shadow:0 -12px 16px -4px #fff}
+#scanDim.np{z-index:80}#scanSheet.np{z-index:81}
 .ry-scan{max-height:90vh}
 .ry-scan-cam{position:relative;border-radius:16px;overflow:hidden;background:#101828;aspect-ratio:4/3;margin-bottom:10px}
 .ry-scan.inb .ry-scan-cam{aspect-ratio:16/9}
@@ -7913,7 +7921,7 @@ video {
       NOTE_BOX0 = String(item.boxUnit == null ? '' : item.boxUnit).trim(); document.getElementById('noteBox').value = NOTE_BOX0;
       NOTE_BC0 = ryBcList(ryBcOf(item)).join('|'); document.getElementById('noteBc').value = NOTE_BC0;   /* 1118 */
       var _bh = document.getElementById('noteBcH'), _lb = RY_BC_LAST;
-      _bh.innerHTML = _lb && !_lb.n && Date.now() - _lb.t < 600000 && ryBcList(NOTE_BC0).indexOf(_lb.code) === -1 ? '<button type="button" class="ry-bc-put" onclick="var f=document.getElementById(\'noteBc\');f.value=f.value?f.value+\'|' + _lb.code + '\':\'' + _lb.code + '\'">방금 찍은 바코드 넣기 · ' + _lb.code + '</button>' : '상자 바코드와 다르면 고쳐 주세요 · 스캐너로 찍어도 돼요';
+      _bh.innerHTML = _lb && !_lb.n && Date.now() - _lb.t < 600000 && ryBcList(NOTE_BC0).indexOf(_lb.code) === -1 ? '<button type="button" class="ry-bc-put" onclick="var f=document.getElementById(\'noteBc\');f.value=f.value?f.value+\'|' + _lb.code + '\':\'' + _lb.code + '\'">방금 찍은 바코드 넣기 · ' + _lb.code + '</button>' : '상품 바코드와 다르면 고쳐 주세요 · 스캐너로 찍어도 돼요';
       var _mrOn = mrCanSee(); document.getElementById('noteMrRow').style.display = _mrOn ? '' : 'none';
       var _mk = document.getElementById('noteMaker'), _rt = document.getElementById('noteRoute'), _r0 = rowNumber;
       NOTE_MR0 = MR.map[rowNumber] ? { maker: String(MR.map[rowNumber].maker || ''), route: String(MR.map[rowNumber].route || '') } : null;
@@ -10747,7 +10755,7 @@ video {
     var RY_NAV = { pushed: 0, goAt: 0, ready: false, busy: false, tabs: [], ok: true };
     var RY_SHEET_CLOSE = { holSheet: 'holClose', slowSheet: 'slowClose', noteSheet: 'closeNote', npSheet: 'closeNewProduct', dupSheet: 'closeDuplicates', cbSheet: 'closeCatBrowse', infoSheet: 'closeInfo', inMemoSheet: 'closeInMemo',
                            seSheet: 'closeSetEdit', teSheet: 'closeTagEdit', avaSheet: 'closeAvaPicker', phSheet: 'closePhotoChoice', drSheet: 'closeDelayReason', rejSheet: 'closeRejects',
-                           stSheet: 'closeStale', ntSheet: 'ntClosePaste', ntESheet: 'ntCloseEdit', sdSheet: 'sdCloseWeek', sdPk: 'sdPkClose', pfaSheet: 'pfaClose', s15Sheet: 's15Close', scDaySheet: 'scDayClose' };
+                           stSheet: 'closeStale', ntSheet: 'ntClosePaste', ntESheet: 'ntCloseEdit', sdSheet: 'sdCloseWeek', sdPk: 'sdPkClose', pfaSheet: 'pfaClose', s15Sheet: 's15Close', scDaySheet: 'scDayClose', scanSheet: 'ryScanClose' };   /* 1118 바코드 창도 뒤로가기 = 카메라까지 끄고 닫기 */
     function ryOpenSheets() { return [].slice.call(document.querySelectorAll('.ava-sheet.on')); }
     function ryShown(id) { var e = document.getElementById(id); return !!e && !e.hidden; }
     function ryLayers() {   /* 아래 → 위 순서 */
@@ -11207,9 +11215,12 @@ video {
       });
     }
 
-    function openNewProduct(prefill) {
+    function openNewProduct(prefill, bc, o) {
       var q = prefill || (document.getElementById('globalSearchInput') ? document.getElementById('globalSearchInput').value.trim() : '');
+      if (ryIsBc(q)) { bc = bc || q; q = ''; }   /* 1118 검색창에 바코드가 있으면 이름 대신 바코드 칸으로 */
       document.getElementById('npName').value = q || '';
+      document.getElementById('npBc').value = bc ? ryGtin(bc) : ''; document.getElementById('npBcH').textContent = ''; document.getElementById('npNameH').textContent = ''; NP_DUP = null;
+      npBcOrder(!!bc);
       document.getElementById('npBox').value = '';
       document.getElementById('npQty').value = '1';
       document.getElementById('npUnit').value = '개';
@@ -11219,7 +11230,7 @@ video {
       document.getElementById('npMrRow').style.display = mrCanSee() ? '' : 'none';   /* 1103 MJ '제조·유통경로까지 한 번에' — 경로를 보는 사람만 */
       var _ncs = document.getElementById('npCat');
       _ncs.innerHTML = '<option value="">자동 분류</option>' + CATEGORY_LIST.map(function (c) { return '<option>' + escapeHtml(c) + '</option>'; }).join('');
-      document.getElementById('npRequest').checked = true;
+      document.getElementById('npRequest').checked = !(o && o.noReq);   /* 1118 바코드 입고 중 등록 = 지금 들어온 상품이라 주문 요청 안 함 */
       NP_PHOTO = '';
       var _pv = document.getElementById('npPhotoPreview'); if (_pv) { _pv.src = ''; _pv.style.display = 'none'; }
       var _cb = document.getElementById('npPhotoCamBtn'); if (_cb) _cb.textContent = '📷 사진 찍기';
@@ -11230,8 +11241,45 @@ video {
       document.getElementById('npSheet').classList.add('on');
       NP_AI = { name: '', cat: '' }; npPrefetchCat();   /* 1002 폼 채우는 동안 자동 분류를 미리 받아 둔다 → 등록 때 기다리지 않음 */
       var _nn = document.getElementById('npName'); _nn.oninput = function () { clearTimeout(NP_AI_T); NP_AI_T = setTimeout(npPrefetchCat, 700); };
+      if (bc) npBcCheck(bc);
       setTimeout(function () { document.getElementById('npName').focus(); }, 120);
     }
+    /* 1118 MJ '바코드 찍으면 없으면 바로 등록 · 바로 사진도' — 바코드로 열면: 바코드 → 이름·제조사(POS 에 있으면 채움) → 📷 사진 → 등록 */
+    var NP_DUP = null, NP_ORD = null;
+    function npBcOrder(on) {
+      var nf = document.getElementById('npNameF'), pf = document.getElementById('npPhotoCamBtn').closest('.np-field'), mr = document.getElementById('npMrRow');
+      if (!NP_ORD) NP_ORD = [[pf, pf.nextSibling], [mr, mr.nextSibling]];
+      document.getElementById('npSheet').classList.toggle('np-bcmode', !!on);
+      if (on) { nf.after(mr); mr.after(pf); } else NP_ORD.slice().reverse().forEach(function (x) { x[1].parentNode.insertBefore(x[0], x[1]); });
+    }
+    function npBcCheck(v) {
+      var code = ryGtin(v), h = document.getElementById('npBcH'); NP_DUP = null;
+      if (!code) { h.textContent = ''; return; }
+      document.getElementById('npBc').value = code;
+      var hits = ryBcFind(code) || [];
+      if (hits.length) {
+        NP_DUP = { code: code, name: String(hits[0].name || '').split('\n')[0] };
+        h.innerHTML = '<span class="np-bc-dup">이미 등록된 상품이에요: ' + escapeHtml(NP_DUP.name) + (hits.length > 1 ? ' 외 ' + (hits.length - 1) + '개' : '') + '</span><br><button type="button" class="ry-bc-fix" onclick="npOpenDup()">그 상품 열기</button>';
+        ryBcBeep(false); return;
+      }
+      h.textContent = '';
+      var nm = document.getElementById('npName'), nh = document.getElementById('npNameH'); if (nm.value.trim()) return;   /* 직원이 적은 이름은 안 덮음 */
+      nh.textContent = 'POS 에서 이름 찾는 중…';
+      google.script.run.withSuccessHandler(function (r) {
+        if (document.getElementById('npBc').value !== code || nm.value.trim()) { if (nh.textContent.indexOf('찾는 중') !== -1) nh.textContent = ''; return; }
+        if (r && r.name) {
+          nm.value = r.name; nh.textContent = 'POS 이름으로 채웠어요 · 상품과 다르면 고쳐 주세요'; npPrefetchCat();
+          var mk = document.getElementById('npMaker'); if (r.maker && mrCanSee() && !mk.value.trim()) mk.value = r.maker;
+        } else nh.textContent = '상품에 적힌 이름을 적어 주세요';
+      }).withFailureHandler(function () { if (!nm.value.trim()) nh.textContent = '상품에 적힌 이름을 적어 주세요'; }).posNameByBarcode(code);
+    }
+    function npOpenDup() {
+      var d = NP_DUP; if (!d) return; closeNewProduct();
+      var g = document.getElementById('globalSearchInput'); if (!g) return;
+      g.value = d.code; clearTimeout(searchDebounceTimer); executeServerSearch(d.code);
+      var cb = document.getElementById('clearSearchBtn'); if (cb) cb.classList.remove('hidden');
+    }
+    function npBcVal() { return ryBcList(document.getElementById('npBc').value).map(ryGtin).filter(Boolean).filter(function (x, i, a) { return a.indexOf(x) === i; }).join('|'); }
     var NP_AI = { name: '', cat: '' }, NP_AI_T = null;
     function npPrefetchCat() {
       var n = document.getElementById('npName').value.trim();
@@ -11248,9 +11296,11 @@ video {
       var err = document.getElementById('npErr');
       if (!name) { err.textContent = '상품명을 입력해주세요.'; err.classList.add('on'); return; }
       if (!currentSelectedMember) { err.textContent = '먼저 위에서 이름을 선택해주세요.'; err.classList.add('on'); return; }
+      var npBc = npBcVal(), npDup = npBc ? (ryBcFind(npBc.split('|')[0]) || []) : [];
+      if (npDup.length && !ryAsk('이 바코드는 이미 등록된 상품이에요\n\n' + String(npDup[0].name || '').split('\n')[0] + ' 에 이미 이 바코드가 있어요\n\n같은 상품이면 [취소] → 바코드 아래 [그 상품 열기]. 정말 다른 상품일 때만 등록해 주세요.', saveNewProduct, { ok: '다른 상품이에요 · 등록' })) return;   /* 1118 중복 등록 막기 */
       var btn = document.getElementById('npSave');
       /* 1002 빠르게: 누르면 바로 창을 닫고 뒤에서 등록. 실패하면 적은 내용 그대로 창을 다시 연다 */
-      var ids = ['npName', 'npBox', 'npQty', 'npUnit', 'npNote', 'npSales15', 'npCat', 'npSub', 'npMaker', 'npRoute'], snap = {}; ids.forEach(function (k) { var el = document.getElementById(k); if (el) snap[k] = el.value; });
+      var ids = ['npName', 'npBc', 'npBox', 'npQty', 'npUnit', 'npNote', 'npSales15', 'npCat', 'npSub', 'npMaker', 'npRoute'], snap = {}; ids.forEach(function (k) { var el = document.getElementById(k); if (el) snap[k] = el.value; });
       snap.req = document.getElementById('npRequest').checked; snap.photo = NP_PHOTO || '';
       var cat0 = catJoin(document.getElementById('npCat').value, document.getElementById('npSub').value);
       if (!cat0 && NP_AI.name === name && NP_AI.cat) cat0 = NP_AI.cat;
@@ -11277,7 +11327,8 @@ video {
           category: cat0,
           photo: snap.photo,
           request: document.getElementById('npRequest').checked,
-          requester: currentSelectedMember || ''
+          requester: currentSelectedMember || '',
+          barcode: npBc
         };
       /* 1110 MJ '우루사 새 상품 등록했다는데 검색이 안 돼' — 현주 10:15 등록하기 누른 순간 앱이 새로고침돼 요청이 서버에 못 감 → 보내기 전에 기기에 적어 두고, 다음에 앱을 열 때 안 끝났으면 다시 보낼지 물음 */
       try { var keep = Object.assign({}, NP_PL); if (String(keep.photo || '').length > 1500000) keep.photo = ''; localStorage.setItem('ry_np_pending', JSON.stringify({ at: Date.now(), pl: keep })); } catch (eP) {}
@@ -11291,7 +11342,7 @@ video {
           if (res.requested) try { optimisticAddToReview(res.rowNumber, { name: res.name, imgUrl: (res.photo && res.photo.ok && res.photo.url) || '', boxUnit: snap.npBox || '', note: snap.npNote || '', category: res.category || '', uses: res.uses || [], sales15: snap.npSales15 || '-' }, parseInt(snap.npQty, 10) || 1, snap.npUnit === '박스' ? '박스' : '개'); } catch (eO) {}   /* 1103 목록 새로 받기(18초쯤) 전에 1차 검토에 바로 */
           showToast('✓ ' + res.name + ' 등록했어요' + (res.requested ? ' · 1차 검토에 올라왔어요' : ''), 3000);
           if (res.photo && !res.photo.ok) showToast(res.name + ' · 사진은 저장 못 했어요 (상품은 등록됐어요)', 3500);
-          try { if (RY_CAT && RY_CAT.items) { RY_CAT.items.push({ rowNumber: res.rowNumber, name: res.name, category: res.category || '', imgUrl: (res.photo && res.photo.ok && res.photo.url) || '',   /* 1016 사진첩 사진이 검색에 안 보이던 것 */ uses: res.uses || [], note: '', sales15: '-', status: 'IDLE', _k: String(res.name || '').replace(/\s+/g, '').toLowerCase() }); ryCatSave(); } if (RY_CAT) RY_CAT.t = 0; ryCatLoad(true); } catch (eC) {}   // 1001 등록한 상품이 검색에 바로
+          try { if (RY_CAT && RY_CAT.items) { RY_CAT.items.push({ rowNumber: res.rowNumber, name: res.name, bc: snap.npBc ? npBc : undefined, category: res.category || '', imgUrl: (res.photo && res.photo.ok && res.photo.url) || '',   /* 1016 사진첩 사진이 검색에 안 보이던 것 */ uses: res.uses || [], note: '', sales15: '-', status: 'IDLE', _k: String(res.name || '').replace(/\s+/g, '').toLowerCase() }); ryCatSave(); } if (RY_CAT) RY_CAT.t = 0; ryCatLoad(true); } catch (eC) {}   // 1001 등록한 상품이 검색에 바로
           // 0930 목록을 억지로 다시 받지 않는다(서버가 2분 걸림). 새 상품은 폰 목록에 없어도 서버 이름 스캔으로 바로 찾힌다
           loadAllData(true, true, true);
         })
@@ -15900,7 +15951,7 @@ video {
       if (!rc) return;
       if (!hits.length) {
         if (em) em.classList.add('hidden');
-        rc.innerHTML = '<span class="ry-bc-miss"><b>등록 안 된 바코드예요</b> <span class="ry-bc-code">' + escapeHtml(code) + '</span><br>이름으로 찾고 [수정]에서 바코드를 넣어 주세요</span>';
+        rc.innerHTML = '<span class="ry-bc-miss"><b>등록 안 된 바코드예요</b> <span class="ry-bc-code">' + escapeHtml(code) + '</span></span><br><button type="button" class="ry-bc-new" data-c="' + escapeHtml(code) + '" onclick="openNewProduct(\'\', this.dataset.c)">+ 새 상품으로 등록</button><br><small class="ry-bc-or">이미 있는 상품이면 이름으로 찾아 [수정]에서 바코드를 넣어 주세요</small>';
         return;
       }
       rc.innerHTML = '<span class="ry-bc-hit"><span class="ry-bc-code">바코드 ' + escapeHtml(code) + '</span>' + (hits.length > 1 ? ' <b>같은 바코드 상품이 ' + hits.length + '개예요 — 맞는 상품을 골라 주세요</b>' : '') + '</span>'
@@ -15940,12 +15991,13 @@ video {
     /* ── 카메라·스캐너 창 (mode 'find' = 검색 · 'inb' = 바코드로 입고) ── */
     var RY_SCAN = { mode: '', stream: null, det: null, timer: 0, last: '', lastT: 0 };
     function ryScanOpen(mode) {
-      RY_SCAN.mode = mode === 'inb' ? 'inb' : 'find';
+      RY_SCAN.mode = mode === 'inb' || mode === 'np' ? mode : 'find';   /* 1118 'np' = 새 상품 창의 [바코드 찍기] */
+      document.getElementById('scanSheet').classList.toggle('np', mode === 'np'); document.getElementById('scanDim').classList.toggle('np', mode === 'np');
       if (RY_SCAN.mode === 'inb') { if (!checkMemberSelectedOrAlert()) return; try { dutyGate(null); } catch (eD) {} BCI.items = {}; BCI.order = []; BCI.done = 0; BCI.pick = null; }
       document.getElementById('scanTitle').textContent = RY_SCAN.mode === 'inb' ? '📷 바코드로 입고' : '바코드 찍기';
       document.getElementById('scanSheet').classList.toggle('inb', RY_SCAN.mode === 'inb');
       document.getElementById('scanDim').classList.add('on'); document.getElementById('scanSheet').classList.add('on'); ryLockScroll(true);
-      ryScanMsg(RY_SCAN.mode === 'inb' ? '상자 바코드를 하나씩 찍어 주세요 · 같은 상품을 또 찍으면 +1' : '상자 바코드를 네모 안에 비춰 주세요');
+      ryScanMsg(RY_SCAN.mode === 'inb' ? '상품 바코드를 하나씩 찍어 주세요 · 수량이 다르면 숫자만 고쳐 주세요' : '상품 바코드를 네모 안에 비춰 주세요');
       var inp = document.getElementById('scanIn'); inp.value = '';
       bciDraw();
       var coarse = window.matchMedia && matchMedia('(pointer:coarse)').matches;
@@ -15976,7 +16028,7 @@ video {
         RY_SCAN.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 1280 } }, audio: false });
         if (!RY_SCAN.mode) return ryScanStop();
         v.srcObject = RY_SCAN.stream; await v.play();
-        ryScanMsg(RY_SCAN.mode === 'inb' ? '상자 바코드를 하나씩 비춰 주세요 · 수량이 다르면 숫자만 고쳐 주세요' : '상자 바코드를 네모 안에 비춰 주세요');
+        ryScanMsg(RY_SCAN.mode === 'inb' ? '상품 바코드를 하나씩 비춰 주세요 · 수량이 다르면 숫자만 고쳐 주세요' : '상품 바코드를 네모 안에 비춰 주세요');
         var tick = async function () {
           if (!RY_SCAN.stream) return;
           try { var r = await RY_SCAN.det.detect(v); if (r && r[0] && r[0].rawValue) ryScanGot(r[0].rawValue, 'cam'); } catch (e1) {}
@@ -15999,6 +16051,7 @@ video {
       if (how === 'cam' && code === RY_SCAN.last && now - RY_SCAN.lastT < 1500) { RY_SCAN.lastT = now; return; }   /* 카메라가 같은 상자를 계속 비추는 동안은 한 번 — 화면에서 1.5초 빠져야 다시 셈 */
       RY_SCAN.last = code; RY_SCAN.lastT = now;
       if (RY_SCAN.mode === 'inb') return bciScan(code);
+      if (RY_SCAN.mode === 'np') { ryScanClose(); npBcCheck(code); return; }
       var sheetOn = !!RY_SCAN.mode; if (sheetOn) { RY_SCAN.mode = ''; ryScanStop(); document.getElementById('scanDim').classList.remove('on'); document.getElementById('scanSheet').classList.remove('on'); ryLockScroll(false); }
       var g = document.getElementById('globalSearchInput'); if (!g) return;
       g.value = code; clearTimeout(searchDebounceTimer); executeServerSearch(code);
@@ -16010,13 +16063,18 @@ video {
     function bciScan(code) {
       var hits = ryBcFind(code);
       if (!hits) { ryScanMsg('상품 목록 받는 중이에요 · 잠시 뒤 다시 찍어 주세요', true); try { ryCatLoad(true); } catch (e) {} return; }
-      if (!hits.length) { ryBcBeep(false); RY_BC_LAST = { code: code, n: 0, t: Date.now() }; ryScanMsg('등록 안 된 바코드예요 (' + code + ') · 검색에서 이름으로 찾아 [수정]에서 바코드를 넣어 주세요', true); return; }
+      if (!hits.length) { ryBcBeep(false); RY_BC_LAST = { code: code, n: 0, t: Date.now() }; ryScanMsg('등록 안 된 바코드예요 (' + code + ')', true); var mm = document.getElementById('scanMsg'); if (mm) mm.insertAdjacentHTML('beforeend', '<br><button type="button" class="ry-bc-new" data-c="' + escapeHtml(code) + '" onclick="bciNew(this.dataset.c)">+ 새 상품으로 등록</button><br><small class="ry-bc-or">이미 있는 상품이면 검색에서 이름으로 찾아 [수정]에서 바코드를 넣어 주세요</small>'); return; }
       if (hits.length > 1) {   /* 같은 바코드 상품 여러 개 → 고르기 (입고 대기인 것 먼저) */
         var w = {}; (cachedInboundItems || []).forEach(function (x) { w[x.rowNumber] = 1; });
         hits.sort(function (a, b) { return (w[b.rowNumber] || 0) - (w[a.rowNumber] || 0); });
         BCI.pick = { code: code, list: hits }; ryBcBeep(true); ryScanMsg('같은 바코드 상품이 ' + hits.length + '개예요 · 맞는 상품을 골라 주세요'); bciDraw(); return;
       }
       bciAdd(hits[0]);
+    }
+    function bciNew(code) {   /* 1118 바코드 입고 중 앱에 없는 상품 → 카메라 쉬고 새 상품 창 (등록 뒤 다시 찍으면 '주문 없이 입고') */
+      ryScanStop(); document.getElementById('scanCam').hidden = true; document.getElementById('scanCamBtn').hidden = false;
+      ryScanMsg('새 상품을 등록한 뒤 다시 찍으면 입고 목록에 들어가요');
+      openNewProduct('', code, { noReq: 1 });
     }
     function bciPick(i) { var p = BCI.pick; BCI.pick = null; if (p && p.list[i]) bciAdd(p.list[i]); else bciDraw(); }
     function bciAdd(it) {
@@ -20007,7 +20065,7 @@ video {
   <div class="np-field"><label>상품명</label><input type="text" id="noteName" placeholder="상품명" enterkeyhint="done"></div>
   <div class="np-field"><label for="noteLoc">창고 위치</label><input type="text" id="noteLoc" placeholder="예: A-03-2" enterkeyhint="done" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" onblur="var v = locNorm(this.value); if (v) this.value = v;"><div class="np-loc-h">구역 A~H · 선반 01~99 · 칸 위에서 1~9 — a3-2 처럼 쳐도 돼요 · 비우면 지워요</div></div>
   <div class="np-field"><label for="noteBox">1박스 입수 (선택)</label><input type="text" id="noteBox" maxlength="20" placeholder="예: 10개입" autocomplete="off" enterkeyhint="done"></div>
-  <div class="np-field"><label for="noteBc">바코드</label><input type="text" id="noteBc" inputmode="numeric" maxlength="120" placeholder="예: 8806… · 여러 개면 | 로 나눠요" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="done" onfocus="this.select()"><div class="np-loc-h" id="noteBcH">상자 바코드와 다르면 고쳐 주세요 · 스캐너로 찍어도 돼요</div></div>
+  <div class="np-field"><label for="noteBc">바코드</label><input type="text" id="noteBc" inputmode="numeric" maxlength="120" placeholder="예: 8806… · 여러 개면 | 로 나눠요" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="done" onfocus="this.select()"><div class="np-loc-h" id="noteBcH">상품 바코드와 다르면 고쳐 주세요 · 스캐너로 찍어도 돼요</div></div>
   <div class="np-row" id="noteMrRow" style="display:none">
     <div class="np-field"><label for="noteMaker">제조사</label><input type="text" id="noteMaker" maxlength="40" placeholder="예: 종근당건강" autocomplete="off" enterkeyhint="done"></div>
     <div class="np-field"><label for="noteRoute">유통경로</label><input type="text" id="noteRoute" maxlength="300" placeholder="예: 백제약품 · 쿠팡 링크 · 전화" autocomplete="off" enterkeyhint="done"></div>
@@ -20262,7 +20320,8 @@ video {
 <div class="ava-sheet" id="npSheet" role="dialog" aria-label="새 상품 등록">
   <div class="ava-head"><b>새 상품 등록</b><button type="button" onclick="closeNewProduct()">닫기</button></div>
   <div class="np-err" id="npErr"></div>
-  <div class="np-field"><label>상품명</label><input type="text" id="npName" placeholder="예: 락토핏 골드 100g"></div>
+  <div class="np-field"><label for="npBc">바코드 (선택)</label><div class="np-bc-row"><input type="text" id="npBc" inputmode="numeric" maxlength="120" placeholder="예: 8806…" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="next" onchange="npBcCheck(this.value)" onkeydown="if (event.key === 'Enter' && !event.isComposing) { event.preventDefault(); npBcCheck(this.value); }"><button type="button" class="np-bc-scan" onclick="ryScanOpen('np')">바코드 찍기</button></div><div class="np-bc-h" id="npBcH" role="status" aria-live="polite"></div></div>
+  <div class="np-field" id="npNameF"><label for="npName">상품명</label><input type="text" id="npName" placeholder="예: 락토핏 골드 100g"><div class="np-bc-h" id="npNameH"></div></div>
   <div class="np-row">
     <div class="np-field"><label>1박스 입수 (선택)</label><input type="text" id="npBox" placeholder="예: 10개입"></div>
     <div class="np-field"><label>주문 수량</label><input type="number" id="npQty" inputmode="numeric" value="1"></div>
