@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwlh43xx">
+  <meta name="ry-build" content="mwlhlb18">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
    암호(k)는 주소의 ?k= 또는 이 기기에 저장된 값. 암호는 이 파일에 없다(서버 Code.gs 에만). */
@@ -15869,12 +15869,12 @@ video {
     var RY_BCD_URL = 'https:' + '/' + '/cdn.jsdelivr.net/npm/barcode-detector@3.2.2/ponyfill/+esm';   /* 카메라 읽기: 폰 기본 기능(BarcodeDetector) 없을 때만 (아이폰) */
     var RY_BC_LAST = null;   /* 마지막으로 찍은 바코드 {code, n, t} — 등록 안 된 바코드면 상품 수정 창에서 [방금 찍은 바코드 넣기] */
     function ryGtin(t) {   /* GS1 (01)+14자리 · 13자리+유통기한 꼬리 · 앞 0 → 같은 번호로 */
-      t = String(t || '').replace(/\x1d.*$/, '').replace(/[()\s]/g, '').trim(); var m;
+      t = String(t || '').replace(/^\s*\][A-Za-z]\d/, '').replace(/^[\x1d\s]+/, '').replace(/\x1d.*$/, '').replace(/[()\s]/g, '').trim(); var m;   // 1118 MJ '스티모린 큐알(데이터매트릭스) 안 나와' — GS1 데이터매트릭스는 앞에 ']d2'·FNC1(\x1d) 이 붙어 와서 통째로 지워졌음
       if ((m = /^01(\d{14})/.exec(t)) && t.length >= 16) t = m[1];
       if ((m = /^(8\d{12})(1[0-7]|21)\d+$/.exec(t))) t = m[1];
       return t.replace(/^0+(?=\d{8})/, '');
     }
-    function ryIsBc(q) { var t = String(q || '').replace(/[()\s]/g, ''); return /^\d{8,14}$/.test(t) || /^01\d{14}[0-9A-Za-z\x1d-]*$/.test(t) || /^8\d{12}(1[0-7]|21)\d{4,}$/.test(t); }
+    function ryIsBc(q) { var t = String(q || '').replace(/^\s*\][A-Za-z]\d/, '').replace(/^[\x1d\s]+/, '').replace(/[()\s]/g, ''); return /^\d{8,14}$/.test(t) || /^01\d{14}[0-9A-Za-z\x1d-]*$/.test(t) || /^8\d{12}(1[0-7]|21)\d{4,}$/.test(t); }
     function ryBcList(v) { return String(v || '').split(/\s*[|;,]\s*/).filter(Boolean); }
     function ryBcFind(code) {   /* null = 목록 아직 없음 */
       if (!RY_CAT || !RY_CAT.items) return null;
@@ -15976,7 +15976,7 @@ video {
         RY_SCAN.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 1280 } }, audio: false });
         if (!RY_SCAN.mode) return ryScanStop();
         v.srcObject = RY_SCAN.stream; await v.play();
-        ryScanMsg(RY_SCAN.mode === 'inb' ? '상자 바코드를 하나씩 비춰 주세요 · 같은 상품을 또 찍으면 +1' : '상자 바코드를 네모 안에 비춰 주세요');
+        ryScanMsg(RY_SCAN.mode === 'inb' ? '상자 바코드를 하나씩 비춰 주세요 · 수량이 다르면 숫자만 고쳐 주세요' : '상자 바코드를 네모 안에 비춰 주세요');
         var tick = async function () {
           if (!RY_SCAN.stream) return;
           try { var r = await RY_SCAN.det.detect(v); if (r && r[0] && r[0].rawValue) ryScanGot(r[0].rawValue, 'cam'); } catch (e1) {}
