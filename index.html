@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwn6yi3i">
+  <meta name="ry-build" content="mwnb15pj">
   <!-- 1118 카톡 미리보기 (공유 링크) --><meta property="og:type" content="website"><meta property="og:site_name" content="성수레디영"><meta property="og:title" content="성수레디영 물류앱"><meta property="og:description" content="숙지사항 · 발주 · 입고를 한 곳에서 — 눌러서 물류앱으로 바로 열기 (직원 전용)"><meta property="og:image" content="https://deltoy.github.io/readyyoung/ry-icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:url" content="https://deltoy.github.io/readyyoung/"><meta name="description" content="성수레디영 물류앱 (직원 전용)">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
@@ -2873,6 +2873,7 @@ input,textarea,select,[contenteditable="true"]{-webkit-user-select:text;user-sel
 html:not(#q):not(#w):not(#e) body:not(#r) .s15-pick:not(.sub),html:not(#q):not(#w):not(#e) body:not(#r) .s15-pick:not(.sub) span{color:#fff!important} /* 1115 대비: 버튼 글씨는 버튼 색 그대로(파란 버튼 위 회색 1.1:1 고침) */
 
 /* 1115 주간 리포트 화면 */
+.ry-gift{display:block;margin-top:4px;font-size:13px;line-height:1.4;color:#475467}   /* 1119 증정 한 줄 */
 #wkSheet{position:fixed;inset:0;z-index:9000;background:#f5f6f8;overflow-y:auto;-webkit-overflow-scrolling:touch}
 #wkSheet[hidden]{display:none}
 #wkSheet .wk-in{max-width:640px;margin:0 auto;padding:16px 16px 48px}
@@ -2891,6 +2892,8 @@ html:not(#q):not(#w):not(#e) body:not(#r) .s15-pick:not(.sub),html:not(#q):not(#
 #wkSheet .wk-c em.up{color:#1f7a35}#wkSheet .wk-c em.down{color:#b42318}
 #wkSheet .wk-box{background:#fff;border:1px solid #eaecf0;border-radius:16px;padding:14px 16px;margin-bottom:12px}
 #wkSheet .wk-row{display:flex;align-items:center;gap:10px;font-size:14px;color:#344054;margin:7px 0}
+#wkSheet .wk-nt{margin:8px 0 0;font-size:14px;line-height:1.5;color:#344054}#wkSheet .wk-box .wk-g{margin-bottom:0}
+#wkSheet .wk-wks{display:flex;gap:8px;overflow-x:auto;margin:0 0 10px;padding-bottom:2px}#wkSheet .wk-wk{flex:none;min-height:40px;padding:0 14px;border:1px solid #d0d5dd;border-radius:999px;background:#fff;font-size:14px;color:#344054}#wkSheet .wk-wk.on{background:#155EEF;border-color:#155EEF;color:#fff}
 #wkSheet .wk-row span{flex:0 0 42%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #wkSheet .wk-bar{flex:1;height:10px;background:#f2f4f7;border-radius:6px;overflow:hidden}
 #wkSheet .wk-bar i{display:block;height:100%;background:#155EEF;border-radius:6px}
@@ -7577,12 +7580,31 @@ video {
       if (qk) D.list.forEach(function (x) { var w = Math.min(x + 1, b) - Math.max(x, a); if (w > 0) { s += w * ((qk[x] || 0) - daily); if (use) use.n++; } });
       return s;
     }
+    /* 1119 MJ '파마티크 홍삼팩·골드팩은 거의 증정' — RY_GIFT {날 번호: 그날 30만원↑ 영수증 수} (getStockCounts.gift, ry-pc3 가 15분마다) */
+    var GIFT_K = { hong: '파마티크홍삼팩', gold: '파마티크골드팩' }, RY_GIFT = null, _gaDone = {};
+    function giftIn(a, b) { var s = 0; if (RY_GIFT) for (var d in RY_GIFT) if (+d >= a && +d < b) s += RY_GIFT[d]; return s; }
+    function giftRule(it) { var m = String(it && it.note || '').match(/\[자동주문\s*(\d+)\s*(?:→|->|>)\s*(\d+)\]/); return m ? [+m[1], +m[2]] : (it && (ryPrKey(it.name) === GIFT_K.hong || ryPrKey(it.name) === GIFT_K.gold) ? [40, 126] : null); }
+    /* 1119 MJ '40개 이하로 떨어지면 126개를 자동주문으로 최종발주에' — 추정 재고는 화면만 계산 → 켜 둔 앱이 기준 이하를 보면 서버 giftAutoOrder (이미 최종 발주·입고 대기면 서버가 안 함) · 이 화면에선 하루 한 번만 물어봄 */
+    function giftAutoCheck(tries) {
+      if (!RY_GIFT || typeof google === 'undefined' || !google.script) return;
+      if (!RY_CAT || !RY_CAT.items) { if ((tries || 0) < 12) setTimeout(function () { giftAutoCheck((tries || 0) + 1); }, 10000); return; }   // 상품 목록이 재고 자료보다 늦게 올 때 (최대 2분 기다림)
+      var today = stkToday();
+      RY_CAT.items.forEach(function (it) {
+        var rule = giftRule(it); if (!rule) return; var k = ryPrKey(it.name); if (_gaDone[k] === today) return;
+        var s = stkOf(it); if (!s || !(s.est <= rule[0])) return; _gaDone[k] = today;
+        google.script.run.withSuccessHandler(function (r) { if (r && r.added) { try { showToast('🛒 ' + r.added + '개 자동 주문 → 최종 발주 (추정 재고 ' + s.est + '개)', 3200); } catch (e) {} } }).withFailureHandler(function () { delete _gaDone[k]; }).giftAutoOrder(it.name, s.est, currentSelectedMember || '');
+      });
+    }
     function stkDay(s) { var m = String(s || '').match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/); return m ? Date.UTC(+m[1], +m[2] - 1, +m[3]) / 864e5 : null; }
     function stkToday() { var d = new Date(); return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 864e5; }
     function stkOf(it) {
       if (!it || !it.name) return null;
-      if (!RY_SC || Date.now() - _scAt > 3600e3) { if (!_scLoading && typeof google !== 'undefined' && google.script) { _scLoading = true; _scAt = Date.now(); google.script.run.withSuccessHandler(function (r) { _scLoading = false; RY_SC = (r && r.map) || {}; try { RY_DS = stkDsPrep(r && r.ds); } catch (eDs) { RY_DS = null; } try { renderAllViews(); } catch (e) {} stkSrRefresh(); }).withFailureHandler(function () { _scLoading = false; RY_SC = RY_SC || {}; }).getStockCounts(); } if (!RY_SC) return null; }   // 1029 켜 둔 PC도 1시간마다 뒤에서 다시 (아침 8:10 하루 판매 반영)
+      if (!RY_SC || Date.now() - _scAt > 3600e3) { if (!_scLoading && typeof google !== 'undefined' && google.script) { _scLoading = true; _scAt = Date.now(); google.script.run.withSuccessHandler(function (r) { _scLoading = false; RY_SC = (r && r.map) || {}; try { RY_DS = stkDsPrep(r && r.ds); } catch (eDs) { RY_DS = null; } RY_GIFT = {}; Object.keys((r && r.gift) || {}).forEach(function (d) { var x = stkDay(d); if (x != null) RY_GIFT[x] = +r.gift[d] || 0; }); try { renderAllViews(); } catch (e) {} stkSrRefresh(); try { giftAutoCheck(); } catch (eG) {} }).withFailureHandler(function () { _scLoading = false; RY_SC = RY_SC || {}; }).getStockCounts(); } if (!RY_SC) return null; }   // 1029 켜 둔 PC도 1시간마다 뒤에서 다시 (아침 8:10 하루 판매 반영)
       var k = ryPrKey(it.name), s15 = parseFloat(String(it.sales15 == null ? '' : it.sales15).replace(/[^0-9.]/g, '')) || 0, daily = s15 / 15;
+      /* 1119 증정: 홍삼팩은 그날 30만↑ 영수증 수만큼 더 빠짐(sold) · 0 밑으로 깎인 증정 몫(clip)은 골드팩에서 (over [날, 개수]) */
+      var gk = k === GIFT_K.hong, over = [], sold = function (a, b) { return stkSold(k, daily, a, b, use) + (gk ? giftIn(a, b) : 0); };
+      var giftOver = function (g, a, b) { Object.keys(RY_GIFT || {}).map(Number).filter(function (d) { return d >= a && d < b; }).sort(function (p, q) { return q - p; }).forEach(function (d) { var t = Math.min(g, RY_GIFT[d]); if (t > 0) { over.push([d, t]); g -= t; } }); };   // 모자란 몫 = 그 구간 마지막 날 증정부터
+      var clip = function (x, a, b) { if (gk && x < 0) giftOver(Math.min(-x, giftIn(a, b)), a, b); return Math.max(0, x); };
       var inbD = stkDay(it.inboundDate), cnt = RY_SC[k], cntD = cnt ? stkDay(cnt.d) : null, now = stkToday();
       var iv = RY_IVL && RY_IVL[k] && RY_IVL[k].filter(function (x) { return stkDay(x.d) === inbD && x.q > 0; })[0];
       var bu = parseFloat(it.boxUnit) || 0, oq = parseFloat(String(it.targetQty || '').replace(/[^0-9.]/g, '')) || 0;
@@ -7590,15 +7612,21 @@ video {
       var inQty = iv ? boxQ(iv.q) : (it.unit === '박스' && bu ? oq * bu : oq), src = iv ? '명세서' : '주문 수량';
       var est, how, baseD, use = { n: 0 };
       if (cnt && (inbD == null || cntD >= inbD)) { est = cnt.n; how = cnt.d.slice(5) + '에 ' + cnt.by + '님이 센 ' + cnt.n + '개'; baseD = cntD; }
-      else if (inbD != null && inQty > 0) { var carry = cnt ? Math.max(0, cnt.n - stkSold(k, daily, cntD, inbD, use)) : 0; est = carry + inQty; how = String(it.inboundDate).slice(5, 10) + ' 입고 ' + inQty + '개(' + src + ')' + (carry ? ' + 그때 남은 약 ' + Math.round(carry) + '개' : ''); baseD = inbD; }
+      else if (inbD != null && inQty > 0) { var carry = cnt ? clip(cnt.n - sold(cntD, inbD), cntD, inbD) : 0; est = carry + inQty; how = String(it.inboundDate).slice(5, 10) + ' 입고 ' + inQty + '개(' + src + ')' + (carry ? ' + 그때 남은 약 ' + Math.round(carry) + '개' : ''); baseD = inbD; }
       else { var first = RY_IVL && RY_IVL[k] && RY_IVL[k].filter(function (x) { return x.q > 0; }).slice(-1)[0]; if (!first) return null; baseD = stkDay(first.d) - 0.5; est = 0; how = '주문 없이 명세서로 들어온 것만'; }   // 주문 없이 명세서로만 들어온 상품
       /* 1020 주문 안 했는데 명세서로 들어온 것 (입고일 뒤에 추가로 들어온 수량) · 1023 날짜 순으로 — 재고는 0 밑으로 안 내려감 (전엔 −90 + 300 = 210 처럼 모자란 만큼 새 입고에서 빠졌음) */
       var t = baseD;
       (RY_IVL && RY_IVL[k] || []).filter(function (x) { var d = stkDay(x.d); return x.q > 0 && d != null && d > baseD && !(iv && x === iv); }).sort(function (a, b) { return stkDay(a.d) - stkDay(b.d); })
-        .forEach(function (x) { var d = stkDay(x.d), q = boxQ(x.q); est = Math.max(0, est - stkSold(k, daily, t, d, use)) + q; t = d; if (how.indexOf('명세서로 들어온 것만') < 0 || x !== first) how += ' + ' + x.d.slice(5) + ' 명세서로 ' + q + '개'; });
-      est = est - stkSold(k, daily, t, now, use);
+        .forEach(function (x) { var d = stkDay(x.d), q = boxQ(x.q); est = clip(est - sold(t, d), t, d) + q; t = d; if (how.indexOf('명세서로 들어온 것만') < 0 || x !== first) how += ' + ' + x.d.slice(5) + ' 명세서로 ' + q + '개'; });
+      est = est - stkSold(k, daily, t, now, use) - (gk ? giftIn(t, now + 1) : 0);   // 증정은 오늘 것도 (15분마다 들어옴)
+      if (gk && est < 0) { var gNow = Math.min(-est, giftIn(t, now + 1)); if (gNow > 0) { giftOver(gNow, t, now + 1); est += gNow; } }
+      var gift = null;
+      if (gk) gift = { y: (RY_GIFT && RY_GIFT[now - 1]) || 0, gold: false, over: over };
+      else if (k === GIFT_K.gold) { var hIt = RY_CAT && RY_CAT.items && RY_CAT.items.filter(function (x) { return ryPrKey(x.name) === GIFT_K.hong; })[0], h = hIt ? stkOf(hIt) : null, ov = 0;
+        if (h && h.gift) { h.gift.over.forEach(function (o) { if (o[0] >= baseD) ov += o[1]; }); est -= ov; gift = { y: h.est <= 0 ? (RY_GIFT && RY_GIFT[now - 1]) || 0 : 0, gold: h.est <= 0, over: [] }; if (ov) how += ' − 홍삼팩 다 써서 대신 준 증정 ' + ov + '개'; } }   // ponytail: 홍삼이 지금 0일 때만 골드 줄에 '어제 N개' (날별 정확한 나눔은 over 로 재고에만)
+      if (gk && RY_GIFT) { var gAll = giftIn(baseD, now + 1); if (gAll) how += ' − 30만원↑ 영수증 증정 ' + gAll + '개'; }
       est = Math.round(est);   // 1102 MJ '재고보다 더 팔렸으면 마이너스로도 (얼마나 더 나갔는지)' — 끝 값만 0 아래로 (입고 사이 계산은 그대로 0에서 다시)
-      return { est: est, left: daily > 0 ? Math.floor(Math.max(0, est) / daily) : null, daily: daily, how: how, k: k, act: use.n, sure: !!(cnt && (inbD == null || cntD >= inbD)) || !!iv };   // sure = 센 개수·명세서 수량 기준 (주문 수량만이면 그 전에 남아 있던 재고를 몰라 적게 나올 수 있음)
+      return { est: est, left: daily > 0 ? Math.floor(Math.max(0, est) / daily) : null, daily: daily, how: how, k: k, act: use.n, gift: gift, sure: !!(cnt && (inbD == null || cntD >= inbD)) || !!iv };   // sure = 센 개수·명세서 수량 기준 (주문 수량만이면 그 전에 남아 있던 재고를 몰라 적게 나올 수 있음)
     }
     /* 1023 MJ '84개 입고됐다는데 추정 재고가 왜 달라' — 입고내역 줄(그날 입고만 보고 계산)과 상품 목록(전체 기록)이 다른 숫자를 냈음 → 어디서든 같은 상품 = 같은 숫자 (상품 목록 기준) */
     var _stkCM = null, _stkCMs = null;
@@ -7758,7 +7786,11 @@ video {
       var cls = s.est < 0 || (s.sure && s.est === 0) ? 'red' : '';   // 1020 MJ: 예상 날짜는 빼고 '추정 재고 N개'만, 눈에 띄게
       var txt = !s.sure && s.est === 0 ? '📦 추정 재고 확인 필요' : '📦 추정 재고 <b>' + stkN(s.est) + '</b>개' + (!s.sure && s.est < 0 ? ' · 확인 필요' : '');
       var sl = ryIsSlow(item);
-      return (sl ? ' <span class="ry-slow" title="15일 판매 ' + sl.q + '개 · 창고에 ' + stkN(sl.est) + '개 — 부진 상품">' + RYI.trendingdown + '부진</span>' : '') + ' <button type="button" class="ry-stk ' + cls + '" data-n="' + escapeHtml(item.name) + '" onclick="event.stopPropagation(); stkShow(this)" title="추정 재고">' + txt + '</button>';
+      return (sl ? ' <span class="ry-slow" title="15일 판매 ' + sl.q + '개 · 창고에 ' + stkN(sl.est) + '개 — 부진 상품">' + RYI.trendingdown + '부진</span>' : '') + ' <button type="button" class="ry-stk ' + cls + '" data-n="' + escapeHtml(item.name) + '" onclick="event.stopPropagation(); stkShow(this)" title="추정 재고">' + txt + '</button>' + giftLine(s, item);
+    }
+    function giftLine(s, item) {   /* 1119 증정 상품 카드 한 줄 */
+      if (!s.gift || !RY_GIFT) return ''; var rule = giftRule(stkCatItem(item));
+      return '<span class="ry-gift">🎁 증정으로 빠짐: 어제 ' + s.gift.y + '개 (30만원↑ 영수증)' + (s.gift.gold ? ' · 홍삼팩 다 써서 골드팩으로' : '') + (rule ? ' · ' + rule[0] + '개 이하면 ' + rule[1] + '개 자동 주문' : '') + '</span>';
     }
     function bxChip(k) {
       var r = SP.box && (SP.box.rows || []).filter(function (x) { return x.box === k; })[0];
@@ -22804,30 +22836,33 @@ function eduInterView() {
 /* ── 통역 단어장: 검색칸은 한 번만 그리고 목록만 다시 (한글 조합 안 깨짐) ── */
 
 /* 1115 MJ '리포트를 물류앱 내에서 볼 수 있게' — 맥이 매주 월요일 서버에 올린 요약(getWeeklyReport)을 그대로 그림 */
-function wkOpen() {
+function wkOpen(wk) {
   var el = document.getElementById('wkSheet');
   if (!el) { el = document.createElement('div'); el.id = 'wkSheet'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', '주간 리포트'); document.body.appendChild(el); }
   el.hidden = false; el.innerHTML = '<div class="wk-top"><b>📊 주간 리포트</b><button type="button" class="wk-x" aria-label="닫기" onclick="wkClose()">✕</button></div><div class="wk-in"><div class="wk-msg">불러오는 중…</div></div>';
   if (typeof google === 'undefined' || !google.script || !google.script.run) { wkMsg('지금은 불러올 수 없어요.'); return; }
-  google.script.run.withSuccessHandler(function (res) { if (res && res.ok && res.r) wkRender(res.r); else wkMsg(res && res.ok ? '아직 올라온 리포트가 없어요. 매주 월요일 아침에 새로 올라와요.' : '리포트를 불러오지 못했어요. <button type="button" class="wk-x" onclick="wkOpen()">다시</button>'); })
-    .withFailureHandler(function () { wkMsg('리포트를 불러오지 못했어요. <button type="button" class="wk-x" onclick="wkOpen()">다시</button>'); }).getWeeklyReport();
+  google.script.run.withSuccessHandler(function (res) { if (res && res.ok && res.r) wkRender(res.r, res.weeks); else wkMsg(res && res.ok ? '아직 올라온 리포트가 없어요. 매주 월요일 아침에 새로 올라와요.' : '리포트를 불러오지 못했어요. <button type="button" class="wk-x" onclick="wkOpen()">다시</button>'); })
+    .withFailureHandler(function () { wkMsg('리포트를 불러오지 못했어요. <button type="button" class="wk-x" onclick="wkOpen()">다시</button>'); }).getWeeklyReport(wk || '');
 }
 function wkClose() { var el = document.getElementById('wkSheet'); if (el) el.hidden = true; }
 function wkMsg(h) { var b = document.querySelector('#wkSheet .wk-in'); if (b) b.innerHTML = '<div class="wk-msg">' + h + '</div>'; }
-function wkRender(r) {
+function wkRender(r, weeks) {
   var E = escapeHtml, md = function (d) { return String(d || '').slice(5).replace('-', '/'); };
   var cmp = function (now, prev, unit, goodUp) { if (prev == null || prev === '') return ''; var d = Math.round((now - prev) * 10) / 10; if (!d) return '<em>지난주와 같아요</em>'; var up = d > 0; return '<em class="' + ((up === !!goodUp) ? 'up' : 'down') + '">지난주 ' + prev + unit + ' → ' + (up ? '+' : '') + d + unit + '</em>'; };
   var card = function (lab, v, unit, sub) { return '<div class="wk-c"><small>' + lab + '</small><strong>' + E(String(v)) + (unit || '') + '</strong>' + (sub || '') + '</div>'; };
-  var bars = function (title, rows) { if (!rows || !rows.length) return ''; var mx = Math.max.apply(null, rows.map(function (x) { return x[1]; })) || 1; return '<div class="wk-box"><h3>' + title + '</h3>' + rows.map(function (x) { return '<div class="wk-row"><span>' + E(String(x[0])) + '</span><div class="wk-bar"><i style="width:' + Math.round(x[1] / mx * 100) + '%"></i></div><b>' + E(String(x[2] != null ? x[2] : x[1])) + '</b></div>'; }).join('') + '</div>'; };
-  var h = '<div class="wk-per">' + md(r.W && r.W.from) + ' ~ ' + md(r.W && r.W.to) + ' · 지난주(' + md(r.P && r.P.from) + '~' + md(r.P && r.P.to) + ')와 비교</div>';
+  var N = r.notes || {}, nt = function (key) { return N[key] ? '<p class="wk-nt">' + E(N[key]) + '</p>' : ''; };   /* 1119 MJ '전체적인 내용을 알 수 있게' — 칸마다 판정·지난주 비교·할 일 한 줄 (run.mjs notes) */
+  var bars = function (title, rows, key) { if (!rows || !rows.length) return key && N[key] ? '<div class="wk-box"><h3>' + title + '</h3>' + nt(key) + '</div>' : ''; var mx = Math.max.apply(null, rows.map(function (x) { return x[1]; })) || 1; return '<div class="wk-box"><h3>' + title + '</h3>' + rows.map(function (x) { return '<div class="wk-row"><span>' + E(String(x[0])) + '</span><div class="wk-bar"><i style="width:' + Math.round(x[1] / mx * 100) + '%"></i></div><b>' + E(String(x[2] != null ? x[2] : x[1])) + '</b></div>'; }).join('') + nt(key) + '</div>'; };
+  var h = (weeks && weeks.length > 1 ? '<div class="wk-wks" role="tablist" aria-label="주 고르기">' + weeks.map(function (w) { var on = w.wk === r.wk; return '<button type="button" role="tab" aria-selected="' + on + '" class="wk-wk' + (on ? ' on' : '') + '" onclick="wkOpen(\'' + E(w.wk) + '\')">' + md(w.from) + '~' + md(w.to) + '</button>'; }).join('') + '</div>' : '') + '<div class="wk-per">' + md(r.W && r.W.from) + ' ~ ' + md(r.W && r.W.to) + ' · 지난주(' + md(r.P && r.P.from) + '~' + md(r.P && r.P.to) + ')와 비교</div>';
   h += '<div class="wk-sum"><h3>이번 주 3줄 요약</h3>' + (r.lines || []).map(function (l) { return '<p>' + E(l) + '</p>'; }).join('') + '</div>';
   h += '<div class="wk-g">' + card('입고 완료', r.arrived, '건', cmp(r.arrived, r.arrivedP, '건', true)) + card('새 주문', r.ordered, '건', cmp(r.ordered, r.orderedP, '건', true))
     + card('평균 입고까지', r.lt, '일', cmp(r.lt, r.ltP, '일', false)) + card('반려', r.rejects, '건', cmp(r.rejects, r.rejectsP, '건', false))
     + card('지금 1차 검토', r.review, '건') + card('지금 최종 발주', r.order, '건') + card('입고 대기', r.waiting, '건') + card('7일 넘은 지연 · 품절', (r.late || 0) + ' · ' + (r.soldout || 0), '건') + '</div>';
-  h += bars('🏆 입고 처리 (발주왕)', (r.kingIn || []).map(function (x) { return [x[0], x[1], x[1] + '건']; }));
-  h += bars('🙋 주문 요청', (r.kingReq || []).map(function (x) { return [x[0], x[1], x[1] + '건']; }));
-  h += bars('🔥 15일 판매 TOP', (r.top || []).slice(0, 10).map(function (x) { return [x.name, x.s, x.s + '개']; }));
-  h += bars('🎁 세트 목표', (r.sets || []).map(function (x) { var p = x.goal ? Math.round(x.done / x.goal * 100) : 0; return [x.label, Math.min(p, 150), p + '%']; }));
+  if (N.arrived || N.ordered || N.lt || N.rejects || N.late) h += '<div class="wk-box"><h3>📋 숫자 판정</h3>' + ['arrived', 'ordered', 'lt', 'rejects', 'late'].map(nt).join('') + '</div>';
+  var G = r.gift; if (G) h += '<div class="wk-box"><h3>🎁 증정 (30만원↑ 영수증)</h3><div class="wk-g">' + card('30만원↑ 영수증', G.rc, '장', cmp(G.rc, G.rcP, '장', true)) + card('홍삼팩 증정', G.hongGift, '개') + card('홍삼팩 남은 약', G.hong == null ? '—' : G.hong, '개', '<em>' + (G.hongWk == null ? '—' : G.hongWk + '주치') + '</em>') + card('골드팩 남은 약', G.gold == null ? '—' : G.gold, '개', '<em>' + (G.goldWk == null ? '—' : G.goldWk + '주치') + ' · 판매+세트 ' + G.goldSold + '개' + (G.goldGift ? ' · 홍삼 대신 ' + G.goldGift + '개' : '') + '</em>') + '</div>' + nt('gift') + '</div>';
+  h += bars('🏆 입고 처리 (발주왕)', (r.kingIn || []).map(function (x) { return [x[0], x[1], x[1] + '건']; }), 'kingIn');
+  h += bars('🙋 주문 요청', (r.kingReq || []).map(function (x) { return [x[0], x[1], x[1] + '건']; }), 'kingReq');
+  h += bars('🔥 15일 판매 TOP', (r.top || []).slice(0, 10).map(function (x) { return [x.name, x.s, x.s + '개']; }), 'top');
+  h += bars('🎁 세트 목표', (r.sets || []).map(function (x) { var p = x.goal ? Math.round(x.done / x.goal * 100) : 0; return [x.label, Math.min(p, 150), p + '%']; }), 'sets');
   h += bars('⏰ 지연 많은 분류', (r.lateCat || []).map(function (x) { return [x[0], x[1], x[1] + '건']; }));
   if (r.surge && r.surge.length) h += '<div class="wk-box"><h3>📈 급상승</h3>' + r.surge.map(function (n) { return '<div class="wk-row">' + E(n) + '</div>'; }).join('') + '</div>';
   h += '<div class="wk-per">PDF 원본: 드라이브 01 레디영약국 / 물류앱_주간리포트 / ' + E(r.wk || '') + '</div>';
