@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwnb15pj">
+  <meta name="ry-build" content="mwnb4bwq">
   <!-- 1118 카톡 미리보기 (공유 링크) --><meta property="og:type" content="website"><meta property="og:site_name" content="성수레디영"><meta property="og:title" content="성수레디영 물류앱"><meta property="og:description" content="숙지사항 · 발주 · 입고를 한 곳에서 — 눌러서 물류앱으로 바로 열기 (직원 전용)"><meta property="og:image" content="https://deltoy.github.io/readyyoung/ry-icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:url" content="https://deltoy.github.io/readyyoung/"><meta name="description" content="성수레디영 물류앱 (직원 전용)">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
@@ -1578,6 +1578,7 @@ html body:not(#_):not(#_):not(#_):not(#_) #qinNewBtn{display:block;width:100%;ma
 #stockCheckCardContainer>div,#searchCardContainer>div{border:1px solid #C9D1DB!important;border-radius:14px!important;overflow:hidden;
   box-shadow:0 1px 2px rgba(16,24,40,.06),0 2px 6px rgba(16,24,40,.05)!important;padding:12px 14px!important;margin:0!important;background:#fff!important}
 #searchCardContainer>div:has(.ry-late-name){border-left:4px solid var(--ry-bad)!important}
+#searchCardContainer>.ry25-pc{content-visibility:auto;contain-intrinsic-size:auto 230px}   /* 1119 부드럽게: 화면 밖 검색 카드는 그리기·자리 계산을 건너뜀 (글자 칠 때마다 카드 수십 장을 다시 그리던 비용) */
 
 /* ═══ 34. 직원이 올린 사진을 캐릭터 자리에 (0921) ═══ */
 .ry-ava{overflow:hidden}
@@ -7766,8 +7767,16 @@ video {
       var see = function (d) { d = stkDay(d); if (d != null && d <= now && (best == null || d > best)) best = d; };
       see(it.inboundDate); if (it !== item) see(item.inboundDate);
       (RY_IVL && RY_IVL[k] || []).forEach(function (x) { if (x.q > 0) see(x.d); });
-      (cachedHistoryItems || []).forEach(function (h) { if (h && ryPrKey(h.name) === k) see(h.inboundDate); });
+      (lastInIdx_()[k] || []).forEach(see);
       return best;
+    }
+    /* 1119 부드럽게: 입고내역을 이름별로 한 번만 묶어 둠 (카드마다 전체 입고내역을 다시 훑던 것이 검색·주문 요청 때 끊김의 1순위). 지금 하는 일(한 번 그리기)이 끝나면 버림 → 늘 최신 */
+    var _liIdx = null;
+    function lastInIdx_() {
+      if (_liIdx) return _liIdx;
+      _liIdx = {}; (cachedHistoryItems || []).forEach(function (h) { if (!h) return; var k = ryPrKey(h.name); (_liIdx[k] = _liIdx[k] || []).push(h.inboundDate); });
+      Promise.resolve().then(function () { _liIdx = null; });
+      return _liIdx;
     }
     function lastInBadge(item) {
       if (!item || !item.name || (cachedInboundItems || []).indexOf(item) !== -1 || (cachedHistoryItems || []).indexOf(item) !== -1) return '';   // 입고대기·입고내역은 날짜가 이미 보임
@@ -8711,10 +8720,10 @@ video {
       var b = document.getElementById('ryHeatSay'); if (!b || b.hidden) return;
       var fl = document.getElementById('ryDzFloat'), useF = !!(fl && fl.classList.contains('on')), box = useF ? fl : document.querySelector('.ry25-top .ry25-brand'), mk = !useF && box && box.querySelector('.ry25-mark'), r = box && box.getBoundingClientRect(), m = mk ? mk.getBoundingClientRect() : r;
       if (r && r.width && (useF || r.bottom > 0)) {
-        b.classList.toggle('up', useF); b.style.visibility = '';
-        b.style.left = Math.max(8, Math.min(useF ? r.left : m.left, innerWidth - b.offsetWidth - 8)) + 'px';
-        b.style.top = (useF ? Math.max(8, r.top - b.offsetHeight - 14) : r.bottom + 10) + 'px';
-      } else b.style.visibility = 'hidden';   // 위 로고는 화면 밖인데 따라오는 로고가 아직이면 잠깐 숨김
+        if (b.classList.contains('up') !== useF) b.classList.toggle('up', useF);
+        var bw = b.offsetWidth, bh = b.offsetHeight, L = Math.max(8, Math.min(useF ? r.left : m.left, innerWidth - bw - 8)) + 'px', T = (useF ? Math.max(8, r.top - bh - 14) : r.bottom + 10) + 'px';   /* 1119 부드럽게: 먼저 다 재고 → 바뀐 것만 씀 (매 프레임 강제 레이아웃 없앰) */
+        if (b.style.visibility) b.style.visibility = ''; if (b.style.left !== L) b.style.left = L; if (b.style.top !== T) b.style.top = T;
+      } else if (b.style.visibility !== 'hidden') b.style.visibility = 'hidden';   // 위 로고는 화면 밖인데 따라오는 로고가 아직이면 잠깐 숨김
       SC.saySync = requestAnimationFrame(heatSayPlace_);
     }
     /* 1112 MJ '세트가 잘 팔리면 이 부분(위 로고·약국 이름)이 조금씩 불타오르는 느낌 · 호떡집에 불난 듯 바쁘다는 느낌' — 오늘 세트 판매 합 ÷ 오늘 하루 목표 합
@@ -13762,8 +13771,9 @@ video {
       google.script.run.withSuccessHandler(function (res) {
         MR.busy = false;
         if (ver !== MR.ver || !res || !res.ok || member !== currentSelectedMember) return;   // 늦게 온 응답·사람 바뀜은 버림
-        Object.keys(res.items || {}).forEach(function (k) { MR.map[k] = res.items[k]; mrPaint(k); });
-        rows.forEach(function (r) { if (!Object.prototype.hasOwnProperty.call(MR.map, r)) { MR.map[r] = { maker: '', route: '' }; mrPaint(r); } });
+        var pd = {}; Object.keys(res.items || {}).forEach(function (k) { MR.map[k] = res.items[k]; pd[k] = 1; });
+        rows.forEach(function (r) { if (!Object.prototype.hasOwnProperty.call(MR.map, r)) { MR.map[r] = { maker: '', route: '' }; pd[r] = 1; } });
+        [].forEach.call(document.querySelectorAll('.ry-mr[data-mr]'), function (el) { var r = el.getAttribute('data-mr'); if (pd[r]) { el.classList.remove('wait'); el.innerHTML = mrLineHtml(r); } });   /* 1119 부드럽게: 줄마다 화면 전체를 찾던 것 → 한 번 */
         mrFill();   /* 1102 받는 동안 새로 그려진 칸(검색 결과 등)도 이어서 */
       }).withFailureHandler(function () { MR.busy = false; }).getMakerRoute(rows, member);   // 서버에 아직 없으면 조용히
     }
@@ -15946,9 +15956,8 @@ video {
 
     // 입고내역 날짜 줄이 상단에 붙으면 그림자 표시
     document.addEventListener('scroll', function() {
-      document.querySelectorAll('.hist-date-head').forEach(function(el) {
-        el.classList.toggle('is-stuck', el.getBoundingClientRect().top <= 0 && el.parentElement.getBoundingClientRect().bottom > 40);
-      });
+      var hs = document.querySelectorAll('.hist-date-head'), st = [].map.call(hs, function (el) { return el.getBoundingClientRect().top <= 0 && el.parentElement.getBoundingClientRect().bottom > 40; });   /* 1119 부드럽게: 다 읽고 나서 씀 */
+      hs.forEach(function (el, i) { el.classList.toggle('is-stuck', st[i]); });
     }, { passive: true });
 
     // 수량 입력이 끝나면 보류해 둔 최신 데이터를 반영
@@ -16284,7 +16293,9 @@ video {
     }
     /* 1022 MJ '코엔쿨로 쳐도 코앤쿨이 나오게' */
     /* 1022 MJ '영어가 한글로 바뀐 말은 애매한 표기도 다 검색되게' → ㅐㅒㅖㅙㅚㅞ=ㅔ · 된소리=예사소리(ㄲㄸㅃㅆㅉ) · ㅈ·ㅊ 뒤 ㅑㅕㅛㅠ=ㅏㅓㅗㅜ (쥬=주) */
-    function ryFold(t) { return String(t || '').replace(/[가-힣]/g, function (c) { var x = c.charCodeAt(0) - 0xAC00, l = Math.floor(x / 588), v = Math.floor(x / 28) % 21, e = x % 28; l = { 1: 0, 4: 3, 8: 7, 10: 9, 13: 12 }[l] != null ? { 1: 0, 4: 3, 8: 7, 10: 9, 13: 12 }[l] : l; v = { 1: 5, 3: 5, 7: 5, 10: 5, 11: 5, 15: 5 }[v] != null ? 5 : v; if (l === 12 || l === 14) v = { 2: 0, 6: 4, 12: 8, 17: 13 }[v] != null ? { 2: 0, 6: 4, 12: 8, 17: 13 }[v] : v; return String.fromCharCode(0xAC00 + (l * 21 + v) * 28 + e); }); }
+    var RY_FOLD_C = new Map();   /* 1119 부드럽게: 같은 글자는 한 번만 바꿈 (글자 칠 때마다 상품 2천여 개 이름을 다시 바꾸던 것) */
+    function ryFold(t) { t = String(t || ''); var c = RY_FOLD_C.get(t); if (c !== undefined) return c; if (RY_FOLD_C.size > 50000) RY_FOLD_C.clear(); c = ryFold0_(t); RY_FOLD_C.set(t, c); return c; }
+    function ryFold0_(t) { return String(t || '').replace(/[가-힣]/g, function (c) { var x = c.charCodeAt(0) - 0xAC00, l = Math.floor(x / 588), v = Math.floor(x / 28) % 21, e = x % 28; l = { 1: 0, 4: 3, 8: 7, 10: 9, 13: 12 }[l] != null ? { 1: 0, 4: 3, 8: 7, 10: 9, 13: 12 }[l] : l; v = { 1: 5, 3: 5, 7: 5, 10: 5, 11: 5, 15: 5 }[v] != null ? 5 : v; if (l === 12 || l === 14) v = { 2: 0, 6: 4, 12: 8, 17: 13 }[v] != null ? { 2: 0, 6: 4, 12: 8, 17: 13 }[v] : v; return String.fromCharCode(0xAC00 + (l * 21 + v) * 28 + e); }); }
     function ryHitFn(query) {
       var q = ryFold(String(query).replace(/\s+/g, '').toLowerCase());
       var toks = String(query).toLowerCase().split(/\s+/).filter(Boolean).map(ryAliasOf).map(function (vs) { return vs.map(ryFold); });   // 띄어 쓴 낱말마다 (영어면 한글 이름도) 모두 들어 있으면
@@ -17092,7 +17103,9 @@ video {
         boxUnit: src.boxUnit || '', note: baseNote, category: src.category || '', uses: src.uses || [],   /* 1008 바로 보여 주는 줄에도 분류 (빠져서 '분류 없음'으로 승인·발주 탭까지 따라갔음) */
         sales15: src.sales15 || '-', requester: currentSelectedMember, isCheckRequested: false, checkRequester: '', stageAt: Math.round(Date.now() / 60000)
       });
-      renderAllViews();
+      var sv = document.getElementById('searchResultView');
+      if (sv && !sv.classList.contains('hidden')) requestAnimationFrame(function () { setTimeout(renderAllViews, 0); });   /* 1119 부드럽게: 검색 화면에서 누르면 '요청됨' 표시가 먼저 그려지고, 안 보이는 탭 목록은 바로 다음 틈에 */
+      else renderAllViews();
       persistSnapshot();
     }
 
@@ -21984,12 +21997,13 @@ function eduNorm(s) { return eduKey(String(s == null ? '' : s).toLowerCase().rep
 function eduHasBrand(s) { return /오가나셀|더마알엑스|oganacell|derx/i.test(String(s || '')); }
 /* 발주 목록 상품 이름 → 교육 카드. 띄어쓰기 · 대소문자 · [리필용] · (파랑) · 브랜드 머리말을 빼고 비교.
    브랜드(오가나셀·더마알엑스)가 이름에 있으면 3글자 이상 겹침, 없으면 7글자 이상 겹쳐야 같은 상품으로 본다. 가장 길게 겹친 카드 하나 */
+var EDU_KEYS_ = typeof WeakMap === 'function' ? new WeakMap() : null;   /* 1119 부드럽게: 카드 이름·별칭 정리는 카드마다 한 번만 (검색 결과 카드마다 모든 교육 카드를 다시 정리하던 것) */
+function eduKeysOf_(c) { var k = EDU_KEYS_ && EDU_KEYS_.get(c); if (!k) { k = [c.name].concat(c.aliases || []).map(eduNorm); if (EDU_KEYS_) EDU_KEYS_.set(c, k); } return k; }
 function eduMatch(name, cards) {
   var n = eduNorm(name), br = eduHasBrand(name), best = null, bl = 0;
   if (!n) return null;
   (cards || []).forEach(function (c) {
-    [c.name].concat(c.aliases || []).forEach(function (a) {
-      var k = eduNorm(a);
+    eduKeysOf_(c).forEach(function (k) {
       if (k && (n === k || (n.indexOf(k) !== -1 && k.length >= (br ? 3 : 7))) && k.length > bl) { bl = k.length; best = c; }
     });
   });
