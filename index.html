@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwn4t1fd">
+  <meta name="ry-build" content="mwn6yi3i">
   <!-- 1118 카톡 미리보기 (공유 링크) --><meta property="og:type" content="website"><meta property="og:site_name" content="성수레디영"><meta property="og:title" content="성수레디영 물류앱"><meta property="og:description" content="숙지사항 · 발주 · 입고를 한 곳에서 — 눌러서 물류앱으로 바로 열기 (직원 전용)"><meta property="og:image" content="https://deltoy.github.io/readyyoung/ry-icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:url" content="https://deltoy.github.io/readyyoung/"><meta name="description" content="성수레디영 물류앱 (직원 전용)">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
@@ -4989,35 +4989,19 @@ html:not(#q):not(#w):not(#e) body:not(#r) #globalSearchInput{padding-right:168px
 #scanDim.np{z-index:80}#scanSheet.np{z-index:81}
 .ry-scan{max-height:90vh}
 .ry-scan-cam{position:relative;border-radius:16px;overflow:hidden;background:#101828;aspect-ratio:4/3;margin-bottom:10px}
-.ry-scan.inb .ry-scan-cam{aspect-ratio:16/9}
+.ry-scan.inb1 .ry-scan-cam{aspect-ratio:16/9}
+#scanDim.inb1{z-index:10060}#scanSheet.inb1{z-index:10061}
+.inb1-sr{display:flex;gap:8px;align-items:flex-start}.inb1-sr .inb1-q{flex:1;min-width:0}
+.inb1-bc{flex:none;min-height:42px;padding:0 14px;border-radius:12px;border:0;background:#155EEF;color:#fff;font-weight:700;font-size:14px;white-space:nowrap;cursor:pointer}.inb1-bc:focus-visible{outline:3px solid rgba(21,94,239,.35);outline-offset:2px}
+.inb1-a.inb1-hit{animation:ryInbHit 1.4s ease-out}@keyframes ryInbHit{0%,40%{box-shadow:0 0 0 2px #155EEF inset}100%{box-shadow:0 0 0 0 transparent inset}}@media (prefers-reduced-motion:reduce){.inb1-a.inb1-hit{animation:none;box-shadow:0 0 0 2px #155EEF inset}}
 .ry-scan-cam video{width:100%;height:100%;object-fit:cover;display:block}
 .ry-scan-box{position:absolute;left:12%;right:12%;top:30%;bottom:30%;border:3px solid rgba(255,255,255,.9);border-radius:14px;box-shadow:0 0 0 999px rgba(0,0,0,.28)}
 .ry-scan-cambtn{width:100%;min-height:48px;border-radius:14px;border:1px solid #D0D5DD;background:#fff;font-weight:700;font-size:15px;margin-bottom:10px;cursor:pointer}
 .ry-scan-msg{font-size:14px;font-weight:700;color:#155EEF;background:#EEF4FF;border-radius:12px;padding:10px 12px;margin-bottom:10px;line-height:1.45}
 .ry-scan-msg.bad{color:#B42318;background:#FEF3F2}
 .ry-scan-msg:empty{display:none}
-.bci-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border:1px solid #EAECF0;border-radius:14px;margin-bottom:8px;background:#fff;transition:background .4s}
-.bci-row.new{border-color:#FDE68A;background:#FFFBEB}.bci-row.done{background:#ECFDF3;border-color:#ABEFC6}.bci-row.bump{background:#EEF4FF}
-.bci-nm{min-width:0;flex:1 1 180px}.bci-nm b{display:block;font-size:14.5px;color:#101828;word-break:keep-all}.bci-nm span{font-size:12.5px;color:#475467}
-.bci-act{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.bci-q{display:inline-flex;align-items:center;border:1px solid #D0D5DD;border-radius:12px;overflow:hidden}
-.bci-q button{width:40px;height:44px;border:0;background:#F9FAFB;font-size:18px;font-weight:700;cursor:pointer}
-.bci-q input{width:56px;height:44px;border:0;text-align:center;font-size:16px;font-weight:800;-moz-appearance:textfield}
-.bci-go{min-height:44px;padding:0 14px;border-radius:12px;border:0;background:#155EEF;color:#fff;font-weight:800;font-size:14px;cursor:pointer}
-.bci-row.new .bci-go{background:#B54708}
-.bci-go:disabled,.bci-q button:disabled{opacity:.55}
-.bci-skip{min-height:44px;padding:0 12px;border-radius:12px;border:1px solid #D0D5DD;background:#fff;font-weight:700;cursor:pointer}
-.bci-ok{font-weight:800;color:#067647}
-.bci-empty{font-size:13px;color:#667085;text-align:center;padding:14px 0}
 .bci-pick{border:1px solid #FDE68A;background:#FFFBEB;border-radius:14px;padding:10px;margin-bottom:8px}.bci-pick b{display:block;font-size:13px;margin-bottom:6px;color:#92400E}
 .bci-pick button{display:block;width:100%;text-align:left;min-height:44px;padding:8px 12px;border-radius:10px;border:1px solid #EAECF0;background:#fff;font-weight:700;margin-top:6px;cursor:pointer}.bci-pick i{font-style:normal;font-size:11.5px;color:#067647;background:#ECFDF3;border-radius:999px;padding:2px 8px;margin-left:4px}
-#scanFoot{position:sticky;bottom:calc(-20px - env(safe-area-inset-bottom));background:#fff;padding:10px 0 4px;display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid #EAECF0}
-#scanFoot:empty{display:none}
-.bci-sum{font-size:13.5px;color:#344054}.bci-sum b{color:#101828}
-.bci-end{min-height:44px;padding:0 18px;border-radius:12px;border:0;background:#101828;color:#fff;font-weight:800;cursor:pointer}
-.ry-inb-modes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.ry-inb-modes button{min-height:48px;border-radius:14px;border:1px solid #ABEFC6;background:#fff;color:#054F31;font-weight:800;font-size:15px;cursor:pointer}
-.ry-inb-modes button.bc{background:#155EEF;border-color:#155EEF;color:#fff}
 .ry-how{display:inline-flex;align-items:center;gap:3px;border-radius:6px;padding:1px 6px;font-size:10px;font-weight:900;border:1px solid}
 .ry-how-bc{background:#EEF4FF;color:#155EEF;border-color:#C7D7FE}.ry-how-iv{background:#F4F3FF;color:#5925DC;border-color:#D9D6FE}.ry-how-hand{background:#F9FAFB;color:#475467;border-color:#EAECF0}
 </style>
@@ -6906,7 +6890,6 @@ video {
           <span class="th-title"><span class="ry25-thi"><svg class="ry-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></span>3단계 · 입고 대기</span>
           <span class="th-count text-emerald-800" id="inboundCount">0건</span>
         </div>
-        <div class="ry-inb-modes"><button type="button" onclick="invOpen()">🧾 명세서로 입고</button><button type="button" class="bc" onclick="ryScanOpen('inb')">📷 바코드로 입고</button></div>   <!-- 1118 MJ 입고 방법 두 개 -->
         <!-- 1105 MJ '직원들이 검색창이 두 개라서 헷갈려' → 입고 대기 안 검색창 뺌 · 맨 위 품목 검색 하나로 (입고 대기면 결과에서 바로 [입고 완료]) -->
         <div class="flex flex-wrap items-center gap-1.5 mt-2">
           <button type="button" id="lateShareBtn" hidden style="display:none!important" onclick="shareLateInbound()" class="ry-lateshare" title="발주 후 7일 넘게 안 들어온 상품 목록을 복사합니다. 카톡방에 붙여넣으세요">
@@ -10807,7 +10790,7 @@ video {
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape') return;
       var z = document.getElementById('eduZoom'); if (z && !z.hidden) return;   // 그림 확대 보기가 위에 있으면 그것부터 (아래 자료실 처리)
-      var hit = document.getElementById('tutDim') ? tutClose : document.getElementById('qinBox') ? qinClose : document.getElementById('invDim') ? function () { invClose(); } : null;
+      var sc = document.getElementById('scanSheet'), hit = sc && sc.classList.contains('on') && RY_SCAN.mode === 'inb1' ? ryScanClose : document.getElementById('tutDim') ? tutClose : document.getElementById('qinBox') ? qinClose : document.getElementById('invDim') ? function () { invClose(); } : null;
       if (hit) { e.stopImmediatePropagation(); hit(); }
     }, true);
     /* ── 상단 도구 줄의 '더보기' (가끔 쓰는 카테고리별 보기 · 중복 정리) ── */
@@ -14732,7 +14715,7 @@ video {
     /* 1026 MJ '세 칸을 두 칸으로 — 검색하면 주문 있는 건 고르고, 없는 건 추가, 없으면 새 상품 등록' → ② 검색 하나:
        입고대기 주문이 있는 상품은 결과 맨 위 '주문 있음' (고르면 주문 수량 그대로 · 온 수량 고침) · 없는 건 수량 · 앱에 없으면 새 상품 */
     function inb1Html() {
-      var c = '<div class="inb1-h">② 명세서 없이 온 상품 <span>이름 검색 → 고르기 · 주문 있는 건 주문 수량 그대로, 없는 건 수량 적기</span></div><input type="search" id="inb1S" class="inb1-q" placeholder="상품 이름 검색 (예: 판콜)" enterkeyhint="search" value="' + escapeHtml(INB1.s || '') + '" onfocus="inb1Top(this)" oninput="INB1.s = this.value; inb1Search(this.value)"><div id="inb1R" class="inb1-r"></div><div id="inb1A">' + inb1RowsHtml() + '</div><div id="inb1Pad" style="height:' + (INB1.pad || 0) + 'px"></div>';
+      var c = '<div class="inb1-h">② 명세서 없이 온 상품 <span>이름 검색 또는 📷 바코드 → 고르기 · 주문 있는 건 주문 수량 그대로, 없는 건 수량 적기</span></div><div class="inb1-sr"><input type="search" id="inb1S" class="inb1-q" placeholder="상품 이름 검색 (예: 판콜)" enterkeyhint="search" value="' + escapeHtml(INB1.s || '') + '" onfocus="inb1Top(this)" oninput="INB1.s = this.value; inb1Search(this.value)"><button type="button" id="inb1Bc" class="inb1-bc" onclick="ryScanOpen(\'inb1\')" title="바코드 찍어서 담기 · 스캐너는 이 화면 어디서 찍어도 돼요">📷 바코드</button></div><div id="inb1R" class="inb1-r"></div><div id="inb1A">' + inb1RowsHtml() + '</div><div id="inb1Pad" style="height:' + (INB1.pad || 0) + 'px"></div>';
       return '<div class="inb1-c">' + c + '</div>';
     }
     function inb1Live() { var o = {}, inv = inb1InvRows(); (cachedInboundItems || []).forEach(function (it) { if (!inv[it.rowNumber]) o[it.rowNumber] = it; }); return o; }
@@ -14795,14 +14778,14 @@ video {
       INB1.add.push({ row: 0, name: nm, qty: 0, isNew: true, t: Date.now() }); inb1Save(); inb1S0(); inb1Rows(INB1.add.length - 1);
       inb1Photo(INB1.add.length - 1);   // 1104 MJ '카메라가 켜져서 상품을 찍어서 바로 등록' — 이름 [확인] 누름 안에서 바로 카메라
     }
-    function inb1Add(row, name) {
+    function inb1Add(row, name, sc) {   /* sc = 바코드로 담음 (알림은 inb1ScanAdd 가) */
       var lv = (cachedInboundItems || []).filter(function (it) { return it.rowNumber === row; })[0];
       var onInv = inb1InvRows()[row] || INVS.some(function (r) { return !r.wrongStore && (r.lines || []).some(function (l) { return !l.exOff && String(l.catName || l.appName || '').replace(/\s+/g, '') === String(name).replace(/\s+/g, ''); }); });
-      if (onInv) { showToast('이미 ① 명세서에 있는 상품이에요 (두 번 안 넣어요)', 2600); return; }   // 1023 테스트에서 찾음: 명세서로 잡힌 상품을 ③에서 또 고르면 두 번 들어갈 뻔
-      if (lv) { if (INB1.pick[row]) { inb1S0(); showToast('이미 골랐어요', 1800); return; } INB1.pick[row] = Date.now(); inb1Save(); inb1S0(); inb1Rows(); showToast('주문 있는 상품이라 주문 수량으로 넣었어요 · 다르게 왔으면 입고 수량을 고쳐 주세요', 3000); return; }   // 주문한 상품이면 주문에 붙임 (1026 목록 칸 없이)
+      if (onInv) { if (!sc) showToast('이미 ① 명세서에 있는 상품이에요 (두 번 안 넣어요)', 2600); return; }   // 1023 테스트에서 찾음: 명세서로 잡힌 상품을 ③에서 또 고르면 두 번 들어갈 뻔
+      if (lv) { if (INB1.pick[row]) { inb1S0(); showToast('이미 골랐어요', 1800); return; } INB1.pick[row] = Date.now(); inb1Save(); if (!sc) inb1S0(); inb1Rows(); if (!sc) showToast('주문 있는 상품이라 주문 수량으로 넣었어요 · 다르게 왔으면 입고 수량을 고쳐 주세요', 3000); return; }   // 주문한 상품이면 주문에 붙임 (1026 목록 칸 없이)
       if (INB1.add.some(function (a) { return a.row === row; })) { inb1S0(); showToast('이미 골랐어요', 1800); return; }
       var ci = (RY_CAT && RY_CAT.items || []).filter(function (x) { return x.rowNumber === row; })[0], bu = ci ? parseInt(ci.boxUnit, 10) || 0 : 0;
-      INB1.add.push({ row: row, name: name, qty: 0, bu: bu > 1 ? bu : 0, t: Date.now() }); inb1Save(); inb1S0(); inb1Rows(INB1.add.length - 1);
+      INB1.add.push({ row: row, name: name, qty: 0, bu: bu > 1 ? bu : 0, t: Date.now() }); inb1Save(); if (sc) return inb1Rows(); inb1S0(); inb1Rows(INB1.add.length - 1);
     }
     function invOpen() { try { dutyGate(null); } catch (eDg0) {}   /* 1103 열 때 미리 근무 확인 → 입고확인 누를 때 안 기다림 */   // 1020 MJ '사진첩만 나오고 카메라가 안 나와' → 먼저 고르게
       if (!checkMemberSelectedOrAlert()) return;
@@ -16059,7 +16042,7 @@ video {
       var g = e.target; if (!g || g.id !== 'globalSearchInput' || e.key !== 'Enter' || e.isComposing || !ryIsBc(g.value)) return;
       clearTimeout(searchDebounceTimer); executeServerSearch(g.value.trim()); setTimeout(function () { try { g.select(); } catch (eS) {} }, 0);
     }, true);
-    /* 입력칸이 아닌 곳에서 스캐너로 찍어도 (빠른 숫자 + 엔터) → 검색 · 바코드 입고 창이 열려 있으면 그쪽으로 */
+    /* 입력칸이 아닌 곳에서 스캐너로 찍어도 (빠른 숫자 + 엔터) → 검색 · 입고하기 창이 열려 있으면 그쪽으로 */
     var RY_WEDGE = { s: '', t: 0, n: 0 };
     document.addEventListener('keydown', function (e) {
       var a = e.target, tag = a && a.tagName; if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (a && a.isContentEditable) || e.ctrlKey || e.metaKey || e.altKey) return;
@@ -16070,26 +16053,26 @@ video {
       ryScanGot(code, 'wedge');
     });
 
-    /* ── 카메라·스캐너 창 (mode 'find' = 검색 · 'inb' = 바코드로 입고) ── */
-    var RY_SCAN = { mode: '', stream: null, det: null, timer: 0, last: '', lastT: 0 };
+    /* ── 카메라·스캐너 창 (mode 'find' = 검색 · 'inb1' = [📦 입고하기] 안 [📷 바코드] · 'np' = 새 상품 · 'stf' = 직원가) ── */
+    var RY_SCAN = { mode: '', stream: null, det: null, timer: 0, last: '', lastT: 0, pick: null };
     function ryScanOpen(mode) {
-      RY_SCAN.mode = mode === 'inb' || mode === 'np' || mode === 'stf' ? mode : 'find';   /* 1118 'stf' = 직원가 탭 (찍으면 바로 담기, 창은 열린 채) */   /* 1118 'np' = 새 상품 창의 [바코드 찍기] */
-      document.getElementById('scanSheet').classList.toggle('np', mode === 'np'); document.getElementById('scanDim').classList.toggle('np', mode === 'np');
-      if (RY_SCAN.mode === 'inb') { if (!checkMemberSelectedOrAlert()) return; try { dutyGate(null); } catch (eD) {} BCI.items = {}; BCI.order = []; BCI.done = 0; BCI.pick = null; }
-      document.getElementById('scanTitle').textContent = RY_SCAN.mode === 'inb' ? '📷 바코드로 입고' : RY_SCAN.mode === 'stf' ? '직원가 · 바코드로 담기' : '바코드 찍기';
-      document.getElementById('scanSheet').classList.toggle('inb', RY_SCAN.mode === 'inb');
-      document.getElementById('scanDim').classList.add('on'); document.getElementById('scanSheet').classList.add('on'); ryLockScroll(true);
-      ryScanMsg(RY_SCAN.mode === 'inb' ? '상품 바코드를 하나씩 찍어 주세요 · 수량이 다르면 숫자만 고쳐 주세요' : '상품 바코드를 네모 안에 비춰 주세요');
+      RY_SCAN.mode = mode === 'inb1' || mode === 'np' || mode === 'stf' ? mode : 'find';   /* 1118 'stf' = 직원가 탭 (찍으면 바로 담기, 창은 열린 채) */   /* 1118 'np' = 새 상품 창의 [바코드 찍기] */
+      var sh = document.getElementById('scanSheet'), dm = document.getElementById('scanDim'), ib = RY_SCAN.mode === 'inb1';
+      sh.classList.toggle('np', mode === 'np'); dm.classList.toggle('np', mode === 'np');
+      sh.classList.toggle('inb1', ib); dm.classList.toggle('inb1', ib);   /* 1119 입고하기 창(z 10050) 위로 */
+      document.getElementById('scanTitle').textContent = ib ? '📷 바코드로 담기' : RY_SCAN.mode === 'stf' ? '직원가 · 바코드로 담기' : '바코드 찍기';
+      dm.classList.add('on'); sh.classList.add('on'); if (!ib) ryLockScroll(true);   /* 입고하기 창이 이미 잠가 둠 — 여기서 풀면 안 됨 */
+      ryScanMsg(ib ? '상품 바코드를 하나씩 찍어 주세요 · 이어서 여러 개 찍고 [닫기] → 수량 적고 [입고확인]' : '상품 바코드를 네모 안에 비춰 주세요');
       var inp = document.getElementById('scanIn'); inp.value = '';
-      bciDraw();
+      RY_SCAN.pick = null; ryScanPickDraw();
       var coarse = window.matchMedia && matchMedia('(pointer:coarse)').matches;
       if (coarse) ryScanCam(); else { document.getElementById('scanCam').hidden = true; document.getElementById('scanCamBtn').hidden = false; setTimeout(function () { inp.focus(); }, 60); }   /* PC = 스캐너 칸에 커서 · 카메라는 버튼으로 */
     }
     function ryScanClose() {
-      if (RY_SCAN.mode === 'inb' && (BCI.order.length || BCI.done)) return bciFinish();
-      ryScanStop();
-      document.getElementById('scanDim').classList.remove('on'); document.getElementById('scanSheet').classList.remove('on'); ryLockScroll(false);
-      RY_SCAN.mode = '';
+      var m = RY_SCAN.mode; ryScanStop();
+      document.getElementById('scanDim').classList.remove('on'); document.getElementById('scanSheet').classList.remove('on'); if (m !== 'inb1') ryLockScroll(false);
+      RY_SCAN.mode = ''; RY_SCAN.pick = null; ryScanPickDraw();
+      if (m === 'inb1') inb1ScanFocus(INB1.lastScan);   /* 마지막에 찍은 줄 수량칸으로 (없으면 [바코드] 버튼) */
     }
     function ryScanStop() {
       clearTimeout(RY_SCAN.timer); RY_SCAN.timer = 0;
@@ -16110,7 +16093,7 @@ video {
         RY_SCAN.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 1280 } }, audio: false });
         if (!RY_SCAN.mode) return ryScanStop();
         v.srcObject = RY_SCAN.stream; await v.play();
-        ryScanMsg(RY_SCAN.mode === 'inb' ? '상품 바코드를 하나씩 비춰 주세요 · 수량이 다르면 숫자만 고쳐 주세요' : '상품 바코드를 네모 안에 비춰 주세요');
+        ryScanMsg(RY_SCAN.mode === 'inb1' ? '상품 바코드를 하나씩 비춰 주세요 · 이어서 여러 개 찍어도 돼요' : '상품 바코드를 네모 안에 비춰 주세요');
         var tick = async function () {
           if (!RY_SCAN.stream) return;
           try { var r = await RY_SCAN.det.detect(v); if (r && r[0] && r[0].rawValue) ryScanGot(r[0].rawValue, 'cam'); } catch (e1) {}
@@ -16132,7 +16115,7 @@ video {
       var code = ryGtin(raw), now = Date.now();
       if (how === 'cam' && code === RY_SCAN.last && now - RY_SCAN.lastT < 1500) { RY_SCAN.lastT = now; return; }   /* 카메라가 같은 상자를 계속 비추는 동안은 한 번 — 화면에서 1.5초 빠져야 다시 셈 */
       RY_SCAN.last = code; RY_SCAN.lastT = now;
-      if (RY_SCAN.mode === 'inb') return bciScan(code);
+      if (RY_SCAN.mode === 'inb1' || (!RY_SCAN.mode && INB1.on && document.getElementById('invDim'))) return inb1Scan(code);   /* 1119 [📦 입고하기] 안 (스캐너는 창 없이도) */
       if (RY_SCAN.mode === 'np') { ryScanClose(); npBcCheck(code); return; }
       if (RY_SCAN.mode === 'stf' || (!RY_SCAN.mode && stfIsOpen())) return stfScan(code);   /* 1118 직원가 탭 (스캐너는 창 없이도) */
       var sheetOn = !!RY_SCAN.mode; if (sheetOn) { RY_SCAN.mode = ''; ryScanStop(); document.getElementById('scanDim').classList.remove('on'); document.getElementById('scanSheet').classList.remove('on'); ryLockScroll(false); }
@@ -16141,85 +16124,51 @@ video {
       var cb = document.getElementById('clearSearchBtn'); if (cb) cb.classList.remove('hidden');
     }
 
-    /* ── 바코드로 입고: 대기 상품이면 주문 수량 → [입고 완료] · 또 찍으면 +1 · 대기에 없으면 '주문 없이 입고로 기록할까요?' ── */
-    var BCI = { items: {}, order: [], done: 0, pick: null };
-    function bciScan(code) {
-      var hits = ryBcFind(code);
-      if (!hits) { ryScanMsg('상품 목록 받는 중이에요 · 잠시 뒤 다시 찍어 주세요', true); try { ryCatLoad(true); } catch (e) {} return; }
-      if (!hits.length) { ryBcBeep(false); RY_BC_LAST = { code: code, n: 0, t: Date.now() }; ryScanMsg('등록 안 된 바코드예요 (' + code + ')', true); var mm = document.getElementById('scanMsg'); if (mm) mm.insertAdjacentHTML('beforeend', '<br><button type="button" class="ry-bc-new" data-c="' + escapeHtml(code) + '" onclick="bciNew(this.dataset.c)">+ 새 상품으로 등록</button><br><small class="ry-bc-or">이미 있는 상품이면 검색에서 이름으로 찾아 [수정]에서 바코드를 넣어 주세요</small>'); return; }
-      if (hits.length > 1) {   /* 같은 바코드 상품 여러 개 → 고르기 (입고 대기인 것 먼저) */
-        var w = {}; (cachedInboundItems || []).forEach(function (x) { w[x.rowNumber] = 1; });
-        hits.sort(function (a, b) { return (w[b.rowNumber] || 0) - (w[a.rowNumber] || 0); });
-        BCI.pick = { code: code, list: hits }; ryBcBeep(true); ryScanMsg('같은 바코드 상품이 ' + hits.length + '개예요 · 맞는 상품을 골라 주세요'); bciDraw(); return;
-      }
-      bciAdd(hits[0]);
+    /* ═══ 1119 MJ '입고 탭 [명세서로 입고][바코드로 입고] 필요 없어 — 퀵메뉴 입고하기만' → 입고하기 안 [📷 바코드]
+       찍으면 그 상품 줄을 담음 (입고대기 = 주문 수량 그대로 체크 · 아니면 '주문 없음' 줄, 수량은 직접) · 같은 바코드 또 찍으면 수량 그대로, 그 줄만 다시 보여 줌
+       여러 개 이어서 찍고 수량 적고 [입고확인] 한 번. 스캐너(숫자+엔터)는 창 없이 입고하기 화면 어디서 찍어도 됨 ═══ */
+    function inb1Scan(code) {
+      var hits = ryBcFind(code), say = function (t, bad) { if (RY_SCAN.mode) ryScanMsg(t, bad); else showToast(t, 2600); };
+      if (!hits) { say('상품 목록 받는 중이에요 · 잠시 뒤 다시 찍어 주세요', true); try { ryCatLoad(true); } catch (e) {} return; }
+      if (!hits.length) { ryBcBeep(false); say('등록 안 된 바코드예요 (' + code + ') · 이름으로 검색해 주세요 · 앱에 없으면 [🆕 새 상품으로 등록하고 입고]', true); return; }
+      if (hits.length > 1) { var lv = inb1Live(), w = hits.filter(function (x) { return lv[x.rowNumber]; }); if (w.length === 1) hits = w; }   /* 같은 바코드 여러 개 → 입고대기 하나뿐이면 그것 */
+      if (hits.length > 1) { if (RY_SCAN.mode !== 'inb1') ryScanOpen('inb1'); RY_SCAN.pick = hits; ryBcBeep(true); ryScanMsg('같은 바코드 상품이 ' + hits.length + '개예요 · 맞는 상품을 골라 주세요'); ryScanPickDraw(); return; }
+      inb1ScanAdd(hits[0]);
     }
-    function bciNew(code) {   /* 1118 바코드 입고 중 앱에 없는 상품 → 카메라 쉬고 새 상품 창 (등록 뒤 다시 찍으면 '주문 없이 입고') */
-      ryScanStop(); document.getElementById('scanCam').hidden = true; document.getElementById('scanCamBtn').hidden = false;
-      ryScanMsg('새 상품을 등록한 뒤 다시 찍으면 입고 목록에 들어가요');
-      openNewProduct('', code, { noReq: 1 });
+    function ryScanPickDraw() {
+      var b = document.getElementById('scanList'); if (!b) return; var p = RY_SCAN.pick, lv = p ? inb1Live() : {};
+      b.innerHTML = p ? '<div class="bci-pick"><b>같은 바코드 상품이에요 · 맞는 상품을 골라 주세요</b>' + p.map(function (it, i) { return '<button type="button" onclick="ryScanPick(' + i + ')">' + escapeHtml(String(it.name).split('\n')[0]) + (lv[it.rowNumber] ? ' <i>입고 대기</i>' : '') + '</button>'; }).join('') + '</div>' : '';
     }
-    function bciPick(i) { var p = BCI.pick; BCI.pick = null; if (p && p.list[i]) bciAdd(p.list[i]); else bciDraw(); }
-    function bciAdd(it) {
-      var row = it.rowNumber, e = BCI.items[row], nm = String(it.name || '').split('\n')[0];
-      ryBcBeep(true);
-      if (e) {
-        if (e.st === 'done') { ryScanMsg('✓ ' + nm + ' 은(는) 이미 입고 완료했어요'); bciDraw(); return; }
-        if (e.kind === 'wait') { e.bump = Date.now(); BCI.order = [row].concat(BCI.order.filter(function (r) { return r !== row; })); ryScanMsg(nm + ' — 이미 목록에 있어요 · 수량이 다르면 숫자만 고쳐 주세요'); bciDraw(); return; }   // 1118 MJ '추천대로' — 대기 상품은 다시 찍어도 주문 수량 그대로 (상자마다 찍어도 안 틀어지게)
-        e.q += 1; e.bump = Date.now(); BCI.order = [row].concat(BCI.order.filter(function (r) { return r !== row; }));
-        ryScanMsg(nm + ' +1 → ' + e.q + e.u); bciDraw(); return;
-      }
-      var wi = (cachedInboundItems || []).filter(function (x) { return x.rowNumber === row; })[0];
-      if (wi) { var o = inbOrd(wi); BCI.items[row] = { row: row, name: wi.name, nm: nm, kind: 'wait', ordQ: o.q, q: o.q || 1, u: o.u, st: '' }; ryScanMsg('입고 대기 상품 · 주문 ' + o.q + o.u + ' — 수량 맞으면 [입고 완료]'); }
-      else { BCI.items[row] = { row: row, name: it.name, nm: nm, kind: 'new', ordQ: 0, q: 1, u: '개', st: '' }; ryScanMsg('입고 대기에 없는 상품이에요 · 주문 없이 입고로 기록할까요?', true); }
-      BCI.order.unshift(row); bciDraw();
+    function ryScanPick(i) { var p = RY_SCAN.pick; RY_SCAN.pick = null; ryScanPickDraw(); if (p && p[i]) inb1ScanAdd(p[i]); }
+    function inb1ScanAdd(it) {
+      var row = it.rowNumber, nm = String(it.name || '').split('\n')[0], lv = inb1Live()[row];
+      var had = !!INB1.pick[row] || INB1.add.some(function (a) { return a.row === row; }), n0 = INB1.add.length;
+      if (!had) inb1Add(row, nm, true);
+      var on = !!INB1.pick[row] || INB1.add.some(function (a) { return a.row === row; });
+      var msg = had ? '이미 담았어요 · ' + nm : !on ? nm + ' — ① 명세서에 이미 있어요' : lv ? '✓ ' + nm + ' · 주문 있음 (주문 ' + (lv.targetQty || '') + (lv.unit || '개') + ')' : '✓ ' + nm + ' · 주문 없음 — 수량을 적어 주세요';
+      ryBcBeep(on || had);
+      if (on) INB1.lastScan = row;
+      if (RY_SCAN.mode) { ryScanMsg(msg + (on ? ' · 다음 바코드를 찍어 주세요' : ''), !on); var si = document.getElementById('scanIn'); if (si && !matchMedia('(pointer:coarse)').matches) si.focus({ preventScroll: true }); else if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur(); return; }
+      showToast(msg, 2400); if (on) inb1ScanFocus(row);
     }
-    function bciQty(row, d, abs) { var e = BCI.items[row]; if (!e || e.st) return; var n = abs != null ? Math.round(Number(abs)) : e.q + d; if (n > 0 && n < 100000) e.q = n; bciDraw(); }
-    function bciGo(row) {
-      var e = BCI.items[row]; if (!e || e.st) return;
-      dutyGate(function () {
-        e.st = 'busy'; bciDraw();
-        var fin = function (ok, msg) { e.st = ok ? 'done' : ''; if (ok) { BCI.done++; ryBcBeep(true); ryScanMsg('✓ ' + e.nm + ' ' + e.q + e.u + ' 입고 완료'); } else { ryScanMsg('입고 안 됨: ' + e.nm + (msg ? ' · ' + msg : ''), true); } bciDraw(); };
-        if (e.kind === 'wait') {
-          if (!(cachedInboundItems || []).some(function (x) { return x.rowNumber === row; })) return fin(false, '입고 대기 목록에 없어요 · 새로고침 후 다시');
-          inbGotSet(row, e.q, e.u);
-          completeInbound(row, true, fin, true, '바코드');
-        } else {
-          google.script.run.withSuccessHandler(function (r) { fin(!!(r && r.success), r && r.message); })
-            .withFailureHandler(function (er) { fin(false, String(er && er.message || er)); })
-            .quickInbound({ name: e.nm, row: row, qty: e.q, reason: '바코드 입고', custom: false, photo: '', isNew: false, prodPhoto: '' }, currentSelectedMember);
-        }
-      });
+    function inb1ScanFocus(row) {   /* 그 줄 수량칸에 커서 + 잠깐 파란 테두리 */
+      var k = -1; INB1.add.forEach(function (a, j) { if (a.row === row) k = j; });
+      var q = row ? (k >= 0 ? document.getElementById('inb1Q' + k) : document.querySelector('#inb1A input[data-g="' + row + '"]')) : null;
+      if (!q) { var bb = document.getElementById('inb1Bc'); if (bb) bb.focus({ preventScroll: true }); return; }
+      var r = q.closest('.inb1-a'); if (r) { r.classList.remove('inb1-hit'); void r.offsetWidth; r.classList.add('inb1-hit'); r.scrollIntoView({ block: 'nearest' }); }
+      q.focus({ preventScroll: true }); try { q.select(); } catch (e) {}
     }
-    function bciSkip(row) { delete BCI.items[row]; BCI.order = BCI.order.filter(function (r) { return r !== row; }); ryScanMsg('뺐어요 · 다음 바코드를 찍어 주세요'); bciDraw(); }
-    function bciFinish() {
-      var left = (cachedInboundItems || []).length, n = BCI.done, open = BCI.order.filter(function (r) { var e = BCI.items[r]; return e && e.st !== 'done'; }).length;
-      if (open && !ryAsk('아직 [입고 완료]를 안 누른 상품이 ' + open + '개 있어요 · 그래도 끝낼까요?', bciFinish)) return;
-      BCI.items = {}; BCI.order = []; BCI.done = 0; BCI.pick = null; RY_SCAN.mode = '';
-      ryScanStop(); document.getElementById('scanDim').classList.remove('on'); document.getElementById('scanSheet').classList.remove('on'); ryLockScroll(false);
-      if (n) { showToast((left ? '' : '🎉 ') + '이번: ' + n + '종 완료 · 대기 중 남은 것 ' + left + '종' + (left ? '' : ' — 입고 대기 다 끝!'), 4500); try { inbReload(); } catch (e) {} }
-    }
-    function bciDraw() {
-      var box = document.getElementById('scanList'), foot = document.getElementById('scanFoot'); if (!box || !foot) return;
-      if (RY_SCAN.mode !== 'inb') { box.innerHTML = ''; foot.innerHTML = ''; return; }
-      var h = '';
-      if (BCI.pick) h += '<div class="bci-pick"><b>같은 바코드 ' + escapeHtml(BCI.pick.code) + '</b>' + BCI.pick.list.map(function (it, i) { var w = (cachedInboundItems || []).some(function (x) { return x.rowNumber === it.rowNumber; }); return '<button type="button" onclick="bciPick(' + i + ')">' + escapeHtml(String(it.name).split('\n')[0]) + (w ? ' <i>입고 대기</i>' : '') + '</button>'; }).join('') + '</div>';
-      BCI.order.forEach(function (r) {
-        var e = BCI.items[r]; if (!e) return;
-        var done = e.st === 'done', busy = e.st === 'busy', diff = e.kind === 'wait' && e.q !== e.ordQ;
-        h += '<div class="bci-row' + (done ? ' done' : '') + (e.kind === 'new' ? ' new' : '') + (e.bump && Date.now() - e.bump < 900 ? ' bump' : '') + '">'
-          + '<div class="bci-nm"><b>' + escapeHtml(e.nm) + '</b><span>' + (e.kind === 'wait' ? '주문 ' + e.ordQ + e.u + (diff ? ' → 온 ' + e.q + e.u : '') : done ? '주문 없이 ' + e.q + e.u + ' 입고했어요' : '입고 대기에 없어요 · 주문 없이 입고로 기록할까요?') + '</span></div>'
-          + (done ? '<span class="bci-ok">✓ 입고 완료</span>'
-            : '<div class="bci-act"><span class="bci-q"><button type="button" aria-label="1개 빼기" onclick="bciQty(' + r + ',-1)"' + (busy ? ' disabled' : '') + '>−</button><input type="number" inputmode="numeric" min="1" value="' + e.q + '" aria-label="온 수량" onchange="bciQty(' + r + ',0,this.value)"' + (busy ? ' disabled' : '') + '><button type="button" aria-label="1개 더" onclick="bciQty(' + r + ',1)"' + (busy ? ' disabled' : '') + '>+</button></span>'
-              + '<button type="button" class="bci-go" onclick="bciGo(' + r + ')"' + (busy ? ' disabled' : '') + '>' + (busy ? '저장 중…' : e.kind === 'wait' ? '입고 완료' : '주문 없이 입고') + '</button>'
-              + (e.kind === 'new' ? '<button type="button" class="bci-skip" onclick="bciSkip(' + r + ')"' + (busy ? ' disabled' : '') + '>빼기</button>' : '') + '</div>')
-          + '</div>';
-      });
-      if (!h) h = '<div class="bci-empty">찍은 상품이 여기에 쌓여요</div>';
-      box.innerHTML = h;
-      var left = (cachedInboundItems || []).length;
-      foot.innerHTML = '<div class="bci-sum">이번 <b>' + BCI.done + '종</b> 완료 · 대기 중 남은 것 <b>' + left + '종</b>' + (left && left <= 3 ? ' · 🔥 ' + left + '종만 더!' : '') + '</div><button type="button" class="bci-end" onclick="bciFinish()">끝내기</button>';
-    }
+    /* 입고하기 화면 안 입력칸(수량·검색)에 커서가 있어도 스캐너(빠른 숫자 + 엔터)면 바코드로 — 칸에 들어간 숫자는 되돌림 */
+    var RY_INBW = { s: '', t: 0, el: null, v0: '' };
+    document.addEventListener('keydown', function (e) {
+      var a = e.target; if (!INB1.on || !a || a.tagName !== 'INPUT' || !a.closest || !a.closest('#invBox') || e.ctrlKey || e.metaKey || e.altKey || e.isComposing) return;
+      var now = Date.now(); if (now - RY_INBW.t > 80 || RY_INBW.el !== a) { RY_INBW.s = ''; RY_INBW.el = a; RY_INBW.v0 = a.value; } RY_INBW.t = now;
+      if (/^[0-9A-Za-z()]$/.test(e.key)) { RY_INBW.s += e.key; return; }
+      if (e.key !== 'Enter' || RY_INBW.s.length < 8 || !ryIsBc(RY_INBW.s)) return;
+      var code = RY_INBW.s; RY_INBW.s = ''; e.preventDefault(); e.stopImmediatePropagation();
+      a.value = RY_INBW.v0; a.dispatchEvent(new Event('input', { bubbles: true }));
+      inb1Scan(ryGtin(code));
+    }, true);
     /* 입고내역 배지: 어떻게 입고됐는지 (바코드 · 명세서 · 직접) */
     function ryHowChip(item) {
       var rq = String(item.requester || ''), h = item.inHow || (/바코드 입고/.test(rq) ? '바코드' : /^주문없이입고/.test(rq) && !/명세서 없음/.test(rq) ? '명세서' : '');
@@ -20253,7 +20202,6 @@ video {
   <div class="ry-scan-msg" id="scanMsg" role="status" aria-live="polite"></div>
   <div class="np-field"><label for="scanIn">스캐너로 찍기 · 번호를 적고 [엔터]</label><input type="text" id="scanIn" inputmode="numeric" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="go" placeholder="여기에 커서를 두고 찍어요 · 예: 8806…" onkeydown="ryScanType(event)"></div>
   <div id="scanList"></div>
-  <div id="scanFoot"></div>
 </div>
 <div class="ava-dim" id="noteDim" onclick="closeNote()"></div>
 <div class="ava-sheet" id="noteSheet" role="dialog" aria-label="특이사항">
