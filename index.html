@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwnbsjpy">
+  <meta name="ry-build" content="mwnkgvoq">
   <!-- 1118 카톡 미리보기 (공유 링크) --><meta property="og:type" content="website"><meta property="og:site_name" content="성수레디영"><meta property="og:title" content="성수레디영 물류앱"><meta property="og:description" content="숙지사항 · 발주 · 입고를 한 곳에서 — 눌러서 물류앱으로 바로 열기 (직원 전용)"><meta property="og:image" content="https://deltoy.github.io/readyyoung/ry-icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:url" content="https://deltoy.github.io/readyyoung/"><meta name="description" content="성수레디영 물류앱 (직원 전용)">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
@@ -18484,6 +18484,8 @@ video {
           var hs = ln.split('||').map(function (n) { return byName[n]; }).filter(Boolean), sx = { n: ln, q: 0, multi: true };
           hs.forEach(function (h) { Object.keys(h).forEach(function (f) { if (typeof h[f] === 'number' && f !== 'tk') sx[f] = (sx[f] || 0) + h[f]; }); });
           sx.q = hs.reduce(function (a, h) { return a + (+h.q || 0); }, 0); if (!hs.length) sx.zero = true;
+          var pw = hs.filter(function (h) { return h.price != null && h.q > 0; }), pwq = pw.reduce(function (a, h) { return a + h.q; }, 0); delete sx.price; delete sx.cost;   /* 1119 사입가·판매가는 1개 값이라 더하면 2배(토너 29,000·56,000) → 수량 가중 평균 */
+          if (pwq > 0) { sx.price = Math.round(pw.reduce(function (a, h) { return a + h.price * h.q; }, 0) / pwq); sx.cost = Math.round(pw.reduce(function (a, h) { return a + (h.cost || 0) * h.q; }, 0) / pwq); }
           g.x = sx; g.st = 'auto'; g.linked = true; return g;
         }
         if (ln && byName[ln]) { g.x = byName[ln]; g.st = 'auto'; g.linked = true; return g; }
