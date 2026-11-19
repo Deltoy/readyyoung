@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwnb4bwq">
+  <meta name="ry-build" content="mwnbsjpy">
   <!-- 1118 카톡 미리보기 (공유 링크) --><meta property="og:type" content="website"><meta property="og:site_name" content="성수레디영"><meta property="og:title" content="성수레디영 물류앱"><meta property="og:description" content="숙지사항 · 발주 · 입고를 한 곳에서 — 눌러서 물류앱으로 바로 열기 (직원 전용)"><meta property="og:image" content="https://deltoy.github.io/readyyoung/ry-icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:url" content="https://deltoy.github.io/readyyoung/"><meta name="description" content="성수레디영 물류앱 (직원 전용)">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
@@ -7582,7 +7582,8 @@ video {
       return s;
     }
     /* 1119 MJ '파마티크 홍삼팩·골드팩은 거의 증정' — RY_GIFT {날 번호: 그날 30만원↑ 영수증 수} (getStockCounts.gift, ry-pc3 가 15분마다) */
-    var GIFT_K = { hong: '파마티크홍삼팩', gold: '파마티크골드팩' }, RY_GIFT = null, _gaDone = {};
+    /* 1119 17:57 MJ: 30만↑ = 1박스(5개입) · 20만~30만 미만 = 낱장 3장 = 0.6박스 (홍삼 0이면 골드팩도 같은 양) → RY_GIFT = 그날 빠지는 박스 수, RY_GIFT_T = {b30, b20} 영수증 수 */
+    var GIFT_K = { hong: '파마티크홍삼팩', gold: '파마티크골드팩' }, GIFT_B20 = 3 / 5, RY_GIFT = null, RY_GIFT_T = {}, _gaDone = {};
     function giftIn(a, b) { var s = 0; if (RY_GIFT) for (var d in RY_GIFT) if (+d >= a && +d < b) s += RY_GIFT[d]; return s; }
     function giftRule(it) { var m = String(it && it.note || '').match(/\[자동주문\s*(\d+)\s*(?:→|->|>)\s*(\d+)\]/); return m ? [+m[1], +m[2]] : (it && (ryPrKey(it.name) === GIFT_K.hong || ryPrKey(it.name) === GIFT_K.gold) ? [40, 126] : null); }
     /* 1119 MJ '40개 이하로 떨어지면 126개를 자동주문으로 최종발주에' — 추정 재고는 화면만 계산 → 켜 둔 앱이 기준 이하를 보면 서버 giftAutoOrder (이미 최종 발주·입고 대기면 서버가 안 함) · 이 화면에선 하루 한 번만 물어봄 */
@@ -7600,7 +7601,7 @@ video {
     function stkToday() { var d = new Date(); return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 864e5; }
     function stkOf(it) {
       if (!it || !it.name) return null;
-      if (!RY_SC || Date.now() - _scAt > 3600e3) { if (!_scLoading && typeof google !== 'undefined' && google.script) { _scLoading = true; _scAt = Date.now(); google.script.run.withSuccessHandler(function (r) { _scLoading = false; RY_SC = (r && r.map) || {}; try { RY_DS = stkDsPrep(r && r.ds); } catch (eDs) { RY_DS = null; } RY_GIFT = {}; Object.keys((r && r.gift) || {}).forEach(function (d) { var x = stkDay(d); if (x != null) RY_GIFT[x] = +r.gift[d] || 0; }); try { renderAllViews(); } catch (e) {} stkSrRefresh(); try { giftAutoCheck(); } catch (eG) {} }).withFailureHandler(function () { _scLoading = false; RY_SC = RY_SC || {}; }).getStockCounts(); } if (!RY_SC) return null; }   // 1029 켜 둔 PC도 1시간마다 뒤에서 다시 (아침 8:10 하루 판매 반영)
+      if (!RY_SC || Date.now() - _scAt > 3600e3) { if (!_scLoading && typeof google !== 'undefined' && google.script) { _scLoading = true; _scAt = Date.now(); google.script.run.withSuccessHandler(function (r) { _scLoading = false; RY_SC = (r && r.map) || {}; try { RY_DS = stkDsPrep(r && r.ds); } catch (eDs) { RY_DS = null; } RY_GIFT = {}; RY_GIFT_T = {}; Object.keys((r && r.gift) || {}).forEach(function (d) { var x = stkDay(d), v = r.gift[d], t = v && typeof v === 'object' ? { b30: +v.b30 || 0, b20: +v.b20 || 0 } : { b30: +v || 0, b20: 0 }; if (x != null) { RY_GIFT_T[x] = t; RY_GIFT[x] = t.b30 + GIFT_B20 * t.b20; } }); try { renderAllViews(); } catch (e) {} stkSrRefresh(); try { giftAutoCheck(); } catch (eG) {} }).withFailureHandler(function () { _scLoading = false; RY_SC = RY_SC || {}; }).getStockCounts(); } if (!RY_SC) return null; }   // 1029 켜 둔 PC도 1시간마다 뒤에서 다시 (아침 8:10 하루 판매 반영)
       var k = ryPrKey(it.name), s15 = parseFloat(String(it.sales15 == null ? '' : it.sales15).replace(/[^0-9.]/g, '')) || 0, daily = s15 / 15;
       /* 1119 증정: 홍삼팩은 그날 30만↑ 영수증 수만큼 더 빠짐(sold) · 0 밑으로 깎인 증정 몫(clip)은 골드팩에서 (over [날, 개수]) */
       var gk = k === GIFT_K.hong, over = [], sold = function (a, b) { return stkSold(k, daily, a, b, use) + (gk ? giftIn(a, b) : 0); };
@@ -7622,10 +7623,10 @@ video {
       est = est - stkSold(k, daily, t, now, use) - (gk ? giftIn(t, now + 1) : 0);   // 증정은 오늘 것도 (15분마다 들어옴)
       if (gk && est < 0) { var gNow = Math.min(-est, giftIn(t, now + 1)); if (gNow > 0) { giftOver(gNow, t, now + 1); est += gNow; } }
       var gift = null;
-      if (gk) gift = { y: (RY_GIFT && RY_GIFT[now - 1]) || 0, gold: false, over: over };
+      if (gk) gift = { y: RY_GIFT_T[now - 1] || { b30: 0, b20: 0 }, gold: false, over: over };
       else if (k === GIFT_K.gold) { var hIt = RY_CAT && RY_CAT.items && RY_CAT.items.filter(function (x) { return ryPrKey(x.name) === GIFT_K.hong; })[0], h = hIt ? stkOf(hIt) : null, ov = 0;
-        if (h && h.gift) { h.gift.over.forEach(function (o) { if (o[0] >= baseD) ov += o[1]; }); est -= ov; gift = { y: h.est <= 0 ? (RY_GIFT && RY_GIFT[now - 1]) || 0 : 0, gold: h.est <= 0, over: [] }; if (ov) how += ' − 홍삼팩 다 써서 대신 준 증정 ' + ov + '개'; } }   // ponytail: 홍삼이 지금 0일 때만 골드 줄에 '어제 N개' (날별 정확한 나눔은 over 로 재고에만)
-      if (gk && RY_GIFT) { var gAll = giftIn(baseD, now + 1); if (gAll) how += ' − 30만원↑ 영수증 증정 ' + gAll + '개'; }
+        if (h && h.gift) { h.gift.over.forEach(function (o) { if (o[0] >= baseD) ov += o[1]; }); est -= ov; gift = { y: h.est <= 0 ? RY_GIFT_T[now - 1] || { b30: 0, b20: 0 } : { b30: 0, b20: 0 }, gold: h.est <= 0, over: [] }; if (ov) how += ' − 홍삼팩 다 써서 대신 준 증정 ' + Math.round(ov * 10) / 10 + '개'; } }   // ponytail: 홍삼이 지금 0일 때만 골드 줄에 '어제 N개' (날별 정확한 나눔은 over 로 재고에만)
+      if (gk && RY_GIFT) { var gAll = giftIn(baseD, now + 1); if (gAll) how += ' − 영수증 증정 ' + Math.round(gAll * 10) / 10 + '개(30만↑ 1박스 · 20만대 낱장 3장)'; }
       est = Math.round(est);   // 1102 MJ '재고보다 더 팔렸으면 마이너스로도 (얼마나 더 나갔는지)' — 끝 값만 0 아래로 (입고 사이 계산은 그대로 0에서 다시)
       return { est: est, left: daily > 0 ? Math.floor(Math.max(0, est) / daily) : null, daily: daily, how: how, k: k, act: use.n, gift: gift, sure: !!(cnt && (inbD == null || cntD >= inbD)) || !!iv };   // sure = 센 개수·명세서 수량 기준 (주문 수량만이면 그 전에 남아 있던 재고를 몰라 적게 나올 수 있음)
     }
@@ -7799,7 +7800,8 @@ video {
     }
     function giftLine(s, item) {   /* 1119 증정 상품 카드 한 줄 */
       if (!s.gift || !RY_GIFT) return ''; var rule = giftRule(stkCatItem(item));
-      return '<span class="ry-gift">🎁 증정으로 빠짐: 어제 ' + s.gift.y + '개 (30만원↑ 영수증)' + (s.gift.gold ? ' · 홍삼팩 다 써서 골드팩으로' : '') + (rule ? ' · ' + rule[0] + '개 이하면 ' + rule[1] + '개 자동 주문' : '') + '</span>';
+      var y = s.gift.y, yn = Math.round((y.b30 + GIFT_B20 * y.b20) * 10) / 10;
+      return '<span class="ry-gift">🎁 증정으로 빠짐: 어제 ' + yn + '개 (30만원↑ 영수증 ' + y.b30 + '장 = 1박스씩 · 20만원대 ' + y.b20 + '장 = 낱장 3장씩)' + (s.gift.gold ? ' · 홍삼팩 다 써서 골드팩으로' : '') + (rule ? ' · ' + rule[0] + '개 이하면 ' + rule[1] + '개 자동 주문' : '') + '</span>';
     }
     function bxChip(k) {
       var r = SP.box && (SP.box.rows || []).filter(function (x) { return x.box === k; })[0];
@@ -22872,7 +22874,7 @@ function wkRender(r, weeks) {
     + card('평균 입고까지', r.lt, '일', cmp(r.lt, r.ltP, '일', false)) + card('반려', r.rejects, '건', cmp(r.rejects, r.rejectsP, '건', false))
     + card('지금 1차 검토', r.review, '건') + card('지금 최종 발주', r.order, '건') + card('입고 대기', r.waiting, '건') + card('7일 넘은 지연 · 품절', (r.late || 0) + ' · ' + (r.soldout || 0), '건') + '</div>';
   if (N.arrived || N.ordered || N.lt || N.rejects || N.late) h += '<div class="wk-box"><h3>📋 숫자 판정</h3>' + ['arrived', 'ordered', 'lt', 'rejects', 'late'].map(nt).join('') + '</div>';
-  var G = r.gift; if (G) h += '<div class="wk-box"><h3>🎁 증정 (30만원↑ 영수증)</h3><div class="wk-g">' + card('30만원↑ 영수증', G.rc, '장', cmp(G.rc, G.rcP, '장', true)) + card('홍삼팩 증정', G.hongGift, '개') + card('홍삼팩 남은 약', G.hong == null ? '—' : G.hong, '개', '<em>' + (G.hongWk == null ? '—' : G.hongWk + '주치') + '</em>') + card('골드팩 남은 약', G.gold == null ? '—' : G.gold, '개', '<em>' + (G.goldWk == null ? '—' : G.goldWk + '주치') + ' · 판매+세트 ' + G.goldSold + '개' + (G.goldGift ? ' · 홍삼 대신 ' + G.goldGift + '개' : '') + '</em>') + '</div>' + nt('gift') + '</div>';
+  var G = r.gift; if (G) h += '<div class="wk-box"><h3>🎁 증정 (30만원↑ = 1박스 · 20만원대 = 낱장 3장)</h3><div class="wk-g">' + card('영수증 30만↑ · 20만대', G.rc + ' · ' + (G.rc20 || 0), '장', '<em>지난주 ' + (G.rcP || 0) + ' · ' + (G.rc20P || 0) + '장</em>') + card('홍삼팩 증정', G.hongGift, '개') + card('홍삼팩 남은 약', G.hong == null ? '—' : G.hong, '개', '<em>' + (G.hongWk == null ? '—' : G.hongWk + '주치') + '</em>') + card('골드팩 남은 약', G.gold == null ? '—' : G.gold, '개', '<em>' + (G.goldWk == null ? '—' : G.goldWk + '주치') + ' · 판매+세트 ' + G.goldSold + '개' + (G.goldGift ? ' · 홍삼 대신 ' + G.goldGift + '개' : '') + '</em>') + '</div>' + nt('gift') + '</div>';
   h += bars('🏆 입고 처리 (발주왕)', (r.kingIn || []).map(function (x) { return [x[0], x[1], x[1] + '건']; }), 'kingIn');
   h += bars('🙋 주문 요청', (r.kingReq || []).map(function (x) { return [x[0], x[1], x[1] + '건']; }), 'kingReq');
   h += bars('🔥 15일 판매 TOP', (r.top || []).slice(0, 10).map(function (x) { return [x.name, x.s, x.s + '개']; }), 'top');
