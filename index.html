@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwnkgvoq">
+  <meta name="ry-build" content="mwoi9z6v">
   <!-- 1118 카톡 미리보기 (공유 링크) --><meta property="og:type" content="website"><meta property="og:site_name" content="성수레디영"><meta property="og:title" content="성수레디영 물류앱"><meta property="og:description" content="숙지사항 · 발주 · 입고를 한 곳에서 — 눌러서 물류앱으로 바로 열기 (직원 전용)"><meta property="og:image" content="https://deltoy.github.io/readyyoung/ry-icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:url" content="https://deltoy.github.io/readyyoung/"><meta name="description" content="성수레디영 물류앱 (직원 전용)">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
@@ -1333,7 +1333,19 @@ html body:not(#_):not(#_) .ry-qe.chg .ry-qe-n{color:#B54708!important;border-col
 .inv-match{display:flex;align-items:center;gap:10px;margin:8px 0 4px;padding:10px;border-radius:12px;border:2px solid #84ADFF;background:#EEF4FF}.inv-match img,.inv-match .inv-noimg{width:60px;height:60px;object-fit:contain;border-radius:10px;border:1px solid #E4E7EC;background:#fff;flex:none}.inv-match div{min-width:0}.inv-match small{display:block;font-size:11.5px;font-weight:800;color:#155EEF}.inv-match b{display:block;font-size:15px;font-weight:900;color:#101828;line-height:1.35}.inv-match span{font-size:12px;color:#475467}.inv-match.m-q{border-color:#FEC84B;background:#FFFAEB}.inv-match.m-q small{color:#B54708}.inv-match.m-done{border-color:#ABEFC6;background:#ECFDF3}.inv-match.m-done small{color:#067647}
 #imgPreviewOverlay{z-index:10075!important}
 .inv-sec{margin-bottom:6px}.inv-fail{background:#FFFAEB;border-radius:14px;padding:4px 12px 10px}.inv-failrow{display:flex;gap:12px;align-items:flex-start}.inv-failrow img{width:96px;border-radius:10px;border:1px solid #E4E7EC;flex:none}.inv-retry{min-height:44px;padding:0 14px;border-radius:12px;border:0;background:#155EEF;color:#fff;font-weight:800;font-size:14px;margin:6px 0}.inv-wrong{background:#FEF3F2;border:2px solid #F04438;color:#B42318;border-radius:14px;padding:12px 14px;font-size:15px;line-height:1.5;margin:10px 0}.inv-sec h4{font-size:15px;font-weight:800;margin:12px 0 8px}.inv-sec h4 span{font-weight:600;color:#667085;font-size:12px}.inv-sec h4 a{color:#155EEF}
-.inv-foot{position:sticky;bottom:-16px;background:#fff;padding-top:10px;display:flex;gap:8px}
+.inv-foot{position:sticky;bottom:-16px;background:#fff;padding-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+/* 1120 맞는 것 자동 체크 · 노란 것만 · 한 번 누르면 입고 */
+.inv-foot .inv-okgo{flex:1 1 100%;min-height:58px;font-size:17px;background:#12B76A;color:#fff}.inv-okgo:disabled{opacity:.5}
+.inv-line.inv-y{border-left:4px solid #FDB022}.inv-okl{background:#F6FEF9;border-color:#ABEFC6}
+.inv-yh{font-size:13px;font-weight:800;color:#B54708;margin:4px 0 6px}
+.inv-okg{margin:6px 0;border:1.5px solid #75E0A7;border-radius:14px;background:#ECFDF3}.inv-okg>summary{min-height:52px;display:flex;align-items:center;gap:8px;padding:0 14px;font-size:15.5px;font-weight:800;color:#067647;cursor:pointer;list-style:none}.inv-okg>summary::-webkit-details-marker{display:none}.inv-okg>summary small{font-weight:600;color:#079455;font-size:12.5px}.inv-okg[open]{padding:0 8px 4px}
+.inv-btns .inv-one{min-height:48px;padding:0 18px;border-radius:12px;border:0;background:#12B76A;color:#fff;font-size:15px;font-weight:800;margin:6px 6px 0 0}
+.inv-dn{display:flex;gap:6px;align-items:center;font-size:13px;color:#98A2B3;padding:6px 10px;border-bottom:1px dashed #EAECF0;text-decoration:line-through}.inv-dn small{text-decoration:none;color:#067647;font-weight:800;margin-left:auto}
+.inv-left{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:2px 0 8px;font-size:17px;font-weight:900;color:#155EEF}.inv-left small{font-size:12px;font-weight:600;color:#667085}.inv-left.hot{color:#E04F16}.inv-left.done{color:#067647}
+.inv-yay{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);z-index:10090;background:#12B76A;color:#fff;font-size:22px;font-weight:900;padding:16px 26px;border-radius:20px;box-shadow:0 12px 32px rgba(16,24,40,.25);pointer-events:none;animation:invYay 1.6s ease forwards}
+@keyframes invYay{0%{opacity:0;transform:translate(-50%,-50%) scale(.6)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}25%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-60%)}}
+@media (prefers-reduced-motion:reduce){.inv-yay{animation:none}}
+#invUndo{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:10085;display:flex;align-items:center;gap:12px;background:#101828;color:#fff;border-radius:14px;padding:8px 8px 8px 16px;font-size:14px;font-weight:700;box-shadow:0 8px 24px rgba(16,24,40,.3);max-width:calc(100vw - 32px)}#invUndo button{min-height:44px;padding:0 16px;border-radius:10px;border:0;background:#fff;color:#101828;font-weight:800}
 .inv-foot button{flex:1;min-height:48px;border-radius:14px;font-weight:800;font-size:15px;border:0}
 .inv-go{background:#155EEF;color:#fff}.inv-go:disabled{opacity:.4}.inv-x{background:#F2F4F7;color:#344054}
 .ry-lateshare{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:999px;
@@ -12530,6 +12542,7 @@ video {
     function renderAllViews() {
       try { var _bm = String(currentSelectedMember || '').trim() !== '문준';   /* 1116 MJ '직원들 폰에서는 부외품 탭이 안 보이게 · 나만' */ ['bwQuick', 'bwEntry'].forEach(function (id) { var e = document.getElementById(id); if (e) e.hidden = _bm; }); } catch (eBq) {}   /* 1109 MJ '전체 물류앱에서 부외품으로도 전환' — 문준만 홈 버튼 줄에 */
       var aeQ = document.activeElement; if (aeQ && /^(m-)?in-qty-/.test(aeQ.id || '') && aeQ.value !== aeQ.defaultValue) { INB_RPEND = 1; return; }   // 1027 입고 수량 입력 중이면 나중에 (inbQtyBlur) · 1029 숫자를 안 고친 칸(방향키로 옮겨 온 칸)은 바로 그림 — 커서는 ryQty 가 지킴
+      try { if (document.getElementById('invDim')) setTimeout(invLive, 0); } catch (eIv) {}   // 1120 입고하기 창 열려 있으면 남은 줄 다시 (다른 사람이 받은 것 빠짐)
       try { var sn = document.getElementById('satNudge'); if (sn) sn.hidden = new Date(Date.now() + 9 * 3600000).getUTCDay() !== 6; } catch (eSn) {}   // 1001 토요일 안내
       try { ryArrivedNotice(); } catch (eAr) {}
       const pureReviewItems = [];
@@ -14698,7 +14711,7 @@ video {
             if (res && res.busy && tries++ < 3) { setTimeout(send, 2000 * tries); return; }
             inFlight.delete(key); inbNext();
             if (res && res.success === false) { if (cb) { cb(false, res.message || ''); return; } alert('입고 처리 안 됨: ' + (res.message || '')); inbReload(); return; }
-            if (cb) { cb(true); return; }
+            if (cb) { cb(true, res && res.already ? res.message || '이미 입고됨' : ''); return; }   // 1120 이미 다른 사람이 입고 → 두 번째 값으로 알림
             inbReload();
           })
           .withFailureHandler(function(err) {
@@ -14849,6 +14862,7 @@ video {
     }
     function invClose(force) {
       if (!force && INVS.some(function (r) { return r.success && (r.lines || []).length; })) { ryConfirm({ title: '명세서 창을 닫을까요?', items: [{ d: '입고확인을 안 눌렀으면 읽은 내용이 사라져요' }], ok: '닫기' }).then(function (y) { if (y) invClose(true); }); return; }   // 1029 앱 확인창
+      invFlush();   // 1120 되돌리기 기다리던 줄은 바로 보냄
       INB1.on = false;   // 1023 체크·추가한 건 2시간 동안 이 폰에 남음 (다시 열면 이어서)
       var d = document.getElementById('invDim'); if (d) { d.remove(); try { ryLockScroll(false); } catch (e) {} } INVS = []; INV_Q = []; INV_BUSY = false; invSave();
     }
@@ -14936,6 +14950,10 @@ video {
       var won = function (v) { return v == null || v === '' ? '' : Math.round(Number(v)).toLocaleString('ko-KR') + '원'; };
       var live = {}; (cachedInboundItems || []).forEach(function (it) { live[it.rowNumber] = 1; });
       var nOk = 0, nEx = 0, nLine = 0, seenRow = {};
+      /* 1120 MJ '여러 명이 같은 납품을 같이 받음' — 오늘 누가 이미 받은 주문 줄(입고내역)은 '✓ 이름'으로 빼고, 같은 주문에 줄이 둘 이상이면 자동 확신 안 함 */
+      var _td = cachedTodayStr || new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10).replace(/-/g, '.'), histBy = {}, rowCnt = {}, nLeft = 0, nDone = 0;
+      (cachedHistoryItems || []).forEach(function (h) { if (!h.isLog && histBy[h.rowNumber] == null && String(h.inboundDate || '').indexOf(_td) === 0) histBy[h.rowNumber] = h.inboundManager || ''; });
+      INVS.forEach(function (r) { (r.lines || []).forEach(function (l) { if (l.row && !l.recvd) rowCnt[l.row] = (rowCnt[l.row] || 0) + 1; }); });
       INVS.forEach(function (r, j) {   /* 1023 MJ '확인 눌렀더니 입고가 두 개' — 같은 명세서를 두 번 찍었거나 이미 입고한 명세서면 그 장은 빼 둠 (버튼으로 풀기) */
         if (!r.success || r.holdChk) return; r.holdChk = true;
         var sig = function (x) { return String(x.supplier || '').replace(/\(주\)|㈜|주식회사|\s+/g, '') + '|' + invDay(x.date) + '|' + (x.lines || []).map(function (l) { return invKey(l.name) + ':' + l.qty; }).sort().join(','); };
@@ -14948,6 +14966,8 @@ video {
       var secs = INVS.map(function (r, j) {
         if (!r.success) return '<div class="inv-sec inv-fail"><h4>' + (j + 1) + '번째 명세서 · 읽지 못했어요</h4><div class="inv-failrow">' + (r._thumb ? '<img src="' + r._thumb + '" alt="' + (j + 1) + '번째 명세서 사진 · 눌러서 크게 보기" onclick="invZoom(' + j + ')" style="cursor:zoom-in">' : '') + '<div><div class="inv-n">' + escapeHtml(r.message || '') + '</div><button type="button" class="inv-retry" onclick="invRetry(' + j + ')"' + (busyMsg ? ' disabled' : '') + '>↻ 이 사진 다시 읽기</button><div class="inv-n">그래도 안 되면 다시 찍어 [📷 한 장 더]로 넣어 주세요</div></div></div></div>';
         var rows = r.lines.map(function (l, i) {
+          if (!l.recvd && l.row && !live[l.row] && histBy[l.row] != null && !r.wrongStore) { l.recvd = 1; l.recvBy = histBy[l.row]; }   // 1120 다른 사람이 받음
+          l._sure = false; if (l.recvd) { nDone++; return ''; }
           nLine++;
           var al = INV_AL && !l.userPick && !l.alDone && INV_AL[invKey(l.name)];
           if (al) {   // 사람이 전에 고친 연결
@@ -14993,12 +15013,15 @@ video {
           if (gs) tag = '<div class="inv-vw">🤔 <b>혹시 이 ' + (has ? '주문' : '상품') + ' 아닌가요?</b> · ' + escapeHtml(has ? l.appName + (l.guessOd ? ' (' + String(l.guessOd).slice(5) + ' 주문 · 입고 대기)' : ' (입고 대기)') : l.catName) + '<br>명세서 이름이 달라서 AI가 바로 짝을 못 지었어요. 같은 상품이면 <button type="button" class="inv-alt" style="margin:4px 0 0" onclick="event.preventDefault(); invSame(' + j + ',' + i + ')">✓ 맞아요, 이 상품이에요</button> · 아니면 아래 [🔁 다른 상품으로 바꾸기]나 [🆕 새 상품으로 등록]</div>' + tag;
           else if (vw) tag = '<div class="inv-vw">🔍 <b>이름 표기가 조금 달라요</b> · ' + escapeHtml(vw) + '<br>박스에 적힌 이름을 한 번 더 보고, 같은 상품이면 <button type="button" class="inv-alt" style="margin:4px 0 0" onclick="event.preventDefault(); invSame(' + j + ',' + i + ')">✓ 같은 상품 맞아요</button> · 다르면 아래 [🔁 다른 상품으로 바꾸기]나 [🆕 새 상품으로 등록]</div>' + tag;   // 1022 MJ '주문 안 한 물건은 체크가 안 된다고' → 미리 체크, 해제하면 알림·재고에서 빠짐
           if (!has && !l.doneName && !l.newItem && l.catName && !l.userPick && !l.nameOk && !r.wrongStore && !dup) tag = '<div class="inv-ask"><b>🤔 이 상품이 맞나요?</b><span>' + (vw ? '이름이 달라요 · ' + escapeHtml(vw) : '주문 안 한 상품이라 앱에 있는 비슷한 상품과 짝지었어요') + '</span><div class="inv-ask-b"><button type="button" class="yes" onclick="event.preventDefault(); invSame(' + j + ',' + i + ')">✓ 맞아요</button><button type="button" class="new" onclick="event.preventDefault(); invNewCam(' + j + ',' + i + ')">🆕 아니요, 새 상품<small>누르면 바로 사진 찍기</small></button></div></div>';   // 1104 MJ '직원들이 AI가 짝지으면 새 상품 버튼을 못 찾아' → 짝지은 줄마다 큰 버튼 두 개로 바로 고르게
+          /* 1120 MJ '맞는 건 자동 체크, 확인할 것만' — 입고대기 짝 · 이름 확실(별칭·직접 고름·[맞아요]·이름 같음·AI 짝 점수 0.6↑) · 앱 단위 수량 = 주문 수량 */
+          var oqS = parseFloat(String(l.orderQty || '').replace(/[^0-9.]/g, '')) || 0, sure = !!(has && !dup && !r.wrongStore && chk && !vw && !gs && !l.early && !l.priceSus && rowCnt[l.row] === 1 && oqS > 0 && invQtyNow(l) === oqS && (l.userPick || l.nameOk || invNameKey(l.name) === invNameKey(l.appName) || s15Score(s15Prep(l.name), s15Prep(l.appName)) >= 0.6));
+          l._sure = sure; if (has && !dup && !r.wrongStore) nLeft++;
           var price = l.unitPrice != null ? '<div class="inv-n">사입가 ' + (l.packK ? '1개 ' : '') + won(l.unitPrice) + (l.packK && l.packUp ? ' (명세서 1단위 ' + won(l.packUp) + ' ÷ ' + l.packK + ')' : '') + ' (부가세 별도 · 포함하면 ' + won(l.unitPrice * 1.1) + ') · 금액 ' + won(l.amount) + '</div>' : '';   // 1023 낱개로 바꾼 줄은 1개 값
           if (l.priceSus) price += '<div class="inv-n" style="color:#B42318;font-weight:700">⚠️ 사입가 ' + (l.pricePct > 0 ? '+' : '') + l.pricePct + '% · ' + escapeHtml(l.priceSus) + ' — 맞는 상품인지 확인해 주세요</div>';
           else if (l.pricePct != null) price += l.priceOdd ? '<div class="inv-n">' + escapeHtml(l.priceHow) + '와 단위가 달라 보여요 (낱개·박스 확인)</div>'
             : Math.abs(l.pricePct) < 1 ? '<div class="inv-n">사입가 그대로예요 · ' + escapeHtml(l.priceHow) + '</div>'
             : '<span class="inv-tag ' + (l.pricePct > 0 ? 'inv-up' : 'inv-ok') + '">' + (l.pricePct > 0 ? '▲ 사입가 ' + l.pricePct + '% 올랐어요' : '▼ 사입가 ' + Math.abs(l.pricePct) + '% 내렸어요') + '</span><div class="inv-n">' + escapeHtml(l.priceHow) + (l.cmpPrice ? ' ' + won(l.cmpPrice) : '') + '</div>';
-          return '<label class="inv-line"><input type="checkbox" data-j="' + j + '" data-i="' + i + '"' + chk + (isEx ? ' data-x="1"' : '') + (isEx || isDone || (has && !dup && !r.wrongStore) ? '' : ' disabled') + ' onchange="' + (isDone ? 'invDoneTog(' + j + ',' + i + ',this);return;' : isEx ? 'INVS[' + j + '].lines[' + i + '].exOff=!this.checked;invSave();' : '') + 'invCount()"><div style="flex:1;min-width:0"><b>' + escapeHtml(l.name) + (l.spec ? ' <span style="font-weight:600;color:#667085">' + escapeHtml(l.spec) + '</span>' : '') + '</b>'
+          return '<label class="inv-line' + (sure ? ' inv-okl' : ' inv-y') + '"><input type="checkbox" data-j="' + j + '" data-i="' + i + '"' + (sure ? ' data-ok="1"' : '') + chk + (isEx ? ' data-x="1"' : '') + (isEx || isDone || (has && !dup && !r.wrongStore) ? '' : ' disabled') + ' onchange="' + (isDone ? 'invDoneTog(' + j + ',' + i + ',this);return;' : isEx ? 'INVS[' + j + '].lines[' + i + '].exOff=!this.checked;invSave();' : '') + 'invCount()"><div style="flex:1;min-width:0"><b>' + escapeHtml(l.name) + (l.spec ? ' <span style="font-weight:600;color:#667085">' + escapeHtml(l.spec) + '</span>' : '') + '</b>'
             + '<div class="inv-m">명세서 수량 <b>' + escapeHtml(String(l.qtyRead != null ? l.qtyRead : l.qty)) + '</b>' + (!l.bundle && l.appQty != null && Number(l.appQty) !== Number(l.qty) && !l.qtyEdited ? ' → 낱개 <b>' + escapeHtml(String(l.appQty)) + '</b>개' + (l.packK ? ' <small>(×' + escapeHtml(String(l.packK)) + ' · 규격 보고 바꿈)</small>' : '') : '') + (l.bundle ? ' <span class="inv-tag inv-ok" style="margin:0 0 0 4px">묶음 ' + escapeHtml(l.bundle) + '</span>' : '') + invQtyEditHtml(r, l, j, i) + '</div>'
             + (function () {   // 1020 MJ '앱에 있는 상품이 회색이라 눈에 안 띄어 — 매칭할 상품을 눈에 띄게': 짝지은 앱 상품을 사진과 함께 큰 상자로
               var an = has ? l.appName : (l.catName || l.doneName || ''); if (!an) return '';
@@ -15007,8 +15030,13 @@ video {
               return '<div class="inv-match ' + kind + '">' + (im ? '<img src="' + escapeHtml(im) + '" alt="" referrerpolicy="no-referrer" loading="lazy" onerror="this.outerHTML=\'<i class=&quot;inv-noimg&quot;>📦</i>\'">' : '<i class="inv-noimg">📦</i>')
                 + '<div><small>' + lab + '</small><b>' + escapeHtml(an) + '</b>' + (has ? '<span>주문 ' + escapeHtml(l.orderQty + l.unit) + '</span>' : '') + '</div></div>';
             })() + tag + (l.badPair ? '<div class="inv-n">AI가 \'' + escapeHtml(l.badPair) + '\'와 짝지었는데 이름이 달라서 뺐어요</div>' : '') + (l.note && !l.qtyOk && has ? '<div class="inv-n">' + escapeHtml(l.note) + '</div>' : '') + price
-            + (r.wrongStore ? '' : '<div class="inv-btns"><button type="button" class="inv-alt" onclick="event.preventDefault(); invAlt(' + j + ',' + i + ')">🔁 다른 상품으로 바꾸기</button>' + (!has && !l.newItem && !l.doneName ? '<button type="button" class="inv-alt" onclick="event.preventDefault(); invAltPick(' + j + ',' + i + ',0,0)">🆕 새 상품으로 등록</button>' : '') + '</div><div class="inv-pick" id="invpk-' + j + '-' + i + '"></div>') + '</div></label>';
-        }).join('');
+            + (r.wrongStore ? '' : '<div class="inv-btns">' + (has && !dup ? '<button type="button" class="inv-one" onclick="event.preventDefault(); invOne(' + j + ',' + i + ')">✓ 받기 ' + invQtyNow(l) + escapeHtml(l.unit || '개') + '</button>' : '') + '<button type="button" class="inv-alt" onclick="event.preventDefault(); invAlt(' + j + ',' + i + ')">🔁 다른 상품으로 바꾸기</button>' + (!has && !l.newItem && !l.doneName ? '<button type="button" class="inv-alt" onclick="event.preventDefault(); invAltPick(' + j + ',' + i + ',0,0)">🆕 새 상품으로 등록</button>' : '') + '</div><div class="inv-pick" id="invpk-' + j + '-' + i + '"></div>') + '</div></label>';
+        });
+        var nS = r.lines.filter(function (l) { return !l.recvd && l._sure; }).length, nY = r.lines.filter(function (l) { return !l.recvd && !l._sure; }).length;
+        var yH = rows.filter(function (h, i) { return h && !r.lines[i]._sure; }).join(''), oH = rows.filter(function (h, i) { return h && r.lines[i]._sure; }).join('');
+        rows = (yH && oH ? '<div class="inv-yh">⚠️ 확인할 것 ' + nY + '개 · 하나씩 [✓ 받기]</div>' : '') + yH
+          + (oH ? '<details class="inv-okg"' + (INV_OKOPEN[j] ? ' open' : '') + ' ontoggle="INV_OKOPEN[' + j + '] = this.open"><summary>✅ 맞는 것 ' + nS + '개 <small>이름·수량 맞아요 · 눌러서 보기</small></summary>' + oH + '</details>' : '')
+          + r.lines.filter(function (l) { return l.recvd; }).map(function (l) { return '<div class="inv-dn">✓ ' + escapeHtml(String(l.appName || l.name).slice(0, 34)) + ' <small>' + escapeHtml(l.recvBy || '') + '</small></div>'; }).join('');
         var wrong = r.wrongStore && r.holdWhy ? '<div class="inv-wrong" style="background:#FFFAEB;border-color:#FEC84B;color:#93370D">⚠️ <b>' + escapeHtml(r.holdWhy) + '</b><br>두 번 들어가지 않게 이 장은 뺐어요.<br><button type="button" class="inv-retry" style="background:#fff;color:#B54708;border:1.5px solid #FDB022;margin-top:8px" onclick="invWrongOk(' + j + ', 1)">다른 명세서예요 → 입고 가능하게</button></div>'
           : r.wrongStore ? '<div class="inv-wrong">⛔ 이 명세서는 <b>' + escapeHtml(r.receiver || '다른 곳') + '</b> 앞으로 발행됐어요.<br>우리는 <b>성수레디영약국</b>이에요. 입고하지 말고 물건을 따로 두고 문준님께 알려 주세요. (문준님 카톡으로도 알렸어요)<br><button type="button" class="inv-retry" style="background:#fff;color:#B42318;border:1.5px solid #F04438;margin-top:8px" onclick="invWrongOk(' + j + ', 0)">우리 약국 것이 맞아요 → 입고 가능하게</button></div>' : invPlanS(r) ? '<div class="inv-wrong" style="background:#FFFAEB;border-color:#FEC84B;color:#93370D">⚠️ 받는 곳이 <b>' + escapeHtml(r.receiver || '플랜에스의원') + '</b>이에요 (자회사).<br>우리 매장으로 넘어온 물건이 맞는지 <b>한 번 더 확인</b>하고 입고해 주세요.</div>'
           : r.alreadyInfo ? '<div class="inv-wrong" style="background:#EFF8FF;border-color:#84CAFF;color:#175CD3">ⓘ 이 명세서는 <b>' + escapeHtml(r.alreadyInfo) + '</b> 먼저 입고했어요.<br>이미 들어간 상품은 체크가 꺼져 있고, <b>체크된 상품만</b> 입고돼요. 주문 없이 온 상품은 체크를 꺼 뒀으니 이번에 온 것만 체크해 주세요.</div>' : '';   // 1020 MJ '주식회사 레디영도 우리한테 온 거야'
@@ -15018,11 +15046,12 @@ video {
       var head = INB1.on && !INVS.length ? '<h3>📦 입고하기' + (busyMsg ? ' · ' + escapeHtml(busyMsg) : '') + '</h3><div class="inv-sub">① 명세서 찍기 · ② 명세서 없이 온 상품은 검색해서 고르기 → 맨 아래 버튼 하나로 입고</div>'
         : '<h3>' + (INB1.on ? '📦 입고하기 · ' : '📄 ') + '명세서 ' + INVS.length + '장' + (busyMsg ? ' · ' + escapeHtml(busyMsg) : '') + '</h3><div class="inv-sub">' + nLine + '줄 · ' + (nOk + nEx) + '개 미리 체크 · 안 온 건 체크를 빼 주세요</div>'
         + (nFail > 1 && !busyMsg ? '<button type="button" class="inv-retry" style="width:100%;margin:0 0 8px" onclick="invRetryAll()">↻ 못 읽은 ' + nFail + '장 한 번에 다시 읽기</button>' : '');   // 1020 MJ '여러 장 실패하면 한 번에 다시'
+      if (INVS.some(function (r) { return r.success; }) && (nLeft || nDone)) head += '<div class="inv-left' + (!nLeft ? ' done' : nLeft <= 3 ? ' hot' : '') + '">' + (!nLeft ? '🎉 주문한 건 다 받았어요!' : nLeft <= 3 ? '🔥 ' + nLeft + '개만 더!' : '📦 남은 ' + nLeft + '개') + (nDone ? '<small>받음 ' + nDone + '개 · 같이 받는 사람 화면도 같이 줄어요</small>' : '') + '</div>';   // 1120 남은 개수 (같이 받는 사람 것도 반영)
       var warnBox = INVS.some(function (r) { return r.success; }) ? '<div class="inv-must">⚠️ 명세서와 앱의 <b>상품 · 수량</b>이 같은지 확인해 주세요</div>' : '';   // 1020 MJ '이름 꼭 확인 후 입고완료 — 강조'
       var cam = INB1.on ? '<div class="inb1-h">① 명세서 있는 상품</div><div class="inb1-cam"><button type="button" class="inv-go" onclick="invPick(true)"' + (busyMsg ? ' disabled' : '') + '>📷 명세서 찍기' + (INVS.length ? ' (한 장 더)' : '') + '</button><button type="button" class="inv-x" onclick="invPick(false)"' + (busyMsg ? ' disabled' : '') + '>🖼 사진첩 (여러 장)</button></div>' : '';
       if (INB1.on && !INVS.length && !busyMsg) secs = '<div class="inb1-empty"><b>📄 명세서가 같이 왔으면 위 [📷 명세서 찍기]</b><span>AI가 읽어서 입고대기 상품과 자동으로 짝지어 체크해요 · 여러 장도 한 번에</span><span>명세서가 없으면 ② 검색만 쓰면 돼요</span></div>';   // 1023 PC 세 칸에서 ① 칸이 비어 보이지 않게
       var sAf = document.activeElement && document.activeElement.id === 'inb1S';
-      invShow(head + (INB1.on ? '<div class="inb1-grid"><div class="inb1-c">' + cam + warnBox + secs + '</div>' + inb1Html() + '</div>' : cam + warnBox + secs) + (INB1.on ? '' : '<button type="button" class="inv-alt" style="width:100%;margin:4px 0 8px" onclick="INB1.on = true; inb1Load(); invRender()">＋ 명세서 없이 온 것도 같이 입고</button>') + '<div class="inv-foot"><button class="inv-x" onclick="invClose()">닫기</button>' + (INB1.on ? '' : '<button class="inv-x" onclick="invPick(true)"' + (busyMsg ? ' disabled' : '') + '>📷 한 장 더</button>') + '<button class="inv-go" id="invGo" onclick="invDo()">입고확인</button></div>');
+      invShow(head + (INB1.on ? '<div class="inb1-grid"><div class="inb1-c">' + cam + warnBox + secs + '</div>' + inb1Html() + '</div>' : cam + warnBox + secs) + (INB1.on ? '' : '<button type="button" class="inv-alt" style="width:100%;margin:4px 0 8px" onclick="INB1.on = true; inb1Load(); invRender()">＋ 명세서 없이 온 것도 같이 입고</button>') + '<div class="inv-foot"><button type="button" class="inv-okgo" id="invOk" hidden onclick="invDo(1)"></button><button class="inv-x" onclick="invClose()">닫기</button>' + (INB1.on ? '' : '<button class="inv-x" onclick="invPick(true)"' + (busyMsg ? ' disabled' : '') + '>📷 한 장 더</button>') + '<button class="inv-go" id="invGo" onclick="invDo()">입고확인</button></div>');
       var ib = document.getElementById('invBox'); if (ib) ib.classList.toggle('inb1-wide', !!INB1.on);
       if (INB1.on && INB1.s) { inb1Search(INB1.s); if (sAf) { var se = document.getElementById('inb1S'); if (se) se.focus({ preventScroll: true }); } }   // 명세서 읽기가 끝나 창이 다시 그려져도 ③ 검색 중이던 건 그대로 (키보드 안 닫힘)
       invCount(!!busyMsg); invFx(); invSave();
@@ -15083,6 +15112,7 @@ video {
     function invPicked() { var seen = {}; return Array.prototype.map.call(document.querySelectorAll('#invBox input[type=checkbox]:checked:not([data-x]):not([data-b])'), function (c) { return INVS[+c.dataset.j].lines[+c.dataset.i].row; }).filter(function (r) { if (!r || seen[r]) return false; seen[r] = 1; return true; }); }
     /* 1023 지난 명세서를 다시 찍으면 그 주문은 이미 입고완료라 입고대기에 없음 → '주문 안 한 상품'으로 또 들어가 두 번 잡힘 (10/20 안티푸라민 100×2 등 9줄).
        서버의 '최근 입고완료'는 오늘부터 10일이라 오래된 명세서는 못 찾음 → 명세서 날짜 −1~+7일 안에 같은 상품·같은 수량 입고 기록이 있으면 '이미 입고완료' */
+    function invPickedOk() { var seen = {}; return Array.prototype.map.call(document.querySelectorAll('#invBox input[data-ok]:checked'), function (c) { return INVS[+c.dataset.j].lines[+c.dataset.i].row; }).filter(function (r) { if (!r || seen[r]) return false; seen[r] = 1; return true; }); }   // 1120 맞는 것만
     function invDay(s) {
       s = String(s || '').trim(); var m = s.match(/(20\d{2})\D{0,3}(\d{1,2})\D{0,3}(\d{1,2})/) || s.match(/^()(\d{2})[.\/-](\d{1,2})[.\/-](\d{1,2})/), y, mo, d;
       if (m && m.length === 5) { y = 2000 + +m[2]; mo = +m[3]; d = +m[4]; } else if (m) { y = +m[1]; mo = +m[2]; d = +m[3]; }
@@ -15143,19 +15173,51 @@ video {
     }
     function invExtras() {   // 명세서마다 [주문 안 한 상품]
       var live = {}; (cachedInboundItems || []).forEach(function (it) { live[it.rowNumber] = 1; });
-      return INVS.filter(function (r) { return !r.wrongStore; }).map(function (r) { return { info: { supplier: r.supplier, date: r.date }, ex: (r.lines || []).filter(function (l) { return !(l.row && live[l.row]) && !l.doneName && !l.exOff; }).map(function (l) { return { name: l.newItem && l.clean ? l.clean : l.name, qty: l.qty, newItem: !!l.newItem, catName: l.catName || '', photo: l.newItem && l.photo ? l.photo : '' }; }) }; }).filter(function (g) { return g.ex.length; });
+      return INVS.filter(function (r) { return !r.wrongStore; }).map(function (r) { return { info: { supplier: r.supplier, date: r.date }, ex: (r.lines || []).filter(function (l) { return !(l.row && live[l.row]) && !l.doneName && !l.exOff && !l.recvd; }).map(function (l) { return { name: l.newItem && l.clean ? l.clean : l.name, qty: l.qty, newItem: !!l.newItem, catName: l.catName || '', photo: l.newItem && l.photo ? l.photo : '' }; }) }; }).filter(function (g) { return g.ex.length; });
     }
-    function invCount(busy) { var b = document.getElementById('invGo'); if (!b) return; var n = invPicked().length, x = invExtras().reduce(function (a, g) { return a + g.ex.length; }, 0) + inb1Picked().length + inb1Adds().length; b.disabled = busy || INV_BUSY || (!n && !x); var nb = document.getElementById('inb1N'); if (nb) nb.textContent = (INB1.nList || 0) + '개 중 ' + inb1Picked().length + '개 체크 · 온 것만 체크해요'; b.textContent = busy || INV_BUSY ? '읽는 중…' : n + x ? (n + x) + '개 입고확인' : '입고할 상품을 체크해 주세요'; }   // 1022 MJ '알림이 아니라 입고확인 버튼으로'
+    function invCount(busy) { var b = document.getElementById('invGo'); if (!b) return; var n = invPicked().length, x = invExtras().reduce(function (a, g) { return a + g.ex.length; }, 0) + inb1Picked().length + inb1Adds().length; b.disabled = busy || INV_BUSY || (!n && !x); var nb = document.getElementById('inb1N'); if (nb) nb.textContent = (INB1.nList || 0) + '개 중 ' + inb1Picked().length + '개 체크 · 온 것만 체크해요'; b.textContent = busy || INV_BUSY ? '읽는 중…' : n + x ? (n + x) + '개 입고확인' : '입고할 상품을 체크해 주세요'; var ob = document.getElementById('invOk'); if (ob) { var m = invPickedOk().length; ob.hidden = !m; ob.disabled = !!(busy || INV_BUSY); ob.textContent = '✅ 나머지 모두 입고 (' + m + '개)'; } }   // 1022 MJ '알림이 아니라 입고확인 버튼으로'
+    /* ═══ 1120 MJ '여러 명이 같이 받음 · 하나 확인하면 바로 창고로' — 줄마다 [✓ 받기] 한 번 = 입고 (확인창 없음 · 5초 안 되돌리기 · 화면 떠나면 바로 보냄) ═══ */
+    var INV_OKOPEN = {}, INV_PEND = {};
+    function invLeftAny() { return INVS.some(function (r) { return r.success && !r.wrongStore && (r.lines || []).some(function (l) { return !l.recvd; }); }) || inb1Picked().length || inb1Adds().length; }
+    function invUnrecv(row) { INVS.forEach(function (r) { (r.lines || []).forEach(function (l) { if (l.row === row) { l.recvd = 0; l.recvBy = ''; } }); }); invSave(); if (document.getElementById('invDim')) invRender(); }
+    function invLinkRow(row, full) { try { INVS.forEach(function (r) { if (!r.fid || r.wrongStore) return; var nm = (r.lines || []).filter(function (l) { return l.row === row; }).map(function (l) { return { n: full || l.appName, q: l.appQty != null ? l.appQty : l.qty, iv: l.name }; }); if (nm.length) google.script.run.withFailureHandler(function () {}).invoiceLinkSave(nm, r.fid, { supplier: r.supplier, date: r.date }, currentSelectedMember); }); RY_IVL = null; } catch (e) {} }
+    function invYay(n) { if (!n) return; var d = document.createElement('div'); d.className = 'inv-yay'; d.textContent = n > 1 ? '🎉 ' + n + '개 한 번에 입고!' : '✓ 입고!'; document.body.appendChild(d); setTimeout(function () { d.remove(); }, 1700); }
+    function invOne(j, i) {
+      var l = INVS[j] && INVS[j].lines[i]; if (!l || !l.row || l.recvd || !checkMemberSelectedOrAlert()) return;
+      var me = currentSelectedMember || '', row = l.row, q = invQtyNow(l), oq = parseFloat(String(l.orderQty || '').replace(/[^0-9.]/g, '')) || 0;
+      var it = (cachedInboundItems || []).filter(function (x) { return x.rowNumber === row; })[0]; if (!it) { invRender(); return; }
+      var full = it.name, nm = String(full).split('\n')[0];
+      var dp = dutyFree(me) || (DUTY_OK[me] && Date.now() - DUTY_OK[me] < 300000) ? Promise.resolve(true) : new Promise(function (res) { google.script.run.withSuccessHandler(function (r) { if (r && r.success === false && r.message) res(false); else { DUTY_OK[me] = Date.now(); res(true); } }).withFailureHandler(function () { res(true); }).inboundDutyCheck(me); });
+      INVS.forEach(function (r) { (r.lines || []).forEach(function (x) { if (x.row === row) { x.recvd = 1; x.recvBy = me; } }); }); invSave(); invRender(); invYay(1);
+      var go = function () { if (!INV_PEND[row]) return; clearTimeout(INV_PEND[row].t); delete INV_PEND[row]; invUndoBar();
+        dp.then(function (ok) { if (!ok) { invUnrecv(row); dutyGate(function () {}); return; }
+          var after = function (ok2, msg) { if (!ok2) { invUnrecv(row); showToast('입고 안 됨: ' + nm.slice(0, 18) + (msg ? ' · ' + msg : ''), 3500); return; } if (msg) { showToast(nm.slice(0, 16) + ' · ' + msg, 2600); return; } invLinkRow(row, full); };
+          if (q === oq || !(q > 0)) completeInbound(row, true, after, true, '명세서');
+          else google.script.run.withSuccessHandler(function (x) { after(!!(x && x.success), x && x.already ? x.message : x && !x.success ? x.message : ''); setTimeout(function () { try { loadAllData(true, true, true); } catch (e) {} }, 1500); }).withFailureHandler(function (e) { after(false, String(e && e.message || e)); }).partialInbound(row, full, q, me, '', null, '명세서');
+        }); };
+      INV_PEND[row] = { go: go, nm: nm, t: setTimeout(go, 5000) }; invUndoBar(row);
+    }
+    function invUndoBar(row) {
+      var b = document.getElementById('invUndo'), p = row != null && INV_PEND[row];
+      if (!p) { if (b && !Object.keys(INV_PEND).length) b.remove(); return; }
+      if (!b) { b = document.createElement('div'); b.id = 'invUndo'; b.setAttribute('role', 'status'); document.body.appendChild(b); }
+      b.innerHTML = '<span>✓ ' + escapeHtml(p.nm.slice(0, 20)) + ' 받았어요</span><button type="button" onclick="invUndo(' + row + ')">되돌리기</button>';
+    }
+    function invUndo(row) { var p = INV_PEND[row]; if (!p) return; clearTimeout(p.t); delete INV_PEND[row]; invUndoBar(); invUnrecv(row); showToast('되돌렸어요 · 아직 입고 안 됐어요', 1800); }
+    function invFlush() { Object.keys(INV_PEND).forEach(function (k) { var p = INV_PEND[k]; if (p) p.go(); }); }
+    document.addEventListener('visibilitychange', function () { if (document.hidden) invFlush(); });   // 화면을 떠나면 기다리지 않고 바로 보냄
+    setInterval(function () { if (document.getElementById('invDim') && !document.hidden && INVS.some(function (r) { return r.success; }) && inFlight.size === 0 && _loadInFlight === 0) loadAllData(false, true); }, 8000);   // 같이 받는 사람 것 8초마다
+    function invLive() { var b = document.getElementById('invBox'), ae = document.activeElement; if (!b || !INVS.some(function (r) { return r.success; }) || INV_BUSY || (ae && b.contains(ae) && /INPUT|TEXTAREA/.test(ae.tagName))) return; var st = b.scrollTop; invRender(); b.scrollTop = st; }
     function invPlanS(r) { return !!r && !r.wrongStore && /플랜에스/.test(String(r.receiver || '').replace(/\s+/g, '')); }   // 1021 MJ: 자회사 플랜에스의원 앞 명세서 — 막지 말고 한 번 더 확인만
-    function invDo() {   // 1023 근무 중인 사람만
+    function invDo(okOnly) {   // 1023 근무 중인 사람만 · 1120 okOnly = [나머지 모두 입고] (맞는 것만 · 확인창 없음)
       if (!checkMemberSelectedOrAlert()) return; var me = currentSelectedMember || '';
-      if (dutyFree(me) || (DUTY_OK[me] && Date.now() - DUTY_OK[me] < 300000)) return invDo_();
+      if (dutyFree(me) || (DUTY_OK[me] && Date.now() - DUTY_OK[me] < 300000)) return invDo_(null, okOnly);
       /* 1103 MJ '명세서 입고완료 누르면 몇 초 기다려야 확인창' — 근무 확인(서버 2~6초)을 기다리지 않고 확인창부터 띄우고, [입고확인]을 누른 뒤 결과를 봄 */
       var dp = new Promise(function (res) {
         if (typeof google === 'undefined' || !google.script || typeof google.script.run.inboundDutyCheck !== 'function') return res(true);
         google.script.run.withSuccessHandler(function (r) { if (r && r.success === false && r.message) res(false); else { DUTY_OK[me] = Date.now(); res(true); } }).withFailureHandler(function () { res(true); }).inboundDutyCheck(me);
       });
-      invDo_(dp);
+      invDo_(dp, okOnly);
     }
     function inbResumePending() {   /* 1109 끊긴 명세서 입고 마저 하기: 같은 사람·6시간 안·아직 입고대기인 줄만, 서버에 이미 저장됐는지(inbSavedCheck) 먼저 확인 */
       var p = null; try { p = JSON.parse(localStorage.getItem('ry_inb_pend') || 'null'); localStorage.removeItem('ry_inb_pend'); } catch (e) { return; }
@@ -15167,9 +15229,9 @@ video {
         inbSavedCheck(r, nm[r], '', go, function () { completeInbound(r, true, function () { go(); }); }); };
       go();
     }
-    async function invDo_(dp) {
-      var rows = invPicked(), gs = invExtras(), ex = gs.reduce(function (a, g) { return a.concat(g.ex); }, []), nw = ex.filter(function (x) { return x.newItem; }).length;
-      var bRows = inb1Picked().filter(function (r) { return rows.indexOf(r) < 0; }), adds = inb1Adds();   // 1023 명세서 없이 온 주문 · 주문 안 한 것
+    async function invDo_(dp, okOnly) {
+      var rows = okOnly ? invPickedOk() : invPicked(), gs = okOnly ? [] : invExtras(), ex = gs.reduce(function (a, g) { return a.concat(g.ex); }, []), nw = ex.filter(function (x) { return x.newItem; }).length;
+      var bRows = okOnly ? [] : inb1Picked().filter(function (r) { return rows.indexOf(r) < 0; }), adds = okOnly ? [] : inb1Adds();   // 1023 명세서 없이 온 주문 · 주문 안 한 것
       var oqOf = function (r) { var it = (cachedInboundItems || []).filter(function (x) { return x.rowNumber === r; })[0]; return it ? parseInt(it.targetQty, 10) || 0 : 0; }, nmOf = function (r) { var it = (cachedInboundItems || []).filter(function (x) { return x.rowNumber === r; })[0]; return it ? String(it.name).split('\n')[0] : ''; }, unOf = function (r) { var it = (cachedInboundItems || []).filter(function (x) { return x.rowNumber === r; })[0]; return it && it.unit || '개'; };
       if (bRows.some(function (r) { return INB1.got[r] != null && !(INB1.got[r] > 0); })) { alert('② 온 수량을 숫자로 적어 주세요'); return; }
       /* 1029 MJ '아젤라힐 명세서는 40개인데 입고는 140개' — 명세서로 고른 상품도 명세서 수량이 주문과 다르면 그 수량으로 입고 (전엔 경고만 하고 주문 수량으로 입고완료) */
@@ -15195,17 +15257,18 @@ video {
       if (ex.length) cf.items.push({ h: '주문 안 한 상품 ' + ex.length + '개도 재고에 넣어요' + (nw ? ' (새 상품 ' + nw + '개 등록)' : '') });
       if (rows.length || diff.length) cf.note = '잘못 넣었으면 입고내역에서 ⏪ 되돌리기';
       cf.icon = 'box'; cf.sub = (currentSelectedMember || '') + ' 님 이름으로 입고돼요';
-      if (!(await ryConfirm(cf))) return;
+      if (!okOnly && !(await ryConfirm(cf))) return;
       if (dp) { var _dt = setTimeout(function () { showToast('근무 시간 확인 중이에요…', 2500); }, 300); var _ok = await dp; clearTimeout(_dt); if (!_ok) { dutyGate(function () {}); return; } }   /* 근무 아님 → 원래 안내(관리자에게 요청) */
-      try {   /* 1020 MJ '주문 안 했는데 들어온 상품도 재고로' — 명세서 수량을 그 상품의 입고 기록(추정 재고)에 남김 */
+      if (!okOnly) try {   /* 1020 MJ '주문 안 했는데 들어온 상품도 재고로' — 명세서 수량을 그 상품의 입고 기록(추정 재고)에 남김 */
         INVS.forEach(function (r) { if (!r.fid || r.wrongStore) return; var live = {}; (cachedInboundItems || []).forEach(function (it) { live[it.rowNumber] = 1; });
-          var nm = (r.lines || []).filter(function (l) { return !(l.row && live[l.row]) && !l.doneName && !l.exOff && (l.catName || l.newItem); }).map(function (l) { return { n: l.newItem ? (l.clean || l.name) : l.catName, q: l.appQty != null ? l.appQty : l.qty, iv: l.name }; });
+          var nm = (r.lines || []).filter(function (l) { return !(l.row && live[l.row]) && !l.doneName && !l.exOff && !l.recvd && (l.catName || l.newItem); }).map(function (l) { return { n: l.newItem ? (l.clean || l.name) : l.catName, q: l.appQty != null ? l.appQty : l.qty, iv: l.name }; });
           if (nm.length) google.script.run.withFailureHandler(function () {}).invoiceLinkSave(nm, r.fid, { supplier: r.supplier, date: r.date }, currentSelectedMember, true);   // true = 입고내역에 '주문없이입고'로도
         });
         RY_IVL = null;
       } catch (eX) {}
       gs.forEach(function (g) { google.script.run.withSuccessHandler(function (r) { if (r && r.added) { showToast('새 상품 ' + r.added + '개 등록했어요', 3000); try { ryCatLoad(true); } catch (e) {} } }).withFailureHandler(function () {}).invoiceFinish(currentSelectedMember, g.info, g.ex); });
-      try {   /* 1020 입고한 상품 ↔ 명세서 사진 (입고내역 📄) */
+      var fullNm = {}; (cachedInboundItems || []).forEach(function (it) { fullNm[it.rowNumber] = it.name; });
+      if (!okOnly) try {   /* 1020 입고한 상품 ↔ 명세서 사진 (입고내역 📄) · 1120 okOnly 는 입고된 뒤 줄마다 (이미 입고면 안 남김 = 재고 두 번 X) */
         var byRow = {}; (cachedInboundItems || []).forEach(function (it) { byRow[it.rowNumber] = it; });
         INVS.forEach(function (r) { if (!r.fid || r.wrongStore) return; var nm = (r.lines || []).filter(function (l) { return l.row && (rows.indexOf(l.row) !== -1 || diff.indexOf(l.row) !== -1) && byRow[l.row]; }).map(function (l) { return { n: byRow[l.row].name, q: l.appQty != null ? l.appQty : l.qty, iv: l.name }; }); if (nm.length) google.script.run.withFailureHandler(function () {}).invoiceLinkSave(nm, r.fid, { supplier: r.supplier, date: r.date }, currentSelectedMember); });
         RY_IVL = null;
@@ -15219,8 +15282,9 @@ video {
       adds.forEach(function (a) { google.script.run.withSuccessHandler(function (r) { if (!r || !r.success) showToast('입고 안 됨: ' + a.name + ' · ' + ((r && r.message) || ''), 3500); }).withFailureHandler(function (e) { showToast('입고 오류: ' + a.name, 3000); }).quickInbound({ name: a.name, row: a.row || 0, qty: a.qty, reason: '', custom: false, photo: '', isNew: !!a.isNew, prodPhoto: a.isNew ? a.photo || '' : '' }, currentSelectedMember); });   // 1023 ③ 주문 안 한 것 (명세서 없음) = 바로 입고와 같은 길
       adds.forEach(function (a) { if (!a.isNew && a.row && a.photo) google.script.run.withFailureHandler(function () {}).uploadProductPhoto(a.row, a.photo, a.name); });   // 사진 없던 기존 상품에 찍은 사진
       if (adds.length) RY_IVL = null;
-      INB1.pick = {}; INB1.add = []; INB1.got = {}; inb1Save();
-      invClose(true);
+      if (okOnly) { var _rs = rows.concat(diff); INVS.forEach(function (r) { (r.lines || []).forEach(function (l) { if (l.row && _rs.indexOf(l.row) !== -1) { l.recvd = 1; l.recvBy = currentSelectedMember; } }); }); invSave(); invYay(_rs.length); if (invLeftAny()) invRender(); else invClose(true); }
+      else { INB1.pick = {}; INB1.add = []; INB1.got = {}; inb1Save();
+      invClose(true); }
       if (!rows.length && adds.length) { showToast('주문 안 한 상품 ' + adds.length + '개 입고했어요', 3000); setTimeout(function () { try { loadAllData(true, true, true); } catch (e) {} }, 2500); }
       var okN = 0, bad = [], k0 = 0, nm = {}; (cachedInboundItems || []).forEach(function (it) { nm[it.rowNumber] = String(it.name).split('\n')[0]; });
       /* 1109 MJ '명세서에 후시딘도 있었는데 입력이 안 됐어' — '입고 처리 중 1/2' 에서 앱을 나가면 남은 줄이 안 보내짐 → 남은 줄을 기기에 적어 두고 다음에 열 때 마저 (inbResumePending) */
@@ -15229,7 +15293,7 @@ video {
         pendSave();
         if (k0 >= rows.length) { loadAllData(true, true, true); if (bad.length) alert('입고 처리 안 된 상품이 있어요 (다시 눌러 주세요):\n' + bad.join('\n')); else showToast(okN + '개 입고완료 처리했어요' + (adds.length ? ' · 주문 안 한 상품 ' + adds.length + '개도' : ''), 3000); return; }
         var row = rows[k0++]; showToast('입고 처리 중… ' + k0 + '/' + rows.length, 1500);
-        completeInbound(row, true, function (ok, msg) { if (ok) okN++; else bad.push((nm[row] || row + '행') + (msg ? ' · ' + msg : '')); next(); });
+        completeInbound(row, true, function (ok, msg) { if (ok) { okN++; if (okOnly && !msg) invLinkRow(row, fullNm[row]); } else { bad.push((nm[row] || row + '행') + (msg ? ' · ' + msg : '')); if (okOnly) invUnrecv(row); } next(); });
       };
       if (rows.length) next();
     }
