@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>성수레디영 물류 리뉴얼</title>
+</head>
+<body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<!-- 실제 앱은 Pretendard 를 CDN(cdn.jsdelivr.net/gh/orioncactus/pretendard)에서 불러옵니다. 미리보기는 Noto Sans KR 로 대체. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#F8FAFC; --card:#FFFFFF; --line:#E2E8F0; --line-strong:#CBD5E1;
+  --ink:#0F172A; --ink-2:#334155; --ink-3:#64748B; --ink-4:#94A3B8;
+  --green:#059669; --green-bg:#D1FAE5; --green-ink:#065F46;
+  --blue:#2563EB; --blue-bg:#DBEAFE; --blue-ink:#1E40AF;
+  --amber:#D97706; --amber-bg:#FEF3C7; --amber-ink:#92400E;
+  --red:#DC2626; --red-bg:#FEE2E2; --red-ink:#991B1B;
+  --hover:#F1F5F9; --dark:#0F172A; --dark-ink:#F8FAFC;
+  --focus:#2563EB;
+  --r:10px; --r-sm:7px;
+  --gut: max(16px, env(safe-area-inset-left,0px));
+  --gut-r: max(16px, env(safe-area-inset-right,0px));
+  --sab: env(safe-area-inset-bottom,0px);
+  --sat: env(safe-area-inset-top,0px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Pretendard","Noto Sans KR",system-ui,-apple-system,sans-serif;
+  font-size:14px; line-height:1.45; letter-spacing:-0.01em;
+  padding-left:var(--gut); padding-right:var(--gut-r); padding-block:0 120px;
+  overflow-x:hidden;
+}
+body::before{content:"";position:fixed;inset:0 0 auto 0;height:var(--sat);background:var(--card);z-index:60}
+.num,td.n,.badge,.qty,.cnt{font-variant-numeric:tabular-nums}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- 헤더 ---------- */
+header.top{
+  position:sticky; top:var(--sat); z-index:50; background:var(--card);
+  margin-inline:calc(-1 * var(--gut)) calc(-1 * var(--gut-r));
+  padding-left:var(--gut); padding-right:var(--gut-r);
+  border-bottom:1px solid var(--line);
+}
+.row1{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:16px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{width:32px;height:32px;border-radius:8px;background:var(--green);color:#fff;display:grid;place-items:center;font-weight:800;font-size:15px;flex:none}
+.brand b{font-size:15px;font-weight:700;white-space:nowrap}
+.brand small{display:block;color:var(--ink-3);font-size:11.5px;font-weight:500;white-space:nowrap}
+.search{position:relative;max-width:560px;width:100%;justify-self:center}
+.search input{
+  width:100%;height:40px;border:1px solid var(--line);border-radius:var(--r);background:var(--bg);
+  padding-block:0;padding-left:38px;padding-right:96px;font-size:14px;outline:none;
+}
+.search input:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px var(--blue-bg)}
+.search .lead{position:absolute;left:12px;top:11px;color:var(--ink-3)}
+.search .trail{position:absolute;right:6px;top:4px;display:flex;gap:4px;align-items:center}
+kbd{font:600 11px/1 "Pretendard","Noto Sans KR",system-ui,sans-serif;color:var(--ink-3);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding-block:4px;padding-inline:6px;background:#fff}
+.ibtn{width:32px;height:32px;border:0;background:transparent;border-radius:8px;display:grid;place-items:center;color:var(--ink-2)}
+.ibtn:hover{background:var(--hover)}
+.clear{display:none}
+.search.has-q .clear{display:grid}
+.search.has-q kbd{display:none}
+.right{display:flex;align-items:center;gap:8px;justify-self:end}
+.duty{display:inline-flex;align-items:center;gap:6px;height:32px;padding-inline:10px;border-radius:999px;background:var(--green-bg);color:var(--green-ink);font-size:12.5px;font-weight:600;white-space:nowrap}
+.duty::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green)}
+.who{position:relative}
+.who select{appearance:none;height:34px;border:1px solid var(--line);border-radius:8px;background:#fff;padding-block:0;padding-left:10px;padding-right:28px;font-size:13px;font-weight:600}
+.who::after{content:"";position:absolute;right:11px;top:13px;width:6px;height:6px;border-right:2px solid var(--ink-3);border-bottom:2px solid var(--ink-3);transform:rotate(45deg);pointer-events:none}
+.sync{display:inline-flex;align-items:center;gap:6px;height:34px;border:1px solid var(--line);background:#fff;border-radius:8px;padding-inline:10px;font-size:12.5px;font-weight:600;color:var(--ink-2);white-space:nowrap}
+.sync .dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+.sync.busy .dot{background:var(--amber)}
+.sync.busy svg{animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* 탭바 */
+.tabs{display:flex;align-items:center;gap:2px;overflow-x:auto;scrollbar-width:none;margin-inline:-4px;padding-inline:4px;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  position:relative;flex:none;display:inline-flex;align-items:center;gap:7px;height:44px;padding-inline:12px;
+  border:0;background:transparent;color:var(--ink-3);font-weight:600;font-size:13.5px;white-space:nowrap;border-radius:0;
+}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink)}
+.tab[aria-selected="true"]::after{content:"";position:absolute;left:10px;right:10px;bottom:0;height:2px;background:var(--ink);border-radius:2px}
+.tab .badge{min-width:22px;height:20px;padding-inline:6px;border-radius:999px;display:inline-grid;place-items:center;font-size:11.5px;font-weight:700;background:var(--hover);color:var(--ink-3)}
+.tab .badge.c-amber{background:var(--amber-bg);color:var(--amber-ink)}
+.tab .badge.c-blue{background:var(--blue-bg);color:var(--blue-ink)}
+.tab .badge.c-green{background:var(--green-bg);color:var(--green-ink)}
+.tab .badge.c-red{background:var(--red-bg);color:var(--red-ink)}
+.tab.mine .badge{box-shadow:0 0 0 1.5px currentColor}
+.tab.mine .me-dot{width:5px;height:5px;border-radius:50%;background:var(--blue)}
+.tab .badge.bump{animation:bump .35s ease}
+@keyframes bump{50%{transform:scale(1.25)}}
+.sep{flex:none;width:1px;height:20px;background:var(--line-strong);margin-inline:8px}
+.grp{flex:none;font-size:11px;font-weight:700;color:var(--ink-4);padding-inline:6px 2px;letter-spacing:.02em}
+
+/* ---------- 본문 ---------- */
+main{max-width:1240px;margin-inline:auto;padding-block:18px 0}
+.lhead{display:flex;align-items:center;gap:10px;margin-block:0 12px;flex-wrap:wrap}
+.lhead h1{font-size:18px;font-weight:700;margin:0;letter-spacing:-0.02em}
+.lhead .cnt{color:var(--ink-3);font-weight:600;font-size:14px}
+.lhead .desc{color:var(--ink-3);font-size:13px;flex-basis:100%;margin-top:-4px}
+.lhead .sp{flex:1}
+.help{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--ink-3);display:grid;place-items:center;font-weight:700}
+.help:hover{color:var(--ink);border-color:var(--line-strong)}
+.selall{display:none;height:34px;border:1px solid var(--line);background:#fff;border-radius:8px;padding-inline:12px;font-weight:600;font-size:13px}
+.qhint{background:var(--blue-bg);color:var(--blue-ink);border-radius:var(--r-sm);padding-block:8px;padding-inline:12px;font-size:13px;margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.qhint button{border:0;background:#fff;color:var(--blue-ink);border-radius:999px;height:28px;padding-inline:10px;font-weight:600;font-size:12.5px}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+th{font-size:12px;font-weight:600;color:var(--ink-3);text-align:left;padding-block:10px;padding-inline:12px;background:#FBFCFE;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding-block:9px;padding-inline:12px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tbody tr{transition:background-color .15s}
+tbody tr:hover{background:#FBFCFE}
+tr.sel{background:#EFF6FF !important}
+th.n,td.n{text-align:right}
+.ck{width:44px;padding-right:0}
+.ck input,.card .ck input{width:18px;height:18px;accent-color:var(--blue);cursor:pointer;margin:0}
+.prod{display:flex;align-items:center;gap:10px;min-width:0}
+.thumb{width:36px;height:36px;border-radius:8px;display:grid;place-items:center;font-weight:700;font-size:15px;flex:none;color:#fff}
+.pname{font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis}
+.pmeta{font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+mark{background:var(--amber-bg);color:inherit;border-radius:3px;padding-inline:1px}
+.qty{display:inline-flex;align-items:center;height:24px;padding-inline:8px;border-radius:6px;background:var(--hover);font-weight:700;font-size:13px}
+.sales{font-weight:600}
+.sales small{color:var(--ink-3);font-weight:500}
+.chips-smart{display:inline-flex;gap:4px;flex-wrap:wrap}
+.sb{display:inline-flex;align-items:center;height:22px;padding-inline:7px;border-radius:6px;font-size:11.5px;font-weight:700;white-space:nowrap}
+.sb.hot{background:var(--red-bg);color:var(--red-ink)}
+.sb.over{background:var(--amber-bg);color:var(--amber-ink)}
+.sb.stage{background:var(--hover);color:var(--ink-2)}
+.age{font-size:12.5px;color:var(--ink-3);white-space:nowrap}
+.age.warn{color:var(--amber-ink);font-weight:600}
+.age.late{color:var(--red);font-weight:700}
+.acts{display:flex;gap:6px;justify-content:flex-end}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:34px;padding-inline:12px;border-radius:8px;border:1px solid transparent;font-weight:600;font-size:13px;white-space:nowrap;transition:background-color .12s,transform .08s}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--green);color:#fff}
+.btn.primary:hover{background:#047857}
+.btn.blue{background:var(--blue);color:#fff}
+.btn.blue:hover{background:#1D4ED8}
+.btn.ghost-red{background:#fff;border-color:var(--line);color:var(--red)}
+.btn.ghost-red:hover{background:var(--red-bg);border-color:#FCA5A5}
+.btn.neutral{background:#fff;border-color:var(--line);color:var(--ink-2)}
+.btn.neutral:hover{background:var(--hover)}
+.memo{display:flex;gap:4px;flex-wrap:wrap}
+.chip{height:28px;padding-inline:9px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:12px;font-weight:600;color:var(--ink-3);white-space:nowrap}
+.chip:hover{border-color:var(--line-strong);color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--amber-bg);border-color:#FCD34D;color:var(--amber-ink)}
+.chip[aria-pressed="true"][data-chip="파손/교환"]{background:var(--red-bg);border-color:#FCA5A5;color:var(--red-ink)}
+.done-t{font-size:12.5px;color:var(--green-ink);font-weight:600;white-space:nowrap}
+.flash{animation:flash 2.6s ease-out}
+@keyframes flash{0%,35%{background:var(--amber-bg);box-shadow:inset 3px 0 0 var(--amber)}100%{background:transparent;box-shadow:inset 3px 0 0 transparent}}
+.empty{padding-block:56px;text-align:center;color:var(--ink-3)}
+.empty b{display:block;color:var(--ink);font-size:15px;margin-bottom:4px}
+
+/* 모바일 카드 */
+.cards{display:none;flex-direction:column;gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.card.sel{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
+.card .top{display:flex;gap:12px;padding-block:12px;padding-inline:12px;align-items:flex-start}
+.card .thumb{width:48px;height:48px;font-size:19px;border-radius:10px}
+.card .body{flex:1;min-width:0}
+.card .pname{white-space:normal;font-size:15px;line-height:1.35}
+.card .stats{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap}
+.card .ck{padding-top:2px;width:auto}
+.card .ck label{display:grid;place-items:center;width:32px;height:32px;margin:-6px -6px 0 0}
+.card .memo{padding-inline:12px;padding-bottom:10px}
+.card .acts2{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
+.card .acts2.one{grid-template-columns:1fr}
+.card .acts2 .btn{height:52px;border-radius:0;border:0;font-size:14.5px}
+.card .acts2 .btn+.btn{border-left:1px solid var(--line)}
+.card .acts2 .btn.ghost-red{color:var(--red)}
+
+@media (max-width:767.98px){
+  .row1{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand right" "search search";gap:8px 10px;padding-block:8px}
+  .brand{grid-area:brand}.right{grid-area:right}.search{grid-area:search;max-width:none}
+  .brand small,.duty .long,.sync .txt,kbd{display:none}
+  .duty{padding-inline:8px}
+  .table-wrap{display:none}
+  .cards{display:flex}
+  .selall{display:inline-flex;align-items:center}
+  .lhead h1{font-size:17px}
+}
+
+/* 하단 플로팅 */
+.bulk{
+  position:fixed;left:50%;bottom:calc(16px + var(--sab));z-index:70;transform:translate(-50%,calc(100% + 40px));
+  display:flex;align-items:center;gap:10px;background:var(--dark);color:var(--dark-ink);border-radius:14px;
+  padding-block:8px;padding-inline:16px 8px;box-shadow:0 12px 32px rgba(15,23,42,.28);
+  transition:transform .32s cubic-bezier(.2,.8,.2,1);width:max-content;max-width:calc(100vw - 32px);
+}
+.bulk.on{transform:translate(-50%,0)}
+.bulk .n{font-weight:700;white-space:nowrap}
+.bulk .btn{height:40px}
+.bulk .x{color:#CBD5E1;width:40px;height:40px}
+.bulk .x:hover{background:rgba(255,255,255,.08)}
+.snack{
+  position:fixed;left:50%;bottom:calc(16px + var(--sab));z-index:80;transform:translate(-50%,calc(100% + 40px));opacity:0;
+  background:var(--dark);color:var(--dark-ink);border-radius:12px;min-width:300px;max-width:calc(100vw - 32px);
+  box-shadow:0 12px 32px rgba(15,23,42,.28);overflow:hidden;transition:transform .28s cubic-bezier(.2,.8,.2,1),opacity .2s;
+}
+body.has-bulk .snack{bottom:calc(80px + var(--sab))}
+.snack.on{transform:translate(-50%,0);opacity:1}
+.snack .in{display:flex;align-items:center;gap:12px;padding-block:6px;padding-inline:16px 6px;min-height:52px}
+.snack .msg{flex:1;font-weight:500}
+.snack .msg b{color:#6EE7B7}
+.snack .undo{height:40px;border:0;background:transparent;color:#93C5FD;font-weight:700;padding-inline:12px;border-radius:8px;white-space:nowrap}
+.snack .undo:hover{background:rgba(255,255,255,.08)}
+.snack .bar{height:3px;background:#6EE7B7;transform-origin:left}
+.snack.on .bar{animation:shrink 5s linear forwards}
+@keyframes shrink{to{transform:scaleX(0)}}
+
+/* 모달 */
+.modal{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;padding-inline:16px;background:rgba(15,23,42,.45)}
+.modal.on{display:flex;animation:fade .18s ease}
+@keyframes fade{from{opacity:0}}
+.sheet{background:#fff;border-radius:14px;width:100%;max-width:440px;max-height:calc(100vh - 48px);overflow:auto;box-shadow:0 24px 60px rgba(15,23,42,.3)}
+.sheet .hd{display:flex;align-items:center;gap:8px;padding-block:14px;padding-inline:18px 10px;border-bottom:1px solid var(--line)}
+.sheet .hd h2{font-size:16px;margin:0;flex:1}
+.sheet .bd{padding-block:16px;padding-inline:18px}
+.sheet ol{margin:0;padding-left:20px;color:var(--ink-2)}
+.sheet li{margin-bottom:6px}
+.sheet .tip{margin-top:12px;font-size:12.5px;color:var(--ink-3);background:var(--bg);border-radius:8px;padding-block:8px;padding-inline:10px}
+.vf{position:relative;aspect-ratio:4/3;background:#0B1220;border-radius:12px;overflow:hidden;display:grid;place-items:center}
+.vf .frame{width:70%;height:42%;border:2px solid rgba(255,255,255,.85);border-radius:10px;position:relative}
+.vf .line{position:absolute;left:6%;right:6%;height:2px;background:#34D399;box-shadow:0 0 12px #34D399;top:10%;animation:scan 1.8s ease-in-out infinite alternate}
+@keyframes scan{to{top:86%}}
+.vf .cap{position:absolute;bottom:10px;left:0;right:0;text-align:center;color:#CBD5E1;font-size:12.5px}
+.vf .bars{position:absolute;inset:22% 22%;display:flex;gap:3px;align-items:stretch;opacity:.25}
+.vf .bars i{background:#fff;flex:1}.vf .bars i:nth-child(3n){flex:2}.vf .bars i:nth-child(4n){flex:.5}
+.samples{display:flex;flex-direction:column;gap:6px;margin-top:14px}
+.samples button{display:flex;align-items:center;gap:10px;min-height:44px;border:1px solid var(--line);background:#fff;border-radius:10px;padding-inline:12px;text-align:left}
+.samples button:hover{background:var(--hover)}
+.samples code{font:600 12.5px ui-monospace,Menlo,monospace;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.manual{display:flex;gap:6px;margin-top:12px}
+.manual input{flex:1;height:44px;border:1px solid var(--line);border-radius:10px;padding-inline:12px;font-variant-numeric:tabular-nums;min-width:0}
+.scan-msg{margin-top:8px;font-size:12.5px;color:var(--red);min-height:18px}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important}
+  .vf .line{top:48%}
+  .snack.on .bar{animation:none}
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-scan" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 8v8M10 8v8M14 8v8M17 8v8"/></symbol>
+  <symbol id="i-sync" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-15.4 6.4L3 16M3 12a9 9 0 0 1 15.4-6.4L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="row1">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">R</div>
+      <div><b>성수레디영약국</b><small>물류 관리 · 리뉴얼 미리보기</small></div>
+    </div>
+    <div class="search" id="searchBox">
+      <svg class="i lead" aria-hidden="true"><use href="#i-search"/></svg>
+      <label class="sr" for="q">상품명, 브랜드, 바코드 검색</label>
+      <input id="q" type="search" autocomplete="off" placeholder="상품명 · 브랜드 · 바코드 검색" enterkeyhint="search">
+      <div class="trail">
+        <button class="ibtn clear" id="qClear" aria-label="검색어 지우기"><svg class="i"><use href="#i-x"/></svg></button>
+        <kbd id="kbdHint">⌘K</kbd>
+        <button class="ibtn" id="scanBtn" aria-label="카메라로 바코드 스캔"><svg class="i"><use href="#i-scan"/></svg></button>
+      </div>
+    </div>
+    <div class="right">
+      <span class="duty" id="duty" title="오늘 세트 담당" role="note" aria-label="오늘 세트 담당 서윤"><span class="long">오늘 세트 담당 ·&nbsp;</span><span class="short" id="dutyName">서윤</span></span>
+      <div class="who"><label class="sr" for="me">작업자 선택</label>
+        <select id="me">
+          <option value="문준">문준 · 물류</option>
+          <option value="약사님">약사님</option>
+          <option value="일반직원">일반직원</option>
+        </select>
+      </div>
+      <button class="sync" id="sync" aria-label="지금 동기화"><span class="dot"></span><svg class="i" style="width:15px;height:15px"><use href="#i-sync"/></svg><span class="txt" id="syncTxt">동기화됨 · 방금</span></button>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs" role="tablist" aria-label="물류 단계와 운영 현황"></nav>
+</header>
+
+<main id="main">
+  <div class="lhead">
+    <h1 id="ttl"></h1><span class="cnt" id="cnt"></span>
+    <span class="sp"></span>
+    <button class="selall" id="selAll">전체 선택</button>
+    <button class="help" id="helpBtn" aria-label="이 단계 사용법 보기">?</button>
+    <div class="desc" id="desc"></div>
+  </div>
+  <div id="qhint"></div>
+  <div class="panel table-wrap"><table id="tbl"><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
+  <div class="cards" id="cards"></div>
+</main>
+
+<div class="bulk" id="bulk" role="region" aria-label="선택 항목 일괄 처리">
+  <span class="n" id="bulkN">0건 선택</span>
+  <button class="btn primary" id="bulkGo">일괄 승인</button>
+  <button class="ibtn x" id="bulkX" aria-label="선택 해제"><svg class="i"><use href="#i-x"/></svg></button>
+</div>
+
+<div class="snack" id="snack" role="status" aria-live="polite">
+  <div class="in"><span class="msg" id="snackMsg"></span><button class="undo" id="undoBtn">↩ 실행 취소</button></div>
+  <div class="bar" id="snackBar"></div>
+</div>
+
+<div class="modal" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpTtl">
+  <div class="sheet"><div class="hd"><h2 id="helpTtl"></h2><button class="ibtn" data-close aria-label="닫기"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="bd" id="helpBody"></div></div>
+</div>
+
+<div class="modal" id="scanModal" role="dialog" aria-modal="true" aria-labelledby="scanTtl">
+  <div class="sheet"><div class="hd"><h2 id="scanTtl">바코드 스캔</h2><button class="ibtn" data-close aria-label="닫기"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="bd">
+    <div class="vf" aria-hidden="true"><div class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="frame"><div class="line"></div></div><div class="cap">바코드를 네모 안에 맞춰 주세요</div></div>
+    <div class="samples" id="samples"><div style="font-size:12px;color:var(--ink-3);font-weight:600">미리보기용 샘플 바코드 (누르면 인식)</div></div>
+    <form class="manual" id="manual"><label class="sr" for="bc">바코드 직접 입력</label><input id="bc" inputmode="numeric" placeholder="바코드 직접 입력"><button class="btn blue" style="height:44px">찾기</button></form>
+    <div class="scan-msg" id="scanMsg" role="alert"></div>
+  </div></div>
+</div>
+
+<script>
+/* =====================================================================
+   API 계층 — GAS 연결 시 여기만 바꾸면 됩니다.
+   각 함수는 Promise 를 돌려줍니다. 실제 배포에서는 아래처럼 교체:
+
+     approveOrder: ids => gas('approveOrder', ids)
+     function gas(fn, ...args){
+       return new Promise((ok, no) =>
+         google.script.run.withSuccessHandler(ok).withFailureHandler(no)[fn](...args));
+     }
+
+   - getAllData()                 : 전체 품목 [{id,name,brand,qty,sales15,stage,age,...}]
+   - approveOrder(ids)            : 1단계→2단계(발주승인), 2단계→3단계(발주완료)
+   - markInboundComplete(ids)     : 3단계→입고완료
+   - cancelOrder(ids)             : 재고있음 → 오늘 취소
+   - markSoldout(ids)             : 품절보류로 이동
+   - bulkApprove(ids)/bulkInbound : 다중 선택 일괄 처리
+   - undo(snapshot)               : [{id,stage,memo}] 로 되돌리기
+   - reopenOrder(ids, stage)      : 품절/취소 품목을 다시 단계로 (보조)
+   - updateMemo(id, memo)         : 입고 메모 칩 저장 (보조)
+   stage 값: review | order | inbound | done | soldout | cancel
+   ===================================================================== */
+const api = (() => {
+  const C = ['#0F766E','#2563EB','#7C3AED','#DB2777','#EA580C','#059669','#0891B2','#4F46E5','#B45309','#BE123C'];
+  let n = 0;
+  const P = (name, brand, qty, sales15, stage, age, by, x = {}) =>
+    ({ id: 'p' + (++n), name, brand, qty, sales15, stage, age, by, memo: [], hot: false,
+       barcode: '880' + String(1000000000 + n * 7919373).slice(0, 10), color: C[n % C.length], ...x });
+  const store = [
+    P('판피린 큐 액 20mL × 10병','동아제약',30,12,'review',1,'서윤'),
+    P('아누아 PDRN 히알루론산 캡슐 100 세럼 30mL','아누아',6,41,'review',0,'지호',{hot:true}),
+    P('닥터린 마그네슘 비타민B 60정','닥터린',10,18,'review',2,'문준'),
+    P('탁센 연질캡슐 10캡슐','녹십자',20,25,'review',1,'서윤'),
+    P('메디힐 마데카소사이드 흔적 패드 100매','메디힐',8,30,'review',0,'지호',{hot:true}),
+    P('닥터엘시아 시카 리페어 크림 50mL','닥터엘시아',12,22,'order',8,'문준'),
+    P('베아제 정 10정','대웅제약',20,19,'order',2,'약사님'),
+    P('라운드랩 자작나무 수분 선크림 50mL','라운드랩',15,37,'order',1,'지호',{hot:true}),
+    P('이지엔6 이브 연질캡슐 10캡슐','대웅제약',10,9,'order',3,'서윤'),
+    P('판콜에이 내복액 30mL × 3병','동화약품',40,33,'inbound',9,'문준'),
+    P('센텔리안24 마데카크림 타임리버스 50mL','동국제약',6,14,'inbound',4,'약사님'),
+    P('바이오가이아 프로텍티스 드롭 5mL','바이오가이아',4,7,'inbound',2,'서윤',{memo:['부분입고']}),
+    P('토리든 다이브인 저분자 히알루론산 세럼 50mL','토리든',10,26,'inbound',3,'지호'),
+    P('게보린 정 10정','삼진제약',30,28,'done',1,'서윤',{doneAt:'오늘 10:12'}),
+    P('훼라민큐 정 60정','동국제약',4,5,'done',2,'약사님',{doneAt:'오늘 09:48'}),
+    P('비판텐 연고 30g','바이엘',6,11,'done',3,'문준',{doneAt:'어제 18:20'}),
+    P('써큐란 알파 연질캡슐 120캡슐','부광약품',3,4,'done',4,'약사님',{doneAt:'어제 15:02'}),
+    P('타이레놀 8시간 이알 서방정 6정','한국존슨앤드존슨',24,31,'soldout',5,'문준'),
+    P('콜대원 키즈 코프 시럽 10포','대원제약',10,16,'soldout',3,'서윤'),
+    P('닥터지 레드 블레미쉬 클리어 수딩 크림 70mL','고운세상',8,20,'soldout',6,'지호'),
+    P('후시딘 연고 10g','동화약품',10,6,'cancel',0,'서윤',{cancelAt:'오늘 11:05'}),
+    P('아로나민 골드 100정','일동제약',5,3,'cancel',0,'지호',{cancelAt:'오늘 10:31'}),
+  ];
+  const wait = v => new Promise(r => setTimeout(() => r(v), 120));
+  const clone = x => JSON.parse(JSON.stringify(x));
+  const get = id => store.find(i => i.id === id);
+  const next = { review: 'order', order: 'inbound' };
+  const setStage = (ids, fn) => wait(ids.map(id => { const it = get(id); it.stage = fn(it); return clone(it); }));
+  return {
+    getAllData: () => wait(clone(store)),
+    approveOrder: ids => setStage(ids, it => next[it.stage] || it.stage),
+    markInboundComplete: ids => setStage(ids, () => 'done'),
+    cancelOrder: ids => setStage(ids, () => 'cancel'),
+    markSoldout: ids => setStage(ids, () => 'soldout'),
+    bulkApprove: ids => api.approveOrder(ids),
+    bulkInbound: ids => api.markInboundComplete(ids),
+    reopenOrder: (ids, stage) => setStage(ids, () => stage),
+    updateMemo: (id, memo) => { get(id).memo = [...memo]; return wait(true); },
+    undo: snap => wait(snap.forEach(s => Object.assign(get(s.id), { stage: s.stage, memo: [...s.memo] }))),
+  };
+})();
+
+/* ===================== UI ===================== */
+const $ = s => document.querySelector(s);
+const TABS = [
+  { grp: '진행' },
+  { id: 'review',  label: '1단계 재고검토', c: 'c-amber', desc: '직원 요청을 매장 재고와 비교해 발주할지 정합니다.' },
+  { id: 'order',   label: '2단계 약사발주', c: 'c-blue',  desc: '승인된 품목을 약사님이 도매에 발주합니다.' },
+  { id: 'inbound', label: '3단계 입고대기', c: 'c-blue',  desc: '도착한 물건을 확인하고 입고완료로 넘깁니다.' },
+  { sep: true }, { grp: '운영' },
+  { id: 'done',    label: '입고완료 내역', c: 'c-green', desc: '최근 입고가 끝난 품목입니다.' },
+  { id: 'soldout', label: '🚫 품절보류', c: 'c-red', desc: '도매 품절로 보류 중. 재입고되면 다시 발주하세요.' },
+  { id: 'delayed', label: '⚠️ 7일이상 지연', c: 'c-red', desc: '발주·입고 단계에서 7일 넘게 멈춘 품목입니다.' },
+  { id: 'cancel',  label: '오늘 취소', c: 'c-red', desc: '재고가 있어 오늘 취소된 요청입니다.' },
+];
+const TAB = Object.fromEntries(TABS.filter(t => t.id).map(t => [t.id, t]));
+const ROLES = {
+  '문준':   { tab: 'review',  mine: ['review', 'delayed'] },
+  '약사님': { tab: 'order',   mine: ['order', 'soldout'] },
+  '일반직원': { tab: 'inbound', mine: ['inbound'] },
+};
+const HELP = {
+  review:  ['요청 수량과 15일 판매량을 비교합니다.', '매장에 재고가 있으면 ❌ 재고있음(취소).', '필요하면 ✅ 발주승인 → 2단계로 넘어갑니다.', '여러 개는 체크 후 하단 바에서 일괄 승인.'],
+  order:   ['도매몰에서 발주를 넣습니다.', '발주했으면 ✅ 발주완료 → 3단계 입고대기.', '도매 품절이면 🚫 품절 → 품절보류.'],
+  inbound: ['박스가 오면 수량·상태를 확인합니다.', '문제 있으면 [부분입고] [파손/교환] [유통기한 임박] 칩을 눌러 메모.', '확인이 끝나면 ✅ 최종 입고완료.'],
+  done:    ['최근 입고 기록입니다. 수정은 관리자에게 요청하세요.'],
+  soldout: ['도매 재입고 소식이 오면 ↺ 다시 발주를 누릅니다.', '2단계 약사발주로 돌아갑니다.'],
+  delayed: ['7일 이상 멈춘 품목만 모았습니다.', '도매에 상황을 확인하고 바로 처리하세요.'],
+  cancel:  ['오늘 취소된 요청입니다. 잘못 눌렀으면 ↩ 검토로 되돌리기.'],
+};
+const CHIPS = ['부분입고', '파손/교환', '유통기한 임박'];
+const STAGE_KO = { review: '1단계', order: '2단계', inbound: '3단계' };
+const PIPE = ['review', 'order', 'inbound'];
+
+const params = new URLSearchParams(location.search);
+const state = { items: [], tab: 'review', q: '', role: ROLES[params.get('me')] ? params.get('me') : '문준', sel: new Set(), flash: null };
+const prevCounts = {};
+
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const byId = id => state.items.find(i => i.id === id);
+const isDelayed = i => (i.stage === 'order' || i.stage === 'inbound') && i.age >= 7;
+const inTab = (i, t) => t === 'delayed' ? isDelayed(i) : i.stage === t;
+const match = i => { const q = state.q.trim().toLowerCase(); return !q || [i.name, i.brand, i.barcode, i.by].some(v => v.toLowerCase().includes(q)); };
+const list = t => state.items.filter(i => inTab(i, t) && match(i));
+const hl = s => { const q = state.q.trim(); if (!q) return esc(s); const k = s.toLowerCase().indexOf(q.toLowerCase()); return k < 0 ? esc(s) : esc(s.slice(0, k)) + '<mark>' + esc(s.slice(k, k + q.length)) + '</mark>' + esc(s.slice(k + q.length)); };
+const isOver = i => i.qty > i.sales15 * 1.5;
+const selectable = () => PIPE.includes(state.tab);
+
+function actions(i) {
+  const B = (act, label, cls) => `<button class="btn ${cls}" data-act="${act}">${label}</button>`;
+  switch (i.stage) {
+    case 'review':  return [B('cancel', '❌ 재고있음(취소)', 'ghost-red'), B('approve', '✅ 발주승인', 'primary')];
+    case 'order':   return [B('soldout', '🚫 품절', 'ghost-red'), B('approve', '✅ 발주완료', 'blue')];
+    case 'inbound': return [B('soldout', '🚫 품절', 'ghost-red'), B('inbound', '✅ 최종 입고완료', 'primary')];
+    case 'soldout': return [B('reopen', '↺ 다시 발주', 'neutral')];
+    case 'cancel':  return [B('restore', '↩ 검토로 되돌리기', 'neutral')];
+    default: return [];
+  }
+}
+const thumb = i => `<div class="thumb" style="background:${i.color}" aria-hidden="true">${esc(i.name[0])}</div>`;
+const smart = i => (i.hot ? '<span class="sb hot">🔥 급상승</span>' : '') + (isOver(i) && i.stage === 'review' ? '<span class="sb over">⚠️ 과다요청</span>' : '') + (state.tab === 'delayed' ? `<span class="sb stage">${STAGE_KO[i.stage]}</span>` : '');
+const ageTxt = i => i.stage === 'done' ? `<span class="done-t">✓ ${esc(i.doneAt)}</span>` : i.stage === 'cancel' ? `<span class="age">${esc(i.cancelAt)} 취소</span>` :
+  `<span class="age ${i.age >= 7 ? 'late' : i.age >= 4 ? 'warn' : ''}">${i.age === 0 ? '오늘 요청' : i.age + '일 경과'}</span>`;
+const memo = i => (i.stage === 'inbound') ? `<div class="memo" role="group" aria-label="입고 메모">${CHIPS.map(c => `<button class="chip" data-chip="${c}" aria-pressed="${i.memo.includes(c)}">${c}</button>`).join('')}</div>` : (i.memo.length ? `<div class="memo">${i.memo.map(c => `<span class="sb over">${esc(c)}</span>`).join('')}</div>` : '');
+
+function renderTabs() {
+  const mine = ROLES[state.role].mine;
+  $('#tabs').innerHTML = TABS.map(t => {
+    if (t.sep) return '<span class="sep" aria-hidden="true"></span>';
+    if (t.grp) return `<span class="grp" aria-hidden="true">${t.grp}</span>`;
+    const n = state.items.filter(i => inTab(i, t.id) && match(i)).length;
+    const bump = prevCounts[t.id] !== undefined && prevCounts[t.id] !== n;
+    prevCounts[t.id] = n;
+    const isMine = mine.includes(t.id);
+    return `<button class="tab${isMine ? ' mine' : ''}" role="tab" id="tab-${t.id}" data-tab="${t.id}" aria-selected="${state.tab === t.id}" aria-controls="main">${isMine ? '<span class="me-dot" aria-hidden="true"></span>' : ''}${t.label}<span class="badge ${n ? t.c : ''}${bump ? ' bump' : ''}" aria-label="${n}건">${n}</span></button>`;
+  }).join('');
+}
+
+function render() {
+  renderTabs();
+  const t = TAB[state.tab], rows = list(state.tab), sel = selectable();
+  $('#ttl').textContent = t.label;
+  $('#cnt').textContent = rows.length + '건';
+  $('#desc').textContent = t.desc;
+  $('#selAll').hidden = !sel || !rows.length;
+  $('#selAll').textContent = rows.length && rows.every(r => state.sel.has(r.id)) ? '선택 해제' : '전체 선택';
+
+  // 검색 시 다른 탭 결과 안내
+  let hint = '';
+  if (state.q.trim()) {
+    const other = TABS.filter(x => x.id && x.id !== state.tab && x.id !== 'delayed').map(x => [x, list(x.id).length]).filter(([, c]) => c);
+    if (other.length) hint = `<div class="qhint">다른 탭에도 있어요 ${other.map(([x, c]) => `<button data-goto="${x.id}">${x.label} ${c}</button>`).join('')}</div>`;
+  }
+  $('#qhint').innerHTML = hint;
+
+  const memoCol = state.tab === 'inbound' || state.tab === 'delayed';
+  $('#thead').innerHTML = `<tr>${sel ? `<th class="ck"><input type="checkbox" id="ckAll" aria-label="전체 선택" ${rows.length && rows.every(r => state.sel.has(r.id)) ? 'checked' : ''}></th>` : ''}<th>상품</th><th class="n">요청</th><th class="n">15일 판매</th><th>요청자 · 경과</th>${memoCol ? '<th>입고 메모</th>' : ''}<th style="text-align:right">처리</th></tr>`;
+
+  const empty = `<div class="empty"><b>${state.q.trim() ? '검색 결과가 없어요' : '처리할 품목이 없어요'}</b>${state.q.trim() ? '검색어를 바꾸거나 위 안내의 다른 탭을 확인하세요.' : '새 요청이 들어오면 여기에 바로 보입니다.'}</div>`;
+  const cols = 5 + (sel ? 1 : 0) + (memoCol ? 1 : 0);
+  $('#tbody').innerHTML = rows.length ? rows.map(i => `
+    <tr data-id="${i.id}" class="${state.sel.has(i.id) ? 'sel' : ''}${state.flash === i.id ? ' flash' : ''}">
+      ${sel ? `<td class="ck"><input type="checkbox" data-sel aria-label="${esc(i.name)} 선택" ${state.sel.has(i.id) ? 'checked' : ''}></td>` : ''}
+      <td><div class="prod">${thumb(i)}<div style="min-width:0"><div class="pname">${hl(i.name)}</div><div class="pmeta">${hl(i.brand)} · ${hl(i.barcode)}</div></div><span class="chips-smart">${smart(i)}</span></div></td>
+      <td class="n"><span class="qty">${i.qty}개</span></td>
+      <td class="n sales">${i.sales15}<small>개</small></td>
+      <td><div style="font-weight:600;font-size:13px">${hl(i.by)}</div>${ageTxt(i)}</td>
+      ${memoCol ? `<td>${memo(i)}</td>` : ''}
+      <td><div class="acts">${actions(i).join('')}</div></td>
+    </tr>`).join('') : `<tr><td colspan="${cols}" style="padding:0">${empty}</td></tr>`;
+
+  $('#cards').innerHTML = rows.length ? rows.map(i => {
+    const a = actions(i);
+    return `<article class="card${state.sel.has(i.id) ? ' sel' : ''}${state.flash === i.id ? ' flash' : ''}" data-id="${i.id}" aria-label="${esc(i.name)}">
+      <div class="top">${thumb(i)}
+        <div class="body"><div class="pname">${hl(i.name)}</div>
+          <div class="stats"><span class="qty">요청 ${i.qty}개</span><span class="sales num">15일 ${i.sales15}<small>개</small></span>${ageTxt(i)}</div>
+          ${smart(i) ? `<div class="stats">${smart(i)}</div>` : ''}
+        </div>
+        ${sel ? `<div class="ck"><label><input type="checkbox" data-sel aria-label="${esc(i.name)} 선택" ${state.sel.has(i.id) ? 'checked' : ''}></label></div>` : ''}
+      </div>
+      ${memo(i)}
+      ${a.length ? `<div class="acts2${a.length === 1 ? ' one' : ''}">${a.join('')}</div>` : ''}
+    </article>`;
+  }).join('') : `<div class="panel">${empty}</div>`;
+
+  renderBulk();
+  state.flash = null;
+}
+
+function renderBulk() {
+  // 현재 탭에 없는 선택은 버림
+  for (const id of state.sel) { const it = byId(id); if (!it || !inTab(it, state.tab)) state.sel.delete(id); }
+  const n = state.sel.size, on = n > 0 && selectable();
+  $('#bulk').classList.toggle('on', on);
+  document.body.classList.toggle('has-bulk', on);
+  $('#bulk').setAttribute('aria-hidden', String(!on));
+  $('#bulk').inert = !on;
+  $('#bulkN').textContent = `${n}건 선택`;
+  const go = $('#bulkGo');
+  go.textContent = state.tab === 'review' ? `선택한 ${n}건 일괄 승인` : state.tab === 'order' ? `선택한 ${n}건 일괄 발주완료` : `선택한 ${n}건 일괄 입고완료`;
+  go.className = 'btn ' + (state.tab === 'order' ? 'blue' : 'primary');
+}
+
+/* ---- 이동 + 실행 취소 ---- */
+let snackTimer;
+function move(ids, to, call, msg) {
+  const snap = ids.map(id => { const it = byId(id); return { id, stage: it.stage, memo: [...it.memo] }; });
+  const now = new Date(), hm = `오늘 ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  ids.forEach(id => { const it = byId(id); it.stage = typeof to === 'function' ? to(it) : to; if (it.stage === 'done') it.doneAt = hm; if (it.stage === 'cancel') it.cancelAt = hm; if (it.stage === 'order' || it.stage === 'inbound') it.age = 0; });
+  ids.forEach(id => state.sel.delete(id));
+  render();
+  call(ids).catch(() => { restore(snap); showSnack('저장에 실패해 되돌렸어요. 다시 시도해 주세요.', null); });
+  showSnack(msg, snap);
+}
+function restore(snap) {
+  snap.forEach(s => Object.assign(byId(s.id), { stage: s.stage, memo: [...s.memo] }));
+  render();
+}
+let lastSnap = null;
+function showSnack(msg, snap) {
+  lastSnap = snap;
+  const s = $('#snack');
+  $('#snackMsg').innerHTML = msg;
+  $('#undoBtn').hidden = !snap;
+  s.classList.remove('on'); void s.offsetWidth; s.classList.add('on');
+  clearTimeout(snackTimer);
+  snackTimer = setTimeout(() => { s.classList.remove('on'); lastSnap = null; }, 5000);
+}
+$('#undoBtn').onclick = () => {
+  if (!lastSnap) return;
+  const snap = lastSnap; lastSnap = null;
+  // 원래 탭으로 돌아가 복구된 품목을 강조
+  const first = snap[0]; restoreAndFocus(snap, first);
+  api.undo(snap);
+  showSnack('되돌렸어요', null);
+};
+function restoreAndFocus(snap, first) {
+  snap.forEach(s => Object.assign(byId(s.id), { stage: s.stage, memo: [...s.memo] }));
+  if (!inTab(byId(first.id), state.tab)) state.tab = first.stage;
+  state.flash = first.id;
+  render();
+}
+
+const VERB = { approve: it => it.stage === 'review' ? '발주승인 → <b>2단계 약사발주</b>' : '발주완료 → <b>3단계 입고대기</b>' };
+function doAct(act, id) {
+  const it = byId(id), short = esc(it.name.split(' ').slice(0, 2).join(' '));
+  if (act === 'approve') return move([id], i => ({ review: 'order', order: 'inbound' })[i.stage], api.approveOrder, `${short} ${VERB.approve(it)}`);
+  if (act === 'cancel')  return move([id], 'cancel', api.cancelOrder, `${short} 재고있음 → <b>오늘 취소</b>`);
+  if (act === 'soldout') return move([id], 'soldout', api.markSoldout, `${short} → <b>품절보류</b>`);
+  if (act === 'inbound') return move([id], 'done', api.markInboundComplete, `${short} <b>입고완료</b> 처리`);
+  if (act === 'reopen')  return move([id], 'order', ids => api.reopenOrder(ids, 'order'), `${short} → <b>2단계 약사발주</b>`);
+  if (act === 'restore') return move([id], 'review', ids => api.reopenOrder(ids, 'review'), `${short} → <b>1단계 재고검토</b>`);
+}
+
+/* ---- 이벤트 ---- */
+$('#main').addEventListener('click', e => {
+  const g = e.target.closest('[data-goto]'); if (g) return setTab(g.dataset.goto);
+  const host = e.target.closest('[data-id]'); if (!host) return;
+  const id = host.dataset.id;
+  const a = e.target.closest('[data-act]'); if (a) return doAct(a.dataset.act, id);
+  const c = e.target.closest('[data-chip]');
+  if (c) {
+    const it = byId(id), k = c.dataset.chip;
+    it.memo = it.memo.includes(k) ? it.memo.filter(x => x !== k) : [...it.memo, k];
+    c.setAttribute('aria-pressed', it.memo.includes(k));
+    // 표·카드 둘 다 같은 상태로
+    document.querySelectorAll(`[data-id="${id}"] [data-chip="${k}"]`).forEach(b => b.setAttribute('aria-pressed', it.memo.includes(k)));
+    api.updateMemo(id, it.memo);
+  }
+});
+$('#main').addEventListener('change', e => {
+  if (e.target.id === 'ckAll') return toggleAll(e.target.checked);
+  if (!e.target.matches('[data-sel]')) return;
+  const id = e.target.closest('[data-id]').dataset.id;
+  e.target.checked ? state.sel.add(id) : state.sel.delete(id);
+  document.querySelectorAll(`[data-id="${id}"]`).forEach(el => { el.classList.toggle('sel', e.target.checked); const c = el.querySelector('[data-sel]'); if (c) c.checked = e.target.checked; });
+  const rows = list(state.tab), all = rows.every(r => state.sel.has(r.id));
+  const ca = $('#ckAll'); if (ca) ca.checked = all;
+  $('#selAll').textContent = all ? '선택 해제' : '전체 선택';
+  renderBulk();
+});
+function toggleAll(on) { list(state.tab).forEach(r => on ? state.sel.add(r.id) : state.sel.delete(r.id)); render(); }
+$('#selAll').onclick = () => { const rows = list(state.tab); toggleAll(!rows.every(r => state.sel.has(r.id))); };
+$('#bulkX').onclick = () => { state.sel.clear(); render(); };
+$('#bulkGo').onclick = () => {
+  const ids = [...state.sel], n = ids.length;
+  if (state.tab === 'inbound') move(ids, 'done', api.bulkInbound, `${n}건 <b>입고완료</b> 처리`);
+  else move(ids, i => ({ review: 'order', order: 'inbound' })[i.stage], api.bulkApprove, state.tab === 'review' ? `${n}건 발주승인 → <b>2단계</b>` : `${n}건 발주완료 → <b>3단계</b>`);
+};
+
+function setTab(id, focus) {
+  state.tab = id; state.sel.clear(); render();
+  const b = $('#tab-' + id); if (b) { b.scrollIntoView({ block: 'nearest', inline: 'nearest' }); if (focus) b.focus(); }
+}
+$('#tabs').addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if (b) setTab(b.dataset.tab); });
+$('#tabs').addEventListener('keydown', e => {
+  if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+  const ids = TABS.filter(t => t.id).map(t => t.id), k = ids.indexOf(state.tab);
+  setTab(ids[(k + (e.key === 'ArrowRight' ? 1 : ids.length - 1)) % ids.length], true);
+});
+
+const q = $('#q');
+q.addEventListener('input', () => { state.q = q.value; $('#searchBox').classList.toggle('has-q', !!q.value); state.sel.clear(); render(); });
+$('#qClear').onclick = () => { q.value = ''; q.dispatchEvent(new Event('input')); q.focus(); };
+if (!/Mac|iPhone|iPad/.test(navigator.platform)) $('#kbdHint').textContent = 'Ctrl K';
+
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); q.focus(); q.select(); }
+  if (e.key === 'Escape') { if (document.querySelector('.modal.on')) closeModals(); else if (document.activeElement === q && q.value) $('#qClear').click(); }
+});
+
+$('#me').value = state.role;
+$('#me').onchange = e => {
+  state.role = e.target.value;
+  const u = new URL(location.href); u.searchParams.set('me', state.role);
+  try { history.replaceState(null, '', u); } catch (_) {}
+  setTab(ROLES[state.role].tab);
+};
+
+/* ---- 모달 ---- */
+let lastFocus;
+function openModal(m) { lastFocus = document.activeElement; m.classList.add('on'); (m.querySelector('[data-close]')).focus(); }
+function closeModals() { document.querySelectorAll('.modal.on').forEach(m => m.classList.remove('on')); if (lastFocus) lastFocus.focus(); }
+document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m || e.target.closest('[data-close]')) closeModals(); }));
+$('#helpBtn').onclick = () => {
+  const t = TAB[state.tab];
+  $('#helpTtl').textContent = t.label + ' 사용법';
+  $('#helpBody').innerHTML = `<ol>${HELP[state.tab].map(s => `<li>${esc(s)}</li>`).join('')}</ol><div class="tip">단축키: ⌘K 검색 · ←/→ 탭 이동 · Esc 닫기</div>`;
+  openModal($('#helpModal'));
+};
+
+$('#scanBtn').onclick = () => {
+  const pick = ['p2', 'p6', 'p10', 'p18'].map(byId);
+  $('#samples').innerHTML = '<div style="font-size:12px;color:var(--ink-3);font-weight:600">미리보기용 샘플 바코드 (누르면 인식)</div>' +
+    pick.map(i => `<button data-bc="${i.barcode}"><div class="thumb" style="width:28px;height:28px;font-size:12px;background:${i.color}" aria-hidden="true">${esc(i.name[0])}</div><span style="flex:1;min-width:0"><span class="pname" style="display:block;white-space:nowrap">${esc(i.name)}</span><code>${i.barcode}</code></span></button>`).join('');
+  $('#scanMsg').textContent = ''; $('#bc').value = '';
+  openModal($('#scanModal'));
+};
+$('#samples').addEventListener('click', e => { const b = e.target.closest('[data-bc]'); if (b) found(b.dataset.bc); });
+$('#manual').onsubmit = e => { e.preventDefault(); found($('#bc').value.trim()); };
+function found(code) {
+  const it = state.items.find(i => i.barcode === code);
+  if (!it) { $('#scanMsg').textContent = '등록되지 않은 바코드예요: ' + code; return; }
+  closeModals();
+  q.value = it.name; state.q = it.name; $('#searchBox').classList.add('has-q');
+  state.tab = it.stage; state.sel.clear(); state.flash = it.id;
+  render();
+  const el = [...document.querySelectorAll(`[data-id="${it.id}"]`)].find(x => x.offsetParent);
+  if (el) el.scrollIntoView({ block: 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  showSnack(`바코드 인식 · <b>${esc(TAB[it.stage].label)}</b>에서 찾았어요`, null);
+}
+
+/* ---- 동기화 ---- */
+async function sync() {
+  const b = $('#sync'); b.classList.add('busy'); $('#syncTxt').textContent = '동기화 중…';
+  state.items = await api.getAllData();
+  const d = new Date();
+  b.classList.remove('busy'); $('#syncTxt').textContent = `동기화됨 · ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+  render();
+}
+$('#sync').onclick = sync;
+
+state.tab = ROLES[state.role].tab;
+sync();
+</script>
+
+</body>
+</html>
