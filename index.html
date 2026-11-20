@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwoi9z6v">
+  <meta name="ry-build" content="mwoiubwk">
   <!-- 1118 카톡 미리보기 (공유 링크) --><meta property="og:type" content="website"><meta property="og:site_name" content="성수레디영"><meta property="og:title" content="성수레디영 물류앱"><meta property="og:description" content="숙지사항 · 발주 · 입고를 한 곳에서 — 눌러서 물류앱으로 바로 열기 (직원 전용)"><meta property="og:image" content="https://deltoy.github.io/readyyoung/ry-icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:url" content="https://deltoy.github.io/readyyoung/"><meta name="description" content="성수레디영 물류앱 (직원 전용)">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
@@ -5007,6 +5007,18 @@ html:not(#q):not(#w):not(#e) body:not(#r) #globalSearchInput{padding-right:168px
 .ry-scan-cam{position:relative;border-radius:16px;overflow:hidden;background:#101828;aspect-ratio:4/3;margin-bottom:10px}
 .ry-scan.inb1 .ry-scan-cam{aspect-ratio:16/9}
 #scanDim.inb1{z-index:10060}#scanSheet.inb1{z-index:10061}
+/* 1120 바코드로 바로 입고 · 명세서 한꺼번에 대조 (🧪 테스트) */
+.rcv-top{display:grid;gap:8px;margin:0 0 12px}.rcv-go{min-height:72px;border:0;border-radius:16px;background:#155EEF;color:#fff;font-size:19px;font-weight:900;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}.rcv-go small{font-size:12.5px;font-weight:600;opacity:.9}.rcv-rec{min-height:52px;border:1.5px solid #155EEF;border-radius:14px;background:#fff;color:#155EEF;font-size:15px;font-weight:800}.rcv-t{font-style:normal;background:#FEF0C7;color:#93370D;border-radius:999px;padding:1px 7px;font-size:11px;font-weight:800;margin-left:4px}
+.rcv-cnt{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:6px 0 8px}.rcv-cnt b{font-size:17px;color:#155EEF}.rcv-cnt small{font-size:12px;color:#667085}
+.rcv-r{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;background:#ECFDF3;margin-bottom:6px;font-size:14px}.rcv-r>i{font-style:normal;color:#067647;font-weight:900}.rcv-r>span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}.rcv-r small{font-size:12.5px;font-weight:700;color:#667085}.rcv-r small.ok{color:#067647}.rcv-r small.al{color:#175CD3}.rcv-r small.bad{color:#B42318}.rcv-fail,.rcv-already{background:#F2F4F7}.rcv-fail{background:#FEF3F2}
+.rcv-adj{display:flex;align-items:center;gap:4px}.rcv-adj button{width:44px;height:44px;border-radius:12px;border:1px solid #D0D5DD;background:#fff;font-size:20px;font-weight:800}.rcv-adj b{min-width:44px;text-align:center}.rcv-un{min-height:44px;padding:0 12px;border-radius:12px;border:0;background:#101828;color:#fff;font-weight:800;font-size:13px}
+.rcv-box{border:1.5px solid #FDB022;background:#FFFAEB;border-radius:14px;padding:10px 12px;margin:0 0 8px}.rcv-box>b{display:block;font-size:15px;margin-bottom:4px}.rcv-box>span{display:block;font-size:12.5px;color:#93370D;margin-bottom:6px}
+.rcv-ql{display:flex;align-items:center;gap:8px;font-weight:700;margin:4px 0 8px}.rcv-ql input{width:90px;min-height:44px;border:1px solid #D0D5DD;border-radius:10px;padding:0 10px;font-size:16px}
+.rcv-2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.rcv-2 button,.rcv-pk{min-height:52px;border-radius:12px;border:1px solid #D0D5DD;background:#fff;font-weight:800;font-size:14px}.rcv-2 .rcv-b1{background:#155EEF;color:#fff;border:0}.rcv-pk{display:block;width:100%;margin-top:6px;text-align:left;padding:0 12px}
+.rcv-foot{grid-template-columns:1fr 1fr 1fr;margin-top:10px}.rcv-foot b.dot{background:#F04438;color:#fff;border-radius:999px;padding:0 7px}
+.rcv-f{width:100%;min-height:44px;border:1px solid #D0D5DD;border-radius:10px;padding:0 10px;font-size:15px;margin:4px 0 8px}
+.rcv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;max-height:46vh;overflow:auto}.rcv-grid button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px;border-radius:12px;border:1px solid #E4E7EC;background:#fff;min-height:132px}.rcv-grid img,.rcv-grid .inv-noimg{width:72px;height:72px;object-fit:cover;border-radius:8px}.rcv-grid span{font-size:12px;font-weight:700;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.rcv-grid small{font-size:11.5px;color:#667085}
+.rcv-qi{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dashed #FEDF89}.rcv-qi img,.rcv-qi .inv-noimg{width:52px;height:52px;object-fit:cover;border-radius:8px;flex:none}.rcv-qi span{flex:1;min-width:0;display:flex;flex-direction:column}.rcv-qi small{color:#667085;font-size:12px}.rcv-qi button{min-height:44px;padding:0 10px;border-radius:10px;border:1px solid #D0D5DD;background:#fff;font-weight:700;font-size:12.5px}
 .inb1-sr{display:flex;gap:8px;align-items:flex-start}.inb1-sr .inb1-q{flex:1;min-width:0}
 .inb1-bc{flex:none;min-height:42px;padding:0 14px;border-radius:12px;border:0;background:#155EEF;color:#fff;font-weight:700;font-size:14px;white-space:nowrap;cursor:pointer}.inb1-bc:focus-visible{outline:3px solid rgba(21,94,239,.35);outline-offset:2px}
 .inb1-a.inb1-hit{animation:ryInbHit 1.4s ease-out}@keyframes ryInbHit{0%,40%{box-shadow:0 0 0 2px #155EEF inset}100%{box-shadow:0 0 0 0 transparent inset}}@media (prefers-reduced-motion:reduce){.inb1-a.inb1-hit{animation:none;box-shadow:0 0 0 2px #155EEF inset}}
@@ -12542,7 +12554,7 @@ video {
     function renderAllViews() {
       try { var _bm = String(currentSelectedMember || '').trim() !== '문준';   /* 1116 MJ '직원들 폰에서는 부외품 탭이 안 보이게 · 나만' */ ['bwQuick', 'bwEntry'].forEach(function (id) { var e = document.getElementById(id); if (e) e.hidden = _bm; }); } catch (eBq) {}   /* 1109 MJ '전체 물류앱에서 부외품으로도 전환' — 문준만 홈 버튼 줄에 */
       var aeQ = document.activeElement; if (aeQ && /^(m-)?in-qty-/.test(aeQ.id || '') && aeQ.value !== aeQ.defaultValue) { INB_RPEND = 1; return; }   // 1027 입고 수량 입력 중이면 나중에 (inbQtyBlur) · 1029 숫자를 안 고친 칸(방향키로 옮겨 온 칸)은 바로 그림 — 커서는 ryQty 가 지킴
-      try { if (document.getElementById('invDim')) setTimeout(invLive, 0); } catch (eIv) {}   // 1120 입고하기 창 열려 있으면 남은 줄 다시 (다른 사람이 받은 것 빠짐)
+      try { if (document.getElementById('invDim')) setTimeout(invLive, 0); if (RY_SCAN.mode === 'rcv') setTimeout(rcvDraw, 0); } catch (eIv) {}   // 1120 입고하기 창 열려 있으면 남은 줄 다시 (다른 사람이 받은 것 빠짐)
       try { var sn = document.getElementById('satNudge'); if (sn) sn.hidden = new Date(Date.now() + 9 * 3600000).getUTCDay() !== 6; } catch (eSn) {}   // 1001 토요일 안내
       try { ryArrivedNotice(); } catch (eAr) {}
       const pureReviewItems = [];
@@ -15048,7 +15060,7 @@ video {
         + (nFail > 1 && !busyMsg ? '<button type="button" class="inv-retry" style="width:100%;margin:0 0 8px" onclick="invRetryAll()">↻ 못 읽은 ' + nFail + '장 한 번에 다시 읽기</button>' : '');   // 1020 MJ '여러 장 실패하면 한 번에 다시'
       if (INVS.some(function (r) { return r.success; }) && (nLeft || nDone)) head += '<div class="inv-left' + (!nLeft ? ' done' : nLeft <= 3 ? ' hot' : '') + '">' + (!nLeft ? '🎉 주문한 건 다 받았어요!' : nLeft <= 3 ? '🔥 ' + nLeft + '개만 더!' : '📦 남은 ' + nLeft + '개') + (nDone ? '<small>받음 ' + nDone + '개 · 같이 받는 사람 화면도 같이 줄어요</small>' : '') + '</div>';   // 1120 남은 개수 (같이 받는 사람 것도 반영)
       var warnBox = INVS.some(function (r) { return r.success; }) ? '<div class="inv-must">⚠️ 명세서와 앱의 <b>상품 · 수량</b>이 같은지 확인해 주세요</div>' : '';   // 1020 MJ '이름 꼭 확인 후 입고완료 — 강조'
-      var cam = INB1.on ? '<div class="inb1-h">① 명세서 있는 상품</div><div class="inb1-cam"><button type="button" class="inv-go" onclick="invPick(true)"' + (busyMsg ? ' disabled' : '') + '>📷 명세서 찍기' + (INVS.length ? ' (한 장 더)' : '') + '</button><button type="button" class="inv-x" onclick="invPick(false)"' + (busyMsg ? ' disabled' : '') + '>🖼 사진첩 (여러 장)</button></div>' : '';
+      var cam = INB1.on ? (inbTest() ? '<div class="rcv-top"><button type="button" class="rcv-go" onclick="ryScanOpen(\'rcv\')">📷 바코드로 바로 입고<small>찍으면 바로 입고 · 여러 폰 같이 <i class="rcv-t">🧪 테스트</i></small></button>' + (typeof recOpen === 'function' ? '<button type="button" class="rcv-rec" onclick="recOpen()">🧾 명세서 한꺼번에 대조 <i class="rcv-t">🧪</i></button>' : '') + '</div>' : '') + '<div class="inb1-h">① 명세서 있는 상품</div><div class="inb1-cam"><button type="button" class="inv-go" onclick="invPick(true)"' + (busyMsg ? ' disabled' : '') + '>📷 명세서 찍기' + (INVS.length ? ' (한 장 더)' : '') + '</button><button type="button" class="inv-x" onclick="invPick(false)"' + (busyMsg ? ' disabled' : '') + '>🖼 사진첩 (여러 장)</button></div>' : '';
       if (INB1.on && !INVS.length && !busyMsg) secs = '<div class="inb1-empty"><b>📄 명세서가 같이 왔으면 위 [📷 명세서 찍기]</b><span>AI가 읽어서 입고대기 상품과 자동으로 짝지어 체크해요 · 여러 장도 한 번에</span><span>명세서가 없으면 ② 검색만 쓰면 돼요</span></div>';   // 1023 PC 세 칸에서 ① 칸이 비어 보이지 않게
       var sAf = document.activeElement && document.activeElement.id === 'inb1S';
       invShow(head + (INB1.on ? '<div class="inb1-grid"><div class="inb1-c">' + cam + warnBox + secs + '</div>' + inb1Html() + '</div>' : cam + warnBox + secs) + (INB1.on ? '' : '<button type="button" class="inv-alt" style="width:100%;margin:4px 0 8px" onclick="INB1.on = true; inb1Load(); invRender()">＋ 명세서 없이 온 것도 같이 입고</button>') + '<div class="inv-foot"><button type="button" class="inv-okgo" id="invOk" hidden onclick="invDo(1)"></button><button class="inv-x" onclick="invClose()">닫기</button>' + (INB1.on ? '' : '<button class="inv-x" onclick="invPick(true)"' + (busyMsg ? ' disabled' : '') + '>📷 한 장 더</button>') + '<button class="inv-go" id="invGo" onclick="invDo()">입고확인</button></div>');
@@ -15205,8 +15217,8 @@ video {
     }
     function invUndo(row) { var p = INV_PEND[row]; if (!p) return; clearTimeout(p.t); delete INV_PEND[row]; invUndoBar(); invUnrecv(row); showToast('되돌렸어요 · 아직 입고 안 됐어요', 1800); }
     function invFlush() { Object.keys(INV_PEND).forEach(function (k) { var p = INV_PEND[k]; if (p) p.go(); }); }
-    document.addEventListener('visibilitychange', function () { if (document.hidden) invFlush(); });   // 화면을 떠나면 기다리지 않고 바로 보냄
-    setInterval(function () { if (document.getElementById('invDim') && !document.hidden && INVS.some(function (r) { return r.success; }) && inFlight.size === 0 && _loadInFlight === 0) loadAllData(false, true); }, 8000);   // 같이 받는 사람 것 8초마다
+    document.addEventListener('visibilitychange', function () { if (document.hidden) { invFlush(); rcvFlush(); } });   // 화면을 떠나면 기다리지 않고 바로 보냄
+    setInterval(function () { if (document.getElementById('invDim') && !document.hidden && (INVS.some(function (r) { return r.success; }) || RY_SCAN.mode === 'rcv') && inFlight.size === 0 && _loadInFlight === 0) loadAllData(false, true); }, 8000);   // 같이 받는 사람 것 8초마다
     function invLive() { var b = document.getElementById('invBox'), ae = document.activeElement; if (!b || !INVS.some(function (r) { return r.success; }) || INV_BUSY || (ae && b.contains(ae) && /INPUT|TEXTAREA/.test(ae.tagName))) return; var st = b.scrollTop; invRender(); b.scrollTop = st; }
     function invPlanS(r) { return !!r && !r.wrongStore && /플랜에스/.test(String(r.receiver || '').replace(/\s+/g, '')); }   // 1021 MJ: 자회사 플랜에스의원 앞 명세서 — 막지 말고 한 번 더 확인만
     function invDo(okOnly) {   // 1023 근무 중인 사람만 · 1120 okOnly = [나머지 모두 입고] (맞는 것만 · 확인창 없음)
@@ -16163,21 +16175,21 @@ video {
     /* ── 카메라·스캐너 창 (mode 'find' = 검색 · 'inb1' = [📦 입고하기] 안 [📷 바코드] · 'np' = 새 상품 · 'stf' = 직원가) ── */
     var RY_SCAN = { mode: '', stream: null, det: null, timer: 0, last: '', lastT: 0, pick: null };
     function ryScanOpen(mode) {
-      RY_SCAN.mode = mode === 'inb1' || mode === 'np' || mode === 'stf' ? mode : 'find';   /* 1118 'stf' = 직원가 탭 (찍으면 바로 담기, 창은 열린 채) */   /* 1118 'np' = 새 상품 창의 [바코드 찍기] */
-      var sh = document.getElementById('scanSheet'), dm = document.getElementById('scanDim'), ib = RY_SCAN.mode === 'inb1';
+      RY_SCAN.mode = mode === 'inb1' || mode === 'np' || mode === 'stf' || mode === 'rcv' ? mode : 'find';   /* 1120 'rcv' = 바코드로 바로 입고 (테스트) */   /* 1118 'stf' = 직원가 탭 (찍으면 바로 담기, 창은 열린 채) */   /* 1118 'np' = 새 상품 창의 [바코드 찍기] */
+      var sh = document.getElementById('scanSheet'), dm = document.getElementById('scanDim'), ib = RY_SCAN.mode === 'inb1' || RY_SCAN.mode === 'rcv';
       sh.classList.toggle('np', mode === 'np'); dm.classList.toggle('np', mode === 'np');
       sh.classList.toggle('inb1', ib); dm.classList.toggle('inb1', ib);   /* 1119 입고하기 창(z 10050) 위로 */
-      document.getElementById('scanTitle').textContent = ib ? '📷 바코드로 담기' : RY_SCAN.mode === 'stf' ? '직원가 · 바코드로 담기' : '바코드 찍기';
+      document.getElementById('scanTitle').textContent = RY_SCAN.mode === 'rcv' ? '📷 바코드로 바로 입고 🧪' : ib ? '📷 바코드로 담기' : RY_SCAN.mode === 'stf' ? '직원가 · 바코드로 담기' : '바코드 찍기';
       dm.classList.add('on'); sh.classList.add('on'); if (!ib) ryLockScroll(true);   /* 입고하기 창이 이미 잠가 둠 — 여기서 풀면 안 됨 */
       ryScanMsg(ib ? '상품 바코드를 하나씩 찍어 주세요 · 이어서 여러 개 찍고 [닫기] → 수량 적고 [입고확인]' : '상품 바코드를 네모 안에 비춰 주세요');
       var inp = document.getElementById('scanIn'); inp.value = '';
-      RY_SCAN.pick = null; ryScanPickDraw();
+      RY_SCAN.pick = null; ryScanPickDraw(); if (RY_SCAN.mode === 'rcv') { ryScanMsg('상품 바코드를 하나씩 찍어 주세요 · 주문 있는 건 찍는 순간 입고돼요'); RCV.view = ''; rcvDraw(); rcvqLoad(); }
       var coarse = window.matchMedia && matchMedia('(pointer:coarse)').matches;
       if (coarse) ryScanCam(); else { document.getElementById('scanCam').hidden = true; document.getElementById('scanCamBtn').hidden = false; setTimeout(function () { inp.focus(); }, 60); }   /* PC = 스캐너 칸에 커서 · 카메라는 버튼으로 */
     }
     function ryScanClose() {
-      var m = RY_SCAN.mode; ryScanStop();
-      document.getElementById('scanDim').classList.remove('on'); document.getElementById('scanSheet').classList.remove('on'); if (m !== 'inb1') ryLockScroll(false);
+      var m = RY_SCAN.mode; ryScanStop(); if (m === 'rcv') { rcvFlush(); document.getElementById('scanList').innerHTML = ''; }
+      document.getElementById('scanDim').classList.remove('on'); document.getElementById('scanSheet').classList.remove('on'); if (m !== 'inb1' && m !== 'rcv') ryLockScroll(false);
       RY_SCAN.mode = ''; RY_SCAN.pick = null; ryScanPickDraw();
       if (m === 'inb1') inb1ScanFocus(INB1.lastScan);   /* 마지막에 찍은 줄 수량칸으로 (없으면 [바코드] 버튼) */
     }
@@ -16222,6 +16234,7 @@ video {
       var code = ryGtin(raw), now = Date.now();
       if (how === 'cam' && code === RY_SCAN.last && now - RY_SCAN.lastT < 1500) { RY_SCAN.lastT = now; return; }   /* 카메라가 같은 상자를 계속 비추는 동안은 한 번 — 화면에서 1.5초 빠져야 다시 셈 */
       RY_SCAN.last = code; RY_SCAN.lastT = now;
+      if (RY_SCAN.mode === 'rcv') return rcvScan(code);   /* 1120 바로 입고 (테스트) */
       if (RY_SCAN.mode === 'inb1' || (!RY_SCAN.mode && INB1.on && document.getElementById('invDim'))) return inb1Scan(code);   /* 1119 [📦 입고하기] 안 (스캐너는 창 없이도) */
       if (RY_SCAN.mode === 'np') { ryScanClose(); npBcCheck(code); return; }
       if (RY_SCAN.mode === 'stf' || (!RY_SCAN.mode && stfIsOpen())) return stfScan(code);   /* 1118 직원가 탭 (스캐너는 창 없이도) */
@@ -16255,8 +16268,82 @@ video {
       var msg = had ? '이미 담았어요 · ' + nm : !on ? nm + ' — ① 명세서에 이미 있어요' : lv ? '✓ ' + nm + ' · 주문 있음 (주문 ' + (lv.targetQty || '') + (lv.unit || '개') + ')' : '✓ ' + nm + ' · 주문 없음 — 수량을 적어 주세요';
       ryBcBeep(on || had);
       if (on) INB1.lastScan = row;
-      if (RY_SCAN.mode) { ryScanMsg(msg + (on ? ' · 다음 바코드를 찍어 주세요' : ''), !on); var si = document.getElementById('scanIn'); if (si && !matchMedia('(pointer:coarse)').matches) si.focus({ preventScroll: true }); else if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur(); return; }
+      if (RY_SCAN.mode === 'inb1') { ryScanMsg(msg + (on ? ' · 다음 바코드를 찍어 주세요' : ''), !on); var si = document.getElementById('scanIn'); if (si && !matchMedia('(pointer:coarse)').matches) si.focus({ preventScroll: true }); else if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur(); return; }
       showToast(msg, 2400); if (on) inb1ScanFocus(row);
+    }
+    /* ═══ 1120 MJ '바코드로 찍어서 일단 입고 → 나중에 명세서 한꺼번에' (🧪 테스트: 문준 또는 주소 ?inbtest=1 · 끄기 ?inbtest=0)
+       찍으면 입고대기 주문 = 주문 수량으로 바로 입고(5초 안 −/+ · 되돌리기, 화면 떠나면 바로) · 이미 받은 것 = '이미 입고됨 (누구)' · 주문 없는 상품 = [주문 없이 입고] 한 번
+       모르는 바코드·바코드 없는 상품 = 공유 '확인 필요'(사진) 또는 입고대기 사진에서 고르기 ═══ */
+    var INBTEST = (function () { try { var q = location.search; if (/[?&]inbtest=1/.test(q)) localStorage.setItem('ry_inbtest', '1'); if (/[?&]inbtest=0/.test(q)) localStorage.removeItem('ry_inbtest'); return localStorage.getItem('ry_inbtest') === '1'; } catch (e) { return false; } })();
+    function inbTest() { return INBTEST || String(currentSelectedMember || '').trim() === '문준'; }
+    var RCV = { recent: [], q: [], view: '', f: '', unk: '' };
+    function rcvLive() { var o = {}; (cachedInboundItems || []).forEach(function (it) { o[it.rowNumber] = it; }); return o; }
+    function rcvToday() { var td = cachedTodayStr || new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10).replace(/-/g, '.'), o = {}; (cachedHistoryItems || []).forEach(function (h) { if (String(h.inboundDate || '').indexOf(td) === 0 && o[h.rowNumber] == null) o[h.rowNumber] = h; }); return o; }
+    function rcvSay(t, bad) { ryScanMsg(t, bad); ryBcBeep(!bad); }
+    function rcvScan(code) {
+      var hits = ryBcFind(code); if (!hits) { rcvSay('상품 목록 받는 중이에요 · 잠시 뒤 다시 찍어 주세요', true); try { ryCatLoad(true); } catch (e) {} return; }
+      if (!hits.length) { RCV.unk = code; RCV.view = 'unk'; rcvSay('등록 안 된 바코드예요 · 아래에서 골라 주세요', true); return rcvDraw(); }
+      var lv = rcvLive(), w = hits.filter(function (x) { return lv[x.rowNumber]; });
+      if (w.length > 1) { RCV.pick = w; RCV.view = 'pick'; rcvSay('같은 바코드 주문이 ' + w.length + '개예요 · 맞는 걸 눌러 주세요'); return rcvDraw(); }
+      if (w.length === 1) return rcvOne(w[0].rowNumber);
+      var it = hits[0], pe = RCV.recent.filter(function (e) { return e.row === it.rowNumber && /pend|ok/.test(e.st); })[0], td = rcvToday()[it.rowNumber];
+      if (pe || (td && !td.isLog)) { RCV.unord = it; RCV.view = 'unord'; rcvSay('이미 입고됨 (' + ((pe ? currentSelectedMember : td.inboundManager) || '') + ') · ' + String(it.name).split('\n')[0].slice(0, 20) + ' · 더 온 거면 아래 [주문 없이 입고]', true); return rcvDraw(); }
+      RCV.unord = it; RCV.view = 'unord'; rcvSay('주문 없는 상품이에요 · 수량 확인하고 [주문 없이 입고]'); rcvDraw();
+    }
+    function rcvOne(row) {
+      var it = rcvLive()[row]; if (!it) { rcvSay('이미 입고됐어요', true); return; }
+      if (RCV.recent.some(function (e) { return e.row === row && e.st === 'pend'; })) { rcvSay('방금 찍었어요 · 수량이 다르면 −/+', true); return; }
+      var me = currentSelectedMember || '', oq = parseInt(it.targetQty, 10) || 1;
+      var e = { row: row, full: it.name, nm: String(it.name).split('\n')[0], oq: oq, q: oq, u: it.unit || '개', st: 'pend', id: Date.now() + Math.random() };
+      e.dp = dutyFree(me) || (DUTY_OK[me] && Date.now() - DUTY_OK[me] < 300000) ? Promise.resolve(true) : new Promise(function (res) { google.script.run.withSuccessHandler(function (r) { if (r && r.success === false && r.message) res(false); else { DUTY_OK[me] = Date.now(); res(true); } }).withFailureHandler(function () { res(true); }).inboundDutyCheck(me); });
+      RCV.recent.unshift(e); RCV.recent = RCV.recent.slice(0, 30); RCV.view = ''; e.t = setTimeout(function () { rcvCommit(e); }, 5000);
+      rcvSay('✓ ' + e.nm.slice(0, 22) + ' · ' + oq + e.u + ' 입고'); rcvDraw();
+    }
+    function rcvAdj(id, d) { var e = RCV.recent.filter(function (x) { return x.id === id; })[0]; if (!e || e.st !== 'pend') return; e.q = Math.max(1, e.q + d); clearTimeout(e.t); e.t = setTimeout(function () { rcvCommit(e); }, 5000); rcvDraw(); }
+    function rcvUndo(id) { var e = RCV.recent.filter(function (x) { return x.id === id; })[0]; if (!e || e.st !== 'pend') return; clearTimeout(e.t); e.st = 'undo'; rcvDraw(); showToast('되돌렸어요 · 입고 안 됐어요', 1800); }
+    function rcvFlush() { RCV.recent.forEach(function (e) { if (e.st === 'pend') { clearTimeout(e.t); rcvCommit(e); } }); }
+    function rcvCommit(e) {
+      if (e.st !== 'pend') return; e.st = 'send'; rcvDraw();
+      e.dp.then(function (ok) {
+        if (!ok) { e.st = 'fail'; e.msg = '근무 시간이 아니에요'; rcvDraw(); return; }
+        var done = function (ok2, msg) { e.st = ok2 ? (msg ? 'already' : 'ok') : 'fail'; e.msg = msg || ''; rcvDraw(); };
+        if (e.q === e.oq) completeInbound(e.row, true, done, true, '바코드');
+        else google.script.run.withSuccessHandler(function (x) { done(!!(x && x.success), x && x.already ? x.message : x && !x.success ? x.message : ''); setTimeout(function () { try { loadAllData(true, true, true); } catch (er) {} }, 1200); }).withFailureHandler(function (er) { done(false, String(er && er.message || er)); }).partialInbound(e.row, e.full, e.q, currentSelectedMember, '', null, '바코드');
+      });
+    }
+    function rcvUnordGo() {
+      var it = RCV.unord, qi = document.getElementById('rcvUq'), q = parseInt(qi && qi.value, 10) || 0; if (!it) return; if (!(q > 0)) { rcvSay('몇 개 왔는지 적어 주세요', true); return; }
+      var nm = String(it.name).split('\n')[0], e = { row: it.rowNumber, nm: nm, q: q, u: '개', st: 'send', unord: 1, id: Date.now() };
+      RCV.recent.unshift(e); RCV.unord = null; RCV.view = ''; rcvDraw();
+      google.script.run.withSuccessHandler(function (r) { e.st = r && r.success ? 'ok' : 'fail'; e.msg = r && !r.success ? r.message || '' : ''; rcvDraw(); setTimeout(function () { try { loadAllData(true, true, true); } catch (er) {} }, 1500); }).withFailureHandler(function (er) { e.st = 'fail'; e.msg = String(er && er.message || er); rcvDraw(); })
+        .quickInbound({ name: nm, row: it.rowNumber, qty: q, reason: '바코드 입고', custom: false, photo: '', isNew: false, prodPhoto: '' }, currentSelectedMember);
+    }
+    function rcvqLoad() { if (typeof google === 'undefined' || !google.script || typeof google.script.run.rcvqList !== 'function') return; google.script.run.withSuccessHandler(function (r) { RCV.q = (r && r.items) || []; rcvDraw(); }).withFailureHandler(function () {}).rcvqList(); }
+    function rcvqPhoto(code) {
+      var f = document.createElement('input'); f.type = 'file'; f.accept = 'image/*'; f.setAttribute('capture', 'environment'); f.style.display = 'none';
+      f.onchange = function () { var x = f.files && f.files[0]; f.remove(); if (!x) return; resizeImageFile(x, 360, 0.6).then(function (u) { rcvqPut(code, u); }, function () { rcvqPut(code, ''); }); };
+      document.body.appendChild(f); f.click();
+    }
+    function rcvqPut(code, photo) { var qi = document.getElementById('rcvQq'), q = parseInt(qi && qi.value, 10) || 1; RCV.view = ''; rcvSay('확인 필요에 넣었어요 · 문준님이 정리해요');
+      google.script.run.withSuccessHandler(function (r) { if (!r || !r.success) showToast('못 넣었어요: ' + ((r && r.message) || ''), 3000); rcvqLoad(); }).withFailureHandler(function () { showToast('못 넣었어요 · 다시', 2500); }).rcvqAdd(currentSelectedMember, { code: code || '', qty: q, photo: photo, note: '' }); }
+    function rcvqDone(id, how) { google.script.run.withSuccessHandler(function (r) { if (!r || !r.success) showToast((r && r.message) || '처리 못 했어요', 2600); rcvqLoad(); }).withFailureHandler(function () {}).rcvqDone(currentSelectedMember, id, how); }
+    function rcvDraw() {
+      var b = document.getElementById('scanList'); if (!b || RY_SCAN.mode !== 'rcv') return; var ae = document.activeElement; if (ae && b.contains(ae) && ae.tagName === 'INPUT') return;
+      var lv = rcvLive(), h = ''; RCV.recent.forEach(function (e) { if (!e.unord && /pend|send|ok|already/.test(e.st)) delete lv[e.row]; });   // 방금 찍은 건 바로 빼고 셈
+      var nL = Object.keys(lv).length, tdN = Object.keys(rcvToday()).length;
+      h += '<div class="rcv-cnt"><b>' + (nL <= 3 && nL ? '🔥 ' + nL + '개만 더!' : '📦 입고대기 ' + nL + '개') + '</b><small>오늘 받은 것 ' + tdN + '개 · 같이 받는 폰 것도 같이 줄어요</small></div>';
+      if (RCV.view === 'unk') h += '<div class="rcv-box"><b>❓ 앱에 없는 바코드 · ' + escapeHtml(RCV.unk) + '</b><label class="rcv-ql">몇 개 <input id="rcvQq" type="number" inputmode="numeric" min="1" value="1"></label><div class="rcv-2"><button type="button" class="rcv-b1" onclick="rcvqPhoto(RCV.unk)">📷 사진 찍고 확인 필요에</button><button type="button" onclick="RCV.view=\'photos\'; rcvDraw()">📋 입고대기 사진에서 고르기</button></div></div>';
+      if (RCV.view === 'unord' && RCV.unord) h += '<div class="rcv-box"><b>' + escapeHtml(String(RCV.unord.name).split('\n')[0]) + '</b><span>입고대기 주문이 없어요</span><label class="rcv-ql">몇 개 <input id="rcvUq" type="number" inputmode="numeric" min="1" value="1"></label><div class="rcv-2"><button type="button" class="rcv-b1" onclick="rcvUnordGo()">주문 없이 입고</button><button type="button" onclick="RCV.view=\'\'; RCV.unord=null; rcvDraw()">아니에요</button></div></div>';
+      if (RCV.view === 'pick') h += '<div class="rcv-box"><b>같은 바코드 주문 · 맞는 걸 눌러요</b>' + (RCV.pick || []).map(function (it) { return '<button type="button" class="rcv-pk" onclick="RCV.view=\'\'; rcvOne(' + it.rowNumber + ')">' + escapeHtml(String(it.name).split('\n')[0]) + '</button>'; }).join('') + '</div>';
+      h += RCV.recent.filter(function (e) { return e.st !== 'undo'; }).slice(0, 8).map(function (e) {
+        var st = e.st === 'pend' ? '<span class="rcv-adj"><button type="button" aria-label="하나 빼기" onclick="rcvAdj(' + e.id + ',-1)">−</button><b>' + e.q + e.u + '</b><button type="button" aria-label="하나 더" onclick="rcvAdj(' + e.id + ',1)">＋</button></span><button type="button" class="rcv-un" onclick="rcvUndo(' + e.id + ')">되돌리기</button>'
+          : e.st === 'send' ? '<small>보내는 중…</small>' : e.st === 'ok' ? '<small class="ok">✓ ' + e.q + e.u + (e.unord ? ' 주문 없이' : '') + ' 입고</small>' : e.st === 'already' ? '<small class="al">ⓘ ' + escapeHtml(e.msg) + '</small>' : '<small class="bad">⚠ 안 됨 ' + escapeHtml(e.msg || '') + '</small>';
+        return '<div class="rcv-r rcv-' + e.st + '"><i>' + (e.st === 'fail' ? '⚠' : '✓') + '</i><span>' + escapeHtml(e.nm.slice(0, 30)) + '</span>' + st + '</div>'; }).join('');
+      if (RCV.view === 'photos') { var f = String(RCV.f || '').replace(/\s+/g, '').toLowerCase(), its = Object.keys(lv).map(function (k) { return lv[k]; }).filter(function (it) { return !f || String(it.name).replace(/\s+/g, '').toLowerCase().indexOf(f) >= 0; }).slice(0, 60);
+        h += '<div class="rcv-box"><b>📋 바코드 없는 상품 · 눌러서 입고</b><input type="search" class="rcv-f" placeholder="이름으로 좁히기" value="' + escapeHtml(RCV.f || '') + '" oninput="RCV.f=this.value; var a=this; setTimeout(function(){ a.blur(); rcvDraw(); var n=document.querySelector(\'.rcv-f\'); if(n){n.focus(); n.setSelectionRange(n.value.length,n.value.length);} },0)"><div class="rcv-grid">' + its.map(function (it) { var im = invImgOf(it); return '<button type="button" onclick="rcvOne(' + it.rowNumber + ')">' + (im ? '<img src="' + escapeHtml(im) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : '<i class="inv-noimg">📦</i>') + '<span>' + escapeHtml(String(it.name).split('\n')[0]) + '</span><small>' + escapeHtml(String(it.targetQty || '') + (it.unit || '개')) + '</small></button>'; }).join('') + '</div></div>'; }
+      if (RCV.view === 'queue') h += '<div class="rcv-box"><b>❓ 확인 필요 ' + RCV.q.length + '개 · 같이 봐요</b>' + (RCV.q.length ? RCV.q.map(function (q) { return '<div class="rcv-qi">' + (q.photo ? '<img src="' + escapeHtml(q.photo) + '" alt="">' : '<i class="inv-noimg">❓</i>') + '<span><b>' + escapeHtml(q.code || '바코드 없음') + ' · ' + q.qty + '개</b><small>' + escapeHtml(q.t.slice(5) + ' ' + q.by) + '</small></span>' + (String(currentSelectedMember).trim() === '문준' || q.by === currentSelectedMember ? '<button type="button" onclick="rcvqDone(\'' + q.id + '\', \'처리\')">처리 끝</button><button type="button" onclick="rcvqDone(\'' + q.id + '\', \'반품\')">반품</button>' : '') + '</div>'; }).join('') + '<div class="inv-n">새 상품은 첫 화면 [+ 새 상품]에서 바코드를 넣어 등록하고 [처리 끝]</div>' : '<div class="inv-n">비어 있어요 👍</div>') + '</div>';
+      h += '<div class="rcv-2 rcv-foot"><button type="button" onclick="RCV.view = RCV.view === \'photos\' ? \'\' : \'photos\'; rcvDraw()">📋 바코드 없는 상품</button><button type="button" onclick="RCV.view = RCV.view === \'queue\' ? \'\' : \'queue\'; rcvqLoad(); rcvDraw()">❓ 확인 필요 <b class="' + (RCV.q.length ? 'dot' : '') + '">' + RCV.q.length + '</b></button><button type="button" onclick="rcvqPhoto(\'\')">📷 모르는 상품</button></div>';
+      b.innerHTML = h;
     }
     function inb1ScanFocus(row) {   /* 그 줄 수량칸에 커서 + 잠깐 파란 테두리 */
       var k = -1; INB1.add.forEach(function (a, j) { if (a.row === row) k = j; });
@@ -16274,7 +16361,7 @@ video {
       if (e.key !== 'Enter' || RY_INBW.s.length < 8 || !ryIsBc(RY_INBW.s)) return;
       var code = RY_INBW.s; RY_INBW.s = ''; e.preventDefault(); e.stopImmediatePropagation();
       a.value = RY_INBW.v0; a.dispatchEvent(new Event('input', { bubbles: true }));
-      inb1Scan(ryGtin(code));
+      if (RY_SCAN.mode === 'rcv') rcvScan(ryGtin(code)); else inb1Scan(ryGtin(code));
     }, true);
     /* 입고내역 배지: 어떻게 입고됐는지 (바코드 · 명세서 · 직접) */
     function ryHowChip(item) {
