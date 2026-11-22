@@ -32,7 +32,7 @@
     /* 1122 MJ '말풍선 왜 이렇게 길어졌어' → 글자 길이만큼(fit-content) · D4 말풍선 → 헤더 아래 한 줄 (계속 보이는 응원 줄, 말 바뀔 때만 톡) */
     'html body header.ry25-top{position:relative}',
     'html body #ryHeatSay.s1-in{position:absolute!important;left:12px!important;top:calc(100% + 2px)!important;display:none!important;visibility:visible!important;opacity:1!important;transform:none;width:fit-content!important;max-width:calc(100% - 24px)!important;padding:5px 12px!important;margin:0;border-radius:999px!important;box-shadow:0 4px 14px rgba(17,24,39,.12)!important;pointer-events:none;z-index:40!important}',
-    'html body #ryHeatSay.s1-in.s1-show{display:block!important}',
+    'html body #ryHeatSay{display:none!important}',   /* 1122 16:47 MJ '로고가 얘기하는 건 그만해도 될 거 같아 · 계속 하니까 별로' → 말풍선 끔(춤·폭죽은 그대로) */
     'html body #ryHeatSay.s1-in.s1-off{display:none!important}',
     'html body #ryHeatSay.s1-in.in{animation:s1Pop .35s cubic-bezier(.2,1.5,.4,1)}',
     '@keyframes s1Pop{from{transform:scale(.92)}to{transform:none}}',
