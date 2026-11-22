@@ -30,7 +30,7 @@
     '@keyframes s1Pulse{50%{transform:scale(.55);opacity:.5}}',
     '@media(prefers-reduced-motion:reduce){#loading.s1-dot::before{animation:none!important}}',
     /* D4 말풍선 → 헤더 아래 한 줄 (계속 보이는 응원 줄, 말 바뀔 때만 톡) */
-    'html body #ryHeatSay.s1-in{position:relative!important;left:auto!important;top:auto!important;display:block!important;visibility:visible!important;opacity:1!important;transform:none;width:-moz-fit-content;width:fit-content;max-width:100%!important;margin:0;box-shadow:none!important;pointer-events:none;z-index:auto!important}',
+    'html body #ryHeatSay.s1-in{position:relative!important;left:auto!important;top:auto!important;display:block!important;visibility:visible!important;opacity:1!important;transform:none;width:auto;max-width:none!important;padding:6px 12px!important;margin:0;box-shadow:none!important;pointer-events:none;z-index:auto!important}',
     'html body #ryHeatSay.s1-in.s1-off{display:none!important}',
     'html body #ryHeatSay.s1-in.in{animation:s1Pop .35s cubic-bezier(.2,1.5,.4,1)}',
     '@keyframes s1Pop{from{transform:scale(.92)}to{transform:none}}',
@@ -46,7 +46,7 @@
     '@media(prefers-reduced-motion:reduce){html:not(#q):not(#w):not(#e):not(#s1) body:not(#r) *,html:not(#q):not(#w):not(#e):not(#s1) body:not(#r) *::before,html:not(#q):not(#w):not(#e):not(#s1) body:not(#r) *::after{animation-iteration-count:1!important}}',
     'html body .sd-ln-sep{color:var(--ry-ink-3)!important;opacity:.55}',
     'html.s1 input,html.s1 select,html.s1 textarea{font-size:16px!important}',   /* 아이폰 입력칸 확대 막기 */
-    '@media(max-width:600px){html body #ryTopPops.s1-in:not(.force) .tp-txt p{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;margin:0}html body #ryTopPops.s1-in:not(.force) .tp-txt{flex:1;min-width:0}html body #ryTopPops.s1-in:not(.force) .tp-txt .t{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}',
+    '@media(max-width:600px){html body #ryTopPops.s1-in:not(.force)>div{padding:8px 8px 8px 12px!important}html body #ryTopPops.s1-in:not(.force) .tp-txt p{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;margin:0}html body #ryTopPops.s1-in:not(.force) .tp-txt{flex:1;min-width:0}html body #ryTopPops.s1-in:not(.force) .tp-txt .t{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}',
     '@media(min-width:601px){html body .sc-sets:has(>:nth-child(4):last-child),html body .sc-charts:has(>:nth-child(4):last-child){grid-template-columns:repeat(2,minmax(0,1fr))!important}}'
   ].join('\n');
   var st = D.createElement('style'); st.id = 'ryS1'; st.textContent = css; D.head.appendChild(st);
