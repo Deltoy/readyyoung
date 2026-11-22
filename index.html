@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwrghvps">
+  <meta name="ry-build" content="mwrgtpbm">
   <!-- 1118 카톡 미리보기 (공유 링크) --><meta property="og:type" content="website"><meta property="og:site_name" content="성수레디영"><meta property="og:title" content="성수레디영 물류앱"><meta property="og:description" content="숙지사항 · 발주 · 입고를 한 곳에서 — 눌러서 물류앱으로 바로 열기 (직원 전용)"><meta property="og:image" content="https://deltoy.github.io/readyyoung/ry-icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:url" content="https://deltoy.github.io/readyyoung/"><meta name="description" content="성수레디영 물류앱 (직원 전용)">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
@@ -5021,7 +5021,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) #globalSearchInput{padding-right:168px
 .rec-b{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.rec-b button{min-height:46px;padding:0 14px;border-radius:12px;border:1px solid #D0D5DD;background:#fff;font-weight:800;font-size:13.5px}.rec-b button.p{background:#155EEF;color:#fff;border:0}
 .rec-pick input{width:100%;min-height:44px;border:1px solid #D0D5DD;border-radius:10px;padding:0 10px;margin-top:6px;font-size:15px}.rec-opts button{display:block;width:100%;text-align:left;min-height:44px;padding:6px 10px;border:0;border-bottom:1px solid #F2F4F7;background:#fff;font-weight:700;font-size:13.5px}.rec-opts small{display:block;color:#667085;font-weight:600}
 /* 1120 바코드로 바로 입고 · 명세서 한꺼번에 대조 (🧪 테스트) */
-.rcv-top{display:grid;gap:8px;margin:0 0 12px}.rcv-go{min-height:72px;border:0;border-radius:16px;background:#155EEF;color:#fff;font-size:19px;font-weight:900;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}.rcv-go small{font-size:12.5px;font-weight:600;opacity:.9}.rcv-rec{min-height:52px;border:1.5px solid #155EEF;border-radius:14px;background:#fff;color:#155EEF;font-size:15px;font-weight:800}.rcv-new{width:100%;min-height:44px;margin:8px 0 2px;border:1.5px dashed #155EEF;border-radius:12px;background:#fff;color:#155EEF;font-size:14.5px;font-weight:800}.rcv-nh{display:block;font-size:12px;color:#5f6672}.rcv-t{font-style:normal;background:#FEF0C7;color:#93370D;border-radius:999px;padding:1px 7px;font-size:11px;font-weight:800;margin-left:4px}
+.rcv-top{display:grid;gap:8px;margin:0 0 12px}.rcv-go{min-height:72px;border:0;border-radius:16px;background:#155EEF;color:#fff;font-size:19px;font-weight:900;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}.rcv-go small{font-size:12.5px;font-weight:600;opacity:.9}.rcv-rec{min-height:52px;border:1.5px solid #155EEF;border-radius:14px;background:#fff;color:#155EEF;font-size:15px;font-weight:800}body.np-hi #npDim{z-index:10070}body.np-hi #npSheet{z-index:10071}.rcv-new{width:100%;min-height:44px;margin:8px 0 2px;border:1.5px dashed #155EEF;border-radius:12px;background:#fff;color:#155EEF;font-size:14.5px;font-weight:800}.rcv-nh{display:block;font-size:12px;color:#5f6672}.rcv-t{font-style:normal;background:#FEF0C7;color:#93370D;border-radius:999px;padding:1px 7px;font-size:11px;font-weight:800;margin-left:4px}
 .rcv-cnt{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:6px 0 8px}.rcv-cnt b{font-size:17px;color:#155EEF}.rcv-cnt small{font-size:12px;color:#667085}
 .rcv-r{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;background:#ECFDF3;margin-bottom:6px;font-size:14px}.rcv-r>i{font-style:normal;color:#067647;font-weight:900}.rcv-r>span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}.rcv-r small{font-size:12.5px;font-weight:700;color:#667085}.rcv-r small.ok{color:#067647}.rcv-r small.al{color:#175CD3}.rcv-r small.bad{color:#B42318}.rcv-fail,.rcv-already{background:#F2F4F7}.rcv-fail{background:#FEF3F2}
 .rcv-adj{display:flex;align-items:center;gap:4px}.rcv-adj button{width:44px;height:44px;border-radius:12px;border:1px solid #D0D5DD;background:#fff;font-size:20px;font-weight:800}.rcv-adj b{min-width:44px;text-align:center}.rcv-un{min-height:44px;padding:0 12px;border-radius:12px;border:0;background:#101828;color:#fff;font-weight:800;font-size:13px}
@@ -11434,6 +11434,7 @@ video {
     function closeNewProduct() {
       document.getElementById('npDim').classList.remove('on');
       document.getElementById('npSheet').classList.remove('on');
+      if (document.body.classList.contains('np-hi')) { document.body.classList.remove('np-hi'); setTimeout(function () { ryScanOpen('rcv'); setTimeout(function () { var m = document.getElementById('scanMsg'); if (RY_SCAN.mode === 'rcv' && m && !m.classList.contains('bad')) ryScanMsg('등록했으면 그 바코드를 다시 찍어 주세요 → [주문 없이 입고]', false); }, 1200); }, 300); }   /* 1122 바코드 바로 입고에서 연 새 상품 창 → 닫으면 다시 찍기 화면 */
     }
     function saveNewProduct() {
       var name = document.getElementById('npName').value.trim();
@@ -16337,7 +16338,7 @@ video {
       f.onchange = function () { var x = f.files && f.files[0]; f.remove(); if (!x) return; resizeImageFile(x, 360, 0.6).then(function (u) { rcvqPut(code, u); }, function () { rcvqPut(code, ''); }); };
       document.body.appendChild(f); f.click();
     }
-    function rcvNew() { var c = RCV.unk; RCV.view = ''; ryScanClose(); openNewProduct('', c, { noReq: true }); }   /* 1122 전 직원 시험 — 모르는 바코드 → 새 상품 등록(주문 요청 안 함, 1118 바코드 새 상품 창) */
+    function rcvNew() { var c = RCV.unk; RCV.view = ''; ryScanClose(); document.body.classList.add('np-hi'); openNewProduct('', c, { noReq: true }); }   /* 1122 전 직원 시험 — 모르는 바코드 → 새 상품 등록(주문 요청 안 함, 1118 바코드 새 상품 창) */
     function rcvqPut(code, photo) { var qi = document.getElementById('rcvQq'), q = parseInt(qi && qi.value, 10) || 1; RCV.view = ''; rcvSay('확인 필요에 넣었어요 · 문준님이 정리해요');
       google.script.run.withSuccessHandler(function (r) { if (!r || !r.success) showToast('못 넣었어요: ' + ((r && r.message) || ''), 3000); rcvqLoad(); }).withFailureHandler(function () { showToast('못 넣었어요 · 다시', 2500); }).rcvqAdd(currentSelectedMember, { code: code || '', qty: q, photo: photo, note: '' }); }
     function rcvqDone(id, how) { google.script.run.withSuccessHandler(function (r) { if (!r || !r.success) showToast((r && r.message) || '처리 못 했어요', 2600); rcvqLoad(); }).withFailureHandler(function () {}).rcvqDone(currentSelectedMember, id, how); }

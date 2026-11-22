@@ -173,27 +173,28 @@
      자료 = 이미 홈이 받는 SC.data(getSetChallenge, 4.5초 뒤·캐시 ry_sc) 그대로 — 새 서버 호출 없음. 누르면 📊 판매 목표(slOpen). */
   var hgCss = [
     '#ryHG{display:block;width:100%;text-align:left;font:inherit;color:#111827;background:#fff;border:1px solid #EDEEF0;border-radius:20px;padding:12px 14px;margin:0;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s ease}',
-    '#ryHG:active{transform:scale(.985)}#ryHG:focus-visible{outline:2px solid ' + BR + ';outline-offset:2px}',
+    '#ryHG[hidden]{display:none!important}#ryHG span{display:block}#ryHG:active{transform:scale(.985)}#ryHG:focus-visible{outline:2px solid ' + BR + ';outline-offset:2px}',
     '#ryHG .hg-h{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600;margin-bottom:8px}',
-    '#ryHG .hg-h small{font-size:13px;font-weight:600;color:#5F6672;margin-left:auto;white-space:nowrap}',
-    '#ryHG .hg-h i{font-style:normal;color:#5F6672;font-size:15px}',
+        '#ryHG .hg-h i{font-style:normal;color:' + BR + ';font-size:13px;font-weight:600;margin-left:auto;white-space:nowrap}',
+    '#ryHG .hg-c{display:flex;gap:8px;font-size:12px;font-weight:600;color:#5F6672}#ryHG .hg-c b{margin-left:auto;font-weight:600;white-space:nowrap}#ryHG .hg-c b.ok{color:#067647}#ryHG .hg-c b.lag{color:#B54708}',
     '#ryHG .hg-b{display:grid;grid-template-columns:64px 1fr;gap:12px;align-items:center}',
     '#ryHG .hg-r{position:relative;width:64px;height:64px}#ryHG .hg-r svg{display:block;width:64px;height:64px;transform:rotate(-90deg)}',
     '#ryHG .hg-r circle{fill:none;stroke-width:3.6}#ryHG .hg-r .bg{stroke:#EDEEF0}#ryHG .hg-r .fg{stroke-linecap:round;transition:stroke-dasharray .9s cubic-bezier(.2,.8,.2,1)}',
     '#ryHG .hg-r b{position:absolute;inset:0;display:grid;place-content:center;text-align:center;font-size:15px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums}',
     '#ryHG .hg-r b small{display:block;font-size:12px;font-weight:600;color:#5F6672}',
     '#ryHG .hg-s{display:grid;gap:6px;min-width:0}',
-    '#ryHG .hg-l{display:grid;grid-template-columns:minmax(0,92px) 1fr auto;gap:8px;align-items:center;font-size:12px}',
+    '#ryHG .hg-l{display:grid;grid-template-columns:48px 1fr 64px;gap:8px;align-items:center;font-size:13px}',
     '#ryHG .hg-l span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#344054;font-weight:600}',
-    '#ryHG .hg-l em{font-style:normal;font-weight:600;color:#344054;font-variant-numeric:tabular-nums;text-align:right;min-width:44px}#ryHG .hg-l em.ok{color:#067647}',
-    '#ryHG .hg-bar{height:8px;border-radius:999px;background:#F5F6F8;overflow:hidden}#ryHG .hg-bar i{display:block;height:100%;border-radius:999px;transform-origin:left;transition:width .9s cubic-bezier(.2,.8,.2,1)}',
+    '#ryHG .hg-l em{font-style:normal;font-weight:600;color:#344054;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}#ryHG .hg-l em.ok{color:#067647}',
+    '#ryHG .hg-bar{height:8px;border-radius:999px;background:#EDEEF0;overflow:hidden}#ryHG .hg-bar i{display:block;width:100%;height:100%;border-radius:999px;transform-origin:left;transition:transform .9s cubic-bezier(.2,.8,.2,1)}',
     '#ryHG .hg-f{display:flex;align-items:center;gap:8px;margin-top:10px;min-height:36px;border-radius:12px;background:#FFF4ED;padding:6px 12px;font-size:13px;font-weight:600;color:#B54708}',
-    '#ryHG .hg-f small{margin-left:auto;font-size:12px;font-weight:600;color:#B54708;white-space:nowrap}',
+    '#ryHG .hg-f>span{flex:1;min-width:0}#ryHG .hg-f small{margin-left:auto;font-size:12px;font-weight:600;color:#5F6672;white-space:nowrap}',
     '#ryHG .hg-f.win{background:#ECFDF3;color:#067647}#ryHG .hg-f.win small{color:#067647}#ryHG .hg-f.idle{background:#F5F6F8;color:#344054}#ryHG .hg-f.idle small{color:#5F6672}',
     '#ryHG .hg-f.near b{display:inline-block;animation:hgPop .5s cubic-bezier(.2,1.5,.4,1) 2}',
     '#ryHG .hg-me{margin-top:6px;font-size:12px;font-weight:600;color:' + BR + '}',
-    '@keyframes hgPop{50%{transform:scale(1.12)}}',
-    '@media(min-width:900px){#ryHG .hg-s{grid-template-columns:1fr 1fr;column-gap:20px}}',
+    '#ryHG .hg-l.ok .hg-bar{opacity:.5}#ryHG .hg-l.hot>span:first-child{color:#B54708}#ryHG .hg-l.hot .hg-bar{animation:hgGlow 1.2s ease-in-out 3}',
+    '@keyframes hgPop{50%{transform:scale(1.12)}}@keyframes hgGlow{50%{opacity:.6}}',
+    '@media(min-width:900px){#ryHG .hg-s{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));column-gap:24px}}',
     '@media(prefers-reduced-motion:reduce){#ryHG,#ryHG *{transition:none!important;animation:none!important}}'
   ].join('\n');
   var hgSt = D.createElement('style'); hgSt.id = 'ryHGcss'; hgSt.textContent = hgCss; D.head.appendChild(hgSt); try { hgSt.sheet.__us = 1; } catch (e) {}
@@ -202,14 +203,14 @@
     if (typeof SC === 'undefined' || typeof scUse !== 'function') return null;
     if (!SC.data) { try { var c0 = JSON.parse(localStorage.getItem('ry_sc') || 'null'); if (c0 && c0.cfg) SC.data = c0; } catch (e) {} }
     var Dd = SC.data, w = Dd && Dd.cfg && Dd.cfg.weeks ? scUse() : null, t = Dd && Dd.today; if (!w || !t) return null;
-    var sum = 0, G = 0, rows = [];
+    var sum = 0, G = 0, rows = [], pS = 0, pE = 0;
     SC_SETS.forEach(function (s) {
-      var days = scDaysOf(w, s.k), wg = scWG(w, s.k); G += wg; days.forEach(function (d) { if (d <= t) sum += scV(d, s.k) || 0; });
+      var days = scDaysOf(w, s.k), wg = scWG(w, s.k); G += wg; days.forEach(function (d) { if (d <= t) sum += scV(d, s.k) || 0; if (d < t) { pS += scV(d, s.k) || 0; pE += wg / days.length; } });
       var g = scGoal(Dd.cfg, t, s.k); if (g > 0) { var v = scV(t, s.k) || 0; rows.push({ label: String(s.label || '').replace(/\s*\(.*\)\s*$/, ''), sh: typeof scShort === 'function' ? scShort(s.label) : s.label, c: s.c, v: v, g: g, ok: v >= g }); }
     });
     if (!rows.length && !G) return null;
     var open = rows.filter(function (r) { return !r.ok; }).sort(function (a, b) { return (a.g - a.v) - (b.g - b.v); });
-    return { wp: G ? Math.round(sum / G * 100) : 0, rows: rows, near: open[0] || null, rem: open.reduce(function (a, r) { return a + r.g - r.v; }, 0), done: rows.length - open.length, n: rows.length, any: rows.some(function (r) { return r.v > 0; }) };
+    return { lag: pE >= 1 ? Math.round(pE - pS) : null, wp: G ? Math.round(sum / G * 100) : 0, rows: rows, near: open[0] || null, rem: open.reduce(function (a, r) { return a + r.g - r.v; }, 0), done: rows.length - open.length, n: rows.length, any: rows.some(function (r) { return r.v > 0; }) };
   }
   function hgMine() {   // 지금 시간대 세트 담당이 나면 true
     try { var t = sdToday(), sl = sdNowSlot(), me = currentSelectedMember; return !!(t && sl && me && t[sl] && (t[sl].cn === me || t[sl].jp === me)); } catch (e) { return false; }
@@ -217,26 +218,25 @@
   function hgRender() {
     var mn = slot(); if (!mn) return;
     var el = D.getElementById('ryHG'), x = hgData();
-    if (!x) { if (el) el.hidden = true; return; }
+    if (!x) { if (el) el.hidden = true; return; }   // 이번 목표 없으면 숨김
     if (!el) { el = D.createElement('button'); el.type = 'button'; el.id = 'ryHG'; el.onclick = function () { try { slOpen(); } catch (e) {} }; }
-    hgSpot(el);
+    hgSpot(el); el.hidden = false;
     var C = 2 * Math.PI * 15.9, wp = Math.min(100, x.wp), all = x.n && x.done === x.n, mine = hgMine();
     var f = all ? ['win', '🏆 오늘 목표 전부 달성!', '고생했어요 👏']
-      : !x.any ? ['idle', '오늘 판매는 아직 0개', 'POS 들어오면 바로 채워져요']
+      : !x.any ? ['idle', '첫 세트 팔리면 여기 채워져요 🙌', 'POS 15분마다']
       : x.near && x.near.g - x.near.v <= 3 ? ['near', '<b>🔥</b> ' + hgEsc(x.near.sh) + ' ' + (x.near.g - x.near.v) + '개만 더!', '오늘 남은 ' + x.rem + '개']
-      : ['', '🎯 ' + hgEsc(x.near.sh) + ' ' + (x.near.g - x.near.v) + '개 더 팔면 달성', '오늘 남은 ' + x.rem + '개'];
+      : ['', '🎯 ' + hgEsc(x.near.sh) + ' ' + (x.near.g - x.near.v) + '개 더 팔면 오늘 달성', '오늘 남은 ' + x.rem + '개'];
     var key = JSON.stringify([x, mine]);
     if (el.__k === key) return; var first = !el.__k; el.__k = key;
-    el.setAttribute('aria-label', '판매 목표 · 이번 주 ' + x.wp + '% · 오늘 ' + x.done + '/' + x.n + ' 달성 · 누르면 자세히');
-    el.innerHTML = '<div class="hg-h">📊 판매 목표<small>오늘 ' + x.done + '/' + x.n + ' 달성' + (all ? ' 🎉' : '') + '</small><i aria-hidden="true">›</i></div>'
-      + '<div class="hg-b"><div class="hg-r"><svg viewBox="0 0 36 36" aria-hidden="true"><circle class="bg" cx="18" cy="18" r="15.9"/><circle class="fg" cx="18" cy="18" r="15.9" stroke="' + (x.wp >= 100 ? OK : BR) + '" stroke-dasharray="' + (first ? 0 : wp / 100 * C) + ' ' + C + '"/></svg><b>' + x.wp + '%<small>이번 주</small></b></div>'
-      + '<div class="hg-s">' + x.rows.map(function (r) { var p = Math.min(100, Math.round(r.v / r.g * 100)); return '<div class="hg-l"><span>' + hgEsc(r.label) + '</span><div class="hg-bar"><i style="width:' + (first ? 0 : p) + '%;background:' + hgEsc(r.c) + '" data-w="' + p + '"></i></div><em' + (r.ok ? ' class="ok"' : '') + '>' + (r.ok ? '✓ ' : '') + r.v + '/' + r.g + '</em></div>'; }).join('') + '</div></div>'
-      + '<div class="hg-f ' + f[0] + '"><span>' + f[1] + '</span><small>' + f[2] + '</small></div>'
-      + (mine && !all ? '<div class="hg-me">💪 지금 내 세트 담당 시간이에요 — 손님께 세트 먼저 권해 봐요</div>' : '');
+    el.innerHTML = '<span class="hg-h">📊 판매 목표<i>자세히 ›</i></span>'
+      + '<span class="hg-b"><span class="hg-r"><svg viewBox="0 0 36 36" aria-hidden="true"><circle class="bg" cx="18" cy="18" r="15.9"/><circle class="fg" cx="18" cy="18" r="15.9" stroke="' + (x.wp >= 100 ? OK : BR) + '" stroke-dasharray="' + (first ? 0 : wp / 100 * C) + ' ' + C + '"/></svg><b>' + x.wp + '%<small>이번 주</small></b></span>'
+      + '<span class="hg-s"><span class="hg-c">오늘 ' + x.done + '/' + x.n + ' 달성' + (all ? ' 🎉' : '') + (x.lag == null ? '' : x.lag <= 0 ? '<b class="ok">어제까지 순항 ✓</b>' : '<b class="lag">어제까지 ' + x.lag + '개 뒤처짐</b>') + '</span>' + x.rows.map(function (r) { var p = Math.min(100, Math.round(r.v / r.g * 100)); return '<span class="hg-l' + (r.ok ? ' ok' : r === x.near && !all && x.any ? ' hot' : '') + '"><span title="' + hgEsc(r.label) + '">' + hgEsc(r.sh) + '</span><span class="hg-bar"><i style="transform:scaleX(' + (first ? 0 : p / 100) + ');background:' + hgEsc(r.c) + '" data-w="' + p / 100 + '"></i></span><em' + (r.ok ? ' class="ok"' : '') + '>' + (r.ok ? '✓ ' : '') + r.v + '/' + r.g + '</em></span>'; }).join('') + '</span></span>'
+      + '<span class="hg-f ' + f[0] + '"><span>' + f[1] + '</span><small>' + f[2] + '</small></span>'
+      + (mine && !all ? '<span class="hg-me">💪 지금 내 세트 담당 시간이에요 — 손님께 세트 먼저 권해 봐요</span>' : '');
     el.hidden = false;
     if (first) requestAnimationFrame(function () { requestAnimationFrame(function () {   // 처음 그릴 때만 링·막대 차오름
       var fg = el.querySelector('.fg'); if (fg) fg.setAttribute('stroke-dasharray', wp / 100 * C + ' ' + C);
-      [].forEach.call(el.querySelectorAll('.hg-bar i'), function (i) { i.style.width = i.getAttribute('data-w') + '%'; });
+      [].forEach.call(el.querySelectorAll('.hg-bar i'), function (i) { i.style.transform = 'scaleX(' + i.getAttribute('data-w') + ')'; });
     }); });
   }
   function hgSpot(el) {   // 응원 줄 바로 아래 (응원 줄이 없으면 본문 맨 위)
