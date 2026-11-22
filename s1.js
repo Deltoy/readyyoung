@@ -29,8 +29,8 @@
     '#loading.s1-dot[data-state="error"]::after{content:"동기화 실패";font-size:12px;font-weight:600;color:#B42318}',
     '@keyframes s1Pulse{50%{transform:scale(.55);opacity:.5}}',
     '@media(prefers-reduced-motion:reduce){#loading.s1-dot::before{animation:none!important}}',
-    /* D4 말풍선 → 헤더 아래 한 줄 (계속 보이는 응원 줄, 말 바뀔 때만 톡) */
-    'html body #ryHeatSay.s1-in{position:relative!important;left:auto!important;top:auto!important;display:block!important;visibility:visible!important;opacity:1!important;transform:none;width:auto;max-width:none!important;padding:6px 12px!important;margin:0;box-shadow:none!important;pointer-events:none;z-index:auto!important}',
+    /* 1122 MJ '말풍선 왜 이렇게 길어졌어' → 글자 길이만큼(fit-content) · D4 말풍선 → 헤더 아래 한 줄 (계속 보이는 응원 줄, 말 바뀔 때만 톡) */
+    'html body #ryHeatSay.s1-in{position:relative!important;left:auto!important;top:auto!important;display:block!important;visibility:visible!important;opacity:1!important;transform:none;width:fit-content!important;max-width:calc(100% - 8px)!important;padding:5px 12px!important;margin:0;border-radius:999px!important;box-shadow:none!important;pointer-events:none;z-index:auto!important}',
     'html body #ryHeatSay.s1-in.s1-off{display:none!important}',
     'html body #ryHeatSay.s1-in.in{animation:s1Pop .35s cubic-bezier(.2,1.5,.4,1)}',
     '@keyframes s1Pop{from{transform:scale(.92)}to{transform:none}}',
