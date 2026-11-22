@@ -171,32 +171,24 @@
   /* ---------- 1122 홈 '판매 목표 게이지' (plan §2-A · MJ '판매 목표 게이지 좋아') ----------
      이번 주 링(%) + 세트별 오늘 막대(세트 색) + 가장 가까운 세트 '🔥 N개만 더!' + 오늘 남은 합계 · 지금 내 담당 시간이면 한 줄.
      자료 = 이미 홈이 받는 SC.data(getSetChallenge, 4.5초 뒤·캐시 ry_sc) 그대로 — 새 서버 호출 없음. 누르면 📊 판매 목표(slOpen). */
-  var hgCss = [
-    '#ryHG{display:block;width:100%;text-align:left;font:inherit;color:#111827;background:#fff;border:1px solid #EDEEF0;border-radius:20px;padding:12px 14px;margin:0;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s ease}',
+  var hgCss = [   /* 1122 MJ '좀 더 간소화 · 칸이 너무 커' + '홈은 상태 요약만, 자세한 건 눌러서' → 링 + 한 줄 + 칩 한 줄 */
+    '#ryHG{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:center;width:100%;min-height:44px;text-align:left;font:inherit;color:#111827;background:#fff;border:1px solid #EDEEF0;border-radius:20px;padding:8px 12px;margin:0;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s ease}',
     '#ryHG[hidden]{display:none!important}#ryHG span{display:block}#ryHG:active{transform:scale(.985)}#ryHG:focus-visible{outline:2px solid ' + BR + ';outline-offset:2px}',
-    '#ryHG .hg-h{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600;margin-bottom:8px}',
-        '#ryHG .hg-h i{font-style:normal;color:' + BR + ';font-size:13px;font-weight:600;margin-left:auto;white-space:nowrap}',
-    '#ryHG .hg-c{display:flex;gap:8px;font-size:12px;font-weight:600;color:#5F6672}#ryHG .hg-c b{margin-left:auto;font-weight:600;white-space:nowrap}#ryHG .hg-c b.ok{color:#067647}#ryHG .hg-c b.lag{color:#B54708}',
-    '#ryHG .hg-b{display:grid;grid-template-columns:64px 1fr;gap:12px;align-items:center}',
-    '#ryHG .hg-r{position:relative;width:64px;height:64px}#ryHG .hg-r svg{display:block;width:64px;height:64px;transform:rotate(-90deg)}',
+    '#ryHG .hg-r{position:relative;width:44px;height:44px}#ryHG .hg-r svg{display:block;width:44px;height:44px;transform:rotate(-90deg)}',
     '#ryHG .hg-r circle{fill:none;stroke-width:3.6}#ryHG .hg-r .bg{stroke:#EDEEF0}#ryHG .hg-r .fg{stroke-linecap:round;transition:stroke-dasharray .9s cubic-bezier(.2,.8,.2,1)}',
-    '#ryHG .hg-r b{position:absolute;inset:0;display:grid;place-content:center;text-align:center;font-size:15px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums}',
-    '#ryHG .hg-r b small{display:block;font-size:12px;font-weight:600;color:#5F6672}',
-    '#ryHG .hg-s{display:grid;gap:6px;min-width:0}',
-    '#ryHG .hg-l{display:grid;grid-template-columns:48px 1fr 64px;gap:8px;align-items:center;font-size:13px}',
-    '#ryHG .hg-l span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#344054;font-weight:600}',
-    '#ryHG .hg-l em{font-style:normal;font-weight:600;color:#344054;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}#ryHG .hg-l em.ok{color:#067647}',
-    '#ryHG .hg-bar{height:8px;border-radius:999px;background:#EDEEF0;overflow:hidden}#ryHG .hg-bar i{display:block;width:100%;height:100%;border-radius:999px;transform-origin:left;transition:transform .9s cubic-bezier(.2,.8,.2,1)}',
-    '#ryHG .hg-f{display:flex;align-items:center;gap:8px;margin-top:10px;min-height:36px;border-radius:12px;background:#FFF4ED;padding:6px 12px;font-size:13px;font-weight:600;color:#B54708}',
-    '#ryHG .hg-f>span{flex:1;min-width:0}#ryHG .hg-f small{margin-left:auto;font-size:12px;font-weight:600;color:#5F6672;white-space:nowrap}',
-    '#ryHG .hg-f.win{background:#ECFDF3;color:#067647}#ryHG .hg-f.win small{color:#067647}#ryHG .hg-f.idle{background:#F5F6F8;color:#344054}#ryHG .hg-f.idle small{color:#5F6672}',
-    '#ryHG .hg-f.near b{display:inline-block;animation:hgPop .5s cubic-bezier(.2,1.5,.4,1) 2}',
-    '#ryHG .hg-me{margin-top:6px;font-size:12px;font-weight:600;color:' + BR + '}',
-    '#ryHG .hg-l.ok .hg-bar{opacity:.5}#ryHG .hg-l.hot>span:first-child{color:#B54708}#ryHG .hg-l.hot .hg-bar{animation:hgGlow 1.2s ease-in-out 3}',
-    '@keyframes hgPop{50%{transform:scale(1.12)}}@keyframes hgGlow{50%{opacity:.6}}',
-    '@media(min-width:900px){#ryHG .hg-s{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));column-gap:24px}}',
+    '#ryHG .hg-r b{position:absolute;inset:0;display:grid;place-content:center;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}',
+    '#ryHG .hg-s{min-width:0;display:grid;gap:4px}',
+    '#ryHG .hg-h{display:flex!important;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#344054;min-width:0}',
+    '#ryHG .hg-h>span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#ryHG .hg-h>span.near{color:#B54708}#ryHG .hg-h>span.win{color:#067647}',
+    '#ryHG .hg-h .hg-v{display:none;flex:none;font-size:12px;color:#B54708}#ryHG .hg-h .hg-v.ok{color:#067647}',
+    '#ryHG .hg-h i{flex:none;font-style:normal;color:' + BR + ';font-size:15px;line-height:1}',
+    '#ryHG .hg-c{display:flex!important;flex-wrap:wrap;gap:4px}',
+    '#ryHG .hg-c>span{display:inline-block!important;padding:2px 8px 3px;border-radius:999px;background:#F5F6F8 no-repeat left bottom;font-size:12px;font-weight:600;color:#344054;white-space:nowrap;font-variant-numeric:tabular-nums;transition:background-size .9s cubic-bezier(.2,.8,.2,1)}',
+    '#ryHG .hg-c>span.ok{color:#5F6672}#ryHG .hg-c>span.hot{background-color:#FFF4ED;color:#B54708;animation:hgPop .5s cubic-bezier(.2,1.5,.4,1) 1}',
+    '@keyframes hgPop{50%{transform:scale(1.1)}}',
+    '@media(min-width:601px){#ryHG .hg-h .hg-v{display:block}}',
     '@media(prefers-reduced-motion:reduce){#ryHG,#ryHG *{transition:none!important;animation:none!important}}'
-  ].join('\n');
+].join('\n');
   var hgSt = D.createElement('style'); hgSt.id = 'ryHGcss'; hgSt.textContent = hgCss; D.head.appendChild(hgSt); try { hgSt.sheet.__us = 1; } catch (e) {}
   var hgEsc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   function hgData() {   // → null(이번 목표 없음) 또는 {wp, rows[{label,c,v,g,ok}], rem, near, done, n}
@@ -222,21 +214,23 @@
     if (!el) { el = D.createElement('button'); el.type = 'button'; el.id = 'ryHG'; el.onclick = function () { try { slOpen(); } catch (e) {} }; }
     hgSpot(el); el.hidden = false;
     var C = 2 * Math.PI * 15.9, wp = Math.min(100, x.wp), all = x.n && x.done === x.n, mine = hgMine();
-    var f = all ? ['win', '🏆 오늘 목표 전부 달성!', '고생했어요 👏']
-      : !x.any ? ['idle', '첫 세트 팔리면 여기 채워져요 🙌', 'POS 15분마다']
-      : x.near && x.near.g - x.near.v <= 3 ? ['near', '<b>🔥</b> ' + hgEsc(x.near.sh) + ' ' + (x.near.g - x.near.v) + '개만 더!', '오늘 남은 ' + x.rem + '개']
-      : ['', '🎯 ' + hgEsc(x.near.sh) + ' ' + (x.near.g - x.near.v) + '개 더 팔면 오늘 달성', '오늘 남은 ' + x.rem + '개'];
+    var near = x.near && x.near.g - x.near.v;
+    var f = all ? ['win', '🏆 오늘 목표 전부 달성!']
+      : !x.any ? ['', '첫 세트 팔리면 채워져요 🙌']
+      : near <= 3 ? ['near', '🔥 ' + hgEsc(x.near.sh) + ' ' + near + '개만 더!']
+      : ['', '🎯 ' + hgEsc(x.near.sh) + ' ' + near + '개 더 → 오늘 달성'];
+    if (mine && !all) f[1] = '💪 내 담당 · ' + f[1];
     var key = JSON.stringify([x, mine]);
     if (el.__k === key) return; var first = !el.__k; el.__k = key;
-    el.innerHTML = '<span class="hg-h">📊 판매 목표<i>자세히 ›</i></span>'
-      + '<span class="hg-b"><span class="hg-r"><svg viewBox="0 0 36 36" aria-hidden="true"><circle class="bg" cx="18" cy="18" r="15.9"/><circle class="fg" cx="18" cy="18" r="15.9" stroke="' + (x.wp >= 100 ? OK : BR) + '" stroke-dasharray="' + (first ? 0 : wp / 100 * C) + ' ' + C + '"/></svg><b>' + x.wp + '%<small>이번 주</small></b></span>'
-      + '<span class="hg-s"><span class="hg-c">오늘 ' + x.done + '/' + x.n + ' 달성' + (all ? ' 🎉' : '') + (x.lag == null ? '' : x.lag <= 0 ? '<b class="ok">어제까지 순항 ✓</b>' : '<b class="lag">어제까지 ' + x.lag + '개 뒤처짐</b>') + '</span>' + x.rows.map(function (r) { var p = Math.min(100, Math.round(r.v / r.g * 100)); return '<span class="hg-l' + (r.ok ? ' ok' : r === x.near && !all && x.any ? ' hot' : '') + '"><span title="' + hgEsc(r.label) + '">' + hgEsc(r.sh) + '</span><span class="hg-bar"><i style="transform:scaleX(' + (first ? 0 : p / 100) + ');background:' + hgEsc(r.c) + '" data-w="' + p / 100 + '"></i></span><em' + (r.ok ? ' class="ok"' : '') + '>' + (r.ok ? '✓ ' : '') + r.v + '/' + r.g + '</em></span>'; }).join('') + '</span></span>'
-      + '<span class="hg-f ' + f[0] + '"><span>' + f[1] + '</span><small>' + f[2] + '</small></span>'
-      + (mine && !all ? '<span class="hg-me">💪 지금 내 세트 담당 시간이에요 — 손님께 세트 먼저 권해 봐요</span>' : '');
+    el.setAttribute('aria-label', '판매 목표 이번 주 ' + x.wp + '% — 자세히 보기');
+    el.innerHTML = '<span class="hg-r"><svg viewBox="0 0 36 36" aria-hidden="true"><circle class="bg" cx="18" cy="18" r="15.9"/><circle class="fg" cx="18" cy="18" r="15.9" stroke="' + (x.wp >= 100 ? OK : BR) + '" stroke-dasharray="' + (first ? 0 : wp / 100 * C) + ' ' + C + '"/></svg><b>' + x.wp + '%</b></span>'
+      + '<span class="hg-s"><span class="hg-h"><span class="' + f[0] + '">' + f[1] + '</span>'
+      + (x.lag == null ? '' : x.lag <= 0 ? '<b class="hg-v ok">어제까지 순항 ✓</b>' : '<b class="hg-v">어제까지 ' + x.lag + '개 뒤처짐</b>') + '<i aria-hidden="true">›</i></span>'
+      + '<span class="hg-c">' + x.rows.map(function (r) { var p = Math.min(100, Math.round(r.v / r.g * 100)); return '<span title="' + hgEsc(r.label) + '" class="' + (r.ok ? 'ok' : r === x.near && !all && x.any ? 'hot' : '') + '" style="background-image:linear-gradient(' + hgEsc(r.c) + ',' + hgEsc(r.c) + ');background-size:' + (first ? 0 : p) + '% 3px" data-w="' + p + '">' + hgEsc(r.sh) + ' ' + (r.ok ? '✓' : r.v + '/' + r.g) + '</span>'; }).join('') + '</span></span>';
     el.hidden = false;
     if (first) requestAnimationFrame(function () { requestAnimationFrame(function () {   // 처음 그릴 때만 링·막대 차오름
       var fg = el.querySelector('.fg'); if (fg) fg.setAttribute('stroke-dasharray', wp / 100 * C + ' ' + C);
-      [].forEach.call(el.querySelectorAll('.hg-bar i'), function (i) { i.style.transform = 'scaleX(' + i.getAttribute('data-w') + ')'; });
+      [].forEach.call(el.querySelectorAll('.hg-c>span'), function (i) { i.style.backgroundSize = i.getAttribute('data-w') + '% 3px'; });
     }); });
   }
   function hgSpot(el) {   // 응원 줄 바로 아래 (응원 줄이 없으면 본문 맨 위)
