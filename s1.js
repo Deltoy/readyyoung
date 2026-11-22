@@ -30,7 +30,9 @@
     '@keyframes s1Pulse{50%{transform:scale(.55);opacity:.5}}',
     '@media(prefers-reduced-motion:reduce){#loading.s1-dot::before{animation:none!important}}',
     /* 1122 MJ '말풍선 왜 이렇게 길어졌어' → 글자 길이만큼(fit-content) · D4 말풍선 → 헤더 아래 한 줄 (계속 보이는 응원 줄, 말 바뀔 때만 톡) */
-    'html body #ryHeatSay.s1-in{position:relative!important;left:auto!important;top:auto!important;display:block!important;visibility:visible!important;opacity:1!important;transform:none;width:fit-content!important;max-width:calc(100% - 8px)!important;padding:5px 12px!important;margin:0;border-radius:999px!important;box-shadow:none!important;pointer-events:none;z-index:auto!important}',
+    'html body header.ry25-top{position:relative}',
+    'html body #ryHeatSay.s1-in{position:absolute!important;left:12px!important;top:calc(100% + 2px)!important;display:none!important;visibility:visible!important;opacity:1!important;transform:none;width:fit-content!important;max-width:calc(100% - 24px)!important;padding:5px 12px!important;margin:0;border-radius:999px!important;box-shadow:0 4px 14px rgba(17,24,39,.12)!important;pointer-events:none;z-index:40!important}',
+    'html body #ryHeatSay.s1-in.s1-show{display:block!important}',
     'html body #ryHeatSay.s1-in.s1-off{display:none!important}',
     'html body #ryHeatSay.s1-in.in{animation:s1Pop .35s cubic-bezier(.2,1.5,.4,1)}',
     '@keyframes s1Pop{from{transform:scale(.92)}to{transform:none}}',
@@ -129,12 +131,12 @@
   function sayPlace() {   // 말풍선: 위 로고가 보이면 헤더 아래 줄 · 따라오는 로고면 원래처럼 그 위
     var b = D.getElementById('ryHeatSay'), h = hdr(); if (!b || !h) return;
     if (floatOn()) { if (b.classList.contains('s1-in')) { b.classList.remove('s1-in'); D.body.appendChild(b); } return; }
-    var mn = slot(); b.classList.add('s1-in'); if (mn && b.parentNode !== mn) mn.insertBefore(b, mn.firstChild);   // 원래 heatSay 가 className 을 통째로 바꾸므로 매번 다시
+    b.classList.add('s1-in'); if (b.parentNode !== h) h.appendChild(b);   // 1122 MJ '한 줄 쓰지 마 칸 아까워' → 줄 차지 X, 헤더 아래 잠깐 떴다 사라짐(5초)   // 원래 heatSay 가 className 을 통째로 바꾸므로 매번 다시
     b.classList.toggle('s1-off', typeof scOpenHr === 'function' && !scOpenHr());
   }
   if (typeof window.heatSay === 'function') {
     var _say = window.heatSay;
-    window.heatSay = function (txt) { var f = D.getElementById('ryDzFloat'); if (f) { f.classList.remove('s1-peek'); f.__s1t = Date.now(); } sayPlace(); var r = _say.apply(this, arguments); sayPlace(); return r; };
+    window.heatSay = function (txt) { var f = D.getElementById('ryDzFloat'); if (f) { f.classList.remove('s1-peek'); f.__s1t = Date.now(); } sayPlace(); var r = _say.apply(this, arguments); sayPlace(); var bb = D.getElementById('ryHeatSay'); if (bb) { bb.classList.add('s1-show'); clearTimeout(bb.__s1h); bb.__s1h = setTimeout(function () { bb.classList.remove('s1-show'); }, 5000); } return r; };
   }
   /* 폭죽: 하루 한 번(그날 처음 달성 때 한 장에 모아서) · 그 뒤 달성은 말풍선 한 줄. 3.8초 뒤 저절로 닫힘은 원래대로 */
   if (typeof window.scFanfareCheck === 'function' && typeof window.scFanfare === 'function') {
