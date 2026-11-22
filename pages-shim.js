@@ -225,8 +225,12 @@
     var q = new URLSearchParams(location.search), u = q.get('unslop');
     if (u === '0' || u === '1') localStorage.setItem('ry_unslop', u);
     var me = q.get('me') || localStorage.getItem('s_selected_member') || '';
-    if (me !== '문준' || localStorage.getItem('ry_unslop') === '0') return;
-    var go = function () { var s = document.createElement('script'); s.src = 'unslop.js?v=1110s'; document.body.appendChild(s); };
+    if (me !== '문준') return;
+    /* 1122 업그레이드 S1 시각 정돈(s1.js, unslop 대신) — 문준 화면에만. 끄기 ?s1=0 · 다시 켜기 ?s1=1 (기기에 기억) */
+    var s1 = q.get('s1'); if (s1 === '0' || s1 === '1') localStorage.setItem('ry_s1', s1);
+    var src = localStorage.getItem('ry_s1') !== '0' ? 's1.js?v=1122b' : localStorage.getItem('ry_unslop') === '0' ? '' : 'unslop.js?v=1110s';
+    if (!src) return;
+    var go = function () { var s = document.createElement('script'); s.src = src; document.body.appendChild(s); };
     if (document.readyState === 'complete') go(); else window.addEventListener('load', go);
   } catch (e) {}
 })();
