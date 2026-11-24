@@ -72,9 +72,14 @@
     if (!n) { window.__ryInflight++; var p0 = post2(fn, args, key, n, rid); p0.then(function () { window.__ryInflight--; }, function () { window.__ryInflight--; }); return p0; }
     return post2(fn, args, key, n, rid);
   }
+  /* 1124 마유코 '동기화 중…' 에서 안 끝남 — 폰 연결이 응답 없이 멈추면 fetch 가 영원히 안 끝나서 동기화(_loadInFlight)가 계속 '진행 중' → 자동 갱신도 전부 건너뜀.
+     읽기(get·list·search)만 60초(목록·버전)·90초(그 밖) 넘으면 끊고 '연결 문제'로 처리 → 아래 send 가 다시 보냄. 쓰기는 안 끊음(서버가 아직 저장 중일 수 있음) */
   function post2(fn, args, key, n, rid) {
-    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(vv ? { rpc: fn, args: args, v: vv } : { rpc: fn, args: args, k: key, rid: rid || undefined }) })
+    var ac = null, tm = 0;
+    if (/^(get|list|search)/.test(fn) && typeof AbortController === 'function') { ac = new AbortController(); tm = setTimeout(function () { ac.abort(); }, /^(getAllDashboardData|getCatalogIndex|getDataVersion)$/.test(fn) ? 60000 : 90000); }
+    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(vv ? { rpc: fn, args: args, v: vv } : { rpc: fn, args: args, k: key, rid: rid || undefined }), signal: ac ? ac.signal : undefined })
       .then(function (r) { return r.text(); })
+      .then(function (t) { clearTimeout(tm); return t; }, function (e) { clearTimeout(tm); throw ac && ac.signal.aborted ? new Error('network timeout — 응답이 늦어 다시 시도') : e; })
       .then(function (t) {
         try { return JSON.parse(t); } catch (e) {
           if (n < 3) return new Promise(function (res) { setTimeout(res, [1500, 4000, 8000][n]); }).then(function () { return post2(fn, args, key, n + 1, rid); });

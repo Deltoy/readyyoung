@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwuifab1">
+  <meta name="ry-build" content="mwuilev6">
   <!-- 1118 카톡 미리보기 (공유 링크) --><meta property="og:type" content="website"><meta property="og:site_name" content="성수레디영"><meta property="og:title" content="성수레디영 물류앱"><meta property="og:description" content="숙지사항 · 발주 · 입고를 한 곳에서 — 눌러서 물류앱으로 바로 열기 (직원 전용)"><meta property="og:image" content="https://deltoy.github.io/readyyoung/ry-icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:url" content="https://deltoy.github.io/readyyoung/"><meta name="description" content="성수레디영 물류앱 (직원 전용)">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
@@ -78,9 +78,14 @@
     if (!n) { window.__ryInflight++; var p0 = post2(fn, args, key, n, rid); p0.then(function () { window.__ryInflight--; }, function () { window.__ryInflight--; }); return p0; }
     return post2(fn, args, key, n, rid);
   }
+  /* 1124 마유코 '동기화 중…' 에서 안 끝남 — 폰 연결이 응답 없이 멈추면 fetch 가 영원히 안 끝나서 동기화(_loadInFlight)가 계속 '진행 중' → 자동 갱신도 전부 건너뜀.
+     읽기(get·list·search)만 60초(목록·버전)·90초(그 밖) 넘으면 끊고 '연결 문제'로 처리 → 아래 send 가 다시 보냄. 쓰기는 안 끊음(서버가 아직 저장 중일 수 있음) */
   function post2(fn, args, key, n, rid) {
-    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(vv ? { rpc: fn, args: args, v: vv } : { rpc: fn, args: args, k: key, rid: rid || undefined }) })
+    var ac = null, tm = 0;
+    if (/^(get|list|search)/.test(fn) && typeof AbortController === 'function') { ac = new AbortController(); tm = setTimeout(function () { ac.abort(); }, /^(getAllDashboardData|getCatalogIndex|getDataVersion)$/.test(fn) ? 60000 : 90000); }
+    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(vv ? { rpc: fn, args: args, v: vv } : { rpc: fn, args: args, k: key, rid: rid || undefined }), signal: ac ? ac.signal : undefined })
       .then(function (r) { return r.text(); })
+      .then(function (t) { clearTimeout(tm); return t; }, function (e) { clearTimeout(tm); throw ac && ac.signal.aborted ? new Error('network timeout — 응답이 늦어 다시 시도') : e; })
       .then(function (t) {
         try { return JSON.parse(t); } catch (e) {
           if (n < 3) return new Promise(function (res) { setTimeout(res, [1500, 4000, 8000][n]); }).then(function () { return post2(fn, args, key, n + 1, rid); });
