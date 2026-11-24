@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwu08c0g">
+  <meta name="ry-build" content="mwu0n5ee">
   <!-- 1118 카톡 미리보기 (공유 링크) --><meta property="og:type" content="website"><meta property="og:site_name" content="성수레디영"><meta property="og:title" content="성수레디영 물류앱"><meta property="og:description" content="숙지사항 · 발주 · 입고를 한 곳에서 — 눌러서 물류앱으로 바로 열기 (직원 전용)"><meta property="og:image" content="https://deltoy.github.io/readyyoung/ry-icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:url" content="https://deltoy.github.io/readyyoung/"><meta name="description" content="성수레디영 물류앱 (직원 전용)">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
@@ -24213,11 +24213,11 @@ function eduPopSync() {
   var day = new Date(Date.now() + 9 * 3600000).toISOString().slice(0, 10), key = 'eduPop|' + day + '|' + me, closed = false;
   try { closed = localStorage.getItem(key) === '1'; } catch (e) {}
   if (!L.length || closed) { el.hidden = true; return; }
-  var mine = null, all = [];
-  L.forEach(function (n) { n.slots.forEach(function (s) { all.push(s.t); if (me && s.who.some(function (w) { return w.indexOf(me) !== -1 || me.indexOf(w) !== -1; })) mine = s; }); });
+  var mine = null, all = [], nid = L[0].id;   /* 1124 MJ '보기 누르면 그 공지로' — 내 교육이 든 공지 id */
+  L.forEach(function (n) { n.slots.forEach(function (s) { all.push(s.t); if (me && s.who.some(function (w) { return w.indexOf(me) !== -1 || me.indexOf(w) !== -1; })) { mine = s; nid = n.id; } }); });
   var lg = (typeof RL !== 'undefined' && RL.lang) || '', T = { ja: ['今日 ', ' 研修です', '今日は本社研修があります', '見る'], zh: ['今天 ', ' 有培训', '今天有总部培训', '查看'] }[lg] || ['오늘 ', ' 교육이에요', '오늘 본사 교육이 있어요', '보기'];
   el.innerHTML = '<div class="tp-txt"><b class="t">🎓 ' + (mine ? T[0] + escapeHtml(mine.t) + T[1] : T[2]) + '</b><p>' + escapeHtml(mine ? L[0].title : all.join(' · ') + ' · ' + L[0].title) + '</p></div>'
-    + '<button type="button" class="tp-go" data-k="' + escapeHtml(key) + '" onclick="try { localStorage.setItem(this.dataset.k, \'1\'); } catch (e) {} document.getElementById(\'eduPop\').hidden = true; ntOpen()">' + T[3] + '</button><button type="button" class="tp-x" aria-label="오늘 닫기" data-k="' + escapeHtml(key) + '" onclick="try { localStorage.setItem(this.dataset.k, \'1\'); } catch (e) {} document.getElementById(\'eduPop\').hidden = true">×</button>';
+    + '<button type="button" class="tp-go" data-k="' + escapeHtml(key) + '" data-n="' + escapeHtml(nid) + '" onclick="try { localStorage.setItem(this.dataset.k, \'1\'); } catch (e) {} document.getElementById(\'eduPop\').hidden = true; ntShowCard(this.dataset.n, \'\')">' + T[3] + '</button><button type="button" class="tp-x" aria-label="오늘 닫기" data-k="' + escapeHtml(key) + '" onclick="try { localStorage.setItem(this.dataset.k, \'1\'); } catch (e) {} document.getElementById(\'eduPop\').hidden = true">×</button>';
   el.hidden = false;
 }
 function ntMarkSeen() {
