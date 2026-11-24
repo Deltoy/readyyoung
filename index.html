@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwu0n5ee">
+  <meta name="ry-build" content="mwugd37c">
   <!-- 1118 카톡 미리보기 (공유 링크) --><meta property="og:type" content="website"><meta property="og:site_name" content="성수레디영"><meta property="og:title" content="성수레디영 물류앱"><meta property="og:description" content="숙지사항 · 발주 · 입고를 한 곳에서 — 눌러서 물류앱으로 바로 열기 (직원 전용)"><meta property="og:image" content="https://deltoy.github.io/readyyoung/ry-icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:url" content="https://deltoy.github.io/readyyoung/"><meta name="description" content="성수레디영 물류앱 (직원 전용)">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
@@ -18685,7 +18685,11 @@ video {
     }
     var S15_ALIAS = {};   /* POS 판매 상품명 → 앱 주문 상품명 (새로 생기면 여기에 한 줄) */
     [['닥터 리쥬올 더 PDRN 시그니처 SET', '닥터리쥬올 더 PDRN 시그니처 세트'], ['리쥬올 3-step 어드밴스드 스킨케어 시스템 세트', '닥터 리쥬올 3-step 어드밴스드 스킨케어 시스템'], ['12ml리쥬비에스', '리쥬비에스 12ml']].forEach(function (x) { S15_ALIAS[s15Key(x[0])] = x[1]; });
-    var S15_PACKS = [{ to: '레디비타 프리미엄 멀티샷', from: [['레디비타 프리미엄 멀티샷 1ea', 1 / 28], ['레디비타 7병', 7 / 28], ['레디비타 28병', 1]] },
+    var S15_PACKS = [
+      /* 1124 MJ '마그랑비 필돌샷액 30병 한 박스로 들어오는데 5병·1병씩도 팔아 — 카운팅해서 15일 판매량' · '60캡슐은 120캡슐 까서 파는 거 — 120캡슐에 합쳐서' (앱 피돌샷액 = 낱병 단위, 120캡슐 = 통 단위) */
+      { to: '마그랑비 피돌샷액', from: [['마그랑비피돌샷액', 1], ['마그랑비피돌샷액 5병입', 5], ['마그랑비피돌샷30병', 30]] },
+      { to: '마그랑비 피돌렉스 120캡슐', from: [['마그랑비피돌렉스', 1], ['마그랑비피돌렉스 120캡슐', 1], ['마그랑비연질캡슐 60캡슐', 1 / 2]] },
+      { to: '레디비타 프리미엄 멀티샷', from: [['레디비타 프리미엄 멀티샷 1ea', 1 / 28], ['레디비타 7병', 7 / 28], ['레디비타 28병', 1]] },
       { to: '뉴베인액(트록세루틴) 28포', from: [['뉴베인액(트록세루틴) 7ml x 1포', 1 / 28], ['뉴베인액(트록세루틴) 7ml x 7포', 7 / 28], ['뉴베인28포', 1]] },
       { to: '파마티크 더마 부스트 젤리', from: [['파마티크 피디알엔 더마부스트 젤리 1포', 1 / 28], ['파마티크 피디알엔 더마부스트 젤리 14포', 14 / 28], ['파마티크 피디알엔 더마부스트 젤리 28포', 1]] },
       /* 1019 POS 이름 여러 개 · 낱개 → 앱 상품 단위 (미등록 정리) */
