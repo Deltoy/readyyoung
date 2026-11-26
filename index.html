@@ -4638,7 +4638,7 @@ html:not(#q):not(#w):not(#e) body:not(#r) .ry-bump{display:inline-block;animatio
 .sc-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:var(--sc);transition:width .8s var(--ry-ease)}
 .sc-wk-s{font-size:13px;color:var(--ry-ink-2);font-weight:600}.sc-wk-s b{color:var(--ry-ink)}
 /* 1112 MJ '특이사항 메모에 글을 많이 적으면 이상하게 보여' — 긴 메모가 노란 상자 밖으로 삐져나옴(가운데 정렬 + 높이 제한) → 표 칸에선 3줄까지 보이고 '…', 상자는 글자 높이만큼 늘어남, 누르면 전체(메모 창) */
-html:not(#q):not(#w):not(#e) body:not(#r) :is(#reviewTableBody,#readyTableBody,#soldOutTableBody,#inboundTableBody,#orderTableBody) .ry-note:not(.empty){width:fit-content;max-width:100%;margin-left:auto!important;margin-right:auto!important;text-align:center!important;display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden!important;white-space:normal!important;text-overflow:clip!important;max-height:none!important;min-height:0!important;padding:8px 12px 0!important;line-height:1.45!important;text-align:left!important;word-break:keep-all;overflow-wrap:anywhere;margin:6px 0!important;box-sizing:border-box!important;max-height:calc(4.35em + 16px)!important;background:var(--z-warn-soft)!important;border:0!important;border-bottom:8px solid var(--z-warn-soft)!important;border-radius:12px!important;box-shadow:0 0 0 1px #f7e3a6}
+html:not(#q):not(#w):not(#e) body:not(#r) :is(#reviewTableBody,#readyTableBody,#soldOutTableBody,#inboundTableBody,#orderTableBody) .ry-note:not(.empty){width:fit-content;max-width:100%;margin-left:auto!important;margin-right:auto!important;text-align:center!important;display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden!important;white-space:normal!important;text-overflow:clip!important;max-height:none!important;min-height:0!important;padding:8px 12px 0!important;line-height:1.45!important;text-align:center!important;word-break:keep-all;overflow-wrap:anywhere;margin:6px auto!important;box-sizing:border-box!important;max-height:calc(4.35em + 16px)!important;background:var(--z-warn-soft)!important;border:0!important;border-bottom:8px solid var(--z-warn-soft)!important;border-radius:12px!important;box-shadow:0 0 0 1px #f7e3a6}
 html:not(#q):not(#w):not(#e) body:not(#r) :is(#reviewTableBody,#readyTableBody,#soldOutTableBody,#inboundTableBody,#orderTableBody) .ry-note:not(.empty)::before{display:none!important}
 /* 1112 MJ 시안 C 선택 ('LIVE 지금 바빠요 + 흐르는 밑줄') — 헤더는 하얀 그대로 · 불바다·불꽃 줄·로고 오라 없앰
    1(40%) ♨️ 칩만 · 2(80%) 🔥 칩 + 옅은 밑줄 · 3(100%) LIVE 배지(빨간 점 깜빡) + 흐르는 밑줄 · 4(150%) 더 빠르고 두꺼운 밑줄 */
@@ -7571,9 +7571,7 @@ video {
       var top = catTop(c), sub = catSub(c);
       return '<button type="button" onclick="event.stopPropagation(); openNote(' + item.rowNumber + ')" class="ry-cat' + (c ? '' : ' none') + (sub === CAT_REVIEW ? ' rv' : '') + '">'
         + (c ? '<span>' + escapeHtml(top) + '</span>' + (sub ? '<i aria-hidden="true">·</i><b>' + escapeHtml(sub) + '</b>' : '') : '분류 없음') + '</button>'
-        + (item.uses && item.uses.length ? '<span class="ry-uses" title="용도">' + item.uses.slice(0, 3).map(escapeHtml).join(' · ') + '</span>' : '')
-        /* 1126 MJ '특이사항에 비품이라고 적혀 있으면 이것도 비품으로 보이게' — 용도 태그가 없어도 특이사항 글자로 바로 알아보게 */
-        + (/비품/.test(String(item.note || '')) ? '<span class="ry-bipum" title="특이사항에 비품이라고 적혀 있어요">🧰 비품</span>' : '');
+        + (item.uses && item.uses.length ? '<span class="ry-uses" title="용도">' + item.uses.slice(0, 3).map(escapeHtml).join(' · ') + '</span>' : '');   /* 1126 🧰 비품 칩은 MJ '비품 비품 두 번 나오는 게 별로야' 로 뺌 — 특이사항 칩이 이미 보여 줌 */
     }
     function isHiddenItem(item) { return !!(item && (item.hidden || String(item.note || '').indexOf('취급안함') !== -1)); }
 
