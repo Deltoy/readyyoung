@@ -4175,6 +4175,11 @@ html:not(#q):not(#w):not(#e) body:not(#r) .nt-search{flex:1 1 220px;min-width:0}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-search input,html:not(#q):not(#w):not(#e) body:not(#r) .nt-month{height:44px!important;min-height:44px!important;width:100%;border:1px solid #d1d5db!important;border-radius:12px!important;padding:0 12px!important;font-size:15px!important;background:#fff!important;box-sizing:border-box}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-month{flex:0 1 200px;width:auto}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-tags{display:flex;gap:6px;flex-wrap:wrap}
+/* 1126 MJ '특이사항이 가운데 정렬이어야 하는데 자꾸 왼쪽' — 특이사항 칸 안의 칩·글자를 모두 가운데로 */
+.ry-cat,.ry-uses,.ry-bipum{margin-left:auto;margin-right:auto}
+.ry-uses,.ry-bipum{display:block;text-align:center}
+.ry-bipum{margin-top:4px;padding:2px 9px;border-radius:999px;background:#FEF0C7;color:#B54708;font-size:11.5px;font-weight:700;width:fit-content}
+@media (prefers-color-scheme:dark){.ry-bipum{background:#4a3708;color:#ffe6a8}}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-chip{min-height:44px!important;padding:0 14px!important;border-radius:999px!important;border:1px solid #EDEEF0!important;background:#fff!important;color:#374151!important;font-size:13.5px!important;font-weight:600!important}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-chip.on{background:#111827!important;color:#fff!important;border-color:#111827!important}
 html:not(#q):not(#w):not(#e) body:not(#r) .nt-list{display:flex;flex-direction:column;gap:14px}
@@ -7565,7 +7570,9 @@ video {
       var top = catTop(c), sub = catSub(c);
       return '<button type="button" onclick="event.stopPropagation(); openNote(' + item.rowNumber + ')" class="ry-cat' + (c ? '' : ' none') + (sub === CAT_REVIEW ? ' rv' : '') + '">'
         + (c ? '<span>' + escapeHtml(top) + '</span>' + (sub ? '<i aria-hidden="true">·</i><b>' + escapeHtml(sub) + '</b>' : '') : '분류 없음') + '</button>'
-        + (item.uses && item.uses.length ? '<span class="ry-uses" title="용도">' + item.uses.slice(0, 3).map(escapeHtml).join(' · ') + '</span>' : '');   /* 1002 용도도 같이 (직원이 어디에 쓰는지 바로) */
+        + (item.uses && item.uses.length ? '<span class="ry-uses" title="용도">' + item.uses.slice(0, 3).map(escapeHtml).join(' · ') + '</span>' : '')
+        /* 1126 MJ '특이사항에 비품이라고 적혀 있으면 이것도 비품으로 보이게' — 용도 태그가 없어도 특이사항 글자로 바로 알아보게 */
+        + (/비품/.test(String(item.note || '')) ? '<span class="ry-bipum" title="특이사항에 비품이라고 적혀 있어요">🧰 비품</span>' : '');
     }
     function isHiddenItem(item) { return !!(item && (item.hidden || String(item.note || '').indexOf('취급안함') !== -1)); }
 
