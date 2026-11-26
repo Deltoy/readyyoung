@@ -221,7 +221,11 @@ select.fi{background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3
 .sw-btn{flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:14px;background:#EEF4FF;color:#155EEF;font-size:15px;font-weight:700;text-decoration:none;white-space:nowrap}
 #undo{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));z-index:21;width:calc(100% - 32px);max-width:528px;transform:translate(-50%,160%);display:flex;align-items:center;gap:12px;padding:10px 10px 10px 18px;border-radius:18px;background:#101828;color:#fff;font-size:16px;font-weight:600;box-shadow:0 10px 28px rgba(0,0,0,.25);transition:transform .25s}
 #undo.on{transform:translate(-50%,0)}
-.lqw{margin:12px 0 4px}.lqw input{width:100%;min-height:48px;border:1px solid #D0D5DD;border-radius:14px;padding:0 14px;font-size:16px;background:#fff}.lqx{margin:8px 0;padding:14px;border-radius:14px;background:#F9FAFB;text-align:center}.lqx p{margin:0 0 10px;color:#475467}.lqgo{min-height:44px;padding:0 16px;border:0;border-radius:12px;background:#155EEF;color:#fff;font-weight:800;font-size:15px}.cxo{display:block;width:100%;min-height:44px;margin-top:8px;border-radius:12px;border:1px solid #FDA29B;background:#FEF3F2;color:#B42318;font-weight:800;font-size:15px}.cxo small{font-weight:600;color:#D92D20;margin-left:4px}
+.lqw{margin:12px 0 4px}.lqw input{width:100%;min-height:48px;border:1px solid #D0D5DD;border-radius:14px;padding:0 14px;font-size:16px;background:#fff}.lqx{margin:8px 0;padding:14px;border-radius:14px;background:#F9FAFB;text-align:center}.lqx p{margin:0 0 10px;color:#475467}.lqgo{min-height:44px;padding:0 16px;border:0;border-radius:12px;background:#155EEF;color:#fff;font-weight:800;font-size:15px}.cxo{display:block;width:100%;min-height:44px;margin-top:8px;border-radius:12px;border:1px solid #FDA29B;background:#FEF3F2;color:#B42318;font-weight:800;font-size:15px}
+/* 1126 MJ '부외품 쪽에도 납품하시는 분이 품절 체크를 할 수 있게' — 주문 취소 옆에 [품절] 한 칸 */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.two .cxo{margin-top:0}
+.sox{display:block;width:100%;min-height:44px;border-radius:12px;border:1px solid #FEC84B;background:#FFFAEB;color:#B54708;font-weight:800;font-size:15px}
+.cxo small,.sox small{display:block;font-weight:600;font-size:12px;opacity:.75;margin-top:1px}.cxo small{font-weight:600;color:#D92D20;margin-left:4px}
 #undo:not(.on){pointer-events:none;visibility:hidden;transition:transform .25s,visibility 0s .25s}   /* 1109 숨은 띠가 아래 [한 번에 입고 완료]를 가로막던 것 */#undo span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #undo button{flex:none;min-height:44px;padding:0 16px;border:0;border-radius:12px;background:#FDE272;color:#101828;font-size:16px;font-weight:800}
 body.has-bar #undo{bottom:calc(92px + env(safe-area-inset-bottom))}
@@ -418,7 +422,7 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
     return '<article class="card' + (it.pick ? ' picked' : '') + '" data-k="' + esc(it.k) + '">'
       + '<div class="head">' + (ord ? '<button type="button" class="tick" data-a="tick" aria-pressed="' + !!it.pick + '" aria-label="챙김">' + IC.check + '<span>챙김</span></button>' : '') + thumb(it.img) + '<div class="tx"><h2>' + (it._new ? '<span class="new">새 주문</span>' : '') + esc(it.name) + '</h2>'
       + (ord ? '<p class="meta">주문 <b>' + it.qty + it.unit + '</b>' + (it.od ? ' · ' + esc(odText(it.od)) : '') + '</p>' : '<p class="meta">주문 없이 가져온 상품</p>') + '</div></div>'
-      + controls(it, s, '입고 완료') + (ord ? '<button type="button" class="cxo" data-a="cxo">주문 취소 <small>재고 충분할 때</small></button>' : '') + '</article>';
+      + controls(it, s, '입고 완료') + (ord ? '<div class="two"><button type="button" class="cxo" data-a="cxo">주문 취소 <small>재고 충분할 때</small></button><button type="button" class="sox" data-a="sox">품절 <small>물건이 없을 때</small></button></div>' : '') + '</article>';
   }
   function lqN(x) { return String(x || '').replace(/\s+/g, '').toLowerCase(); }
   function lqHit(it) { return !LQ || lqN(it.name).indexOf(lqN(LQ)) >= 0; }
@@ -431,6 +435,17 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
     var i = ITEMS.indexOf(it); if (i >= 0) ITEMS.splice(i, 1); render();
     var back = function (m) { if (i >= 0) ITEMS.splice(i, 0, it); render(); toast(m, 'bad'); };
     call('bwCancelOrder', [it.row, it.name]).then(function (r) { if (authStop(r)) return; if (!r || !r.ok) { back((r && (r.msg || r.__err)) || '취소가 안 됐어요. 다시 눌러 주세요'); return; } toast('주문 취소했어요 · ' + first(it.name), 'ok'); }).catch(function (e) { back(e.message); });
+  }
+  /* 1126 MJ '품절이면 품절 체크 → 물류앱에 품절 표시' — 직원 화면 품절 처리와 같은 결과(특이사항 '품절' + 🚫 품절 탭) */
+  function soldOut(o) {
+    var it = o.it; if (!confirm('공급사 품절인가요?\n' + first(it.name) + '\n\n물류앱 특이사항에 \'품절\'이 적히고 🚫 품절 탭으로 갑니다.')) return;
+    var i = ITEMS.indexOf(it); if (i >= 0) ITEMS.splice(i, 1); render();
+    var back = function (m) { if (i >= 0) ITEMS.splice(i, 0, it); render(); toast(m, 'bad'); };
+    call('bwSoldOut', [it.row, it.name]).then(function (r) {
+      if (authStop(r)) return;
+      if (!r || !r.ok) { back((r && (r.msg || r.__err)) || '품절 처리가 안 됐어요. 다시 눌러 주세요'); return; }
+      toast('품절로 알렸어요 · ' + first(it.name), 'ok');
+    }).catch(function (e) { back(e.message || '품절 처리가 안 됐어요'); });
   }
   function backBar(title, step) { return '<div class="bar"><button type="button" class="back" data-a="back" aria-label="뒤로">' + IC.back + '</button><div><b>' + esc(title) + '</b>' + (step ? '<small>' + esc(step) + '</small>' : '') + '</div></div>'; }
   function tabs() { return '<div class="seg" role="tablist"><button type="button" role="tab" data-a="tab" data-v="list" aria-selected="' + (VIEW === 'list') + '">입고하기</button><button type="button" role="tab" data-a="tab" data-v="ledger" aria-selected="' + (VIEW === 'ledger') + '">납품 내역</button></div>'; }
@@ -696,6 +711,7 @@ input,textarea,select{-webkit-user-select:text;user-select:text;-webkit-touch-ca
     else if (a === 'photo') { camFor = o.it.k; var cam = document.getElementById('cam'); cam.value = ''; cam.click(); }
     else if (a === 'done') complete(o);
     else if (a === 'cxo') cancelOrd(o);
+    else if (a === 'sox') soldOut(o);
   });
   app.addEventListener('change', function (ev) {
     if (ev.target.id === 'nCat') { NEWF.cat = ev.target.value; return; }
