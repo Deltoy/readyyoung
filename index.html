@@ -9036,8 +9036,8 @@ video {
         var days = scDays({ from: w.hf, to: w.ht }), left = days.filter(function (d) { return d >= t; }).length, nth = days.indexOf(t) + 1;
         h += '<section class="sc-card sc-head"><div class="sc-hd"><div><b>🎯 이번 주 목표</b><span>' + scMd(w.hf) + ' ~ ' + scMd(w.ht) + (nth > 0 ? ' · ' + nth + '일째 · 오늘 포함 ' + left + '일 남음' : '') + '</span></div>' + (boss ? '<button type="button" class="sc-edit" onclick="scFormOpen()">' + RYI.plus + '목표 추가</button>' : '') + '</div>'
           + w.notes.map(function (x) { return '<p class="sc-memo">📣 ' + escapeHtml(x) + '</p>'; }).join('') + '</section>';
-        /* 1109 MJ '판매 넣기 칸 필요해? POS로 자동으로 올라가잖아' → 평소엔 숨김(POS 30분마다 자동) · POS 로그인이 풀린 날 고치기용 작은 버튼만 */
-        if (scAdm()) h += SC.inOpen ? scInHtml(c, w, t) : '<button type="button" class="sc-fixbtn" onclick="SC.inOpen=1;scRender()">✏️ 판매량 직접 입력 <small>평소엔 POS에서 30분마다 자동</small></button>';
+        /* 1109 MJ '판매 넣기 칸 필요해? POS로 자동으로 올라가잖아' → 평소엔 숨김(POS 10분마다 자동) · POS 로그인이 풀린 날 고치기용 작은 버튼만 */
+        if (scAdm()) h += SC.inOpen ? scInHtml(c, w, t) : '<button type="button" class="sc-fixbtn" onclick="SC.inOpen=1;scRender()">✏️ 판매량 직접 입력 <small>평소엔 POS에서 10분마다 자동</small></button>';
         var mob = [];   /* 1111 MJ '폰에서 너무 커 · 한눈에' → ≤600px 는 아래 간단판(sc-mob) */
         h += '<div class="sc-sets">' + SC_SETS.map(function (s) {
           var dS = scDaysOf(w, s.k), lS = dS.filter(function (d) { return d >= t; }).length, G = scWG(w, s.k), dg = scGoal(c, dS.indexOf(t) >= 0 ? t : dS[0], s.k), sum = 0, sumB = 0;
