@@ -1110,8 +1110,9 @@ body.bg-slate-100{background:#EAECEF!important}
   #reviewTableBody td:nth-child(5),#readyTableBody td:nth-child(5){text-align:left!important}
   #reviewTableBody td:nth-child(5) .ry-cat,#readyTableBody td:nth-child(5) .ry-cat{
     display:block!important;width:fit-content;margin-bottom:5px}
+  /* 1126 MJ '특이사항이 가운데 정렬이어야 하는데 자꾸 왼쪽' — 범인은 여기였다(폭 100% + text-align:left). 가운데로 */
   #reviewTableBody td:nth-child(5) .ry-note,#readyTableBody td:nth-child(5) .ry-note{
-    display:block!important;width:100%;text-align:left!important}
+    display:block!important;width:fit-content;max-width:100%;margin-left:auto;margin-right:auto;text-align:center!important}
   /* 열 폭 재분배 — 상품명이 940px 를 먹고 특이사항이 좁던 문제 */
   #reviewTableBody, #readyTableBody{}
   .pc-only-table th:nth-child(1){width:74px!important}
