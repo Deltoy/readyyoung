@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwuilev6">
+  <meta name="ry-build" content="mwyc57qc">
   <!-- 1118 카톡 미리보기 (공유 링크) --><meta property="og:type" content="website"><meta property="og:site_name" content="성수레디영"><meta property="og:title" content="성수레디영 물류앱"><meta property="og:description" content="숙지사항 · 발주 · 입고를 한 곳에서 — 눌러서 물류앱으로 바로 열기 (직원 전용)"><meta property="og:image" content="https://deltoy.github.io/readyyoung/ry-icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:url" content="https://deltoy.github.io/readyyoung/"><meta name="description" content="성수레디영 물류앱 (직원 전용)">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
@@ -1732,6 +1732,14 @@ html body:not(#_):not(#_) .st-opt.dis{color:var(--ry-bad)!important}
 .bu-top{max-width:900px;margin:0 auto;padding:10px 16px 4px}.bu-top p{margin:0 0 8px;font-size:13px;color:#5f6672;line-height:1.5}
 .bu-top input{width:100%;min-height:44px;border:1px solid #e5e7eb;border-radius:12px;padding:0 12px;font-size:15px;background:#fff;box-sizing:border-box}
 #buList{max-width:900px;margin:0 auto;padding:0 12px 24px}
+/* 1127 사진 없는 상품 찍기 — 줄 모양을 '1박스 개수 채우기'와 같게, 버튼은 작게 */
+#nophList{max-width:900px;margin:0 auto;padding:0 12px 24px}
+.noph-row{display:flex;align-items:center;gap:10px;background:#fff;border-radius:14px;padding:10px 10px 10px 14px;margin-top:8px}
+.noph-tx{flex:1;min-width:0}.noph-tx b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.noph-tx small{color:#5f6672;font-size:12.5px}
+.noph-sold{flex:0 0 auto;font-size:12.5px;font-weight:700;color:#155EEF;background:#EFF4FF;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.noph-btn{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:12px;border:1px solid #B2CCFF;background:#fff;color:#155EEF;font-size:14px;font-weight:700;cursor:pointer}
+.noph-btn svg{width:18px;height:18px}.noph-btn:active{background:#EFF4FF}
+@media (max-width:480px){.noph-btn span{display:none}.noph-btn{padding:0 12px}}
 .bu-row{display:flex;align-items:center;gap:12px;background:#fff;border-radius:14px;padding:10px 12px;margin-top:8px;transition:opacity .18s,transform .18s}
 .bu-row.gone{opacity:0;transform:translateX(12px)}
 .bu-ph{width:44px;height:44px;flex:0 0 44px;border-radius:10px;overflow:hidden;background:#f2f4f7}.bu-ph img{width:100%;height:100%;object-fit:contain}
@@ -21324,8 +21332,8 @@ setTimeout(locSortBtnSync, 0);
 </script>
 <div id="nophDim" hidden role="dialog" aria-modal="true" aria-label="사진 없는 상품 찍기" style="display:none;position:fixed;inset:0;z-index:9000;background:var(--ry-bg,#f5f6f8);overflow:auto;-webkit-overflow-scrolling:touch">
   <div style="position:sticky;top:0;background:#fff;border-bottom:1px solid #e5e7eb;padding:12px 16px;display:flex;align-items:center;gap:10px;z-index:1"><b style="font-size:17px;flex:1">사진 없는 상품 찍기 <span id="nophCnt" style="color:#5f6672;font-weight:600;font-size:14px"></span></b><button type="button" onclick="nophClose()" style="min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #e5e7eb;background:#fff;font-weight:700">닫기</button></div>
-  <div style="padding:8px 16px;color:#5f6672;font-size:13px">📷 를 누르면 카메라가 열리고, 찍으면 바로 저장돼요. 저장된 상품은 목록에서 사라져요.</div>
-  <div id="nophList" style="padding:0 12px 24px"></div>
+  <div class="bu-top"><p>최근 15일에 많이 팔린 순서예요. <b>사진</b>을 누르면 카메라가 열리고, 찍으면 바로 저장돼요. 저장된 상품은 목록에서 사라져요.</p></div>
+  <div id="nophList"></div>
 </div>
 <div id="buDim" hidden role="dialog" aria-modal="true" aria-label="1박스 개수 채우기" style="display:none;position:fixed;inset:0;z-index:9000;background:var(--ry-bg,#f5f6f8);overflow:auto;-webkit-overflow-scrolling:touch">
   <div style="position:sticky;top:0;background:#fff;border-bottom:1px solid #e5e7eb;padding:12px 16px;display:flex;align-items:center;gap:10px;z-index:1"><b style="font-size:17px;flex:1">1박스 개수 채우기 <span id="buCnt" style="color:#5f6672;font-weight:600;font-size:14px"></span></b><button type="button" onclick="buClose()" style="min-height:40px;padding:0 14px;border-radius:999px;border:1px solid #e5e7eb;background:#fff;font-weight:700">닫기</button></div>
@@ -21395,7 +21403,7 @@ function nophItems() {
   var seen = {}, out = [], push = function (x) { if (!x || !x.rowNumber || seen[x.rowNumber]) return; seen[x.rowNumber] = 1; if (!String(x.imgUrl || '').trim()) out.push(x); };
   [cachedReviewItems, cachedOrderItems, cachedInboundItems, cachedHistoryItems].forEach(function (a) { (a || []).forEach(push); });
   if (typeof RY_CAT !== 'undefined' && RY_CAT && RY_CAT.items) RY_CAT.items.forEach(push);
-  return out.sort(function (a, b) { return b.rowNumber - a.rowNumber; });   // 최근 등록(아래 줄)부터
+  return out.sort(function (a, b) { return (s15Num(b.sales15) || 0) - (s15Num(a.sales15) || 0) || b.rowNumber - a.rowNumber; });   // 1127 MJ '최근에 팔린 상품 위주로' — 15일 판매 많은 순 → 같으면 최근 등록부터
 }
 /* 1001 놓친 주문 찾기 — 15일 판매가 많은데(기준 이상) 지금 주문 흐름에 없고(미주문 또는 입고완료 뒤 14일 지남) 품절·판매종료도 아닌 상품을 검색 결과 카드로 보여 준다(바로 주문 요청 가능). 폰 상품 목록(RY_CAT) 기준 */
 var MO = { min: 10 };
@@ -21515,7 +21523,8 @@ function nophRender() {
   var items = nophItems(), el = document.getElementById('nophList'); document.getElementById('nophCnt').textContent = items.length ? items.length + '개' : '';
   if (!items.length) { el.innerHTML = '<div style="background:#fff;border-radius:16px;padding:28px;text-align:center;color:#5f6672">사진 없는 상품이 없어요 👍<br><small>목록은 검색창을 누를 때 새로 받아요</small></div>'; return; }
   el.innerHTML = items.slice(0, 300).map(function (x) {
-    return '<div class="np-row" data-row="' + x.rowNumber + '" style="display:flex;align-items:center;gap:12px;background:#fff;border-radius:14px;padding:12px 14px;margin-top:8px"><div style="flex:1;min-width:0"><b style="display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(x.name || '') + '</b><small style="color:#5f6672">' + escapeHtml(catLabel(x.category || '')) + (x.requester ? ' · ' + escapeHtml(x.requester) : '') + '</small></div><button type="button" onclick="openPhotoPicker(' + x.rowNumber + ', event)" style="min-width:56px;min-height:48px;border-radius:14px;border:0;background:#155EEF;color:#fff;font-size:22px" aria-label="사진 찍기">📷</button></div>';
+    var n = s15Num(x.sales15) || 0;
+    return '<div class="noph-row" data-row="' + x.rowNumber + '"><div class="noph-tx"><b>' + escapeHtml(x.name || '') + '</b><small>' + escapeHtml(catLabel(x.category || '')) + (x.requester ? ' · ' + escapeHtml(x.requester) : '') + '</small></div>' + (n > 0 ? '<span class="noph-sold">15일 ' + n + '개</span>' : '') + '<button type="button" class="noph-btn" onclick="openPhotoPicker(' + x.rowNumber + ', event)" aria-label="' + escapeHtml(x.name || '') + ' 사진 찍기">' + RYI.camera + '<span>사진</span></button></div>';
   }).join('') + (items.length > 300 ? '<div style="padding:12px;color:#5f6672;text-align:center">…외 ' + (items.length - 300) + '개</div>' : '');
 }
 /* 0929 아침 뷰티 브리핑 — getMorningBrief / listMorningBriefs (서버에 없으면 카드는 계속 숨김) */
