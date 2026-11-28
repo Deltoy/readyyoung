@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="ry-build" content="mwycbfrn">
+  <meta name="ry-build" content="mx04esqb">
   <!-- 1118 카톡 미리보기 (공유 링크) --><meta property="og:type" content="website"><meta property="og:site_name" content="성수레디영"><meta property="og:title" content="성수레디영 물류앱"><meta property="og:description" content="숙지사항 · 발주 · 입고를 한 곳에서 — 눌러서 물류앱으로 바로 열기 (직원 전용)"><meta property="og:image" content="https://deltoy.github.io/readyyoung/ry-icon-512.png"><meta property="og:image:width" content="512"><meta property="og:image:height" content="512"><meta property="og:url" content="https://deltoy.github.io/readyyoung/"><meta name="description" content="성수레디영 물류앱 (직원 전용)">
   <link rel="manifest" href="manifest.webmanifest?v=ry2"><link rel="apple-touch-icon" href="ry-apple-touch-180.png"><link rel="icon" type="image/png" href="ry-icon-192.png">
   <script>/* GitHub Pages 전용: google.script.run 을 Apps Script 서버 호출(fetch POST)로 바꾼다.
@@ -16542,6 +16542,10 @@ video {
       var rq = String(item.requester || ''), h = item.inHow || (/바코드 입고/.test(rq) ? '바코드' : /^주문없이입고/.test(rq) && !/명세서 없음/.test(rq) ? '명세서' : '');
       if (!h) return '';
       var lab = { '바코드': '📷 바코드 입고', '명세서': '🧾 명세서 입고', '직접': '✋ 직접 입고' }[h]; if (!lab) return '';
+      /* 1128 MJ '명세서 입고인데 명세서는 어떻게 확인?' — 명세서 화면에서 입고했지만 그날 저장된 명세서 사진이 없으면 '명세서 없이 입고'로 (사진 목록을 아직 못 받았으면 원래대로) */
+      var noDoc = false;
+      if (h === '명세서' && RY_IVL) { var day = stkDay(item.inboundDate); noDoc = !(RY_IVL[ryPrKey(item.name)] || []).some(function (x) { return x.f !== 'none' && (day == null || stkDay(x.d) === day); }); }
+      if (noDoc) return '<span class="ry-how ry-how-hand" title="명세서 화면에서 입고했지만 저장된 명세서 사진이 없어요">🧾 명세서 없이 입고</span>';
       return '<span class="ry-how ry-how-' + (h === '바코드' ? 'bc' : h === '명세서' ? 'iv' : 'hand') + '" title="어떻게 입고했는지">' + lab + '</span>';
     }
     function handleSearchDebounced() {
